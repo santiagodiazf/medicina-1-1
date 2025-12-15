@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario de Anatomía Clínica</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .case-block {
+            background-color: #e8f4fc;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .question-card {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .question-text {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-btn {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1em;
+        }
+        .option-btn:hover:not(.disabled) {
+            background-color: #f0f0f0;
+            border-color: #bbb;
+        }
+        .correct {
+            background-color: #d4edda !important;
+            border-color: #28a745 !important;
+            color: #155724;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #721c24;
+        }
+        .disabled {
+            cursor: default;
+            opacity: 0.9;
+        }
+        .reset-btn {
+            display: block;
+            margin: 30px auto;
+            padding: 15px 30px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+        .reset-btn:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Examen de Anatomía Clínica</h1>
+    <p style="text-align:center;">Selecciona la respuesta correcta. La corrección es inmediata.</p>
+
+    <div id="quiz-container">
+        </div>
+
+    <button class="reset-btn" onclick="location.reload()">Reiniciar Cuestionario (Barajar respuestas)</button>
+
+<script>
+    // Base de datos de preguntas extraídas del documento
+    // Nota: Se han asignado las respuestas correctas basadas en la lógica médica de los casos presentados.
+    
+    const quizData = [
+        {
+            type: "case",
+            title: "CASO CLÍNICO 1 DE MIEMBRO INFERIOR",
+            text: "Paciente de 75 años que sufre una artrosis de cadera de años de evolución. Se interviene para colocar una prótesis total de cadera por vía posterior a través del músculo glúteo mayor."
+        },
+        {
+            id: 1,
+            question: "¿Cuál o cuáles de estas arterias habrá que ligar, al abordar el cuello anatómico del fémur?",
+            options: [
+                { text: "Circunflejas femoral lateral y medial", correct: false },
+                { text: "Circunfleja femoral medial", correct: true },
+                { text: "Obturatriz", correct: false },
+                { text: "Femoral profunda", correct: false },
+                { text: "Glútea inferior", correct: false }
+            ]
+        },
+        {
+            id: 2,
+            question: "¿Cuál es el principal punto de referencia anatómica en esta región y que el traumatólogo debe identificar correctamente para la intervención mencionada?",
+            options: [
+                { text: "Músculo glúteo medio", correct: false },
+                { text: "Espina ciática", correct: false },
+                { text: "Nervio ciático", correct: true },
+                { text: "Músculo piriforme", correct: false },
+                { text: "Tendón del Músculo Obturador interno", correct: false }
+            ]
+        },
+        {
+            id: 3,
+            question: "Tres años después en una revisión, se observa mediante TC que dos de los músculos de la cadera habían sido reemplazados por tejido adiposo. Se sospecha daño del nervio glúteo superior. ¿Cuál de los siguientes músculos recibe su inervación del nervio glúteo superior?",
+            options: [
+                { text: "Recto femoral", correct: false },
+                { text: "Tensor de la fascia lata", correct: true },
+                { text: "Glúteo mayor", correct: false },
+                { text: "Piriforme", correct: false },
+                { text: "Cuadrado Femoral", correct: false }
+            ]
+        },
+        {
+            type: "case",
+            title: "CASO CLÍNICO 2 DE MIEMBRO INFERIOR",
+            text: "Durante un partido de fútbol, DeJon, lanzó una patada de forma antideportiva sobre la cara posterolateral de la rodilla izquierda de Xabi Alonso. Mientras Xabi caía al suelo se agarraba la rodilla, con evidente dolor."
+        },
+        {
+            id: 4,
+            question: "¿Cuál de las siguientes estructuras se podría lesionar cuando se aplica este tipo de fuerza contra la rodilla (fuerza valguizante)?",
+            options: [
+                { text: "Ligamento cruzado anterior", correct: true },
+                { text: "Ligamento colateral peroneo", correct: false },
+                { text: "Menisco lateral y ligamento cruzado posterior", correct: false },
+                { text: "Ligamento Colateral peroneo y Ligamento Cruzado posterior", correct: false },
+                { text: "Se afectan todos los ligamentos de la rodilla", correct: false }
+            ]
+        },
+        {
+            id: 5,
+            question: "Además, durante la exploración física se observa que Xabi tiene un problema para desbloquear la articulación de la rodilla en la flexión de la pierna. ¿Cuál de los siguientes músculos estará lesionado?",
+            options: [
+                { text: "Poplíteo", correct: true },
+                { text: "Recto Femoral", correct: false },
+                { text: "Semimembranoso", correct: false },
+                { text: "Sartorio", correct: false },
+                { text: "Tensor de la Fascia Lata", correct: false }
+            ]
+        },
+        {
+            id: 6,
+            question: "El estudio radiológico pone de manifiesto un síndrome patelofemoral que se caracteriza por la luxación lateral de la rótula. ¿Cuál de los siguientes músculos será necesario reforzar más con la rehabilitación física para prevenir futuras luxaciones?",
+            options: [
+                { text: "Vasto medial", correct: true },
+                { text: "Vasto lateral", correct: false },
+                { text: "Ligamento rotuliano", correct: false },
+                { text: "Vasto intermedio", correct: false },
+                { text: "Recto femoral", correct: false }
+            ]
+        },
+        {
+            type: "case",
+            title: "CASO CLÍNICO 3 DE MIEMBRO INFERIOR",
+            text: "Tras un accidente de automóvil, ingresa varón de 35 años con fractura de pelvis. Exploración: flexión dorsal e inversión del pie izquierdo débiles. Pérdida de sensibilidad en dorso y planta del pie. Reflejo rotuliano normal."
+        },
+        {
+            id: 7,
+            question: "¿Cuál de las siguientes estructuras se ha lesionado?",
+            options: [
+                { text: "Los nervios espinales L5 y S1 en el agujero intervertebral", correct: false },
+                { text: "La división peronea del nervio ciático en el cuello del peroné", correct: false },
+                { text: "El tronco Lumbosacro en la línea terminal", correct: true },
+                { text: "El nervio tibial en la fosa poplítea", correct: false },
+                { text: "Ninguna de las anteriores es correcta", correct: false }
+            ]
+        },
+        {
+            id: 8,
+            question: "¿Por qué no está afectado el reflejo rotuliano?",
+            options: [
+                { text: "Porque las fibras nerviosas destinadas al tendón proceden del nervio obturador", correct: false },
+                { text: "Porque solamente hay una afectación motora, y el reflejo es sensitivo", correct: false },
+                { text: "Porque la pierna se mantiene en extensión y la cadera en flexión", correct: false },
+                { text: "Ninguna de las respuestas anteriores es correcta", correct: false },
+                { text: "Porque las fibras destinadas al tendón proceden del nervio femoral, que no se ve afectado", correct: true }
+            ]
+        },
+        {
+            id: 9,
+            question: "Indica lo correcto respecto al Nervio Safeno Interno",
+            options: [
+                { text: "Todas las respuestas son correctas (Continuación femoral, cutáneo, sin motor)", correct: true },
+                { text: "Ninguna respuesta es correcta", correct: false },
+                { text: "Es una continuación del nervio femoral", correct: false },
+                { text: "Es un nervio cutáneo que inerva la cara medial de la pierna y el pie", correct: false },
+                { text: "No inerva a ningún músculo", correct: false }
+            ]
+        },
+        {
+            type: "case",
+            title: "CASO CLÍNICO 4 DE MIEMBRO INFERIOR",
+            text: "Estudiante de Medicina, esguince por inversión del tobillo (apoya mal el pie al bajar escaleras)."
+        },
+        {
+            id: 10,
+            question: "¿Qué ligamento, de los siguientes, se ha lesionado (esguince por inversión)?",
+            options: [
+                { text: "Plantar corto", correct: false },
+                { text: "Plantar largo", correct: false },
+                { text: "Calcaneonavicular", correct: false },
+                { text: "Calcaneoperoneo", correct: true },
+                { text: "Deltoideo", correct: false }
+            ]
+        },
+        {
+            id: 11,
+            question: "¿Cuál de los ligamentos descritos sería el más importante para mantener los arcos longitudinales del pie?",
+            options: [
+                { text: "Plantar largo", correct: false },
+                { text: "Plantar corto", correct: false },
+                { text: "Deltoides", correct: false },
+                { text: "Calcaneonavicular (Ligamento Spring)", correct: true },
+                { text: "Calcaneoperoneo", correct: false }
+            ]
+        },
+        {
+            id: 12,
+            question: "¿Cuál de los anteriores ligamentos presenta una disposición en abanico?",
+            options: [
+                { text: "Plantar largo", correct: false },
+                { text: "Plantar corto", correct: false },
+                { text: "Deltoideo", correct: true },
+                { text: "Calcaneonavicular", correct: false },
+                { text: "Calcaneoperoneo", correct: false }
+            ]
+        },
+        {
+            type: "case",
+            title: "CASO CLÍNICO 5 DE MIEMBRO INFERIOR",
+            text: "Hombre de 57 años recibe puñalada en parte medial alta del muslo y fallece por exanguinación en menos de 2 minutos."
+        },
+        {
+            id: 13,
+            question: "¿Cuál fue la naturaleza de la lesión?",
+            options: [
+                { text: "Sección de la Arteria Femoral en el ligamento inguinal", correct: true },
+                { text: "Lesión de uno o varios vasos en el vértice del triángulo femoral", correct: false },
+                { text: "Sección de la vena femoral en su unión con la vena safena", correct: false },
+                { text: "Sección de la circunfleja femoral medial, en su origen", correct: false },
+                { text: "Sección de la arteria Femoral profunda, en su origen", correct: false }
+            ]
+        },
+        {
+            id: 14,
+            question: "¿Qué músculos constituyen el vértice del triángulo femoral?",
+            options: [
+                { text: "Aductor largo y Sartorio", correct: true },
+                { text: "Sartorio y recto femoral", correct: false },
+                { text: "Vasto interno y Aductor mayor", correct: false },
+                { text: "Pectíneo y Sartorio", correct: false },
+                { text: "Pectíneo y vasto medial", correct: false }
+            ]
+        },
+        {
+            id: 15,
+            question: "¿Qué músculos forman el suelo del triángulo femoral?",
+            options: [
+                { text: "Recto femoral e Iliopsoas", correct: false },
+                { text: "Aductor largo y Aductor mayor", correct: false },
+                { text: "Pectíneo y aductor mayor", correct: false },
+                { text: "Iliopsoas y Pectíneo", correct: true },
+                { text: "Iliopsoas y Aductor mayor", correct: false }
+            ]
+        },
+        {
+            type: "case",
+            title: "CASO CLÍNICO 6 DE MIEMBRO INFERIOR",
+            text: "Varón de 47 años, tras adelgazar usa cinturón apretado. Nota acorchamiento en la cara lateral del muslo."
+        },
+        {
+            id: 16,
+            question: "¿De qué nervio depende la sensibilidad de esa zona?",
+            options: [
+                { text: "Femorocutáneo (Cutáneo femoral lateral)", correct: true },
+                { text: "Obturador", correct: false },
+                { text: "Femoral", correct: false },
+                { text: "Safeno Externo", correct: false },
+                { text: "Rama anterior del ciático", correct: false }
+            ]
+        },
+        {
+            id: 17,
+            question: "¿Qué raíces forman el nervio de la respuesta anterior?",
+            options: [
+                { text: "L3-L4", correct: false },
+                { text: "L1-L2", correct: false },
+                { text: "L1-L2-L3-L4", correct: false },
+                { text: "L2-L3", correct: true },
+                { text: "Ninguna de las anteriores", correct: false }
+            ]
+        },
+        {
+            id: 18,
+            question: "¿En qué estructuras anatómicas estará comprimido el nervio?",
+            options: [
+                { text: "En ninguna de las descritas", correct: false },
+                { text: "En todas de las descritas", correct: false },
+                { text: "En la EIAS", correct: false },
+                { text: "En el ligamento inguinal", correct: true },
+                { text: "En el Iliaco", correct: false }
+            ]
+        },
+        {
+            type: "case",
+            title: "CASO CLÍNICO 7 DE MIEMBRO INFERIOR",
+            text: "Joven de 45 años con dolor en extremidad inferior (ciática/radiculopatía)."
+        },
+        {
+            id: 19,
+            question: "El dolor irradia hacia la parte interna de la pierna y del pie, y el reflejo rotuliano está alterado. ¿Qué raíz puede estar afectada?",
+            options: [
+                { text: "L1", correct: false },
+                { text: "L4", correct: true },
+                { text: "L5-S2", correct: false },
+                { text: "L2", correct: false },
+                { text: "L3", correct: false }
+            ]
+        },
+        {
+            id: 20,
+            question: "El dolor se irradia por la parte externa de la pierna y dorso del pie, entre el primer y segundo metatarsiano. ¿Qué músculo está inervado por el nervio cuyo origen está comprimido (Raíz L5)?",
+            options: [
+                { text: "Extensor corto de los dedos / Hallucis", correct: true },
+                { text: "Tibial posterior", correct: false },
+                { text: "Interóseos dorsales", correct: false },
+                { text: "Flexor corto del dedo gordo", correct: false },
+                { text: "Abductor del dedo gordo", correct: false }
+            ]
+        },
+        {
+            id: 21,
+            question: "A la exploración física el dolor empeora cuando se presiona un determinado músculo contra el nervio ciático, ¿de qué músculo hablamos?",
+            options: [
+                { text: "Piriforme", correct: true },
+                { text: "Glúteo mayor", correct: false },
+                { text: "Glúteo menor", correct: false },
+                { text: "Obturador interno", correct: false },
+                { text: "Poplíteo", correct: false }
+            ]
+        },
+        {
+            type: "case",
+            title: "CASO CLÍNICO 1 DE MIEMBRO SUPERIOR",
+            text: "Mujer de 24 años cae de un caballo, separación excesiva entre hombro y cabeza. Plexo braquial comprometido."
+        },
+        {
+            id: 22,
+            question: "¿Qué componentes del plexo braquial es más probable que se haya lesionado la paciente?",
+            options: [
+                { text: "C5", correct: false },
+                { text: "C6", correct: false },
+                { text: "C8", correct: false },
+                { text: "T1", correct: false },
+                { text: "C5 y C6 (Tronco superior)", correct: true }
+            ]
+        },
+        {
+            id: 23,
+            question: "¿Qué déficit motor entre otros podría detectarse en la paciente (Parálisis de Erb)?",
+            options: [
+                { text: "Aducción del Miembro Superior", correct: false },
+                { text: "Rotación Interna del Miembro Superior", correct: false },
+                { text: "Abducción del Miembro Superior", correct: true },
+                { text: "Extensión del Antebrazo", correct: false },
+                { text: "A y D son correctas", correct: false }
+            ]
+        },
+        {
+            id: 24,
+            question: "¿Qué déficit sensitivo podría manifestar la paciente entre otros?",
+            options: [
+                { text: "Región Interna del Brazo", correct: false },
+                { text: "Región Externa del Brazo", correct: false },
+                { text: "Región Interna del Antebrazo", correct: false },
+                { text: "Región Externa del Antebrazo", correct: false },
+                { text: "B y D son correctas (Cara lateral brazo y antebrazo)", correct: true }
+            ]
+        },
+        {
+            type: "case",
+            title: "CASO CLÍNICO 2 DE MIEMBRO SUPERIOR",
+            text: "Mujer embarazada, administrativa, parestesia en 1º, 2º y 3º dedo y mitad radial del 4º. Signo de Tinel positivo."
+        },
+        {
+            id: 25,
+            question: "¿Qué es el signo del Tinel?",
+            options: [
+                { text: "Un pequeño golpe sobre el nervio mediano a su paso por el túnel carpiano", correct: true },
+                { text: "Un pequeño golpe en el nervio cubital a su paso por el canal trocleoepitroclear", correct: false },
+                { text: "En general maniobra de exploración consistente en golpear cualquier nervio", correct: false },
+                { text: "Colocación de la manos en forma de 'T'", correct: false },
+                { text: "A, B y C son correctas", correct: false }
+            ]
+        },
+        {
+            id: 26,
+            question: "¿Qué nervio está afectado en este caso?",
+            options: [
+                { text: "Radial", correct: false },
+                { text: "Cubital", correct: false },
+                { text: "Mediano", correct: true },
+                { text: "A y C", correct: false },
+                { text: "B y C", correct: false }
+            ]
+        },
+        {
+            id: 27,
+            question: "¿Qué déficit motor presenta esta enfermedad?",
+            options: [
+                { text: "Reducción de la flexión del pulgar", correct: false },
+                { text: "Reducción de la extensión del pulgar", correct: false },
+                { text: "Reducción de la oposición del pulgar", correct: true },
+                { text: "No suele existir afectación motora", correct: false },
+                { text: "A y C son correctas", correct: false }
+            ]
+        },
+        {
+            type: "case",
+            title: "CASO CLÍNICO 3 DE MIEMBRO SUPERIOR",
+            text: "Hombre diabético, contractura en semiflexión del anular. Nódulo palmar."
+        },
+        {
+            id: 28,
+            question: "¿Qué cuadro padece el paciente y a qué es debido?",
+            options: [
+                { text: "Enfermedad de Dupuytren debida a contractura de los músculos flexores", correct: false },
+                { text: "Lesión del nervio cubital a su paso por el canal de Hunter", correct: false },
+                { text: "Dupuytren debida a engrosamiento fibroso de la aponeurosis de extensión de los dedos (aponeurosis palmar)", correct: true },
+                { text: "Tumoración ósea en cabeza de metacarpianos", correct: false },
+                { text: "Ninguna de las anteriores", correct: false }
+            ]
+        },
+        {
+            id: 29,
+            question: "Los dedos que suelen afectarse son el anular y el meñique. ¿Verdadero o Falso?",
+            options: [
+                { text: "Verdadero", correct: true },
+                { text: "Falso", correct: false }
+            ]
+        },
+        {
+            id: 30,
+            question: "Indique qué estructura se encuentra inmediatamente profunda a la aponeurosis palmar superficial.",
+            options: [
+                { text: "Nervios digitales comunes y vasos", correct: false },
+                { text: "Vaina sinovial de tendones flexores superficiales", correct: false },
+                { text: "Músculos Lumbricales", correct: false },
+                { text: "Ninguna de las anteriores", correct: false },
+                { text: "A y B son ciertas", correct: true }
+            ]
+        },
+        {
+            type: "case",
+            title: "CASO CLÍNICO 4 DE MIEMBRO SUPERIOR",
+            text: "Caída con mano en extensión. Codo tumefacto, acortamiento antebrazo, prominencia olécranon."
+        },
+        {
+            id: 31,
+            question: "¿Qué cuadro presenta el paciente? (Prominencia olécranon sugiere luxación posterior)",
+            options: [
+                { text: "Fractura de cúbito", correct: false },
+                { text: "Fractura-luxación de cúbito", correct: false },
+                { text: "Luxación de cúbito y radio (posterior de codo)", correct: true },
+                { text: "Fractura de cúbito y radio", correct: false },
+                { text: "Ninguna de las anteriores", correct: false }
+            ]
+        },
+        {
+            id: 32,
+            question: "¿Cuál de las siguientes afirmaciones es CORRECTA respecto al nervio afectado (disminución oposición pulgar, sensibilidad dedos medio/anular)?",
+            options: [
+                { text: "El nervio afectado es el mediano", correct: true },
+                { text: "La fractura está dañando al nervio cubital", correct: false },
+                { text: "El nervio radial está dañado", correct: false },
+                { text: "C y D son ciertas", correct: false },
+                { text: "Ninguna es cierta", correct: false }
+            ]
+        },
+        {
+            id: 33,
+            question: "La maniobra para solventar el problema a veces produce lesión del nervio...",
+            options: [
+                { text: "Mediano", correct: true },
+                { text: "Radial", correct: false },
+                { text: "Cubital", correct: false },
+                { text: "Musculocutáneo", correct: false },
+                { text: "Cualquiera de los anteriores", correct: false }
+            ]
+        },
+        {
+            type: "case",
+            title: "CASO CLÍNICO 5 DE MIEMBRO SUPERIOR",
+            text: "Jugador de rugby, brazo en abducción choca. Hombro doloroso, abducción ligera, rotación externa, tumefacción anterior. Imposibilidad de abducir, pérdida sensibilidad deltoides."
+        },
+        {
+            id: 34,
+            question: "¿Cuál es el diagnóstico independientemente de la afectación nerviosa?",
+            options: [
+                { text: "Luxación posterior de cabeza humeral", correct: false },
+                { text: "Luxación posterior de cabeza humeral y desgarro rodete", correct: false },
+                { text: "Luxación anterior de la cabeza humeral y desgarro de supraespinoso", correct: false },
+                { text: "Luxación anterior de la cabeza humeral y desgarro del rodete glenoideo (Bankart)", correct: true },
+                { text: "Ninguna de las anteriores", correct: false }
+            ]
+        },
+        {
+            id: 35,
+            question: "¿Qué nervio se encuentra afectado?",
+            options: [
+                { text: "Mediano", correct: false },
+                { text: "Cubital", correct: false },
+                { text: "Radial", correct: false },
+                { text: "Axilar (Circunflejo)", correct: true },
+                { text: "Musculocutáneo", correct: false }
+            ]
+        },
+        {
+            id: 36,
+            question: "¿Qué otro nervio podría verse afectado?",
+            options: [
+                { text: "Mediano", correct: false },
+                { text: "Radial", correct: false },
+                { text: "Cubital", correct: false },
+                { text: "Axilar", correct: false },
+                { text: "Musculocutáneo", correct: true }
+            ]
+        },
+        {
+            type: "case",
+            title: "CASO CLÍNICO 6 DE MIEMBRO SUPERIOR",
+            text: "Jugador de pádel, dolor en epicóndilo. Dolor aumenta al extender dedos contra resistencia."
+        },
+        {
+            id: 37,
+            question: "¿Qué cuadro sufre el paciente?",
+            options: [
+                { text: "Epitrocleitis", correct: false },
+                { text: "Epicondilitis (Codo de tenista)", correct: true },
+                { text: "Lesión ligamentos colaterales externos del codo", correct: false },
+                { text: "Rotura de fibra muscular de extensores", correct: false },
+                { text: "C o D pueden ser", correct: false }
+            ]
+        },
+        {
+            id: 38,
+            question: "¿Qué nervio se encuentra afectado (o pasa por la zona)?",
+            options: [
+                { text: "Radial", correct: true },
+                { text: "Cubital", correct: false },
+                { text: "Mediano", correct: false },
+                { text: "Axilar", correct: false },
+                { text: "Ningún nervio", correct: false }
+            ]
+        },
+        {
+            id: 39,
+            question: "¿Qué vientres musculares se encuentran afectados?",
+            options: [
+                { text: "Extensores", correct: false },
+                { text: "Primer Radial y Segundo Radial (Extensores radiales)", correct: false },
+                { text: "Cubital posterior", correct: false },
+                { text: "A y B son ciertas", correct: true },
+                { text: "No se afectan vientres musculares", correct: false }
+            ]
+        },
+        {
+            type: "case",
+            title: "CASO CLÍNICO 7 DE MIEMBRO SUPERIOR",
+            text: "Hombre 55 años, entumecimiento mano derecha. Fractura antigua supracondílea -> Cúbito valgo. Atrofia interóseos, mano en garra leve."
+        },
+        {
+            id: 40,
+            question: "¿Cuál es el nervio afectado y la causa?",
+            options: [
+                { text: "El nervio mediano distendido a nivel del codo", correct: false },
+                { text: "El nervio cubital comprimido en el Canal de Guyon", correct: false },
+                { text: "El nervio radial lesionado", correct: false },
+                { text: "El nervio cubital distendido en su paso por el canal trocleoepitroclear (debido al valgo)", correct: true },
+                { text: "Ninguna de las anteriores", correct: false }
+            ]
+        },
+        {
+            id: 41,
+            question: "¿Qué nervio puede estar afectado cuando identificamos la mano del predicador?",
+            options: [
+                { text: "Axilar", correct: false },
+                { text: "Mediano", correct: true },
+                { text: "Radial", correct: false },
+                { text: "Musculocutáneo", correct: false },
+                { text: "Ninguno de los Anteriores", correct: false }
+            ]
+        },
+        {
+            id: 42,
+            question: "¿Qué nervio estaría afectado si el paciente presentara una 'mano caída'?",
+            options: [
+                { text: "Axilar", correct: false },
+                { text: "Mediano", correct: false },
+                { text: "Cubital", correct: false },
+                { text: "Radial", correct: true },
+                { text: "Musculocutáneo", correct: false }
+            ]
+        }
+    ];
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function renderQuiz() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = '';
+
+        quizData.forEach(item => {
+            if (item.type === 'case') {
+                const caseDiv = document.createElement('div');
+                caseDiv.className = 'case-block';
+                caseDiv.innerHTML = `<h3>${item.title}</h3><p>${item.text}</p>`;
+                container.appendChild(caseDiv);
+            } else {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-card';
+                
+                // Clonar opciones para no modificar el orden original en datos
+                const currentOptions = [...item.options];
+                shuffleArray(currentOptions);
+
+                let optionsHTML = '<div class="options-grid">';
+                currentOptions.forEach((opt, index) => {
+                    optionsHTML += `
+                        <button class="option-btn" onclick="checkAnswer(this, ${opt.correct})">
+                            ${opt.text}
+                        </button>
+                    `;
+                });
+                optionsHTML += '</div>';
+
+                qDiv.innerHTML = `
+                    <div class="question-text">${item.id}. ${item.question}</div>
+                    ${optionsHTML}
+                `;
+                container.appendChild(qDiv);
+            }
+        });
+    }
+
+    function checkAnswer(btn, isCorrect) {
+        // Deshabilitar todos los botones de esta pregunta
+        const parent = btn.parentElement;
+        const buttons = parent.getElementsByClassName('option-btn');
+        
+        for (let button of buttons) {
+            button.classList.add('disabled');
+            button.onclick = null; // Prevenir más clicks
+            
+            // Si es la respuesta correcta (aunque no se haya clickeado), marcarla en verde
+            // Para encontrar cuál era la correcta entre los botones:
+            // Esto es un truco simple: comparamos texto o pasamos info. 
+            // Como ya tenemos 'isCorrect' en el click, sabemos si el clickeado es bueno.
+            // Pero queremos iluminar el correcto si fallas.
+            
+            // Re-evaluar lógica visual:
+        }
+
+        if (isCorrect) {
+            btn.classList.add('correct');
+        } else {
+            btn.classList.add('incorrect');
+            // Buscar el botón correcto para iluminarlo
+            // Nota: En esta implementación simple, tendríamos que buscar por texto 
+            // o haber pasado el dato al DOM. 
+            // Para simplicidad: Si fallas, solo se pone rojo tu botón. 
+            // Si quieres ver cual era la correcta, tendrías que haber acertado? 
+            // Mejor: Buscamos en el array original o guardamos referencia.
+            
+            // Recorremos botones de nuevo para encontrar el correcto por texto no es ideal si hay textos iguales.
+            // Vamos a dejarlo en rojo el incorrecto y verde el que el usuario clickeo si acertó.
+            // MEJORA: Buscar el botón que tiene la respuesta correcta.
+            // Como no pasé el bool al DOM explícitamente más que en la función, 
+            // iteraré sobre los botones simulando un "click virtual" o mejor,
+            // modifico la generación HTML para incluir un data-attribute.
+        }
+    }
+    
+    // Sobreescribimos render para incluir data-correct
+    function renderQuizImproved() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = '';
+
+        quizData.forEach(item => {
+            if (item.type === 'case') {
+                const caseDiv = document.createElement('div');
+                caseDiv.className = 'case-block';
+                caseDiv.innerHTML = `<h3>${item.title}</h3><p>${item.text}</p>`;
+                container.appendChild(caseDiv);
+            } else {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-card';
+                
+                const currentOptions = [...item.options];
+                shuffleArray(currentOptions);
+
+                let optionsHTML = '<div class="options-grid">';
+                currentOptions.forEach((opt) => {
+                    optionsHTML += `
+                        <button class="option-btn" data-correct="${opt.correct}" onclick="handleAnswerClick(this)">
+                            ${opt.text}
+                        </button>
+                    `;
+                });
+                optionsHTML += '</div>';
+
+                qDiv.innerHTML = `
+                    <div class="question-text">${item.id}. ${item.question}</div>
+                    ${optionsHTML}
+                `;
+                container.appendChild(qDiv);
+            }
+        });
+    }
+
+    function handleAnswerClick(btn) {
+        const parent = btn.parentElement;
+        const buttons = parent.getElementsByClassName('option-btn');
+        const isCorrect = btn.getAttribute('data-correct') === 'true';
+
+        for (let button of buttons) {
+            button.classList.add('disabled');
+            button.onclick = null;
+            if (button.getAttribute('data-correct') === 'true') {
+                button.classList.add('correct');
+            }
+        }
+
+        if (!isCorrect) {
+            btn.classList.add('incorrect');
+        }
+    }
+
+    // Iniciar al cargar
+    window.onload = renderQuizImproved;
+
+</script>
+
+</body>
+</html>
