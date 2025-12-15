@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Biología Parte 4 (Final)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3e5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            text-align: left;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e1bee7;
+            padding-bottom: 15px;
+        }
+
+        .progress {
+            font-weight: 600;
+            color: #7b1fa2;
+        }
+
+        .score {
+            color: #4a148c;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .question {
+            font-size: 1.25em;
+            margin-bottom: 20px;
+            color: #212121;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .options {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .option-btn {
+            background-color: #fff;
+            border: 2px solid #f3e5f5;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 12px;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+            color: #424242;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-btn:hover:not([disabled]) {
+            background-color: #fce4ec;
+            border-color: #f48fb1;
+        }
+
+        /* Estados de respuesta */
+        .correct {
+            background-color: #c8e6c9 !important;
+            border-color: #43a047 !important;
+            color: #1b5e20 !important;
+        }
+
+        .incorrect {
+            background-color: #ffcdd2 !important;
+            border-color: #e53935 !important;
+            color: #b71c1c !important;
+        }
+
+        .next-btn {
+            background-color: #8e24aa;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: none;
+            margin-top: 25px;
+            float: right;
+            transition: background 0.2s;
+        }
+
+        .next-btn:hover {
+            background-color: #7b1fa2;
+        }
+
+        .result-container {
+            text-align: center;
+            display: none;
+        }
+        
+        .restart-btn {
+            background-color: #90a4ae;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 1rem;
+        }
+        
+        .restart-btn:hover {
+            background-color: #607d8b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container" id="quiz-box">
+    <div class="header">
+        <span class="progress" id="progress">Pregunta 1 de --</span>
+        <span class="score" id="score">Aciertos: 0</span>
+    </div>
+    
+    <div class="question" id="question-text">Cargando...</div>
+    
+    <div class="options" id="options-container"></div>
+
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">Siguiente Pregunta</button>
+</div>
+
+<div class="quiz-container result-container" id="result-box">
+    <h2>¡Temario Completado!</h2>
+    <p style="font-size: 1.3em; margin: 20px 0;">Tu puntuación final: <span id="final-score" style="font-weight:bold; color:#6a1b9a;"></span></p>
+    <button class="restart-btn" onclick="restartQuiz()">Volver a empezar este bloque</button>
+</div>
+
+<script>
+    /* BLOQUE 4 (FINAL) - PREGUNTAS 211 a 296
+       Contiene: Test Biología 2 completo y Bloques A, B, C, D, E, F (Nuevas)
+       Se han limpiado comillas conflictivas.
+    */
+    const questions = [
+        // --- TEST BIOLOGÍA 2 (Embriología y Ciclo) ---
+        { q: "En ausencia de factores de crecimiento, la mayoría de las células animales detendrán el ciclo celular en un punto de restricción, ¿en qué fase?", options: ["Fase S", "Fase M", "Fase G2", "Fase G1"], correct: 3 },
+        { q: "Los gemelos que comparten cavidad amniótica son:", options: ["Dicigóticos", "Monocigóticos, monocoriales y monoamnióticos", "Monocigóticos, bicoriales y monoamnióticos", "Monocigóticos y bicoriales"], correct: 1 },
+        { q: "¿Cuál es el proceso final de la maduración de los espermatozoides que tiene lugar en el aparato genital femenino?", options: ["Reacción acrosómica", "Capacitación", "Reacción cortical", "Espermatogénesis"], correct: 1 },
+        { q: "La reacción acrosómica consiste en:", options: ["Exocitosis de enzimas hidrolíticas", "Exocitosis de tubulina flagelar", "Endocitosis del ovocito", "Liberación de los gránulos corticales del ovocito"], correct: 0 },
+        { q: "¿Cuál de los siguientes acontecimientos no forma parte de la apoptosis?", options: ["Fragmentación del ADN cromosómico", "Fragmentación del núcleo", "Fragmentación de la célula", "Lisis de los fragmentos celulares y liberación de su contenido"], correct: 3 },
+        { q: "En los organismos adultos, la muerte celular debe equilibrarse con la:", options: ["Elongación", "Diferenciación", "Renovación", "Migración"], correct: 2 },
+        { q: "¿En qué etapa se lleva a cabo el entrecruzamiento o crossing over de los cromosomas homólogos?", options: ["Profase I", "Profase II", "Prometafase I", "Prometafase II"], correct: 0 },
+        { q: "Las caspasas efectoras escinden:", options: ["Láminas nucleares", "Proteínas del citoesqueleto", "Inhibidor DNasa", "Todas las anteriores"], correct: 3 },
+        { q: "Los oocitos primarios detienen su meiosis en:", options: ["Intecinesis", "Diploteno", "Metafase II", "Paquiteno"], correct: 1 },
+        { q: "La rotura de la envuelta nuclear ocurre en:", options: ["Al principio de la profase", "En prometafase", "Al principio de la anafase", "Al final de G2"], correct: 1 },
+        { q: "¿Dónde se desarrollan inicialmente las células germinales primordiales?", options: ["En las gónadas durante la cuarta semana", "En el saco vitelino, durante la cuarta semana", "En las gónadas, al quinto mes", "En las gónadas, durante la pubertad"], correct: 1 },
+        { q: "¿Cuál de las siguientes afirmaciones es falsa respecto a gemelos?", options: ["Los siameses se producen por separación incompleta", "Los gemelos dicigóticos se producen por fecundación de dos óvulos", "Los gemelos monocigóticos pueden ser de diferentes sexos", "Los gemelos dicigóticos pueden ser del mismo sexo"], correct: 2 },
+        { q: "La zona pelúcida:", options: ["Ayuda a la penetración del tejido endometrial", "Sirve como fuente de nutrientes", "Impide la implantación prematura del embrión", "Todas las anteriores"], correct: 2 },
+        { q: "Las espermatogonias y las oogonias proceden de:", options: ["Espermatocitos y oocitos primarios", "Espermatocitos y oocitos secundarios", "Células germinativas primordiales", "Ninguna de las anteriores"], correct: 2 },
+        { q: "El punto de control G2/M detecta:", options: ["Suficientes nutrientes", "Anclaje de los cromosomas al huso", "ADN no replicado o dañado", "Presencia de factores de crecimiento"], correct: 2 },
+        { q: "El mesodermo intermedio es el precursor de:", options: ["El sistema urogenital", "El corazón", "Los somitas", "Los cuerpos vertebrales"], correct: 0 },
+        { q: "Las consecuencias de la fecundación:", options: ["Restablecimiento número diploide", "Determinación del sexo", "Activación metabólica", "Todas son correctas"], correct: 3 },
+        { q: "Una célula madre de la masa celular interna del blastocisto se puede diferenciar en:", options: ["Un embrión completo y los anexos", "Cualquier tejido del embrión", "Sólo tejidos derivados del hipoblasto", "Sólo tejidos derivados del mesodermo"], correct: 1 },
+        { q: "El esclerotomo se origina a partir de las células localizadas en:", options: ["La notocorda", "El mesodermo paraaxial", "El mesodermo intermedio", "El mesodermo lateral"], correct: 1 },
+        { q: "¿Cuál de las siguientes afirmaciones referentes a la segmentación es falsa?", options: ["Se produce durante el viaje tubárico", "El tamaño del embrión aumenta progresivamente", "Consiste en una serie de mitosis sucesivas", "Ocurre la compactación"], correct: 1 },
+        { q: "¿Cuál de las siguientes estructuras se forma a partir de las células que se introducen por el nódulo de Hensen?", options: ["Tubo neural", "Membrana cloacal", "Notocorda / Placa precordal", "Mesodermo paraaxial"], correct: 2 },
+        { q: "La carga genética del primer corpúsculo polar es:", options: ["La misma que la del oocito secundario", "46 cromosomas, 4 cromátidas, 2n", "46 cromosomas, 2 cromátidas, 2n", "La misma que la del óvulo"], correct: 0 },
+        { q: "Sobre la línea primitiva es cierto que:", options: ["Su aparición marca el principio del blastocito", "En su zona caudal se forma el nodo de Hensen", "Se forma en la línea medio-caudal del epiblasto", "Se origina por introducción de la notocorda"], correct: 2 },
+        { q: "¿En cuál de estas fases ocurre una división reduccional?", options: ["Interfase", "Mitosis", "Meiosis I", "Meiosis II"], correct: 2 },
+        { q: "Células del estroma endometrial que adquieren un alto contenido en lípidos y glucógeno después de la implantación:", options: ["Trofoblásticas", "Deciduales", "Mesenquimatosas", "Citotrofoblásticas"], correct: 1 },
+        { q: "¿Cuándo empieza la formación de los espermatocitos primarios?", options: ["Durante la cuarta semana embrionaria", "Durante el quinto mes fetal", "En la pubertad", "En el nacimiento"], correct: 2 },
+        { q: "En la producción de gametos femeninos, ¿cuál de las siguientes células pueden permanecer latentes durante 12 a 40 años?", options: ["Célula germinal primordial", "Ovocito primario", "Ovocito secundario", "Primer corpúsculo polar"], correct: 1 },
+        { q: "El inductor principal en la inducción neural primaria es:", options: ["Hipoblasto", "Línea primitiva", "Mesodermo extraembrionario", "La notocorda"], correct: 3 },
+        { q: "Los gametos de una especie tienen 30 cromosomas, ¿Cuántos cromosomas tendrán sus células somáticas?", options: ["30", "15", "60", "Ninguna es cierta"], correct: 2 },
+        { q: "¿Cuál de las siguientes estructuras desempeña un papel más activo en la invasión del endometrio durante la implantación?", options: ["Epiblasto", "Sincitiotrofoblasto", "Hipoblasto", "Mesodermo somático"], correct: 1 },
+        { q: "El celoma extraembrionario se forma por la aparición de lagunas o espacios en:", options: ["El mesodermo extraembrionario", "El epiblasto", "La membrana de Heuser", "La cavidad amniótica"], correct: 0 },
+        { q: "Un proceso que acontece en la anafase:", options: ["Rotura de la envuelta nuclear", "Alineación de cromosomas", "Condensación de la cromatina", "Separación de las cromátidas hermanas"], correct: 3 },
+        { q: "¿Cuál de las siguientes células experimenta normalmente las divisiones mitóticas?", options: ["Ovocito primario", "Ovogonia", "Espermatocito primario", "Espermátida"], correct: 1 },
+
+        // --- BLOQUE A: Técnicas, Membrana y Transporte ---
+        { q: "¿Cuál tipo de microscopio nos permite ver con mejor resolución las estructuras transparentes?", options: ["Microscopio de campo claro", "Microscopio de campo oscuro", "Microscopio de contraste de fases", "Microscopio de interferencia de Nomarski"], correct: 3 },
+        { q: "En la Potocitosis las vesículas:", options: ["Están revestidas de clatrina", "Están revestidas de potocinina", "Son inducidas", "Están revestidas de caveolina"], correct: 3 },
+        { q: "¿Cuál de las siguientes afirmaciones sobre las proteínas de la membrana plasmática es falsa?", options: ["Establecen fuertes enlaces covalentes con los lípidos", "Son responsables de la mayoría de las funciones de la membrana", "Pueden mediar como enzimas", "Pueden actuar como transportadores específicos"], correct: 0 },
+        { q: "¿Qué tipos de movimientos pueden realizar las moléculas de membrana?", options: ["Rotación, difusión simple, flip-flop y flexión", "Rotación, difusión lateral, flip-flop y flexión", "Rotación, difusión lateral flip-flop y giro", "Rotación, intercalación, flip-flop y flexión"], correct: 1 },
+        { q: "La velocidad con que las moléculas difunden por la bicapa lipídica libre es mayor si son:", options: ["Pequeñas hidrofílicas", "Pequeñas con carga", "Hidrofóbicas", "Pequeñas no polares"], correct: 3 },
+        { q: "¿Cuál de los siguientes procesos no está relacionado con la endocitosis?", options: ["Vesículas revestidas de clatrina", "Fagocitosis", "Secreción de sustancias", "Macropinocitosis"], correct: 2 },
+        { q: "¿Cuál de las siguientes moléculas no está presente en la membrana plasmática?", options: ["Fosfatidilinositol", "Fosfatidilcolina", "Acetilcolina", "Glucosinfolípidos"], correct: 2 },
+        { q: "La bicapa lipídica de una célula es asimétrica ya que:", options: ["La capa externa es rica en fosfatidilcolina y esfingomielina...", "En la capa interna abunda la fosfatidilcolina...", "En la capa interna es imposible encontrar proteínas", "En la capa interna hay glúcidos asociados..."], correct: 0 },
+        { q: "Proteínas responsables de la especificidad de la unión de una vesícula con su membrana diana:", options: ["Rab", "t-SNARE", "COP II", "v-SNARE"], correct: 3 },
+
+        // --- BLOQUE B: Citoesqueleto y Matriz ---
+        { q: "¿Por qué los filamentos intermedios no tienen la propiedad de polimerizar y despolimerizarse (inestabilidad dinámica rápida)?", options: ["Porque están formados por alfa-tubulina y beta-tubulina.", "Porque están formados por actina G.", "Porque están formados por proteínas fibrosas.", "Porque están formados por proteínas tubulares..."], correct: 2 },
+        { q: "¿En qué consiste la nucleación de la actina?", options: ["Es la condensación de microfilamentos para dar lugar a filamentos intermedios.", "Es la unión de dos dímeros de actina...", "Es la unión de tres monómeros de actina...", "Es el ensamblaje inicial de tres moléculas de actina G que permitirán continuar la polimerización."], correct: 3 },
+        { q: "¿Qué proteína interviene en la formación de haces contractiles de actina?", options: ["La fimbrina", "La quinesina", "La filamina", "La alfa-actinina"], correct: 3 },
+        { q: "¿Cuál de los siguientes factores depende la polimerización microtubular?", options: ["Del nivel de tubulina libre, [Ca2+], MAP y GTP.", "De [Ca2+], [Mg2+], tubulina libre, MAP y ATP.", "De la tubulina libre... y ATP.", "De la presión osmótica"], correct: 0 },
+        { q: "¿Cuál es la estructura del extremo distal del centriolo maduro?", options: ["9x3+2", "9x3+0", "9x2+2", "Rueda de carro"], correct: 1 },
+        { q: "¿Cuál es la molécula integrante del material pericentriolar que permite la nucleación de los microtúbulos?", options: ["la y-inmunoglobulina", "Las microtubulinas", "Las nexinas", "La gamma-tubulina"], correct: 3 },
+        { q: "¿En qué momento del ciclo celular se produce la maduración del microtúbulo inmaduro (centrosoma)?", options: ["En la fase S", "En la fase G1", "En la fase G2", "En la profase"], correct: 2 },
+
+        // --- BLOQUE C: Núcleo y Biología Molecular ---
+        { q: "¿Cuál es la composición de la lámina nuclear?", options: ["Tres tipos de filamentos intermedios: la lámina A, B y la C", "Microfilamentos de actina", "Filamentos intermedios, que dan lugar a la lámina A y C...", "Microtúbulos"], correct: 0 },
+        { q: "¿Cómo está compuesta la envoltura nuclear?", options: ["Dos membranas internas unidas...", "Tres capas: una interna, un estroma y un espacio intermembrana + lámina nuclear", "Bicapa de lípidos...", "Dos bicapas lipídicas con una membrana plasmática"], correct: 1 },
+        { q: "¿Cómo atraviesan la envoltura nuclear las moléculas de ARNr?", options: ["Gracias a su cola de poli A...", "Son reconocidos por proteínas específicas que lo transportan al citosol", "Atraviesan el poro libremente...", "El complejo del poro reconoce su extremo 5'..."], correct: 1 },
+        { q: "¿Cómo se llama el complejo formado por la helicasa, la primasa y la polimerasa?", options: ["Replisoma", "Primosoma", "Replicon", "Telomerasa"], correct: 0 },
+        { q: "El primosoma es:", options: ["El enzima encargado de sintetizar el cebador", "La unidad de replicación", "El grupo constituido por la primasa y la helicasa que actúan durante la replicación", "El grupo constituido por la primasa y la topoisomerasa"], correct: 2 },
+        { q: "¿Qué actividad enzimática establece el enlace peptídico entre el aminoacilo del ARNt del sitio A y la cadena peptídica del ARNt del sitio P?", options: ["La aminoacil-ARNt transferasa", "La peptidil transferasa", "La peptidil sintasa", "La aminoacil-ARNt sintetasa"], correct: 1 },
+        { q: "La fase de terminación de la síntesis proteica no implica:", options: ["Liberación de la cadena polipeptídica", "Separación de las dos subunidades del ribosoma", "Entrada en el ribosoma del aminoacil-ARN de terminación", "Fin de la traducción del gen"], correct: 2 },
+        { q: "¿Qué tipos de ARN conforman la subunidad grande ribosómica en eucariotas?", options: ["ARNr 18S, ARNr 28S y ARNr 5.8S", "ARNr 18S y ARNr 5S", "ARNr 28S, ARNr 5.8S y ARNr 5S", "ARNr 5.8S, ARNr 28S y ARNr 5S"], correct: 2 },
+        { q: "¿Cuál de las siguientes afirmaciones sobre la maduración de los transcritos de la ARN polimerasa II es falsa?", options: ["La realizan los espliceosomas", "Se eliminan los intrones", "Se eliminan la caperuza y la cola de poli A", "Básicamente consiste en cortes y empalmes"], correct: 2 },
+        { q: "¿Cuál es la secuencia consenso de inicio de la transcripción en eucariotas?", options: ["El triplete AUG", "La secuencia TATAA o caja TATA", "La secuencia ATT", "La secuencia GACA..."], correct: 1 },
+        { q: "¿Qué bases nitrogenadas son púricas?", options: ["Adenina y timina", "Adenina y uracilo", "Guanina y citosina", "Guanina y adenina"], correct: 3 },
+        { q: "Las histonas no nucleosómicas son:", options: ["H2A", "H3", "H2B", "H1"], correct: 3 },
+
+        // --- BLOQUE D: Ciclo Celular y Apoptosis ---
+        { q: "En la anafase A:", options: ["Se acortan los microtúbulos polares", "Se alargan los microtúbulos polares", "Se acortan los microtúbulos cinetocóricos", "Se alargan los microtúbulos cinetocóricos"], correct: 2 },
+        { q: "¿En qué fase de la mitosis se alargan los microtúbulos polares (separando los polos)?", options: ["Prometafase", "Anafase B", "Anafase A", "Telofase"], correct: 1 },
+        { q: "¿Qué proteína actúa activando el complejo Cdk-Ciclina (finalmente)?", options: ["Una fosfatasa inhibidora", "Una fosfatasa activadora (Cdc25)", "Una proteína reguladora", "La adenilato ciclasa"], correct: 1 },
+        { q: "¿Qué proteína se expresa para inhibir el complejo CDK-Ciclina en caso de que el material genético esté dañado?", options: ["P50", "P23", "P21", "P51"], correct: 2 },
+        { q: "¿Qué moléculas se degradan en la anafase para permitir la separación de las cromátidas?", options: ["La proteína degradada es la cohesina, gracias a su ubiquitinización...", "La proteína que se degrada es la condensina...", "Las proteínas que se degradan son las del centrómero...", "La proteína degradada es la cohesina, por acción de la separasa."], correct: 3 },
+        { q: "¿Qué proteína de la membrana externa mitocondrial une la proteína BAD y desencadena el proceso de la apoptosis?", options: ["La Bcl2", "La procaspasa 3", "La caspasa 9", "La procaspasa 9"], correct: 0 },
+        { q: "Las caspasas...", options: ["Son enzimas cisteín-proteasas", "Son sintetizadas en forma de procaspasas activas", "Se localizan en el citoplasma y en el espacio intermembrana", "Degradan e inactivan las enzimas..."], correct: 2 },
+
+        // --- BLOQUE E: Genética Humana ---
+        { q: "¿Cuál es el fenómeno por el cual un solo gen es responsable de efectos fenotípicos múltiples y no relacionados?", options: ["Pleiotropía", "Fenocopias", "Penetrancia", "Genes letales"], correct: 0 },
+        { q: "En la herencia autosómica recesiva:", options: ["La transmisión es independiente del sexo y los individuos sanos pueden tener hijos enfermos", "La transmisión del rasgo es independiente del sexo y no hay salto generacional", "La transmisión del rasgo depende del sexo...", "Los varones están más afectados"], correct: 0 },
+        { q: "De la unión de dos heterocigóticos (Aa x Aa), ¿qué posible porcentaje de la descendencia puede nacer con el mismo genotipo que los parentales?", options: ["25%", "50%", "100%", "75%"], correct: 1 },
+        { q: "¿En qué consiste la cordocentesis?", options: ["Extraer líquido amniótico.", "Obtener vellosidades coriales.", "Estudiar la sangre fetal (del cordón umbilical).", "Analizar la orina del feto."], correct: 2 },
+        { q: "En el Síndrome de Wolf-Hirschhorn, ¿Qué tipo de anomalía autosómica estructural ocurre y en qué cromosoma?", options: ["Una translocación simple en el cromosoma 5", "Una deleción en el cromosoma 8", "Una inversión en el cromosoma 5", "Una deleción de los brazos cortos del cromosoma 4 (4p-)."], correct: 3 },
+        { q: "Según la hipótesis de Lyon, la inactivación del cromosoma X:", options: ["No es al azar, siempre se inactiva el paterno", "No es al azar, siempre se inactiva el materno", "Se produce al azar, el inactivado puede ser el materno o el paterno", "Ocurre solo en células germinales"], correct: 2 },
+        { q: "¿Qué significa que una célula sea euploide?", options: ["La célula es triploide.", "El número de cromosomas no es múltiplo de n", "La célula presenta una trisomía.", "El número de cromosomas es múltiplo exacto de n"], correct: 3 },
+        { q: "Significado genómico de las inversiones:", options: ["Monosomía parcial...", "No se produce pérdida de material genético (es equilibrada).", "Monosomía de brazos cortos.", "Trisomía parcial..."], correct: 1 },
+        { q: "Marcar la respuesta errónea. ¿El síndrome de X-frágil?", options: ["Es un trastorno genético", "Está ligado al Cromosoma X", "Su causa es la ausencia de una Enzima", "Afecta principalmente a los varones."], correct: 2 },
+
+        // --- BLOQUE F: Embriología Detallada ---
+        { q: "¿Cuándo, dónde y a partir de qué estructura comienza la circulación útero-placentaria?", options: ["Día 9-12 a partir de la aparición de la red lagunar en el sincitiotrofoblasto.", "Día 6 a partir del endometrio.", "Día 14 a partir de las lagunas...", "Día 20 a partir del corion"], correct: 0 },
+        { q: "En el decimosexto día (Gastrulación):", options: ["Las células empiezan a entrar por el Nudo de Hensen...", "El Nudo de Hensen retrocede.", "Se inicia la formación de la línea primitiva.", "Se inicia la formación de la línea primitiva con la formación del mesoblasto (Invaginación)."], correct: 3 },
+        { q: "¿Qué estructura señala la imagen (cavidad grande rodeada de hipoblasto/endodermo)?", options: ["Celoma extraembrionario", "Sincitiotrofoblasto", "Cavidad amniótica", "Saco vitelino"], correct: 3 },
+        { q: "El epitelio del tubo gastrointestinal deriva de:", options: ["ectodermo", "endodermo", "mesodermo", "notocorda"], correct: 1 },
+        { q: "Los islotes sanguíneos de Wolff y de Pander comienzan a formarse en el embrión el día:", options: ["12", "14", "17-18, coincidiendo con engrosamiento del mesodermo saco vitelino", "20"], correct: 2 },
+        { q: "¿En qué porciones divide el plano frontal al embrión?", options: ["Caudal y dorsal", "Izquierda y derecha", "Cefálico y caudal", "Ventral y dorsal"], correct: 3 },
+        { q: "Las vellosidades coriales secundarias contienen:", options: ["citotrofoblasto y sincitiotrofoblasto", "mesodermo extraembrionario, citotrofoblasto y sincitiotrofoblasto", "vasos sanguíneos, mesodermo...", "vellosidades en grapa..."], correct: 1 },
+        { q: "Los neuroporos comunican temporalmente:", options: ["cavidad amniótica y saco vitelino", "celoma intra y extraembrionario", "saco vitelino y tubo neural", "cavidad amniótica y luz del tubo neural"], correct: 3 }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let answered = false;
+
+    const questionElement = document.getElementById("question-text");
+    const optionsContainer = document.getElementById("options-container");
+    const nextBtn = document.getElementById("next-btn");
+    const progressText = document.getElementById("progress");
+    const scoreText = document.getElementById("score");
+    const quizBox = document.getElementById("quiz-box");
+    const resultBox = document.getElementById("result-box");
+    const finalScore = document.getElementById("final-score");
+
+    function loadQuestion() {
+        answered = false;
+        nextBtn.style.display = "none";
+        
+        const currentQuestion = questions[currentQuestionIndex];
+        
+        // El número mostrado empieza en 211
+        questionElement.innerText = `${currentQuestionIndex + 211}. ${currentQuestion.q}`;
+        progressText.innerText = `Pregunta ${currentQuestionIndex + 1} de ${questions.length}`;
+        
+        optionsContainer.innerHTML = "";
+
+        currentQuestion.options.forEach((option, index) => {
+            const button = document.createElement("button");
+            button.innerText = option;
+            button.classList.add("option-btn");
+            button.onclick = () => checkAnswer(index, button);
+            optionsContainer.appendChild(button);
+        });
+    }
+
+    function checkAnswer(selectedIndex, selectedButton) {
+        if (answered) return;
+        answered = true;
+
+        const currentQuestion = questions[currentQuestionIndex];
+        const allButtons = optionsContainer.children;
+
+        if (selectedIndex === currentQuestion.correct) {
+            selectedButton.classList.add("correct");
+            score++;
+            scoreText.innerText = `Aciertos: ${score}`;
+        } else {
+            selectedButton.classList.add("incorrect");
+            allButtons[currentQuestion.correct].classList.add("correct");
+        }
+
+        for (let btn of allButtons) {
+            btn.disabled = true;
+            btn.style.cursor = "default";
+        }
+
+        nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        quizBox.style.display = "none";
+        resultBox.style.display = "block";
+        finalScore.innerText = `${score} / ${questions.length}`;
+    }
+
+    function restartQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        scoreText.innerText = "Aciertos: 0";
+        quizBox.style.display = "block";
+        resultBox.style.display = "none";
+        loadQuestion();
+    }
+
+    // Iniciar el quiz
+    loadQuestion();
+</script>
+<script>
+(function() {
+    // 1. Obtener ID del examen
+    const params = new URLSearchParams(window.location.search);
+    const testId = params.get('id');
+
+    if (testId) {
+        // 2. Vigilar cuando aparece la caja de resultados
+        const resultBox = document.getElementById('result-box');
+        
+        // Creamos un observador que detecta cambios en el estilo (display: none -> block)
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                // Si la caja de resultados se hace visible
+                if (resultBox.style.display === 'block') {
+                    
+                    // A. Leer la puntuación que calculó el test
+                    // El test pone el número de aciertos en el span id="final-score"
+                    const scoreText = document.getElementById('final-score').innerText;
+                    // Limpiamos el texto por si dice "50 / 80" o solo "50"
+                    const aciertos = parseInt(scoreText.split('/')[0]);
+                    
+                    // B. Calcular porcentaje (usamos la variable 'questions' que ya existe en tu test)
+                    const total = questions.length;
+                    const porcentaje = Math.round((aciertos / total) * 100);
+
+                    // C. Guardar datos
+                    let intentos = parseInt(localStorage.getItem('intentos_' + testId) || 0);
+                    localStorage.setItem('intentos_' + testId, intentos + 1);
+
+                    let notaMax = localStorage.getItem('nota_' + testId);
+                    if (!notaMax || porcentaje > parseInt(notaMax)) {
+                        localStorage.setItem('nota_' + testId, porcentaje);
+                    }
+
+                    // D. Añadir botón de "Volver" si no existe
+                    if (!document.getElementById('btn-volver-menu')) {
+                        const btn = document.createElement('button');
+                        btn.id = 'btn-volver-menu';
+                        btn.innerText = "🏠 Volver al Índice";
+                        btn.style.cssText = "display:block; margin: 20px auto; padding: 15px 30px; background: #2c3e50; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; font-weight: bold;";
+                        btn.onclick = function() { window.location.href = 'index.html'; };
+                        resultBox.appendChild(btn);
+                    }
+                }
+            });
+        });
+
+        // Iniciar la vigilancia
+        observer.observe(resultBox, { attributes: true, attributeFilter: ['style'] });
+    }
+})();
+</script>
+
+</body>
+</html>

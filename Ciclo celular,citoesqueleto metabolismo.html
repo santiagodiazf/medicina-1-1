@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Ciclo Celular, Citoesqueleto y Metabolismo (Tema 9, Q1-100)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 20px;
+        }
+        .quiz-container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #4a90e2;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .score-display {
+            background-color: #e6f7ff;
+            border: 1px solid #91d5ff;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1em;
+            margin-bottom: 25px;
+        }
+        .question-card {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+        .question-title {
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        .answer-option {
+            margin: 10px 0;
+            padding: 12px;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .answer-option:hover:not(.disabled) {
+            background-color: #f0f0f0;
+        }
+        .answer-option.correct {
+            background-color: #e6ffe6;
+            border-color: #52c41a;
+            color: #1a7e28;
+            font-weight: bold;
+        }
+        .answer-option.incorrect {
+            background-color: #fff1f0;
+            border-color: #ff4d4f;
+            color: #a8071a;
+        }
+        .rationale {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            font-style: italic;
+            font-size: 0.9em;
+            border-left: 4px solid;
+        }
+        .rationale.correct {
+            border-left-color: #52c41a;
+            background-color: #f6ffed;
+        }
+        .rationale.incorrect {
+            border-left-color: #ff4d4f;
+            background-color: #fff1f0;
+        }
+        .disabled {
+            cursor: default;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h1>Cuestionario: Ciclo Celular, Citoesqueleto y Metabolismo (Tema 9, Q1-100)</h1>
+    <p class="score-display">Puntuación: <span id="current-score">0</span> / <span id="total-questions">100</span></p>
+
+    <div id="quiz-content">
+        </div>
+
+    <div id="quiz-results" class="hidden question-card">
+        <h2>🎉 Cuestionario Completado 🎉</h2>
+        <p>Tu puntuación final es: <span id="final-score"></span> / 100</p>
+        <button onclick="location.reload()">Reiniciar Cuestionario</button>
+    </div>
+
+</div>
+
+<script>
+    // JSON de las 100 preguntas del Tema 9 (Q1-100)
+    const quizData = [
+        {
+            "questionNumber": 1,
+            "question": "El ciclo celular se compone de:",
+            "answerOptions": [
+                { "text": "G1, S, G2 y M", "isCorrect": true, "rationale": "El ciclo celular eucariota consiste en la Interfase (G1, S, G2) y la Fase Mitótica (M), que incluye la división nuclear y citoplasmática." },
+                { "text": "A, B, C y D", "isCorrect": false, "rationale": "A, B, C y D no son fases canónicas del ciclo celular." },
+                { "text": "G0 y M", "isCorrect": false, "rationale": "G0 es un estado de quiescencia; el ciclo celular activo incluye G1, S y G2." },
+                { "text": "S y G", "isCorrect": false, "rationale": "El ciclo celular incluye fases adicionales como G1, G2 y M." }
+            ]
+        },
+        {
+            "questionNumber": 2,
+            "question": "El punto de restricción (R) se localiza al final de:",
+            "answerOptions": [
+                { "text": "G1", "isCorrect": true, "rationale": "El punto R (o 'Start') es el punto de no retorno al final de G1, donde la célula se compromete a iniciar la replicación del ADN." },
+                { "text": "S", "isCorrect": false, "rationale": "La fase S es la de síntesis de ADN." },
+                { "text": "G2", "isCorrect": false, "rationale": "El final de G2 alberga el Checkpoint G2/M." },
+                { "text": "M", "isCorrect": false, "rationale": "La fase M es la de división." }
+            ]
+        },
+        {
+            "questionNumber": 3,
+            "question": "La proteína $\\text{Rb}$ ($\text{Retinoblastoma}$) actúa como:",
+            "answerOptions": [
+                { "text": "Represor del ciclo celular", "isCorrect": true, "rationale": "La $\\text{Rb}$ $\\text{hipofosforilada}$ $\\text{se}$ $\\text{une}$ $\\text{a}$ $\\text{factores}$ $\\text{de}$ $\\text{transcripción}$ $\\text{E}2\text{F}$, $\\text{reprimiendo}$ $\\text{la}$ $\\text{expresión}$ $\\text{de}$ $\\text{genes}$ $\\text{necesarios}$ $\\text{para}$ $\\text{la}$ $\\text{Fase}$ $\\text{S}$." },
+                { "text": "Activador de $\\text{CDK}1$", "isCorrect": false, "rationale": "La activación de $\\text{CDK}1$ $\\text{es}$ $\\text{por}$ $\\text{Ciclina}$ $\\text{B}$ $\\text{y}$ $\\text{Cdc}25$." },
+                { "text": "Activador de $\\text{mitosis}$", "isCorrect": false, "rationale": "La $\\text{Rb}$ $\\text{reprime}$ $\\text{el}$ $\\text{ciclo}$ $\\text{en}$ $\\text{G}1$." },
+                { "text": "Kinasa $\\text{mitocondrial}$", "isCorrect": false, "rationale": "La $\\text{Rb}$ $\\text{es}$ $\\text{una}$ $\\text{proteína}$ $\\text{nuclear}$." }
+            ]
+        },
+        {
+            "questionNumber": 4,
+            "question": "La activación del complejo $\\text{Ciclina}$ $\\text{D}/\text{CDK}4$ $\\text{depende}$ $\\text{de}$:",
+            "answerOptions": [
+                { "text": "Señales $\\text{mitogénicas}$", "isCorrect": true, "rationale": "La $\\text{expresión}$ $\\text{de}$ $\\text{Ciclina}$ $\\text{D}$ $\\text{es}$ $\\text{inducida}$ $\\text{por}$ $\\text{factores}$ $\\text{de}$ $\\text{crecimiento}$ $\\text{($\text{mitógenos}$)} $\\text{que}$ $\\text{señalizan}$ $\\text{a}$ $\\text{través}$ $\\text{de}$ $\\text{RTK}$ $\\text{($\text{ej}$. $\text{EGF}$)}$ $\\text{y}$ $\\text{la}$ $\\text{vía}$ $\\text{Ras}/\text{MAPK}$." },
+                { "text": "Daño $\\text{en}$ $\\text{el}$ $\\text{ADN}$", "isCorrect": false, "rationale": "El $\\text{daño}$ $\\text{en}$ $\\text{el}$ $\\text{ADN}$ $\\text{detiene}$ $\\text{el}$ $\\text{ciclo}$ $\\text{vía}$ $\\text{p}53$." },
+                { "text": "Falta $\\text{de}$ $\\text{ATP}$", "isCorrect": false, "rationale": "La $\\text{falta}$ $\\text{de}$ $\\text{ATP}$ $\\text{activa}$ $\\text{AMPK}$ $\\text{($\text{inhibidor}$ $\text{de}$ $\text{mTOR}$)}$." },
+                { "text": "Activación $\\text{de}$ $\\text{caspasa}$ $\\text{3}$", "isCorrect": false, "rationale": "La $\\text{activación}$ $\\text{de}$ $\\text{caspasa}$ $\\text{3}$ $\\text{ejecuta}$ $\\text{la}$ $\\text{apoptosis}$." }
+            ]
+        },
+        {
+            "questionNumber": 5,
+            "question": "La $\\text{entrada}$ $\\text{a}$ $\\text{la}$ $\\text{Fase}$ $\\text{S}$ $\\text{es}$ $\\text{desencadenada}$ $\\text{por}$:",
+            "answerOptions": [
+                { "text": "Ciclina $\\text{E}/\text{CDK}2$ $\\text{y}$ $\\text{Ciclina}$ $\\text{A}/\text{CDK}2$", "isCorrect": true, "rationale": "El $\\text{complejo}$ $\\text{Ciclina}$ $\\text{E}/\text{CDK}2$ $\\text{termina}$ $\\text{de}$ $\\text{hiperfosforilar}$ $\\text{Rb}$, $\\text{liberando}$ $\\text{E}2\text{F}$ $\\text{que}$ $\\text{activa}$ $\\text{genes}$ $\\text{de}$ $\\text{la}$ $\\text{Fase}$ $\\text{S}$. $\\text{La}$ $\\text{Ciclina}$ $\\text{A}/\text{CDK}2$ $\\text{toma}$ $\\text{el}$ $\\text{relevo}$ $\\text{para}$ $\\text{mantener}$ $\\text{la}$ $\\text{replicación}$." },
+                { "text": "Ciclina $\\text{B}/\text{CDK}1$", "isCorrect": false, "rationale": "La $\\text{Ciclina}$ $\\text{B}/\text{CDK}1$ $\\text{controla}$ $\\text{la}$ $\\text{entrada}$ $\\text{a}$ $\\text{M}$ $\\text{($\text{mitosis}$)}$." },
+                { "text": "Ran-GTP", "isCorrect": false, "rationale": "Ran-GTP $\\text{regula}$ $\\text{el}$ $\\text{transporte}$ $\\text{nuclear}$." },
+                { "text": "Mdm2", "isCorrect": false, "rationale": "Mdm2 $\\text{degrada}$ $\\text{p}53$." }
+            ]
+        },
+        {
+            "questionNumber": 6,
+            "question": "La $\\text{proteína}$ $\\text{p}53$ $\\text{induce}$ $\\text{detención}$ $\\text{del}$ $\\text{ciclo}$ $\\text{mediante}$:",
+            "answerOptions": [
+                { "text": "Activación $\\text{de}$ $\\text{p}21$", "isCorrect": true, "rationale": "En $\\text{respuesta}$ $\\text{al}$ $\\text{daño}$ $\\text{en}$ $\\text{el}$ $\\text{ADN}$, $\\text{p}53$ $\\text{activa}$ $\\text{la}$ $\\text{transcripción}$ $\\text{del}$ $\\text{inhibidor}$ $\\text{de}$ $\\text{CDK}$ $\\text{p}21$, $\\text{que}$ $\\text{bloquea}$ $\\text{los}$ $\\text{complejos}$ $\\text{Ciclina}/\text{CDK}$ $\\text{en}$ $\\text{G}1$ $\\text{y}$ $\\text{G}2$." },
+                { "text": "Degradación $\\text{de}$ $\\text{CDK}1$", "isCorrect": false, "rationale": "La $\\text{degradación}$ $\\text{de}$ $\\text{CDK}1$ $\\text{es}$ $\\text{por}$ $\\text{fosforilación}$ $\\text{y}$ $\\text{ubiquitinación}$ $\\text{($\text{APC}/\text{C}$)}$." },
+                { "text": "Inhibición $\\text{de}$ $\\text{Rb}$", "isCorrect": false, "rationale": "La $\\text{Rb}$ $\\text{ya}$ $\\text{es}$ $\\text{un}$ $\\text{represor}$." },
+                { "text": "Activación $\\text{de}$ $\\text{caspasa}$ $\\text{8}$", "isCorrect": false, "rationale": "La $\\text{caspasa}$ $\\text{8}$ $\\text{es}$ $\\text{de}$ $\\text{la}$ $\\text{vía}$ $\\text{extrínseca}$ $\\text{de}$ $\\text{apoptosis}$." }
+            ]
+        },
+        {
+            "questionNumber": 7,
+            "question": "El $\\text{checkpoint}$ $\\text{G}2/\text{M}$ $\\text{verifica}$:",
+            "answerOptions": [
+                { "text": "Replicación $\\text{completa}$ $\\text{del}$ $\\text{ADN}$", "isCorrect": true, "rationale": "El $\\text{checkpoint}$ $\\text{G}2/\text{M}$ $\\text{asegura}$ $\\text{que}$ $\\text{el}$ $\\text{ADN}$ $\\text{se}$ $\\text{haya}$ $\\text{replicado}$ $\\text{completamente}$ $\\text{y}$ $\\text{que}$ $\\text{todo}$ $\\text{el}$ $\\text{daño}$ $\\text{haya}$ $\\text{sido}$ $\\text{reparado}$ $\\text{antes}$ $\\text{de}$ $\\text{entrar}$ $\\text{en}$ $\\text{mitosis}$." },
+                { "text": "Unión $\\text{correcta}$ $\\text{al}$ $\\text{huso}$", "isCorrect": false, "rationale": "La $\\text{unión}$ $\\text{correcta}$ $\\text{al}$ $\\text{huso}$ $\\text{es}$ $\\text{el}$ $\\text{checkpoint}$ $\\text{del}$ $\\text{huso}$ $\\text{($\text{Metafase}$)}$." },
+                { "text": "Disponibilidad $\\text{de}$ $\\text{nutrientes}$", "isCorrect": false, "rationale": "La $\\text{disponibilidad}$ $\\text{de}$ $\\text{nutrientes}$ $\\text{se}$ $\\text{verifica}$ $\\text{en}$ $\\text{el}$ $\\text{punto}$ $\\text{R}$ $\\text{($\text{G}1$)}$." },
+                { "text": "Activación $\\text{de}$ $\\text{Ras}$", "isCorrect": false, "rationale": "La $\\text{activación}$ $\\text{de}$ $\\text{Ras}$ $\\text{es}$ $\\text{una}$ $\\text{señal}$ $\\text{pro}$-$\\text{proliferativa}$." }
+            ]
+        },
+        {
+            "questionNumber": 8,
+            "question": "El $\\text{checkpoint}$ $\\text{del}$ $\\text{huso}$ $\\text{mitótico}$ ($\text{SAC}$) $\\text{evita}$:",
+            "answerOptions": [
+                { "text": "Aneuploidía", "isCorrect": true, "rationale": "El $\\text{SAC}$ $\\text{asegura}$ $\\text{que}$ $\\text{todos}$ $\\text{los}$ $\\text{cromosomas}$ $\\text{estén}$ $\\text{correctamente}$ $\\text{unidos}$ $\\text{y}$ $\\text{alineados}$ $\\text{en}$ $\\text{la}$ $\\text{placa}$ $\\text{de}$ $\\text{metafase}$ $\\text{antes}$ $\\text{de}$ $\\text{la}$ $\\text{anafase}$, $\\text{previniendo}$ $\\text{la}$ $\\text{segregación}$ $\\text{incorrecta}$ $\\text{($\text{aneuploidía}$)}$." },
+                { "text": "Rotura $\\text{de}$ $\\text{doble}$ $\\text{cadena}$", "isCorrect": false, "rationale": "La $\\text{rotura}$ $\\text{de}$ $\\text{doble}$ $\\text{cadena}$ $\\text{es}$ $\\text{detectada}$ $\\text{por}$ $\\text{ATM}$ $\\text{($\text{G}1/\text{S}$ $\text{o}$ $\text{G}2/\text{M}$)}$." },
+                { "text": "Replicación $\\text{de}$ $\\text{ADN}$", "isCorrect": false, "rationale": "La $\\text{replicación}$ $\\text{de}$ $\\text{ADN}$ $\\text{es}$ $\\text{Fase}$ $\\text{S}$." },
+                { "text": "Hiperfosforilación $\\text{de}$ $\\text{Rb}$", "isCorrect": false, "rationale": "La $\\text{hiperfosforilación}$ $\\text{de}$ $\\text{Rb}$ $\\text{es}$ $\\text{un}$ $\\text{evento}$ $\\text{en}$ $\\text{G}1/\text{S}$." }
+            ]
+        },
+        {
+            "questionNumber": 9,
+            "question": "La $\\text{caspasa}$ $\\text{3}$ $\\text{es}$:",
+            "answerOptions": [
+                { "text": "Caspasa $\\text{efectora}$", "isCorrect": true, "rationale": "La $\\text{caspasa}$ $\\text{3}$ $\\text{es}$ $\\text{una}$ $\\text{caspasa}$ $\\text{ejecutora}$ $\\text{($\text{efectora}$)} $\\text{que}$ $\\text{es}$ $\\text{activada}$ $\\text{por}$ $\\text{las}$ $\\text{caspasas}$ $\\text{iniciadoras}$ $\\text{($\text{8}$ $\text{o}$ $\text{9}$)} $\\text{y}$ $\\text{lleva}$ $\\text{a}$ $\\text{cabo}$ $\\text{la}$ $\\text{degradación}$ $\\text{masiva}$ $\\text{de}$ $\\text{componentes}$ $\\text{celulares}$." },
+                { "text": "Caspasa $\\text{iniciadora}$", "isCorrect": false, "rationale": "Las $\\text{caspasas}$ $\\text{iniciadoras}$ $\\text{son}$ $\\text{8}$ $\\text{y}$ $\\text{9}$." },
+                { "text": "Quinasa", "isCorrect": false, "rationale": "La $\\text{caspasa}$ $\\text{3}$ $\\text{es}$ $\\text{una}$ $\\text{proteasa}$." },
+                { "text": "Inhibidor $\\text{de}$ $\\text{apoptosis}$", "isCorrect": false, "rationale": "La $\\text{caspasa}$ $\\text{3}$ $\\text{ejecuta}$ $\\text{la}$ $\\text{apoptosis}$." }
+            ]
+        },
+        {
+            "questionNumber": 10,
+            "question": "La $\\text{apoptosis}$ $\\text{extrínseca}$ $\\text{se}$ $\\text{activa}$ $\\text{por}$:",
+            "answerOptions": [
+                { "text": "Receptores $\\text{de}$ $\\text{muerte}$ $\\text{($\text{ej}$. $\text{Fas}$)}", "isCorrect": true, "rationale": "La $\\text{vía}$ $\\text{extrínseca}$ $\\text{de}$ $\\text{apoptosis}$ $\\text{es}$ $\\text{inducida}$ $\\text{por}$ $\\text{señales}$ $\\text{externas}$ ($\text{ligandos}$ $\text{de}$ $\text{muerte}$ $\text{como}$ $\text{FasL}$ $\text{o}$ $\text{TNF}$-$\\alpha$) $\\text{que}$ $\\text{se}$ $\\text{unen}$ $\\text{a}$ $\\text{receptores}$ $\\text{de}$ $\\text{muerte}$ $\\text{en}$ $\\text{la}$ $\\text{membrana}$." },
+                { "text": "Liberación $\\text{de}$ $\\text{citocromo}$ $\\text{c}$", "isCorrect": false, "rationale": "La $\\text{liberación}$ $\\text{de}$ $\\text{citocromo}$ $\\text{c}$ $\\text{activa}$ $\\text{la}$ $\\text{vía}$ $\\text{intrínseca}$." },
+                { "text": "Daño $\\text{en}$ $\\text{el}$ $\\text{ADN}$", "isCorrect": false, "rationale": "El $\\text{daño}$ $\\text{en}$ $\\text{el}$ $\\text{ADN}$ $\\text{activa}$ $\\text{la}$ $\\text{vía}$ $\\text{intrínseca}$ $\\text{vía}$ $\\text{p}53$." },
+                { "text": "Activación $\\text{de}$ $\\text{p}53$", "isCorrect": false, "rationale": "La $\\text{activación}$ $\\text{de}$ $\\text{p}53$ $\\text{activa}$ $\\text{la}$ $\\text{vía}$ $\\text{intrínseca}$." }
+            ]
+        },
+        {
+            "questionNumber": 11,
+            "question": "La $\\text{fosforilación}$ $\\text{de}$ $\\text{Rb}$ $\\text{por}$ $\\text{Ciclina}$ $\\text{D}/\text{CDK}4/6$ $\\text{permite}$:",
+            "answerOptions": [
+                { "text": "Activación $\\text{de}$ $\\text{E}2\text{F}$", "isCorrect": true, "rationale": "La $\\text{fosforilación}$ $\\text{inicial}$ $\\text{($\text{hipofosforilación}$)} $\\text{de}$ $\\text{Rb}$ $\\text{por}$ $\\text{Ciclina}$ $\\text{D}/\text{CDK}4/6$ $\\text{lo}$ $\\text{debilita}$, $\\text{permitiendo}$ $\\text{la}$ $\\text{liberación}$ $\\text{parcial}$ $\\text{del}$ $\\text{factor}$ $\\text{de}$ $\\text{transcripción}$ $\\text{E}2\text{F}$." },
+                { "text": "Inhibición $\\text{de}$ $\\text{p}53$", "isCorrect": false, "rationale": "La $\\text{inhibición}$ $\\text{de}$ $\\text{p}53$ $\\text{es}$ $\\text{por}$ $\\text{Mdm}2$." },
+                { "text": "Entrada $\\text{a}$ $\\text{M}$ $\\text{($\text{mitosis}$)}$", "isCorrect": false, "rationale": "La $\\text{entrada}$ $\\text{a}$ $\\text{M}$ $\\text{es}$ $\\text{por}$ $\\text{Ciclina}$ $\\text{B}/\text{CDK}1$." },
+                { "text": "Duplicación $\\text{de}$ $\\text{cromosomas}$", "isCorrect": false, "rationale": "La $\\text{duplicación}$ $\\text{de}$ $\\text{cromosomas}$ $\\text{es}$ $\\text{la}$ $\\text{Fase}$ $\\text{S}$." }
+            ]
+        },
+        {
+            "questionNumber": 12,
+            "question": "La $\\text{transición}$ $\\text{G}2/\text{M}$ $\\text{está}$ $\\text{regulada}$ $\\text{por}$:",
+            "answerOptions": [
+                { "text": "Ciclina $\\text{B}/\text{CDK}1$ $\\text{activada}$ $\\text{por}$ $\\text{Cdc}25$", "isCorrect": true, "rationale": "El $\\text{complejo}$ $\\text{Ciclina}$ $\\text{B}/\text{CDK}1$ ($\text{MPF}$) $\\text{es}$ $\\text{el}$ $\\text{regulador}$ $\\text{maestro}$ $\\text{de}$ $\\text{la}$ $\\text{entrada}$ $\\text{en}$ $\\text{mitosis}$ $\\text{($\text{M}$)}$, $\\text{activándose}$ $\\text{al}$ $\\text{ser}$ $\\text{desfosforilado}$ $\\text{por}$ $\\text{la}$ $\\text{fosfatasa}$ $\\text{Cdc}25$." },
+                { "text": "Ciclina $\\text{D}/\text{CDK}4$", "isCorrect": false, "rationale": "La $\\text{Ciclina}$ $\\text{D}/\text{CDK}4$ $\\text{regula}$ $\\text{la}$ $\\text{transición}$ $\\text{G}1/\text{S}$." },
+                { "text": "Rb $\\text{hipofosforilada}$", "isCorrect": false, "rationale": "La $\\text{Rb}$ $\\text{hipofosforilada}$ $\\text{detiene}$ $\\text{el}$ $\\text{ciclo}$ $\\text{en}$ $\\text{G}1$." },
+                { "text": "Mdm2", "isCorrect": false, "rationale": "Mdm2 $\\text{regula}$ $\\text{la}$ $\\text{degradación}$ $\\text{de}$ $\\text{p}53$." }
+            ]
+        },
+        {
+            "questionNumber": 13,
+            "question": "La $\\text{pérdida}$ $\\text{de}$ $\\text{función}$ $\\text{de}$ $\\text{APC}/\text{C}$ $\\text{provoca}$:",
+            "answerOptions": [
+                { "text": "Bloqueo $\\text{en}$ $\\text{G}1$", "isCorrect": false, "rationale": "El $\\text{bloqueo}$ $\\text{en}$ $\\text{G}1$ $\\text{es}$ $\\text{por}$ $\\text{Rb}$ $\\text{o}$ $\\text{p}21$." },
+                { "text": "Paro $\\text{en}$ $\\text{anafase}$ $\\text{A}$", "isCorrect": false, "rationale": "El $\\text{paro}$ $\\text{en}$ $\\text{anafase}$ $\\text{A}$ $\\text{no}$ $\\text{es}$ $\\text{un}$ $\\text{fenómeno}$ $\\text{común}$." },
+                { "text": "Arresto $\\text{en}$ $\\text{metafase}$", "isCorrect": true, "rationale": "El $\\text{complejo}$ $\\text{APC}/\text{C}$ $\\text{se}$ $\\text{activa}$ $\\text{en}$ $\\text{metafase}$ $\\text{y}$ $\\text{ubiquitina}$ $\\text{a}$ $\\text{la}$ $\\text{securina}$ $\\text{y}$ $\\text{Ciclina}$ $\\text{B}$. $\\text{Su}$ $\\text{pérdida}$ $\\text{impide}$ $\\text{la}$ $\\text{separación}$ $\\text{de}$ $\\text{cromátidas}$ $\\text{y}$ $\\text{la}$ $\\text{salida}$ $\\text{de}$ $\\text{mitosis}$." },
+                { "text": "Hiperplasia", "isCorrect": false, "rationale": "La $\\text{hiperplasia}$ $\\text{es}$ $\\text{el}$ $\\text{crecimiento}$ $\\text{excesivo}$ $\\text{de}$ $\\text{tejido}$." }
+            ]
+        },
+        {
+            "questionNumber": 14,
+            "question": "La $\\text{separasa}$ $\\text{es}$ $\\text{activada}$ $\\text{por}$:",
+            "answerOptions": [
+                { "text": "Degradación $\\text{de}$ $\\text{securina}$", "isCorrect": true, "rationale": "La $\\text{separasa}$ $\\text{es}$ $\\text{la}$ $\\text{proteasa}$ $\\text{que}$ $\\text{corta}$ $\\text{la}$ $\\text{cohesina}$. $\\text{Se}$ $\\text{mantiene}$ $\\text{inactiva}$ $\\text{unida}$ $\\text{a}$ $\\text{la}$ $\\text{securina}$ $\\text{hasta}$ $\\text{que}$ $\\text{el}$ $\\text{APC}/\text{C}$ $\\text{ubiquitina}$ $\\text{y}$ $\\text{degrada}$ $\\text{a}$ $\\text{la}$ $\\text{securina}$." },
+                { "text": "Ciclina $\\text{D}$", "isCorrect": false, "rationale": "La $\\text{ciclina}$ $\\text{D}$ $\\text{actúa}$ $\\text{en}$ $\\text{G}1$." },
+                { "text": "Ran-GTP", "isCorrect": false, "rationale": "Ran-GTP $\\text{regula}$ $\\text{el}$ $\\text{transporte}$ $\\text{nuclear}$." },
+                { "text": "Apaf-1", "isCorrect": false, "rationale": "Apaf-1 $\\text{forma}$ $\\text{el}$ $\\text{apoptosoma}$ $\\text{($\text{vía}$ $\text{intrínseca}$ $\text{de}$ $\text{apoptosis}$)}$." }
+            ]
+        },
+        {
+            "questionNumber": 15,
+            "question": "Los $\\text{microtúbulos}$ $\\text{cinetocóricos}$ $\\text{se}$ $\\text{acortan}$ $\\text{en}$:",
+            "answerOptions": [
+                { "text": "Anafase $\\text{A}$", "isCorrect": true, "rationale": "La $\\text{anafase}$ $\\text{A}$ $\\text{es}$ $\\text{el}$ $\\text{movimiento}$ $\\text{de}$ $\\text{las}$ $\\text{cromátidas}$ $\\text{hermanas}$ $\\text{hacia}$ $\\text{los}$ $\\text{polos}$ $\\text{del}$ $\\text{huso}$, $\\text{impulsado}$ $\\text{principalmente}$ $\\text{por}$ $\\text{la}$ $\\text{despolimerización}$ $\\text{($\text{acortamiento}$)} $\\text{de}$ $\\text{los}$ $\\text{microtúbulos}$ $\\text{cinetocóricos}$." },
+                { "text": "Profase", "isCorrect": false, "rationale": "La $\\text{profase}$ $\\text{es}$ $\\text{la}$ $\\text{condensación}$ $\\text{cromosómica}$." },
+                { "text": "Telofase", "isCorrect": false, "rationale": "La $\\text{telofase}$ $\\text{es}$ $\\text{la}$ $\\text{reconstrucción}$ $\\text{nuclear}$." },
+                { "text": "Anafase $\\text{B}$", "isCorrect": false, "rationale": "La $\\text{anafase}$ $\\text{B}$ $\\text{es}$ $\\text{la}$ $\\text{separación}$ $\\text{de}$ $\\text{los}$ $\\text{polos}$ $\\text{del}$ $\\text{huso}$ $\\text{($\text{alargamiento}$)}$." }
+            ]
+        },
+        {
+            "questionNumber": 16,
+            "question": "La $\\text{separación}$ $\\text{de}$ $\\text{polos}$ $\\text{del}$ $\\text{huso}$ $\\text{en}$ $\\text{anafase}$ $\\text{B}$ $\\text{depende}$ $\\text{de}$:",
+            "answerOptions": [
+                { "text": "Quinesina $\\text{5}$ $\\text{($\text{Eg}5$)}$", "isCorrect": true, "rationale": "La $\\text{anafase}$ $\\text{B}$ $\\text{($\text{separación}$ $\text{de}$ $\text{polos}$)}$ $\\text{es}$ $\\text{mediada}$ $\\text{por}$ $\\text{motores}$ $\\text{quinesina}$ $\\text{($\text{ej}$. $\text{Kinesin}$-$\\text{5}$)} $\\text{que}$ $\\text{empujan}$ $\\text{los}$ $\\text{microtúbulos}$ $\\text{polares}$ $\\text{antiparalelos}$ $\\text{y}$ $\\text{el}$ $\\text{alargamiento}$ $\\text{de}$ $\\text{los}$ $\\text{microtúbulos}$ $\\text{mismos}$." },
+                { "text": "Miosina $\\text{II}$", "isCorrect": false, "rationale": "La $\\text{miosina}$ $\\text{II}$ $\\text{forma}$ $\\text{el}$ $\\text{anillo}$ $\\text{contráctil}$ $\\text{de}$ $\\text{la}$ $\\text{citocinesis}$." },
+                { "text": "Dineína", "isCorrect": false, "rationale": "La $\\text{dineína}$ $\\text{tira}$ $\\text{hacia}$ $\\text{el}$ $\\text{extremo}$ $\\text{(-)}$ $\\text{($\text{posicionamiento}$ $\text{del}$ $\text{huso}$)}$." },
+                { "text": "Tubulina $\\gamma$", "isCorrect": false, "rationale": "La $\\text{tubulina}$ $\\gamma$ $\\text{nuclea}$ $\\text{microtúbulos}$." }
+            ]
+        },
+        {
+            "questionNumber": 17,
+            "question": "El $\\text{anillo}$ $\\text{contráctil}$ $\\text{de}$ $\\text{la}$ $\\text{citocinesis}$ $\\text{es}$ $\\text{de}$:",
+            "answerOptions": [
+                { "text": "Actina $\\text{y}$ $\\text{miosina}$ $\\text{II}$", "isCorrect": true, "rationale": "La $\\text{división}$ $\\text{física}$ $\\text{del}$ $\\text{citoplasma}$ $\\text{($\text{citocinesis}$)}$ $\\text{es}$ $\\text{impulsada}$ $\\text{por}$ $\\text{la}$ $\\text{contracción}$ $\\text{de}$ $\\text{un}$ $\\text{anillo}$ $\\text{formado}$ $\\text{por}$ $\\text{filamentos}$ $\\text{de}$ $\\text{actina}$ $\\text{y}$ $\\text{el}$ $\\text{motor}$ $\\text{miosina}$ $\\text{II}$." },
+                { "text": "Microtúbulos", "isCorrect": false, "rationale": "Los $\\text{microtúbulos}$ $\\text{forman}$ $\\text{el}$ $\\text{huso}$ $\\text{mitótico}$." },
+                { "text": "Filamentos $\\text{intermedios}$", "isCorrect": false, "rationale": "Los $\\text{filamentos}$ $\\text{intermedios}$ $\\text{dan}$ $\\text{soporte}$ $\\text{estructural}$ $\\text{($\text{no}$ $\text{contráctil}$)}$." },
+                { "text": "Quinesinas", "isCorrect": false, "rationale": "Las $\\text{quinesinas}$ $\\text{son}$ $\\text{motores}$ $\\text{de}$ $\\text{microtúbulos}$." }
+            ]
+        },
+        {
+            "questionNumber": 18,
+            "question": "La $\\text{pérdida}$ $\\text{de}$ $\\text{telómeros}$ $\\text{desencadena}$:",
+            "answerOptions": [
+                { "text": "Activación $\\text{de}$ $\\text{p}53$ $\\text{y}$ $\\text{senescencia}$", "isCorrect": true, "rationale": "Los $\\text{telómeros}$ $\\text{son}$ $\\text{regiones}$ $\\text{protectoras}$ $\\text{del}$ $\\text{ADN}$ $\\text{en}$ $\\text{los}$ $\\text{extremos}$ $\\text{de}$ $\\text{los}$ $\\text{cromosomas}$. $\\text{Su}$ $\\text{acortamiento}$ $\\text{($\text{debido}$ $\text{a}$ $\text{la}$ $\text{división}$ $\text{celular}$)}$ $\\text{es}$ $\\text{detectado}$ $\\text{como}$ $\\text{daño}$ $\\text{en}$ $\\text{el}$ $\\text{ADN}$, $\\text{activando}$ $\\text{p}53$ $\\text{y}$ $\\text{llevando}$ $\\text{a}$ $\\text{la}$ $\\text{senescencia}$ $\\text{replicativa}$." },
+                { "text": "Aumento $\\text{de}$ $\\text{replicación}$", "isCorrect": false, "rationale": "La $\\text{pérdida}$ $\\text{de}$ $\\text{telómeros}$ $\\text{detiene}$ $\\text{la}$ $\\text{replicación}$." },
+                { "text": "Inactivación $\\text{de}$ $\\text{caspasas}$", "isCorrect": false, "rationale": "La $\\text{inactivación}$ $\\text{de}$ $\\text{caspasas}$ $\\text{es}$ $\\text{anti}$-$\\text{apoptótica}$." },
+                { "text": "Activación $\\text{de}$ $\\text{Rb}$ $\\text{por}$ $\\text{fosforilación}$", "isCorrect": false, "rationale": "La $\\text{Rb}$ $\\text{es}$ $\\text{inactivada}$ $\\text{por}$ $\\text{fosforilación}$." }
+            ]
+        },
+        {
+            "questionNumber": 19,
+            "question": "La $\\text{telomerasa}$ $\\text{es}$ $\\text{una}$:",
+            "answerOptions": [
+                { "text": "Transcriptasa $\\text{reversa}$ $\\text{($\text{transcriptasa}$ $\text{inversa}$)}$", "isCorrect": true, "rationale": "La $\\text{telomerasa}$ $\\text{es}$ $\\text{una}$ $\\text{ribonucleoproteína}$ $\\text{con}$ $\\text{actividad}$ $\\text{de}$ $\\text{transcriptasa}$ $\\text{reversa}$, $\\text{capaz}$ $\\text{de}$ $\\text{sintetizar}$ $\\text{ADN}$ $\\text{($\text{telómeros}$)} $\\text{a}$ $\\text{partir}$ $\\text{de}$ $\\text{un}$ $\\text{molde}$ $\\text{de}$ $\\text{ARN}$ $\\text{que}$ $\\text{contiene}$ $\\text{la}$ $\\text{secuencia}$ $\\text{repetitiva}$ $\\text{del}$ $\\text{telómero}$." },
+                { "text": "ADN $\\text{polimerasa}$", "isCorrect": false, "rationale": "La $\\text{ADN}$ $\\text{polimerasa}$ $\\text{usa}$ $\\text{ADN}$ $\\text{como}$ $\\text{molde}$." },
+                { "text": "RNasa", "isCorrect": false, "rationale": "Una $\\text{RNasa}$ $\\text{degrada}$ $\\text{ARN}$." },
+                { "text": "Helicasa $\\text{nuclear}$", "isCorrect": false, "rationale": "Una $\\text{helicasa}$ $\\text{separa}$ $\\text{cadenas}$ $\\text{de}$ $\\text{ADN}$." }
+            ]
+        },
+        {
+            "questionNumber": 20,
+            "question": "Las $\\text{células}$ $\\text{cancerosas}$ $\\text{presentan}$ $\\text{típicamente}$ $\\text{actividad}$ $\\text{de}$ $\\text{telomerasa}$:",
+            "answerOptions": [
+                { "text": "Alta", "isCorrect": true, "rationale": "La $\\text{reactivación}$ $\\text{de}$ $\\text{la}$ $\\text{telomerasa}$ $\\text{es}$ $\\text{una}$ $\\text{característica}$ $\\text{clave}$ $\\text{de}$ $\\text{las}$ $\\text{células}$ $\\text{cancerosas}$, $\\text{permitiéndoles}$ $\\text{mantener}$ $\\text{la}$ $\\text{longitud}$ $\\text{de}$ $\\text{los}$ $\\text{telómeros}$ $\\text{y}$ $\\text{alcanzar}$ $\\text{la}$ $\\text{inmortalidad}$ $\\text{replicativa}$." },
+                { "text": "Nula", "isCorrect": false, "rationale": "La $\\text{actividad}$ $\\text{nula}$ $\\text{es}$ $\\text{típica}$ $\\text{de}$ $\\text{células}$ $\\text{somáticas}$ $\\text{($\text{senescencia}$)}$." },
+                { "text": "Baja", "isCorrect": false, "rationale": "La $\\text{actividad}$ $\\text{suele}$ $\\text{ser}$ $\\text{alta}$ $\\text{o}$ $\\text{reactivada}$." },
+                { "text": "Inhibida", "isCorrect": false, "rationale": "La $\\text{inhibición}$ $\\text{de}$ $\\text{la}$ $\\text{telomerasa}$ $\\text{es}$ $\\text{un}$ $\\text{objetivo}$ $\\text{terapéutico}$." }
+            ]
+        },
+        {
+            "questionNumber": 21,
+            "question": "La $\\text{apoptosis}$ $\\text{intrínseca}$ $\\text{se}$ $\\text{activa}$ $\\text{por}$:",
+            "answerOptions": [
+                { "text": "Liberación $\\text{de}$ $\\text{citocromo}$ $\\text{c}$", "isCorrect": true, "rationale": "La $\\text{vía}$ $\\text{intrínseca}$ $\\text{se}$ $\\text{activa}$ $\\text{por}$ $\\text{estrés}$ $\\text{($\text{ej}$. $\text{daño}$ $\text{en}$ $\text{el}$ $\text{ADN}$)} $\\text{que}$ $\\text{causa}$ $\\text{la}$ $\\text{permeabilización}$ $\\text{de}$ $\\text{la}$ $\\text{membrana}$ $\\text{mitocondrial}$ $\\text{($\text{MOMP}$)} $\\text{y}$ $\\text{la}$ $\\text{liberación}$ $\\text{del}$ $\\text{citocromo}$ $\\text{c}$ $\\text{al}$ $\\text{citosol}$." },
+                { "text": "Unión $\\text{de}$ $\\text{Fas}$ $\\text{($\text{receptor}$ $\text{de}$ $\text{muerte}$)}$", "isCorrect": false, "rationale": "La $\\text{unión}$ $\\text{de}$ $\\text{Fas}$ $\\text{activa}$ $\\text{la}$ $\\text{vía}$ $\\text{extrínseca}$." },
+                { "text": "Activación $\\text{de}$ $\\text{Mdm}2$", "isCorrect": false, "rationale": "La $\\text{activación}$ $\\text{de}$ $\\text{Mdm}2$ $\\text{degrada}$ $\\text{p}53$." },
+                { "text": "Inhibición $\\text{de}$ $\\text{caspasa}$ $\\text{9}$", "isCorrect": false, "rationale": "La $\\text{inhibición}$ $\\text{de}$ $\\text{caspasa}$ $\\text{9}$ $\\text{es}$ $\\text{anti}$-$\\text{apoptótica}$." }
+            ]
+        },
+        {
+            "questionNumber": 22,
+            "question": "Las $\\text{proteínas}$ $\\text{Bcl}$-$\\text{2}$ $\\text{regulan}$ $\\text{apoptosis}$ $\\text{porque}$:",
+            "answerOptions": [
+                { "text": "Controlan $\\text{la}$ $\\text{permeabilidad}$ $\\text{mitocondrial}$", "isCorrect": true, "rationale": "Las $\\text{proteínas}$ $\\text{Bcl}$-$\\text{2}$ $\\text{($\text{anti}$-$\\text{apoptóticas}$ $\text{como}$ $\text{Bcl}$-$\\text{2}$ $\\text{o}$ $\text{pro}$-$\\text{apoptóticas}$ $\text{como}$ $\text{Bax}/\text{Bak}$)} $\\text{se}$ $\\text{localizan}$ $\\text{en}$ $\\text{la}$ $\\text{membrana}$ $\\text{mitocondrial}$ $\\text{externa}$ $\\text{y}$ $\\text{regulan}$ $\\text{la}$ $\\text{liberación}$ $\\text{del}$ $\\text{citocromo}$ $\\text{c}$." },
+                { "text": "Activan $\\text{la}$ $\\text{expresión}$ $\\text{de}$ $\\text{p}53$", "isCorrect": false, "rationale": "La $\\text{expresión}$ $\\text{de}$ $\\text{p}53$ $\\text{es}$ $\\text{regulada}$ $\\text{por}$ $\\text{daño}$ $\\text{en}$ $\\text{el}$ $\\text{ADN}$." },
+                { "text": "Clivan $\\text{el}$ $\\text{ADN}$", "isCorrect": false, "rationale": "El $\\text{ADN}$ $\\text{es}$ $\\text{clivado}$ $\\text{por}$ $\\text{la}$ $\\text{CAD}$ $\\text{activada}$ $\\text{($\text{caspase}$-$\\text{activated}$ $\text{DNase}$)}$." },
+                { "text": "Fosforilan $\\text{el}$ $\\text{retículo}$ $\\text{endoplásmico}$", "isCorrect": false, "rationale": "La $\\text{fosforilación}$ $\\text{del}$ $\\text{retículo}$ $\\text{endoplásmico}$ $\\text{está}$ $\\text{relacionada}$ $\\text{con}$ $\\text{la}$ $\\text{vía}$ $\\text{UPR}$." }
+            ]
+        },
+        {
+            "questionNumber": 23,
+            "question": "El $\\text{apoptosoma}$ $\\text{es}$ $\\text{un}$ $\\text{complejo}$ $\\text{que}$ $\\text{activa}$:",
+            "answerOptions": [
+                { "text": "Caspasa $\\text{9}$", "isCorrect": true, "rationale": "El $\\text{apoptosoma}$ $\\text{se}$ $\\text{forma}$ $\\text{por}$ $\\text{Citocromo}$ $\\text{c}$ $\\text{y}$ $\\text{Apaf}$-$\\text{1}$ $\\text{y}$ $\\text{recluta}$ $\\text{la}$ $\\text{caspasa}$ $\\text{iniciadora}$ $\\text{9}$, $\\text{promoviendo}$ $\\text{su}$ $\\text{activación}$ $\\text{y}$ $\\text{el}$ $\\text{inicio}$ $\\text{de}$ $\\text{la}$ $\\text{cascada}$ $\\text{efectora}$." },
+                { "text": "Caspasa $\\text{8}$", "isCorrect": false, "rationale": "La $\\text{caspasa}$ $\\text{8}$ $\\text{es}$ $\\text{activada}$ $\\text{por}$ $\\text{el}$ $\\text{complejo}$ $\\text{DISC}$ $\\text{($\text{vía}$ $\text{extrínseca}$)}$." },
+                { "text": "Mdm2", "isCorrect": false, "rationale": "Mdm2 $\\text{degrada}$ $\\text{p}53$." },
+                { "text": "Rb", "isCorrect": false, "rationale": "La $\\text{Rb}$ $\\text{es}$ $\\text{un}$ $\\text{represor}$ $\\text{nuclear}$." }
+            ]
+        },
+        {
+            "questionNumber": 24,
+            "question": "La $\\text{proteína}$ $\\text{Bax}/\text{Bak}$ $\\text{promueve}$ $\\text{la}$ $\\text{apoptosis}$ $\\text{al}$:",
+            "answerOptions": [
+                { "text": "Formar $\\text{poros}$ $\\text{en}$ $\\text{la}$ $\\text{membrana}$ $\\text{mitocondrial}$ $\\text{externa}$", "isCorrect": true, "rationale": "Bax $\\text{y}$ $\\text{Bak}$ $\\text{($\text{proteínas}$ $\text{pro}$-$\\text{apoptóticas}$ $\text{multidominio}$)}$ $\\text{se}$ $\\text{oligomerizan}$ $\\text{en}$ $\\text{la}$ $\\text{membrana}$ $\\text{mitocondrial}$ $\\text{externa}$ $\\text{($\text{MOMP}$)}, $\\text{creando}$ $\\text{canales}$ $\\text{que}$ $\\text{liberan}$ $\\text{el}$ $\\text{citocromo}$ $\\text{c}$." },
+                { "text": "Inhibir $\\text{la}$ $\\text{separasa}$", "isCorrect": false, "rationale": "La $\\text{separasa}$ $\\text{es}$ $\\text{inhibida}$ $\\text{por}$ $\\text{securina}$." },
+                { "text": "Activar $\\text{el}$ $\\text{sistema}$ $\\text{Ran}$", "isCorrect": false, "rationale": "El $\\text{sistema}$ $\\text{Ran}$ $\\text{regula}$ $\\text{el}$ $\\text{transporte}$ $\\text{nuclear}$." },
+                { "text": "Clivar $\\text{el}$ $\\text{ADN}$ $\\text{directamente}$", "isCorrect": false, "rationale": "El $\\text{ADN}$ $\\text{es}$ $\\text{clivado}$ $\\text{por}$ $\\text{CAD}$." }
+            ]
+        },
+        {
+            "questionNumber": 25,
+            "question": "La $\\text{función}$ $\\text{principal}$ $\\text{de}$ $\\text{los}$ $\\text{filamentos}$ $\\text{intermedios}$ $\\text{es}$:",
+            "answerOptions": [
+                { "text": "Soporte $\\text{mecánico}$ $\\text{($\text{resistencia}$ $\text{a}$ $\text{la}$ $\text{tensión}$)}$", "isCorrect": true, "rationale": "Los $\\text{filamentos}$ $\\text{intermedios}$ $\\text{($\text{queratinas}, \text{vimentina}, \text{láminas}$)} $\\text{son}$ $\\text{las}$ $\\text{estructuras}$ $\\text{del}$ $\\text{citoesqueleto}$ $\\text{más}$ $\\text{estables}$ $\\text{y}$ $\\text{resistentes}$ $\\text{a}$ $\\text{las}$ $\\text{fuerzas}$ $\\text{de}$ $\\text{tensión}$ $\\text{y}$ $\\text{cizallamiento}$." },
+                { "text": "Movimiento $\\text{vesicular}$", "isCorrect": false, "rationale": "El $\\text{movimiento}$ $\\text{vesicular}$ $\\text{es}$ $\\text{mediado}$ $\\text{por}$ $\\text{microtúbulos}$ $\\text{($\text{dineína}, \text{quinesina}$)}$." },
+                { "text": "Generación $\\text{de}$ $\\text{fuerza}$ $\\text{contráctil}$", "isCorrect": false, "rationale": "La $\\text{fuerza}$ $\\text{contráctil}$ $\\text{es}$ $\\text{por}$ $\\text{actina}$ $\\text{y}$ $\\text{miosina}$." },
+                { "text": "Ensamblaje $\\text{del}$ $\\text{huso}$ $\\text{mitótico}$", "isCorrect": false, "rationale": "El $\\text{ensamblaje}$ $\\text{del}$ $\\text{huso}$ $\\text{es}$ $\\text{por}$ $\\text{microtúbulos}$." }
+            ]
+        },
+        {
+            "questionNumber": 26,
+            "question": "El $\\text{treadmilling}$ $\\text{es}$ $\\text{característico}$ $\\text{de}$:",
+            "answerOptions": [
+                { "text": "Actina", "isCorrect": true, "rationale": "El $\\text{treadmilling}$ $\\text{($\text{cinta}$ $\text{de}$ $\text{correr}$)} $\\text{es}$ $\\text{un}$ $\\text{fenómeno}$ $\\text{dinámico}$ $\\text{de}$ $\\text{la}$ $\\text{actina}$ $\\text{($\text{microfilamentos}$)} $\\text{donde}$ $\\text{la}$ $\\text{polimerización}$ $\\text{en}$ $\\text{el}$ $\\text{extremo}$ $\\text{(+)}$ $\\text{se}$ $\\text{equilibra}$ $\\text{con}$ $\\text{la}$ $\\text{despolimerización}$ $\\text{en}$ $\\text{el}$ $\\text{extremo}$ $\\text{(-)}$." },
+                { "text": "Microtúbulos", "isCorrect": false, "rationale": "Los $\\text{microtúbulos}$ $\\text{presentan}$ $\\text{inestabilidad}$ $\\text{dinámica}$ $\\text{($\text{catástrofe}$ $\text{y}$ $\text{rescate}$)}$." },
+                { "text": "Filamentos $\\text{intermedios}$", "isCorrect": false, "rationale": "Los $\\text{filamentos}$ $\\text{intermedios}$ $\\text{son}$ $\\text{estructuralmente}$ $\\text{estables}$." },
+                { "text": "Laminas", "isCorrect": false, "rationale": "Las $\\text{láminas}$ $\\text{son}$ $\\text{un}$ $\\text{tipo}$ $\\text{de}$ $\\text{filamento}$ $\\text{intermedio}$." }
+            ]
+        },
+        {
+            "questionNumber": 27,
+            "question": "La $\\text{miosina}$ $\\text{II}$ $\\text{participa}$ $\\text{en}$:",
+            "answerOptions": [
+                { "text": "Contracción $\\text{muscular}$ $\\text{y}$ $\\text{citocinesis}$", "isCorrect": true, "rationale": "La $\\text{miosina}$ $\\text{II}$ $\\text{es}$ $\\text{el}$ $\\text{motor}$ $\\text{de}$ $\\text{actina}$ $\\text{encargado}$ $\\text{de}$ $\\text{generar}$ $\\text{la}$ $\\text{fuerza}$ $\\text{contráctil}$ $\\text{($\text{ej}$. $\text{sarcómeros}$ $\\text{en}$ $\text{músculo}$ $\text{esquelético}$ $\\text{y}$ $\\text{anillo}$ $\text{contráctil}$ $\text{en}$ $\\text{citocinesis}$)}$." },
+                { "text": "Transporte $\\text{axonal}$ $\\text{anterógrado}$", "isCorrect": false, "rationale": "El $\\text{transporte}$ $\\text{axonal}$ $\\text{anterógrado}$ $\\text{es}$ $\\text{por}$ $\\text{quinesina}$." },
+                { "text": "Fagocitosis", "isCorrect": false, "rationale": "La $\\text{fagocitosis}$ $\\text{es}$ $\\text{mediada}$ $\\text{por}$ $\\text{actina}$ $\\text{y}$ $\\text{miosina}$ $\\text{I}$ $\\text{o}$ $\\text{II}$ $\\text{($\text{dependiendo}$ $\text{del}$ $\text{tipo}$)}$ $\\text{pero}$ $\\text{no}$ $\\text{es}$ $\\text{su}$ $\\text{función}$ $\\text{principal}$." },
+                { "text": "Ensamblaje $\\text{del}$ $\\text{huso}$ $\\text{mitótico}$", "isCorrect": false, "rationale": "El $\\text{ensamblaje}$ $\\text{del}$ $\\text{huso}$ $\\text{es}$ $\\text{por}$ $\\text{microtúbulos}$." }
+            ]
+        },
+        {
+            "questionNumber": 28,
+            "question": "El $\\text{complejo}$ $\\text{ARP}2/3$ $\\text{nuclea}$:",
+            "answerOptions": [
+                { "text": "Actina $\\text{ramificada}$", "isCorrect": true, "rationale": "El $\\text{complejo}$ $\\text{ARP}2/3$ $\\text{nuclea}$ $\\text{nuevos}$ $\\text{filamentos}$ $\\text{de}$ $\\text{actina}$ $\\text{en}$ $\\text{un}$ $\\text{ángulo}$ $\\text{de}$ $70^{\\circ}$ $\\text{respecto}$ $\\text{a}$ $\\text{los}$ $\\text{filamentos}$ $\\text{existentes}$, $\\text{creando}$ $\\text{la}$ $\\text{red}$ $\\text{ramificada}$ $\\text{del}$ $\\text{lamelipodio}$." },
+                { "text": "Actina $\\text{lineal}$", "isCorrect": false, "rationale": "La $\\text{actina}$ $\\text{lineal}$ $\\text{es}$ $\\text{nucleada}$ $\\text{por}$ $\\text{forminas}$." },
+                { "text": "Microtúbulos", "isCorrect": false, "rationale": "Los $\\text{microtúbulos}$ $\\text{son}$ $\\text{nucleados}$ $\\text{por}$ $\\text{tubulina}$ $\\gamma$." },
+                { "text": "Filamentos $\\text{intermedios}$", "isCorrect": false, "rationale": "Los $\\text{filamentos}$ $\\text{intermedios}$ $\\text{se}$ $\\text{autoensamblan}$." }
+            ]
+        },
+        {
+            "questionNumber": 29,
+            "question": "La $\\text{glucólisis}$ $\\text{ocurre}$ $\\text{en}$:",
+            "answerOptions": [
+                { "text": "Citosol", "isCorrect": true, "rationale": "La $\\text{glucólisis}$ $\\text{($\text{conversión}$ $\text{de}$ $\text{glucosa}$ $\text{en}$ $\text{piruvato}$)} $\\text{es}$ $\\text{la}$ $\\text{vía}$ $\\text{metabólica}$ $\\text{inicial}$ $\\text{que}$ $\\text{ocurre}$ $\\text{en}$ $\\text{el}$ $\\text{citosol}$ $\\text{y}$ $\\text{no}$ $\\text{requiere}$ $\\text{oxígeno}$." },
+                { "text": "Matriz $\\text{mitocondrial}$", "isCorrect": false, "rationale": "La $\\text{matriz}$ $\\text{mitocondrial}$ $\\text{alberga}$ $\\text{el}$ $\\text{Ciclo}$ $\\text{de}$ $\\text{Krebs}$." },
+                { "text": "Membrana $\\text{mitocondrial}$ $\\text{interna}$", "isCorrect": false, "rationale": "La $\\text{membrana}$ $\\text{mitocondrial}$ $\\text{interna}$ $\\text{aloja}$ $\\text{la}$ $\\text{fosforilación}$ $\\text{oxidativa}$." },
+                { "text": "Núcleo", "isCorrect": false, "rationale": "El $\\text{núcleo}$ $\\text{es}$ $\\text{el}$ $\\text{sitio}$ $\\text{de}$ $\\text{transcripción}$." }
+            ]
+        },
+        {
+            "questionNumber": 30,
+            "question": "El $\\text{piruvato}$ $\\text{en}$ $\\text{condiciones}$ $\\text{anaeróbicas}$ $\\text{se}$ $\\text{convierte}$ $\\text{en}$:",
+            "answerOptions": [
+                { "text": "Lactato", "isCorrect": true, "rationale": "En $\\text{condiciones}$ $\\text{anaeróbicas}$ $\\text{($\text{falta}$ $\text{de}$ $\text{O}_2$)}, $\\text{el}$ $\\text{piruvato}$ $\\text{se}$ $\\text{convierte}$ $\\text{en}$ $\\text{lactato}$ $\\text{para}$ $\\text{regenerar}$ $\\text{NAD}^{+}$ $\\text{($\text{necesario}$ $\text{para}$ $\text{mantener}$ $\text{la}$ $\text{glucólisis}$)}$." },
+                { "text": "Acetil-CoA", "isCorrect": false, "rationale": "El $\\text{piruvato}$ $\\text{se}$ $\\text{convierte}$ $\\text{en}$ $\\text{acetil}$-$\\text{CoA}$ $\\text{en}$ $\\text{condiciones}$ $\\text{aeróbicas}$." },
+                { "text": "ATP", "isCorrect": false, "rationale": "El $\\text{ATP}$ $\\text{es}$ $\\text{el}$ $\\text{producto}$ $\\text{final}$ $\\text{de}$ $\\text{la}$ $\\text{cadena}$ $\\text{respiratoria}$." },
+                { "text": "Glucosa", "isCorrect": false, "rationale": "El $\\text{piruvato}$ $\\text{es}$ $\\text{un}$ $\\text{precursor}$ $\\text{de}$ $\\text{la}$ $\\text{glucosa}$ $\\text{($\text{gluconeogénesis}$)}$." }
+            ]
+        },
+        {
+            "questionNumber": 31,
+            "question": "El $\\text{Ciclo}$ $\\text{de}$ $\\text{Krebs}$ $\\text{se}$ $\\text{lleva}$ $\\text{a}$ $\\text{cabo}$ $\\text{en}$:",
+            "answerOptions": [
+                { "text": "Matriz $\\text{mitocondrial}$", "isCorrect": true, "rationale": "El $\\text{Ciclo}$ $\\text{de}$ $\\text{Krebs}$ $\\text{($\text{o}$ $\text{ciclo}$ $\text{del}$ $\text{ácido}$ $\text{cítrico}$)} $\\text{es}$ $\\text{la}$ $\\text{vía}$ $\\text{metabólica}$ $\\text{central}$ $\\text{que}$ $\\text{oxida}$ $\\text{el}$ $\\text{acetil}$-$\\text{CoA}$ $\\text{y}$ $\\text{genera}$ $\\text{poder}$ $\\text{reductor}$ ($\text{NADH}, \text{FADH}_2$) $\\text{en}$ $\\text{la}$ $\\text{matriz}$ $\\text{mitocondrial}$." },
+                { "text": "Citoplasma", "isCorrect": false, "rationale": "El $\\text{citoplasma}$ $\\text{aloja}$ $\\text{la}$ $\\text{glucólisis}$." },
+                { "text": "Núcleo", "isCorrect": false, "rationale": "El $\\text{núcleo}$ $\\text{almacena}$ $\\text{el}$ $\\text{ADN}$." },
+                { "text": "Membrana $\\text{plasmática}$", "isCorrect": false, "rationale": "La $\\text{membrana}$ $\\text{plasmática}$ $\\text{media}$ $\\text{el}$ $\\text{transporte}$." }
+            ]
+        },
+        {
+            "questionNumber": 32,
+            "question": "La $\\text{fosforilación}$ $\\text{oxidativa}$ $\\text{depende}$ $\\text{de}$:",
+            "answerOptions": [
+                { "text": "Cadena $\\text{de}$ $\\text{transporte}$ $\\text{de}$ $\\text{electrones}$", "isCorrect": true, "rationale": "La $\\text{fosforilación}$ $\\text{oxidativa}$ $\\text{es}$ $\\text{el}$ $\\text{proceso}$ $\\text{que}$ $\\text{utiliza}$ $\\text{la}$ $\\text{energía}$ $\\text{liberada}$ $\\text{por}$ $\\text{la}$ $\\text{cadena}$ $\\text{de}$ $\\text{transporte}$ $\\text{de}$ $\\text{electrones}$ $\\text{($\text{a}$ $\text{través}$ $\text{de}$ $\text{la}$ $\text{síntesis}$ $\text{de}$ $\text{ATP}$ $\text{por}$ $\text{ATP}$ $\text{sintasa}$)}$." },
+                { "text": "Glucólisis", "isCorrect": false, "rationale": "La $\\text{glucólisis}$ $\\text{es}$ $\\text{un}$ $\\text{paso}$ $\\text{previo}$." },
+                { "text": "$\text{FAD}$ $\\text{reducido}$", "isCorrect": false, "rationale": "El $\\text{FAD}$ $\\text{reducido}$ $\\text{($\text{FADH}2$)} $\\text{es}$ $\\text{un}$ $\\text{donador}$ $\\text{de}$ $\\text{electrones}$." },
+                { "text": "$\\text{H}^{+}$ $\\text{en}$ $\\text{la}$ $\\text{matriz}$", "isCorrect": false, "rationale": "El $\\text{gradiente}$ $\\text{de}$ $\\text{H}^{+}$ $\\text{se}$ $\\text{genera}$ $\\text{en}$ $\\text{el}$ $\\text{espacio}$ $\\text{intermembrana}$." }
+            ]
+        },
+        {
+            "questionNumber": 33,
+            "question": "La $\\text{ATP}$ $\\text{sintasa}$ $\\text{utiliza}$:",
+            "answerOptions": [
+                { "text": "Gradiente $\\text{de}$ $\\text{protones}$", "isCorrect": true, "rationale": "La $\\text{ATP}$ $\\text{sintasa}$ $\\text{es}$ $\\text{una}$ $\\text{nanomáquina}$ $\\text{rotatoria}$ $\\text{que}$ $\\text{utiliza}$ $\\text{la}$ $\\text{energía}$ $\\text{del}$ $\\text{flujo}$ $\\text{de}$ $\\text{protones}$ $\\text{($\text{H}^{+}$)} $\\text{a}$ $\\text{favor}$ $\\text{de}$ $\\text{su}$ $\\text{gradiente}$ $\\text{($\text{fuerza}$ $\text{protón}$-$\\text{motriz}$)} $\\text{para}$ $\\text{sintetizar}$ $\\text{ATP}$." },
+                { "text": "Glucosa", "isCorrect": false, "rationale": "La $\\text{glucosa}$ $\\text{es}$ $\\text{el}$ $\\text{substrato}$ $\\text{inicial}$ $\\text{de}$ $\\text{la}$ $\\text{glucólisis}$." },
+                { "text": "Cloro $\\text{($\text{Cl}^{-}$)}$", "isCorrect": false, "rationale": "El $\\text{cloro}$ $\\text{es}$ $\\text{un}$ $\\text{ion}$ $\\text{regulador}$ $\\text{de}$ $\\text{membrana}$." },
+                { "text": "Fibras $\\text{de}$ $\\text{actina}$", "isCorrect": false, "rationale": "Las $\\text{fibras}$ $\\text{de}$ $\\text{actina}$ $\\text{forman}$ $\\text{el}$ $\\text{citoesqueleto}$." }
+            ]
+        },
+        {
+            "questionNumber": 34,
+            "question": "La $\\text{quinasa}$ $\\text{TOR}$ ($\text{mTOR}$) $\\text{se}$ $\\text{activa}$ $\\text{por}$:",
+            "answerOptions": [
+                { "text": "Abundancia $\\text{de}$ $\\text{nutrientes}$ $\\text{y}$ $\\text{energía}$", "isCorrect": true, "rationale": "mTOR ($\text{mechanistic}$ $\\text{Target}$ $\text{Of}$ $\text{Rapamycin}$) $\\text{es}$ $\\text{la}$ $\\text{quinasa}$ $\\text{maestra}$ $\\text{que}$ $\\text{regula}$ $\\text{el}$ $\\text{crecimiento}$ $\\text{y}$ $\\text{la}$ $\\text{proliferación}$ $\\text{celular}$, $\\text{activándose}$ $\\text{solo}$ $\\text{cuando}$ $\\text{hay}$ $\\text{suficientes}$ $\\text{aminoácidos}$, $\\text{glucosa}$ $\\text{y}$ $\\text{factores}$ $\\text{de}$ $\\text{crecimiento}$." },
+                { "text": "Estrés $\\text{celular}$", "isCorrect": false, "rationale": "El $\\text{estrés}$ $\\text{celular}$ $\\text{($\text{falta}$ $\text{de}$ $\text{ATP}$)}$ $\\text{activa}$ $\\text{AMPK}$, $\\text{que}$ $\\text{inhibe}$ $\\text{mTOR}$." },
+                { "text": "Activación $\\text{de}$ $\\text{p}53$", "isCorrect": false, "rationale": "La $\\text{activación}$ $\\text{de}$ $\\text{p}53$ $\\text{detiene}$ $\\text{el}$ $\\text{crecimiento}$." },
+                { "text": "Inactivación $\\text{de}$ $\\text{AKT}$", "isCorrect": false, "rationale": "La $\\text{inactivación}$ $\\text{de}$ $\\text{AKT}$ $\\text{inhibe}$ $\\text{mTOR}$." }
+            ]
+        },
+        {
+            "questionNumber": 35,
+            "question": "La $\\text{proteína}$ $\\text{AMPK}$ $\\text{actúa}$ $\\text{como}$:",
+            "answerOptions": [
+                { "text": "Sensor $\\text{de}$ $\\text{baja}$ $\\text{energía}$", "isCorrect": true, "rationale": "AMPK ($\text{AMP}$-$\\text{activated}$ $\\text{protein}$ $\\text{Kinase}$) $\\text{se}$ $\\text{activa}$ $\\text{cuando}$ $\\text{la}$ $\\text{relación}$ $\\text{AMP}/\text{ATP}$ $\\text{aumenta}$ $\\text{($\text{baja}$ $\text{energía}$)}$. $\\text{Su}$ $\\text{activación}$ $\\text{promueve}$ $\\text{el}$ $\\text{catabolismo}$ $\\text{($\text{producción}$ $\text{de}$ $\text{ATP}$)} $\\text{e}$ $\\text{inhibe}$ $\\text{el}$ $\\text{anabolismo}$ ($\text{mTOR}$)." },
+                { "text": "Activador $\\text{de}$ $\\text{síntesis}$ $\\text{de}$ $\\text{proteínas}$", "isCorrect": false, "rationale": "La $\\text{AMPK}$ $\\text{inhibe}$ $\\text{la}$ $\\text{síntesis}$ $\\text{de}$ $\\text{proteínas}$ $\\text{vía}$ $\\text{mTOR}$." },
+                { "text": "Factor $\\text{de}$ $\\text{transcripción}$ $\\text{mitótico}$", "isCorrect": false, "rationale": "La $\\text{AMPK}$ $\\text{es}$ $\\text{una}$ $\\text{quinasa}$ $\\text{citosólica}$." },
+                { "text": "Regulador $\\text{del}$ $\\text{pH}$ $\\text{lisosomal}$", "isCorrect": false, "rationale": "El $\\text{pH}$ $\\text{lisosomal}$ $\\text{es}$ $\\text{regulada}$ $\\text{por}$ $\\text{V}$-$\\text{ATPasa}$." }
+            ]
+        },
+        {
+            "questionNumber": 36,
+            "question": "El $\\text{efecto}$ $\\text{Warburg}$ $\\text{en}$ $\\text{cáncer}$ $\\text{describe}$:",
+            "answerOptions": [
+                { "text": "Producción $\\text{de}$ $\\text{ATP}$ $\\text{vía}$ $\\text{fosforilación}$ $\\text{oxidativa}$", "isCorrect": false, "rationale": "La $\\text{fosforilación}$ $\\text{oxidativa}$ $\\text{es}$ $\\text{inhibida}$ $\\text{en}$ $\\text{el}$ $\\text{efecto}$ $\\text{Warburg}$." },
+                { "text": "Metabolismo $\\text{aeróbico}$ $\\text{basado}$ $\\text{en}$ $\\text{Ciclo}$ $\\text{de}$ $\\text{Krebs}$", "isCorrect": false, "rationale": "El $\\text{metabolismo}$ $\\text{aeróbico}$ $\\text{basado}$ $\\text{en}$ $\\text{el}$ $\\text{Ciclo}$ $\\text{de}$ $\\text{Krebs}$ $\\text{es}$ $\\text{la}$ $\\text{vía}$ $\\text{aeróbica}$ $\\text{normal}$." },
+                { "text": "Glucólisis $\\text{aeróbica}$ $\\text{($\text{piruvato}$ $\text{a}$ $\text{lactato}$ $\text{con}$ $\text{O}_2$ $\text{presente}$)}$", "isCorrect": true, "rationale": "El $\\text{efecto}$ $\\text{Warburg}$ $\\text{es}$ $\\text{la}$ $\\text{adaptación}$ $\\text{metabólica}$ $\\text{en}$ $\\text{la}$ $\\text{que}$ $\\text{las}$ $\\text{células}$ $\\text{cancerosas}$ $\\text{consumen}$ $\\text{glucosa}$ $\\text{de}$ $\\text{forma}$ $\\text{masiva}$ $\\text{($\text{glucólisis}$ $\text{aeróbica}$)} $\\text{y}$ $\\text{producen}$ $\\text{lactato}$ $\\text{incluso}$ $\\text{en}$ $\\text{presencia}$ $\\text{de}$ $\\text{oxígeno}$." },
+                { "text": "Degradación $\\text{de}$ $\\text{mTOR}$", "isCorrect": false, "rationale": "La $\\text{degradación}$ $\\text{de}$ $\\text{mTOR}$ $\\text{no}$ $\\text{es}$ $\\text{parte}$ $\\text{del}$ $\\text{efecto}$ $\\text{Warburg}$." }
+            ]
+        },
+        {
+            "questionNumber": 37,
+            "question": "El $\\text{objetivo}$ $\\text{del}$ $\\text{efecto}$ $\\text{Warburg}$ $\\text{es}$:",
+            "answerOptions": [
+                { "text": "Maximizar $\\text{la}$ $\\text{producción}$ $\\text{de}$ $\\text{ATP}$ $\\text{rápida}$", "isCorrect": false, "rationale": "La $\\text{fosforilación}$ $\\text{oxidativa}$ $\\text{produce}$ $\\text{más}$ $\\text{ATP}$ $\\text{por}$ $\\text{glucosa}$." },
+                { "text": "Optimizar $\\text{la}$ $\\text{respiración}$ $\\text{mitocondrial}$", "isCorrect": false, "rationale": "La $\\text{respiración}$ $\\text{mitocondrial}$ $\\text{es}$ $\\text{inhibida}$." },
+                { "text": "Generar $\\text{intermediarios}$ $\\text{para}$ $\\text{biosíntesis}$ $\\text{($\text{nucleótidos}, \text{lípidos}$)}$", "isCorrect": true, "rationale": "El $\\text{efecto}$ $\\text{Warburg}$ $\\text{desvía}$ $\\text{los}$ $\\text{intermediarios}$ $\\text{de}$ $\\text{la}$ $\\text{glucólisis}$ $\\text{y}$ $\\text{el}$ $\\text{Ciclo}$ $\\text{de}$ $\\text{Krebs}$ $\\text{($\text{ej}$. $\text{citrato}$)} $\\text{hacia}$ $\\text{rutas}$ $\\text{de}$ $\\text{biosíntesis}$ ($\text{síntesis}$ $\text{de}$ $\text{lípidos}, \text{nucleótidos}, \text{aminoácidos}$), $\\text{esenciales}$ $\\text{para}$ $\\text{el}$ $\\text{crecimiento}$ $\\text{rápido}$." },
+                { "text": "Aumentar $\\text{la}$ $\\text{sensibilidad}$ $\\text{a}$ $\\text{la}$ $\\text{apoptosis}$", "isCorrect": false, "rationale": "El $\\text{efecto}$ $\\text{Warburg}$ $\\text{promueve}$ $\\text{la}$ $\\text{supervivencia}$." }
+            ]
+        },
+        {
+            "questionNumber": 38,
+            "question": "El $\\text{glutamato}$ $\\text{es}$ $\\text{un}$ $\\text{sustrato}$ $\\text{clave}$ $\\text{en}$ $\\text{células}$ $\\text{cancerosas}$ $\\text{porque}$:",
+            "answerOptions": [
+                { "text": "Es $\\text{la}$ $\\text{única}$ $\\text{fuente}$ $\\text{de}$ $\\text{ATP}$", "isCorrect": false, "rationale": "La $\\text{glucosa}$ $\\text{es}$ $\\text{la}$ $\\text{fuente}$ $\\text{principal}$ $\\text{de}$ $\\text{ATP}$." },
+                { "text": "Activa $\\text{la}$ $\\text{vía}$ $\\text{Wnt}$", "isCorrect": false, "rationale": "La $\\text{vía}$ $\\text{Wnt}$ $\\text{regula}$ $\\beta$-$\\text{catenina}$." },
+                { "text": "Alimenta $\\text{el}$ $\\text{Ciclo}$ $\\text{de}$ $\\text{Krebs}$ $\\text{vía}$ $\\text{glutaminólisis}$", "isCorrect": true, "rationale": "La $\\text{glutaminólisis}$ $\\text{es}$ $\\text{una}$ $\\text{vía}$ $\\text{metabólica}$ $\\text{donde}$ $\\text{la}$ $\\text{glutamina}$ $\\text{se}$ $\\text{convierte}$ $\\text{en}$ $\\alpha$-$\\text{cetoglutarato}$ $\\text{($\text{un}$ $\text{intermediario}$ $\text{del}$ $\text{Ciclo}$ $\text{de}$ $\text{Krebs}$)}$, $\\text{asegurando}$ $\\text{la}$ $\\text{producción}$ $\\text{de}$ $\\text{intermediarios}$ $\\text{para}$ $\\text{la}$ $\\text{biosíntesis}$ $\\text{($\text{anaplerosis}$)}$." },
+                { "text": "Inhibe $\\text{la}$ $\\text{glucólisis}$", "isCorrect": false, "rationale": "La $\\text{glutaminólisis}$ $\\text{complementa}$ $\\text{a}$ $\\text{la}$ $\\text{glucólisis}$." }
+            ]
+        },
+        {
+            "questionNumber": 39,
+            "question": "Los $\\text{filamentos}$ $\\text{intermedios}$ $\\text{son}$ $\\text{los}$ $\\text{más}$ $\\text{estables}$ $\\text{porque}$:",
+            "answerOptions": [
+                { "text": "Se $\\text{ensamblan}$ $\\text{a}$ $\\text{partir}$ $\\text{de}$ $\\text{tetrámeros}$ $\\text{sin}$ $\\text{polaridad}$", "isCorrect": true, "rationale": "La $\\text{falta}$ $\\text{de}$ $\\text{polaridad}$ $\\text{($\text{extremos}$ $\text{iguales}$ $\text{debido}$ $\text{al}$ $\text{ensamblaje}$ $\text{de}$ $\text{tetrámeros}$ $\text{antiparalelos}$)} $\\text{y}$ $\\text{su}$ $\\text{ensamblaje}$ $\\text{sin}$ $\\text{consumo}$ $\\text{de}$ $\\text{nucleótidos}$ $\\text{conferen}$ $\\text{una}$ $\\text{gran}$ $\\text{estabilidad}$ $\\text{estructural}$ $\\text{a}$ $\\text{los}$ $\\text{filamentos}$ $\\text{intermedios}$." },
+                { "text": "Usan $\\text{GTP}$ $\\text{para}$ $\\text{polimerizar}$", "isCorrect": false, "rationale": "El $\\text{uso}$ $\\text{de}$ $\\text{GTP}$ $\\text{conduce}$ $\\text{a}$ $\\text{la}$ $\\text{inestabilidad}$ $\\text{dinámica}$ $\\text{($\text{microtúbulos}$)}$." },
+                { "text": "Presentan $\\text{treadmilling}$", "isCorrect": false, "rationale": "El $\\text{treadmilling}$ $\\text{es}$ $\\text{un}$ $\\text{proceso}$ $\\text{dinámico}$ $\\text{($\text{actina}$)}$." },
+                { "text": "Son $\\text{haces}$ $\\text{contráctiles}$", "isCorrect": false, "rationale": "Los $\\text{haces}$ $\\text{contráctiles}$ $\\text{son}$ $\\text{fibras}$ $\\text{de}$ $\\text{actina}$ $\\text{y}$ $\\text{miosina}$." }
+            ]
+        },
+        {
+            "questionNumber": 40,
+            "question": "La $\\text{formina}$ $\\text{regula}$ $\\text{la}$ $\\text{actina}$ $\\text{mediante}$:",
+            "answerOptions": [
+                { "text": "Nucleación $\\text{de}$ $\\text{filamentos}$ $\\text{lineales}$", "isCorrect": true, "rationale": "La $\\text{formina}$ $\\text{es}$ $\\text{una}$ $\\text{proteína}$ $\\text{nucleadora}$ $\\text{que}$ $\\text{se}$ $\\text{une}$ $\\text{al}$ $\\text{extremo}$ $\\text{(+)}$ $\\text{de}$ $\\text{la}$ $\\text{actina}$ $\\text{para}$ $\\text{promover}$ $\\text{la}$ $\\text{elongación}$ $\\text{rápida}$ $\\text{y}$ $\\text{la}$ $\\text{formación}$ $\\text{de}$ $\\text{haces}$ $\\text{paralelos}$ ($\text{filopodios}$ $\\text{o}$ $\text{fibras}$ $\\text{de}$ $\text{estrés}$)." },
+                { "text": "Corte $\\text{de}$ $\\text{filamentos}$", "isCorrect": false, "rationale": "El $\\text{corte}$ $\\text{de}$ $\\text{filamentos}$ $\\text{es}$ $\\text{por}$ $\\text{cofilina}$." },
+                { "text": "Ramificación", "isCorrect": false, "rationale": "La $\\text{ramificación}$ $\\text{es}$ $\\text{por}$ $\\text{el}$ $\\text{complejo}$ $\\text{ARP}2/3$." },
+                { "text": "Inhibición $\\text{de}$ $\\text{miosina}$ $\\text{II}$", "isCorrect": false, "rationale": "La $\\text{miosina}$ $\\text{II}$ $\\text{es}$ $\\text{regulada}$ $\\text{por}$ $\\text{RhoA}$." }
+            ]
+        },
+        {
+            "questionNumber": 41,
+            "question": "La $\\text{inestabilidad}$ $\\text{dinámica}$ $\\text{de}$ $\\text{los}$ $\\text{microtúbulos}$ $\\text{se}$ $\\text{debe}$ $\\text{a}$:",
+            "answerOptions": [
+                { "text": "Catástrofe $\\text{y}$ $\\text{rescate}$", "isCorrect": true, "rationale": "La $\\text{inestabilidad}$ $\\text{dinámica}$ $\\text{es}$ $\\text{el}$ $\\text{comportamiento}$ $\\text{de}$ $\\text{los}$ $\\text{microtúbulos}$ $\\text{que}$ $\\text{alternan}$ $\\text{entre}$ $\\text{periodos}$ $\\text{de}$ $\\text{crecimiento}$ $\\text{lento}$ $\\text{($\text{rescate}$)}$ $\\text{y}$ $\\text{acortamiento}$ $\\text{rápido}$ $\\text{($\text{catástrofe}$)}$." },
+                { "text": "Miosina $\\text{II}$", "isCorrect": false, "rationale": "La $\\text{miosina}$ $\\text{II}$ $\\text{es}$ $\\text{el}$ $\\text{motor}$ $\\text{de}$ $\\text{actina}$." },
+                { "text": "Tropomiosina", "isCorrect": false, "rationale": "La $\\text{tropomiosina}$ $\\text{estabiliza}$ $\\text{la}$ $\\text{actina}$." },
+                { "text": "Ensamblaje $\\text{sin}$ $\\text{polaridad}$", "isCorrect": false, "rationale": "Los $\\text{microtúbulos}$ $\\text{sí}$ $\\text{tienen}$ $\\text{polaridad}$." }
+            ]
+        },
+        {
+            "questionNumber": 42,
+            "question": "La $\\text{proteína}$ $\\text{cofilina}$ $\\text{actúa}$ $\\text{sobre}$ $\\text{la}$ $\\text{actina}$:",
+            "answerOptions": [
+                { "text": "Promoviendo $\\text{la}$ $\\text{fragmentación}$ $\\text{y}$ $\\text{despolimerización}$", "isCorrect": true, "rationale": "La $\\text{cofilina}$ $\\text{se}$ $\\text{une}$ $\\text{a}$ $\\text{la}$ $\\text{actina}$-$\\text{ADP}$ $\\text{($\text{actina}$ $\text{vieja}$ $\text{en}$ $\text{el}$ $\text{extremo}$ $\text{(-)}$)} $\\text{y}$ $\\text{fuerza}$ $\\text{la}$ $\\text{torsión}$ $\\text{del}$ $\\text{filamento}$, $\\text{aumentando}$ $\\text{la}$ $\\text{tasa}$ $\\text{de}$ $\\text{despolimerización}$ $\\text{($\text{necesario}$ $\text{para}$ $\text{la}$ $\text{migración}$)}$." },
+                { "text": "Estabilizando $\\text{el}$ $\\text{filamento}$", "isCorrect": false, "rationale": "La $\\text{estabilización}$ $\\text{es}$ $\\text{por}$ $\\text{tropomiosina}$." },
+                { "text": "Nucleando $\\text{ramificaciones}$", "isCorrect": false, "rationale": "La $\\text{nucleación}$ $\\text{de}$ $\\text{ramificaciones}$ $\\text{es}$ $\\text{por}$ $\\text{ARP}2/3$." },
+                { "text": "Uniéndose $\\text{al}$ $\\text{extremo}$ $\\text{(+)}$ $\\text{para}$ $\\text{detener}$ $\\text{el}$ $\\text{crecimiento}$", "isCorrect": false, "rationale": "La $\\text{unión}$ $\\text{al}$ $\\text{extremo}$ $\\text{(+)}$ $\\text{es}$ $\\text{por}$ $\\text{proteínas}$ $\\text{de}$ $\\text{capping}$ $\\text{($\text{CapZ}$)}$." }
+            ]
+        },
+        {
+            "questionNumber": 43,
+            "question": "El $\\text{cilio}$ $\\text{primario}$ $\\text{es}$ $\\text{una}$ $\\text{estructura}$ $\\text{($\text{axonema}$)} $\\text{con}$ $\\text{una}$ $\\text{organización}$ $\\text{de}$:",
+            "answerOptions": [
+                { "text": "$9+0$", "isCorrect": true, "rationale": "El $\\text{cilio}$ $\\text{primario}$ $\\text{es}$ $\\text{no}$ $\\text{móvil}$ $\\text{y}$ $\\text{sensitivo}$. $\\text{Su}$ $\\text{axonema}$ $\\text{presenta}$ $\\text{nueve}$ $\\text{dobletes}$ $\\text{de}$ $\\text{microtúbulos}$ $\\text{periféricos}$ $\\text{($\text{9}$)} $\\text{pero}$ $\\text{carece}$ $\\text{del}$ $\\text{par}$ $\\text{central}$ $\\text{($\text{0}$)}." },
+                { "text": "$9+2$", "isCorrect": false, "rationale": "La $\\text{estructura}$ $9+2$ $\\text{es}$ $\\text{del}$ $\\text{cilio}$ $\\text{móvil}$." },
+                { "text": "9 $\\text{tripletes}$", "isCorrect": false, "rationale": "La $\\text{estructura}$ $\\text{de}$ $\\text{9}$ $\\text{tripletes}$ $\\text{es}$ $\\text{del}$ $\\text{cuerpo}$ $\\text{basal}$ $\\text{o}$ $\\text{centriolo}$." },
+                { "text": "Red $\\text{de}$ $\\text{actina}$", "isCorrect": false, "rationale": "La $\\text{actina}$ $\\text{forma}$ $\\text{microfilamentos}$." }
+            ]
+        },
+        {
+            "questionNumber": 44,
+            "question": "La $\\text{dinámica}$ $\\text{de}$ $\\text{microtúbulos}$ $\\text{($\text{catástrofe}/\text{rescate}$)} $\\text{es}$ $\\text{crucial}$ $\\text{durante}$:",
+            "answerOptions": [
+                { "text": "Mitosis", "isCorrect": true, "rationale": "La $\\text{inestabilidad}$ $\\text{dinámica}$ $\\text{($\text{constante}$ $\text{crecimiento}$ $\text{y}$ $\text{acortamiento}$)} $\\text{de}$ $\\text{los}$ $\\text{microtúbulos}$ $\\text{es}$ $\\text{esencial}$ $\\text{para}$ $\\text{la}$ $\\text{búsqueda}$ $\\text{y}$ $\\text{captura}$ $\\text{de}$ $\\text{los}$ $\\text{cromosomas}$ $\\text{por}$ $\\text{el}$ $\\text{huso}$ $\\text{mitótico}$." },
+                { "text": "Fase $\\text{G}0$", "isCorrect": false, "rationale": "En $\\text{G}0$ $\\text{los}$ $\\text{microtúbulos}$ $\\text{están}$ $\\text{más}$ $\\text{estables}$." },
+                { "text": "Apoptosis", "isCorrect": false, "rationale": "La $\\text{apoptosis}$ $\\text{desintegra}$ $\\text{el}$ $\\text{citoesqueleto}$." },
+                { "text": "Diferenciación $\\text{terminal}$", "isCorrect": false, "rationale": "La $\\text{diferenciación}$ $\\text{terminal}$ $\\text{se}$ $\\text{asocia}$ $\\text{a}$ $\\text{estructuras}$ $\\text{de}$ $\\text{citoesqueleto}$ $\\text{más}$ $\\text{estables}$." }
+            ]
+        },
+        {
+            "questionNumber": 45,
+            "question": "El $\\text{transporte}$ $\\text{activo}$ $\\text{secundario}$ $\\text{($\text{cotransporte}$)}$ $\\text{utiliza}$:",
+            "answerOptions": [
+                { "text": "Gradiente $\\text{de}$ $\\text{Na}^{+}$ $\\text{($\text{o}$ $\text{H}^{+}$)}$", "isCorrect": true, "rationale": "El $\\text{transporte}$ $\\text{activo}$ $\\text{secundario}$ $\\text{acopla}$ $\\text{el}$ $\\text{movimiento}$ $\\text{exergónico}$ $\\text{de}$ $\\text{un}$ $\\text{ion}$ $\\text{($\text{ej}$. $\text{Na}^{+}$)} $\\text{a}$ $\\text{favor}$ $\\text{de}$ $\\text{su}$ $\\text{gradiente}$ $\\text{con}$ $\\text{el}$ $\\text{movimiento}$ $\\text{endergónico}$ $\\text{de}$ $\\text{un}$ $\\text{segundo}$ $\\text{soluto}$ $\\text{en}$ $\\text{contra}$ $\\text{de}$ $\\text{su}$ $\\text{gradiente}$." },
+                { "text": "Hidrólisis $\\text{directa}$ $\\text{de}$ $\\text{ATP}$", "isCorrect": false, "rationale": "La $\\text{hidrólisis}$ $\\text{directa}$ $\\text{de}$ $\\text{ATP}$ $\\text{es}$ $\\text{transporte}$ $\\text{activo}$ $\\text{primario}$." },
+                { "text": "Receptores $\\text{RTK}$", "isCorrect": false, "rationale": "Los $\\text{receptores}$ $\\text{RTK}$ $\\text{regulan}$ $\\text{la}$ $\\text{señalización}$ $\\text{de}$ $\\text{crecimiento}$." },
+                { "text": "Clatrina", "isCorrect": false, "rationale": "La $\\text{clatrina}$ $\\text{es}$ $\\text{una}$ $\\text{proteína}$ $\\text{de}$ $\\text{cubierta}$ $\\text{vesicular}$." }
+            ]
+        },
+        {
+            "questionNumber": 46,
+            "question": "El $\\text{transporte}$ $\\text{activo}$ $\\text{secundario}$ $\\text{puede}$ $\\text{ser}$:",
+            "answerOptions": [
+                { "text": "Simport $\\text{o}$ $\\text{antiport}$", "isCorrect": true, "rationale": "El $\\text{cotransporte}$ $\\text{($\text{transporte}$ $\text{activo}$ $\text{secundario}$)} $\\text{puede}$ $\\text{mover}$ $\\text{ambos}$ $\\text{solutos}$ $\\text{en}$ $\\text{la}$ $\\text{misma}$ $\\text{dirección}$ $\\text{($\text{simport}$)} $\\text{o}$ $\\text{en}$ $\\text{direcciones}$ $\\text{opuestas}$ $\\text{($\text{antiport}$)}$." },
+                { "text": "Unipor $\\text{o}$ $\\text{difusión}$", "isCorrect": false, "rationale": "El $\\text{uniport}$ $\\text{y}$ $\\text{la}$ $\\text{difusión}$ $\\text{son}$ $\\text{tipos}$ $\\text{de}$ $\\text{transporte}$ $\\text{pasivo}$." },
+                { "text": "Endocitosis", "isCorrect": false, "rationale": "La $\\text{endocitosis}$ $\\text{es}$ $\\text{el}$ $\\text{transporte}$ $\\text{mediado}$ $\\text{por}$ $\\text{vesículas}$." },
+                { "text": "Pinocitosis", "isCorrect": false, "rationale": "La $\\text{pinocitosis}$ $\\text{es}$ $\\text{una}$ $\\text{forma}$ $\\text{de}$ $\\text{endocitosis}$." }
+            ]
+        },
+        {
+            "questionNumber": 47,
+            "question": "El $\\text{motivo}$ $\\text{de}$ $\\text{las}$ $\\text{balsas}$ $\\text{lipídicas}$ $\\text{es}$ $\\text{la}$ $\\text{concentración}$ $\\text{de}$:",
+            "answerOptions": [
+                { "text": "Colesterol $\\text{y}$ $\\text{esfingolípidos}$", "isCorrect": true, "rationale": "El $\\text{empaquetamiento}$ $\\text{denso}$ $\\text{y}$ $\\text{la}$ $\\text{naturaleza}$ $\\text{rígida}$ $\\text{de}$ $\\text{las}$ $\\text{cadenas}$ $\\text{de}$ $\\text{esfingolípidos}$ $\\text{($\text{esfingomielina}$)}$ $\\text{y}$ $\\text{el}$ $\\text{colesterol}$ $\\text{favorecen}$ $\\text{la}$ $\\text{formación}$ $\\text{de}$ $\\text{estos}$ $\\text{microdominios}$ $\\text{de}$ $\\text{membrana}$." },
+                { "text": "Glucosa $\\text{y}$ $\\text{ATP}$", "isCorrect": false, "rationale": "La $\\text{glucosa}$ $\\text{y}$ $\\text{el}$ $\\text{ATP}$ $\\text{son}$ $\\text{moléculas}$ $\\text{citosólicas}$." },
+                { "text": "Fosfatidilserina", "isCorrect": false, "rationale": "La $\\text{fosfatidilserina}$ $\\text{es}$ $\\text{predominante}$ $\\text{en}$ $\\text{la}$ $\\text{monocapa}$ $\\text{interna}$." },
+                { "text": "Proteínas $\\text{SNARE}$", "isCorrect": false, "rationale": "Las $\\text{SNARE}$ $\\text{median}$ $\\text{la}$ $\\text{fusión}$ $\\text{vesicular}$." }
+            ]
+        },
+        {
+            "questionNumber": 48,
+            "question": "La $\\text{liberación}$ $\\text{de}$ $\\text{neurotransmisores}$ $\\text{es}$ $\\text{un}$ $\\text{ejemplo}$ $\\text{de}$:",
+            "answerOptions": [
+                { "text": "Exocitosis $\\text{regulada}$ $\\text{($\text{dependiente}$ $\text{de}$ $\text{Ca}^{2+}$)}$", "isCorrect": true, "rationale": "La $\\text{liberación}$ $\\text{de}$ $\\text{neurotransmisores}$ $\\text{en}$ $\\text{la}$ $\\text{sinapsis}$ $\\text{es}$ $\\text{un}$ $\\text{proceso}$ $\\text{rápido}$ $\\text{y}$ $\\text{controlado}$ $\\text{que}$ $\\text{requiere}$ $\\text{la}$ $\\text{entrada}$ $\\text{de}$ $\\text{Ca}^{2+}$ $\\text{como}$ $\\text{disparador}$ $\\text{($\text{exocitosis}$ $\text{regulada}$)}$." },
+                { "text": "Exocitosis $\\text{constitutiva}$", "isCorrect": false, "rationale": "La $\\text{exocitosis}$ $\\text{constitutiva}$ $\\text{es}$ $\\text{constante}$ $\\text{y}$ $\\text{no}$ $\\text{regulada}$." },
+                { "text": "Endocitosis", "isCorrect": false, "rationale": "La $\\text{endocitosis}$ $\\text{es}$ $\\text{la}$ $\\text{captura}$ $\\text{de}$ $\\text{moléculas}$ $\\text{hacia}$ $\\text{el}$ $\\text{interior}$." },
+                { "text": "Fagocitosis", "isCorrect": false, "rationale": "La $\\text{fagocitosis}$ $\\text{es}$ $\\text{para}$ $\\text{partículas}$ $\\text{grandes}$." }
+            ]
+        },
+        {
+            "questionNumber": 49,
+            "question": "La $\\text{curvatura}$ $\\text{de}$ $\\text{membrana}$ $\\text{($\text{ej}$. $\text{en}$ $\text{endocitosis}$)} $\\text{es}$ $\\text{inducida}$ $\\text{por}$:",
+            "answerOptions": [
+                { "text": "Proteínas $\\text{BAR}$", "isCorrect": true, "rationale": "Las $\\text{proteínas}$ $\\text{BAR}$ $\\text{se}$ $\\text{unen}$ $\\text{al}$ $\\text{lípido}$ $\\text{PIP}2$ $\\text{y}$, $\\text{debido}$ $\\text{a}$ $\\text{su}$ $\\text{forma}$ $\\text{de}$ $\\text{banana}$, $\\text{inducen}$ $\\text{y}$ $\\text{estabilizan}$ $\\text{la}$ $\\text{curvatura}$ $\\text{positiva}$ $\\text{($\text{hacia}$ $\text{el}$ $\text{citosol}$)} $\\text{necesaria}$ $\\text{para}$ $\\text{la}$ $\\text{formación}$ $\\text{de}$ $\\text{vesículas}$." },
+                { "text": "Miosina $\\text{II}$", "isCorrect": false, "rationale": "La $\\text{miosina}$ $\\text{II}$ $\\text{es}$ $\\text{el}$ $\\text{motor}$ $\\text{contráctil}$." },
+                { "text": "DNMT1", "isCorrect": false, "rationale": "DNMT1 $\\text{metila}$ $\\text{el}$ $\\text{ADN}$." },
+                { "text": "Cloroplastos", "isCorrect": false, "rationale": "Los $\\text{cloroplastos}$ $\\text{son}$ $\\text{para}$ $\\text{la}$ $\\text{fotosíntesis}$." }
+            ]
+        },
+        {
+            "questionNumber": 50,
+            "question": "La $\\text{proteína}$ $\\text{dinamina}$ $\\text{separa}$ $\\text{la}$ $\\text{vesícula}$ $\\text{de}$ $\\text{la}$ $\\text{membrana}$ $\\text{mediante}$:",
+            "answerOptions": [
+                { "text": "Estrangulamiento $\\text{dependiente}$ $\\text{de}$ $\\text{GTP}$", "isCorrect": true, "rationale": "La $\\text{dinamina}$ $\\text{es}$ $\\text{una}$ $\\text{GTPasa}$ $\\text{que}$ $\\text{se}$ $\\text{ensambla}$ $\\text{en}$ $\\text{un}$ $\\text{anillo}$ $\\text{alrededor}$ $\\text{del}$ $\\text{cuello}$ $\\text{de}$ $\\text{la}$ $\\text{vesícula}$ $\\text{y}$ $\\text{utiliza}$ $\\text{la}$ $\\text{hidrólisis}$ $\\text{de}$ $\\text{GTP}$ $\\text{para}$ $\\text{estrangular}$ $\\text{y}$ $\\text{cortar}$ $\\text{la}$ $\\text{membrana}$." },
+                { "text": "Actina $\\text{y}$ $\\text{miosina}$", "isCorrect": false, "rationale": "La $\\text{actina}$ $\\text{y}$ $\\text{la}$ $\\text{miosina}$ $\\text{se}$ $\\text{usan}$ $\\text{en}$ $\\text{la}$ $\\text{citocinesis}$ $\\text{o}$ $\\text{fagocitosis}$." },
+                { "text": "Caspasas", "isCorrect": false, "rationale": "Las $\\text{caspasas}$ $\\text{ejecutan}$ $\\text{la}$ $\\text{apoptosis}$." },
+                { "text": "Bombas $\\text{de}$ $\\text{H}^{+}$", "isCorrect": false, "rationale": "Las $\\text{bombas}$ $\\text{de}$ $\\text{H}^{+}$ $\\text{acidifican}$ $\\text{los}$ $\\text{orgánulos}$." }
+            ]
+        },
+        {
+            "questionNumber": 51,
+            "question": "La $\\text{fusión}$ $\\text{de}$ $\\text{la}$ $\\text{vesícula}$ $\\text{con}$ $\\text{la}$ $\\text{membrana}$ $\\text{diana}$ $\\text{es}$ $\\text{catalizada}$ $\\text{por}$:",
+            "answerOptions": [
+                { "text": "Complejo $\\text{SNARE}$", "isCorrect": true, "rationale": "El $\\text{complejo}$ $\\text{SNARE}$ $\\text{($\text{v}$-$\\text{SNARE}$ $\text{y}$ $\text{t}$-$\\text{SNARE}$)} $\\text{es}$ $\\text{la}$ $\\text{maquinaria}$ $\\text{molecular}$ $\\text{que}$ $\\text{se}$ $\\text{ensambla}$ $\\text{en}$ $\\text{un}$ $\\text{haz}$ $\\text{de}$ $\\text{hélices}$ $\\text{y}$ $\\text{utiliza}$ $\\text{la}$ $\\text{energía}$ $\\text{de}$ $\\text{su}$ $\\text{torsión}$ $\\text{para}$ $\\text{acercar}$ $\\text{las}$ $\\text{membranas}$ $\\text{y}$ $\\text{fusionarlas}$." },
+                { "text": "Ran-GTP", "isCorrect": false, "rationale": "Ran-GTP $\\text{regula}$ $\\text{el}$ $\\text{transporte}$ $\\text{nuclear}$." },
+                { "text": "$\text{ARP}2/3$", "isCorrect": false, "rationale": "ARP2/3 $\\text{nuclea}$ $\\text{actina}$ $\\text{ramificada}$." },
+                { "text": "Clatrina", "isCorrect": false, "rationale": "La $\\text{clatrina}$ $\\text{forma}$ $\\text{el}$ $\\text{recubrimiento}$." }
+            ]
+        },
+        {
+            "questionNumber": 52,
+            "question": "El $\\text{botulismo}$ $\\text{y}$ $\\text{el}$ $\\text{tétanos}$ $\\text{son}$ $\\text{causados}$ $\\text{por}$ $\\text{toxinas}$ $\\text{que}$ $\\text{actúan}$ $\\text{sobre}$:",
+            "answerOptions": [
+                { "text": "Proteínas $\\text{SNARE}$", "isCorrect": true, "rationale": "Las $\\text{toxinas}$ $\\text{botulínica}$ $\\text{y}$ $\\text{tetánica}$ $\\text{son}$ $\\text{proteasas}$ $\\text{que}$ $\\text{clivan}$ $\\text{específicamente}$ $\\text{componentes}$ $\\text{del}$ $\\text{complejo}$ $\\text{SNARE}$ ($\text{sinaptobrevina}, \text{sintaxina}, \text{SNAP}25$), $\\text{bloqueando}$ $\\text{la}$ $\\text{liberación}$ $\\text{de}$ $\\text{neurotransmisores}$." },
+                { "text": "Microtúbulos", "isCorrect": false, "rationale": "La $\\text{colchicina}$ $\\text{actúa}$ $\\text{sobre}$ $\\text{microtúbulos}$." },
+                { "text": "Ribosomas", "isCorrect": false, "rationale": "Las $\\text{toxinas}$ $\\text{que}$ $\\text{inhiben}$ $\\text{los}$ $\\text{ribosomas}$ $\\text{son}$ $\\text{distintas}$." },
+                { "text": "Histonas", "isCorrect": false, "rationale": "Las $\\text{histonas}$ $\\text{se}$ $\\text{encuentran}$ $\\text{en}$ $\\text{el}$ $\\text{núcleo}$." }
+            ]
+        },
+        {
+            "questionNumber": 53,
+            "question": "El $\\text{microscopio}$ $\\text{electrónico}$ $\\text{de}$ $\\text{transmisión}$ $\\text{($\text{TEM}$)} $\\text{permite}$:",
+            "answerOptions": [
+                { "text": "Observar $\\text{la}$ $\\text{ultraestructura}$ $\\text{de}$ $\\text{los}$ $\\text{orgánulos}$", "isCorrect": true, "rationale": "El $\\text{TEM}$ $\\text{utiliza}$ $\\text{electrones}$ $\\text{en}$ $\\text{lugar}$ $\\text{de}$ $\\text{luz}$ $\\text{y}$ $\\text{permite}$ $\\text{una}$ $\\text{resolución}$ $\\text{mucho}$ $\\text{mayor}$ $\\text{($\text{nanómetros}$)} $\\text{que}$ $\\text{el}$ $\\text{óptico}$, $\\text{siendo}$ $\\text{ideal}$ $\\text{para}$ $\\text{observar}$ $\\text{las}$ $\\text{membranas}$ $\\text{internas}$ $\\text{y}$ $\\text{la}$ $\\text{estructura}$ $\\text{fina}$ $\\text{($\text{ultraestructura}$)}$ $\\text{de}$ $\\text{la}$ $\\text{célula}$." },
+                { "text": "Ver $\\text{células}$ $\\text{vivas}$ $\\text{en}$ $\\text{3D}$", "isCorrect": false, "rationale": "La $\\text{observación}$ $\\text{de}$ $\\text{células}$ $\\text{vivas}$ $\\text{es}$ $\\text{por}$ $\\text{microscopía}$ $\\text{de}$ $\\text{contraste}$ $\\text{de}$ $\\text{fase}$ $\\text{o}$ $\\text{confocal}$." },
+                { "text": "Observar $\\text{el}$ $\\text{movimiento}$ $\\text{de}$ $\\text{proteínas}$", "isCorrect": false, "rationale": "El $\\text{movimiento}$ $\\text{de}$ $\\text{proteínas}$ $\\text{se}$ $\\text{ve}$ $\\text{por}$ $\\text{FRAP}$ $\\text{($\text{Fluorescence}$ $\text{Recovery}$ $\text{After}$ $\text{Photobleaching}$)}$." },
+                { "text": "Separar $\\text{orgánulos}$ $\\text{funcionales}$", "isCorrect": false, "rationale": "La $\\text{separación}$ $\\text{de}$ $\\text{orgánulos}$ $\\text{es}$ $\\text{por}$ $\\text{fraccionamiento}$ $\\text{subcelular}$ $\\text{y}$ $\\text{centrifugación}$." }
+            ]
+        },
+        {
+            "questionNumber": 54,
+            "question": "Los $\\text{centriolos}$ $\\text{son}$ $\\text{estructuras}$ $\\text{formadas}$ $\\text{por}$:",
+            "answerOptions": [
+                { "text": "9 $\\text{tripletes}$ $\\text{de}$ $\\text{microtúbulos}$", "isCorrect": true, "rationale": "Los $\\text{centriolos}$ $\\text{y}$ $\\text{los}$ $\\text{cuerpos}$ $\\text{basales}$ $\\text{tienen}$ $\\text{una}$ $\\text{estructura}$ $\\text{de}$ $\\text{9}$ $\\text{grupos}$ $\\text{de}$ $\\text{tres}$ $\\text{microtúbulos}$ $\\text{($\text{tripletes}$)} $\\text{en}$ $\\text{la}$ $\\text{periferia}$ $\\text{($\text{organización}$ $\text{9+0}$)}$." },
+                { "text": "Actina $\\text{y}$ $\\text{miosina}$", "isCorrect": false, "rationale": "La $\\text{actina}$ $\\text{y}$ $\\text{la}$ $\\text{miosina}$ $\\text{forman}$ $\\text{el}$ $\\text{anillo}$ $\\text{contráctil}$." },
+                { "text": "Filamentos $\\text{intermedios}$", "isCorrect": false, "rationale": "Los $\\text{filamentos}$ $\\text{intermedios}$ $\\text{son}$ $\\text{proteínas}$ $\\text{estructurales}$." },
+                { "text": "9 $\\text{dobletes}$ $\\text{+$}$ $\text{2}$ $\\text{centrales}$", "isCorrect": false, "rationale": "La $\\text{estructura}$ $9+2$ $\\text{es}$ $\\text{la}$ $\\text{de}$ $\\text{los}$ $\\text{cilios}$ $\\text{móviles}$." }
+            ]
+        },
+        {
+            "questionNumber": 55,
+            "question": "La $\\text{glucoproteína}$ $\\text{más}$ $\\text{abundante}$ $\\text{en}$ $\\text{la}$ $\\text{membrana}$ $\\text{basal}$ $\\text{es}$:",
+            "answerOptions": [
+                { "text": "Laminina", "isCorrect": true, "rationale": "La $\\text{laminina}$ $\\text{es}$ $\\text{una}$ $\\text{glucoproteína}$ $\\text{gigante}$ $\\text{en}$ $\\text{forma}$ $\\text{de}$ $\\text{cruz}$ $\\text{que}$ $\\text{se}$ $\\text{autoensambla}$ $\\text{en}$ $\\text{una}$ $\\text{red}$ $\\text{bidimensional}$ $\\text{y}$ $\\text{es}$ $\\text{el}$ $\\text{componente}$ $\\text{clave}$ $\\text{que}$ $\\text{organiza}$ $\\text{la}$ $\\text{membrana}$ $\\text{basal}$." },
+                { "text": "Colágeno $\\text{I}$", "isCorrect": false, "rationale": "El $\\text{colágeno}$ $\\text{I}$ $\\text{es}$ $\\text{el}$ $\\text{más}$ $\\text{abundante}$ $\\text{en}$ $\\text{tejido}$ $\\text{conectivo}$ $\\text{($\text{matriz}$ $\text{intersticial}$)}$." },
+                { "text": "Fibronectina", "isCorrect": false, "rationale": "La $\\text{fibronectina}$ $\\text{es}$ $\\text{una}$ $\\text{glucoproteína}$ $\\text{de}$ $\\text{la}$ $\\text{matriz}$ $\\text{intersticial}$." },
+                { "text": "Cadherina", "isCorrect": false, "rationale": "La $\\text{caderina}$ $\\text{es}$ $\\text{una}$ $\\text{proteína}$ $\\text{de}$ $\\text{adhesión}$ $\\text{célula}$-$\\text{célula}$." }
+            ]
+        },
+        {
+            "questionNumber": 56,
+            "question": "El $\\text{Ciclo}$ $\\text{de}$ $\\text{Krebs}$ $\\text{es}$ $\\text{una}$ $\\text{vía}$ $\\text{de}$ $\\text{metabolismo}$:",
+            "answerOptions": [
+                { "text": "Catabólico $\\text{($\text{oxidación}$ $\text{de}$ $\text{acetil}$-$\\text{CoA}$)}$", "isCorrect": true, "rationale": "El $\\text{Ciclo}$ $\\text{de}$ $\\text{Krebs}$ $\\text{es}$ $\\text{una}$ $\\text{ruta}$ $\\text{catabólica}$ $\\text{que}$ $\\text{descompone}$ $\\text{el}$ $\\text{acetil}$-$\\text{CoA}$ $\\text{en}$ $\\text{dióxido}$ $\\text{de}$ $\\text{carbono}$, $\\text{generando}$ $\\text{el}$ $\\text{poder}$ $\\text{reductor}$ $\\text{($\text{NADH}/\text{FADH}2$)}$ $\\text{necesario}$ $\\text{para}$ $\\text{la}$ $\\text{síntesis}$ $\\text{de}$ $\\text{ATP}$." },
+                { "text": "Anabólico $\\text{($\text{síntesis}$ $\text{de}$ $\text{glucosa}$)}$", "isCorrect": false, "rationale": "La $\\text{síntesis}$ $\\text{de}$ $\\text{glucosa}$ $\\text{($\text{gluconeogénesis}$)}$ $\\text{es}$ $\\text{anabólica}$." },
+                { "text": "Regulado $\\text{por}$ $\\text{luz}$", "isCorrect": false, "rationale": "La $\\text{regulación}$ $\\text{por}$ $\\text{luz}$ $\\text{es}$ $\\text{la}$ $\\text{fotosíntesis}$." },
+                { "text": "Sintetizador $\\text{de}$ $\\text{proteínas}$", "isCorrect": false, "rationale": "La $\\text{síntesis}$ $\\text{de}$ $\\text{proteínas}$ $\\text{es}$ $\\text{traducción}$." }
+            ]
+        },
+        {
+            "questionNumber": 57,
+            "question": "Las $\\text{balsas}$ $\\text{lipídicas}$ $\\text{son}$ $\\text{plataformas}$ $\\text{de}$ $\\text{señalización}$ $\\text{gracias}$ $\\text{a}$:",
+            "answerOptions": [
+                { "text": "Su $\\text{rigidez}$ $\\text{y}$ $\\text{composición}$ $\\text{($\text{esfingolípidos}, \text{colesterol}$)}$", "isCorrect": true, "rationale": "La $\\text{alta}$ $\\text{concentración}$ $\\text{de}$ $\\text{colesterol}$ $\\text{y}$ $\\text{esfingolípidos}$ $\\text{hace}$ $\\text{que}$ $\\text{las}$ $\\text{balsas}$ $\\text{sean}$ $\\text{más}$ $\\text{ordenadas}$ $\\text{($\text{rígidas}$)} $\\text{y}$ $\\text{permitan}$ $\\text{la}$ $\\text{coagregación}$ $\\text{de}$ $\\text{receptores}$ $\\text{($\text{ej}$. $\text{GPCR}$ $\text{o}$ $\text{RTK}$)} $\\text{y}$ $\\text{proteínas}$ $\\text{de}$ $\\text{señalización}$." },
+                { "text": "Exclusión $\\text{de}$ $\\text{proteínas}$", "isCorrect": false, "rationale": "Las $\\text{balsas}$ $\\text{incluyen}$ $\\text{proteínas}$ $\\text{selectivas}$." },
+                { "text": "Ausencia $\\text{de}$ $\\text{colesterol}$", "isCorrect": false, "rationale": "Las $\\text{balsas}$ $\\text{son}$ $\\text{ricas}$ $\\text{en}$ $\\text{colesterol}$." },
+                { "text": "Unión $\\text{a}$ $\\text{microtúbulos}$ $\\text{citosólicos}$", "isCorrect": false, "rationale": "La $\\text{unión}$ $\\text{a}$ $\\text{microtúbulos}$ $\\text{es}$ $\\text{una}$ $\\text{función}$ $\\text{del}$ $\\text{citoesqueleto}$." }
+            ]
+        },
+        {
+            "questionNumber": 58,
+            "question": "El $\\text{efecto}$ $\\text{principal}$ $\\text{de}$ $\\text{los}$ $\\text{iones}$ $\\text{Ca}^{2+}$ $\\text{en}$ $\\text{el}$ $\\text{citosol}$ $\\text{es}$:",
+            "answerOptions": [
+                { "text": "Actuar $\\text{como}$ $\\text{segundo}$ $\\text{mensajero}$ $\\text{activador}$", "isCorrect": true, "rationale": "El $\\text{Ca}^{2+}$ $\\text{se}$ $\\text{mantiene}$ $\\text{a}$ $\\text{una}$ $\\text{concentración}$ $\\text{muy}$ $\\text{baja}$ $\\text{en}$ $\\text{el}$ $\\text{citosol}$ $\\text{($\text{reposo}$)}$. $\\text{Su}$ $\\text{aumento}$ $\\text{rápido}$ $\\text{($\text{por}$ $\text{liberación}$ $\text{del}$ $\text{RE}$ $\text{vía}$ $\text{IP}3$ $\text{o}$ $\text{entrada}$ $\text{por}$ $\text{canales}$)}$ $\\text{activa}$ $\\text{numerosas}$ $\\text{proteínas}$ $\\text{($\text{ej}$. $\text{calmodulina}, \text{sinaptotagmina}$)}, $\\text{disparando}$ $\\text{respuestas}$ $\\text{celulares}$ $\\text{rápidas}$." },
+                { "text": "Despolarizar $\\text{la}$ $\\text{membrana}$", "isCorrect": false, "rationale": "La $\\text{despolarización}$ $\\text{es}$ $\\text{principalmente}$ $\\text{por}$ $\\text{Na}^{+}$ $\\text{en}$ $\\text{neuronas}$." },
+                { "text": "Inhibir $\\text{la}$ $\\text{síntesis}$ $\\text{de}$ $\\text{ADN}$", "isCorrect": false, "rationale": "La $\\text{síntesis}$ $\\text{de}$ $\\text{ADN}$ $\\text{es}$ $\\text{regulada}$ $\\text{por}$ $\\text{CDK}$ $\\text{y}$ $\\text{factores}$ $\\text{de}$ $\\text{transcripción}$." },
+                { "text": "Mantener $\\text{la}$ $\\text{rigidez}$ $\\text{de}$ $\\text{la}$ $\\text{membrana}$ $\\text{plasmática}$", "isCorrect": false, "rationale": "La $\\text{rigidez}$ $\\text{de}$ $\\text{la}$ $\\text{membrana}$ $\\text{plasmática}$ $\\text{es}$ $\\text{por}$ $\\text{colesterol}$ $\\text{y}$ $\\text{esfingolípidos}$." }
+            ]
+        },
+        {
+            "questionNumber": 59,
+            "question": "El $\\text{transporte}$ $\\text{activo}$ $\\text{primario}$ $\\text{Na}^{+}/\text{K}^{+}$ $\\text{ATPasa}$ $\\text{se}$ $\\text{llama}$ $\\text{electrogénico}$ $\\text{porque}$:",
+            "answerOptions": [
+                { "text": "Mueve $\\text{una}$ $\\text{carga}$ $\\text{positiva}$ $\\text{neta}$ $\\text{hacia}$ $\\text{el}$ $\\text{exterior}$", "isCorrect": true, "rationale": "La $\\text{bomba}$ $\\text{Na}^{+}/\text{K}^{+}$ $\\text{ATPasa}$ $\\text{mueve}$ $\\text{3}$ $\\text{cargas}$ $\\text{positivas}$ $\\text{($\text{Na}^{+}$)}$ $\\text{hacia}$ $\\text{afuera}$ $\\text{y}$ $\\text{2}$ $\\text{($\text{K}^{+}$)}$ $\\text{hacia}$ $\\text{adentro}$, $\\text{resultando}$ $\\text{en}$ $\\text{la}$ $\\text{expulsión}$ $\\text{de}$ $\\text{1}$ $\\text{carga}$ $\\text{positiva}$ $\\text{($\text{electrogénico}$)}$ $\\text{por}$ $\\text{ciclo}$." },
+                { "text": "Utiliza $\\text{electrones}$ $\\text{de}$ $\\text{la}$ $\\text{cadena}$ $\\text{respiratoria}$", "isCorrect": false, "rationale": "La $\\text{bomba}$ $\\text{utiliza}$ $\\text{ATP}$ $\\text{directo}$." },
+                { "text": "Mueve $\\text{Na}^{+}$ $\\text{a}$ $\\text{favor}$ $\\text{de}$ $\\text{gradiente}$", "isCorrect": false, "rationale": "La $\\text{bomba}$ $\\text{mueve}$ $\\text{Na}^{+}$ $\\text{en}$ $\\text{contra}$ $\\text{de}$ $\\text{gradiente}$." },
+                { "text": "Es $\\text{inhibido}$ $\\text{por}$ $\\text{el}$ $\\text{voltaje}$ $\\text{de}$ $\\text{membrana}$", "isCorrect": false, "rationale": "El $\\text{voltaje}$ $\\text{de}$ $\\text{membrana}$ $\\text{influye}$ $\\text{en}$ $\\text{la}$ $\\text{bomba}$ $\\text{pero}$ $\\text{no}$ $\\text{es}$ $\\text{la}$ $\\text{razón}$ $\\text{de}$ $\\text{su}$ $\\text{nombre}$." }
+            ]
+        },
+        {
+            "questionNumber": 60,
+            "question": "La $\\text{proteína}$ $\\text{SRP}$ ($\text{Signal}$ $\\text{Recognition}$ $\\text{Particle}$) $\\text{dirige}$ $\\text{la}$ $\\text{traducción}$ $\\text{hacia}$:",
+            "answerOptions": [
+                { "text": "RE $\\text{rugoso}$", "isCorrect": true, "rationale": "La $\\text{SRP}$ $\\text{reconoce}$ $\\text{el}$ $\\text{péptido}$ $\\text{señal}$ $\\text{de}$ $\\text{las}$ $\\text{proteínas}$ $\\text{secretoras}$ $\\text{y}$ $\\text{de}$ $\\text{membrana}$ $\\text{y}$ $\\text{dirige}$ $\\text{el}$ $\\text{ribosoma}$ $\\text{al}$ $\\text{translocón}$ $\\text{($\text{Sec}61$)} $\\text{en}$ $\\text{el}$ $\\text{RE}$ $\\text{rugoso}$, $\\text{iniciando}$ $\\text{la}$ $\\text{translocación}$ $\\text{cotraduccional}$." },
+                { "text": "Citosol", "isCorrect": false, "rationale": "Las $\\text{proteínas}$ $\\text{citosólicas}$ $\\text{se}$ $\\text{sintetizan}$ $\\text{en}$ $\\text{ribosomas}$ $\\text{libres}$." },
+                { "text": "Mitocondria", "isCorrect": false, "rationale": "La $\\text{mitocondria}$ $\\text{importa}$ $\\text{proteínas}$ $\\text{postraduccionalmente}$." },
+                { "text": "Núcleo", "isCorrect": false, "rationale": "El $\\text{núcleo}$ $\\text{importa}$ $\\text{proteínas}$ $\\text{postraduccionalmente}$ $\\text{vía}$ $\\text{poro}$ $\\text{nuclear}$." }
+            ]
+        },
+        {
+            "questionNumber": 61,
+            "question": "Los $\\text{peroxisomas}$ $\\text{importan}$ $\\text{proteínas}$ $\\text{mediante}$:",
+            "answerOptions": [
+                { "text": "Señal $\\text{SKL}$ $\\text{y}$ $\\text{peroxinas}$", "isCorrect": true, "rationale": "Las $\\text{proteínas}$ $\\text{peroxisomales}$ $\\text{contienen}$ $\\text{una}$ $\\text{secuencia}$ $\\text{de}$ $\\text{destino}$ $\\text{($\text{ej}$. $\text{SKL}$ $\text{en}$ $\text{el}$ $\text{extremo}$ $\text{C}$-$\\text{terminal}$ $\text{($\text{PTS}1$)}$)} $\\text{que}$ $\\text{es}$ $\\text{reconocida}$ $\\text{por}$ $\\text{el}$ $\\text{receptor}$ $\\text{PEX}5$ ($\text{una}$ $\\text{peroxina}$) $\\text{para}$ $\\text{la}$ $\\text{importación}$ $\\text{($\text{de}$ $\text{proteínas}$ $\text{plegadas}$)}$." },
+                { "text": "Translocón $\\text{Sec}61$", "isCorrect": false, "rationale": "El $\\text{translocón}$ $\\text{Sec}61$ $\\text{es}$ $\\text{para}$ $\\text{el}$ $\\text{RE}$." },
+                { "text": "TIM/TOM", "isCorrect": false, "rationale": "TIM/TOM $\\text{son}$ $\\text{translocadores}$ $\\text{mitocondriales}$." },
+                { "text": "Ran-GTP", "isCorrect": false, "rationale": "Ran-GTP $\\text{regula}$ $\\text{el}$ $\\text{transporte}$ $\\text{nuclear}$." }
+            ]
+        },
+        {
+            "questionNumber": 62,
+            "question": "La $\\text{oxidación}$ $\\text{de}$ $\\text{ácidos}$ $\\text{grasos}$ $\\text{de}$ $\\text{cadena}$ $\\text{muy}$ $\\text{larga}$ $\\text{ocurre}$ $\\text{en}$:",
+            "answerOptions": [
+                { "text": "Peroxisoma", "isCorrect": true, "rationale": "Los $\\text{ácidos}$ $\\text{grasos}$ $\\text{de}$ $\\text{cadena}$ $\\text{muy}$ $\\text{larga}$ ($\text{VLCFA}$) $\\text{se}$ $\\text{degradan}$ $\\text{inicialmente}$ $\\text{por}$ $\\beta$-$\\text{oxidación}$ $\\text{en}$ $\\text{los}$ $\\text{peroxisomas}$ $\\text{hasta}$ $\\text{que}$ $\\text{alcanzan}$ $\\text{una}$ $\\text{longitud}$ $\\text{apta}$ $\\text{para}$ $\\text{entrar}$ $\\text{en}$ $\\text{la}$ $\\text{mitocondria}$." },
+                { "text": "Mitocondria", "isCorrect": false, "rationale": "La $\\text{mitocondria}$ $\\text{oxida}$ $\\text{cadenas}$ $\\text{cortas}$ $\\text{y}$ $\\text{medias}$." },
+                { "text": "RE", "isCorrect": false, "rationale": "El $\\text{RE}$ $\\text{sintetiza}$ $\\text{lípidos}$." },
+                { "text": "Lisosoma", "isCorrect": false, "rationale": "El $\\text{lisosoma}$ $\\text{degrada}$ $\\text{lípidos}$ $\\text{complejos}$ $\\text{y}$ $\\text{orgánulos}$." }
+            ]
+        },
+        {
+            "questionNumber": 63,
+            "question": "El $\\text{proteasoma}$ $\\text{degrada}$:",
+            "answerOptions": [
+                { "text": "Proteínas $\\text{ubiquitinadas}$", "isCorrect": true, "rationale": "El $\\text{proteasoma}$ $\\text{($\text{26S}$)}$ $\\text{es}$ $\\text{un}$ $\\text{gran}$ $\\text{complejo}$ $\\text{proteico}$ $\\text{en}$ $\\text{el}$ $\\text{citosol}$ $\\text{y}$ $\\text{núcleo}$ $\\text{que}$ $\\text{reconoce}$ $\\text{las}$ $\\text{cadenas}$ $\\text{de}$ $\\text{poliubiquitina}$ $\\text{y}$ $\\text{degrada}$ $\\text{la}$ $\\text{proteína}$ $\\text{diana}$ $\\text{($\text{ej}$. $\text{p}53, \text{ciclinas}$ $\text{mitóticas}$)}$." },
+                { "text": "ADN $\\text{dañado}$", "isCorrect": false, "rationale": "El $\\text{ADN}$ $\\text{es}$ $\\text{reparado}$ $\\text{o}$ $\\text{clivado}$ $\\text{por}$ $\\text{nucleasas}$." },
+                { "text": "Lípidos $\\text{de}$ $\\text{membrana}$", "isCorrect": false, "rationale": "Los $\\text{lípidos}$ $\\text{de}$ $\\text{membrana}$ $\\text{se}$ $\\text{degradan}$ $\\text{por}$ $\\text{lipasas}$ $\\text{o}$ $\\text{en}$ $\\text{el}$ $\\text{lisosoma}$." },
+                { "text": "ARNm", "isCorrect": false, "rationale": "El $\\text{ARNm}$ $\\text{es}$ $\\text{degradado}$ $\\text{por}$ $\\text{RNasas}$ $\\text{($\text{ej}$. $\text{exosoma}$ $\text{o}$ $\text{cuerpos}$ $\text{P}$)}$." }
+            ]
+        },
+        {
+            "questionNumber": 64,
+            "question": "La $\\text{ubiquitinación}$ $\\text{de}$ $\\text{proteínas}$ $\\text{es}$ $\\text{mediada}$ $\\text{por}$:",
+            "answerOptions": [
+                { "text": "Ligasas $\\text{E}1, \text{E}2, \text{y}$ $\\text{E}3$", "isCorrect": true, "rationale": "El $\\text{proceso}$ $\\text{de}$ $\\text{ubiquitinación}$ $\\text{es}$ $\\text{una}$ $\\text{cascada}$ $\\text{enzimática}$ $\\text{que}$ $\\text{transfiere}$ $\\text{la}$ $\\text{proteína}$ $\\text{ubiquitina}$ $\\text{a}$ $\\text{la}$ $\\text{proteína}$ $\\text{diana}$ $\\text{a}$ $\\text{través}$ $\\text{de}$ $\\text{tres}$ $\\text{clases}$ $\\text{de}$ $\\text{enzimas}$: $\\text{E}1$ ($\text{activación}$), $\\text{E}2$ ($\text{conjugación}$), $\\text{y}$ $\\text{E}3$ ($\text{ligación}$ $\\text{a}$ $\\text{la}$ $\text{diana}$)." },
+                { "text": "Caspasas", "isCorrect": false, "rationale": "Las $\\text{caspasas}$ $\\text{clivan}$ $\\text{proteínas}$." },
+                { "text": "Ribosomas", "isCorrect": false, "rationale": "Los $\\text{ribosomas}$ $\\text{sintetizan}$ $\\text{proteínas}$." },
+                { "text": "SNAREs", "isCorrect": false, "rationale": "Las $\\text{SNAREs}$ $\\text{median}$ $\\text{la}$ $\\text{fusión}$ $\\text{vesicular}$." }
+            ]
+        },
+        {
+            "questionNumber": 65,
+            "question": "La $\\text{proteína}$ $\\text{p}53$ $\\text{es}$ $\\text{regulada}$ $\\text{por}$ $\\text{Mdm}2$, $\\text{que}$ $\\text{actúa}$ $\\text{como}$:",
+            "answerOptions": [
+                { "text": "E3 $\\text{ubiquitina}$ $\\text{ligasa}$", "isCorrect": true, "rationale": "Mdm2 $\\text{es}$ $\\text{una}$ $\\text{ligasa}$ $\\text{E}3$ $\\text{que}$ $\\text{une}$ $\\text{cadenas}$ $\\text{de}$ $\\text{ubiquitina}$ $\\text{a}$ $\\text{la}$ $\\text{proteína}$ $\\text{p}53$, $\\text{marcando}$ $\\text{la}$ $\\text{para}$ $\\text{su}$ $\\text{degradación}$ $\\text{por}$ $\\text{el}$ $\\text{proteasoma}$." },
+                { "text": "Cinasa $\\text{de}$ $\\text{histonas}$", "isCorrect": false, "rationale": "Mdm2 $\\text{no}$ $\\text{es}$ $\\text{una}$ $\\text{cinasa}$ $\\text{de}$ $\\text{histonas}$." },
+                { "text": "Factor $\\text{de}$ $\\text{transcripción}$", "isCorrect": false, "rationale": "Mdm2 $\\text{es}$ $\\text{una}$ $\\text{ligasa}$, $\\text{mientras}$ $\\text{que}$ $\\text{p}53$ $\\text{es}$ $\\text{el}$ $\\text{factor}$ $\\text{de}$ $\\text{transcripción}$ $\\text{regulado}$." },
+                { "text": "Proteína $\\text{adaptadora}$ $\\text{de}$ $\\text{membrana}$", "isCorrect": false, "rationale": "Mdm2 $\\text{es}$ $\\text{una}$ $\\text{proteína}$ $\\text{nuclear}$ $\\text{y}$ $\\text{citosólica}$." }
+            ]
+        },
+        {
+            "questionNumber": 66,
+            "question": "El $\\text{complejo}$ $\\text{APC}/\text{C}$ $\\text{es}$ $\\text{un}$ $\\text{ejemplo}$ $\\text{de}$:",
+            "answerOptions": [
+                { "text": "E3 $\\text{ubiquitina}$ $\\text{ligasa}$", "isCorrect": true, "rationale": "El $\\text{Complejo}$ $\\text{Promotor}$ $\\text{de}$ $\\text{la}$ $\\text{Anafase}/\text{Ciclosoma}$ $\\text{($\text{APC}/\text{C}$)}$ $\\text{es}$ $\\text{una}$ $\\text{ligasa}$ $\\text{E}3$ $\\text{que}$ $\\text{ubiquitina}$ $\\text{sustratos}$ $\\text{clave}$ $\\text{($\text{securina}, \text{Ciclina}$ $\text{B}$)} $\\text{para}$ $\\text{controlar}$ $\\text{el}$ $\\text{avance}$ $\\text{de}$ $\\text{la}$ $\\text{mitosis}$." },
+                { "text": "Factor $\\text{de}$ $\\text{transcripción}$ $\\text{general}$", "isCorrect": false, "rationale": "Los $\\text{factores}$ $\\text{de}$ $\\text{transcripción}$ $\\text{generales}$ $\\text{son}$ $\\text{TFIID}$ $\\text{o}$ $\\text{TFIIH}$." },
+                { "text": "Cinasa $\\text{dependiente}$ $\\text{de}$ $\\text{ciclina}$", "isCorrect": false, "rationale": "Las $\\text{cinasas}$ $\\text{dependientes}$ $\\text{de}$ $\\text{ciclina}$ $\\text{son}$ $\\text{CDK}1, \text{CDK}2, \text{CDK}4$." },
+                { "text": "Proteína $\\text{asociada}$ $\\text{a}$ $\\text{telómeros}$", "isCorrect": false, "rationale": "Las $\\text{proteínas}$ $\\text{asociadas}$ $\\text{a}$ $\\text{telómeros}$ $\\text{son}$ $\\text{el}$ $\\text{complejo}$ $\\text{shelterin}$." }
+            ]
+        },
+        {
+            "questionNumber": 67,
+            "question": "La $\\text{proteína}$ $\\text{queratina}$ $\\text{es}$ $\\text{esencial}$ $\\text{para}$:",
+            "answerOptions": [
+                { "text": "Integridad $\\text{epitelial}$", "isCorrect": true, "rationale": "Las $\\text{queratinas}$ $\\text{son}$ $\\text{los}$ $\\text{filamentos}$ $\\text{intermedios}$ $\\text{($\text{FI}$)} $\\text{que}$ $\\text{se}$ $\\text{expresan}$ $\\text{en}$ $\\text{los}$ $\\text{epitelios}$ $\\text{y}$ $\\text{se}$ $\\text{unen}$ $\\text{a}$ $\\text{desmosomas}$ $\\text{y}$ $\\text{hemidesmosomas}$, $\\text{aportando}$ $\\text{una}$ $\\text{resistencia}$ $\\text{mecánica}$ $\\text{crucial}$ $\\text{contra}$ $\\text{la}$ $\\text{tensión}$." },
+                { "text": "Movilidad $\\text{muscular}$", "isCorrect": false, "rationale": "La $\\text{movilidad}$ $\\text{muscular}$ $\\text{es}$ $\\text{por}$ $\\text{actina}/\text{miosina}$." },
+                { "text": "Fusión $\\text{vesicular}$", "isCorrect": false, "rationale": "La $\\text{fusión}$ $\\text{vesicular}$ $\\text{es}$ $\\text{por}$ $\\text{SNAREs}$." },
+                { "text": "Síntesis $\\text{de}$ $\\text{ADN}$", "isCorrect": false, "rationale": "La $\\text{síntesis}$ $\\text{de}$ $\\text{ADN}$ $\\text{es}$ $\\text{en}$ $\\text{la}$ $\\text{Fase}$ $\\text{S}$." }
+            ]
+        },
+        {
+            "questionNumber": 68,
+            "question": "La $\\text{fosforilación}$ $\\text{de}$ $\\text{las}$ $\\text{láminas}$ $\\text{nucleares}$ $\\text{($\text{FI}$)} $\\text{en}$ $\\text{mitosis}$ $\\text{provoca}$:",
+            "answerOptions": [
+                { "text": "Desensamblaje $\\text{de}$ $\\text{la}$ $\\text{envoltura}$ $\\text{nuclear}$", "isCorrect": true, "rationale": "Al $\\text{comienzo}$ $\\text{de}$ $\\text{la}$ $\\text{mitosis}$ ($\text{prometafase}$), $\\text{la}$ $\\text{Ciclina}$ $\\text{B}/\text{CDK}1$ $\\text{fosforila}$ $\\text{las}$ $\\text{láminas}$ $\\text{nucleares}$, $\\text{haciendo}$ $\\text{que}$ $\\text{se}$ $\\text{despolimericen}$ $\\text{y}$ $\\text{se}$ $\\text{desensamblen}$, $\\text{lo}$ $\text{que}$ $\\text{es}$ $\\text{necesario}$ $\\text{para}$ $\\text{la}$ $\\text{rotura}$ $\\text{de}$ $\\text{la}$ $\\text{envoltura}$ $\\text{nuclear}$." },
+                { "text": "Activación $\\text{de}$ $\\text{la}$ $\\text{síntesis}$ $\\text{de}$ $\\text{ADN}$", "isCorrect": false, "rationale": "La $\\text{síntesis}$ $\\text{de}$ $\\text{ADN}$ $\\text{ocurre}$ $\\text{en}$ $\\text{la}$ $\\text{Fase}$ $\\text{S}$." },
+                { "text": "Reparación $\\text{de}$ $\\text{ADN}$", "isCorrect": false, "rationale": "La $\\text{reparación}$ $\\text{de}$ $\\text{ADN}$ $\\text{es}$ $\\text{un}$ $\\text{proceso}$ $\\text{nuclear}$." },
+                { "text": "Movimiento $\\text{de}$ $\\text{vesículas}$", "isCorrect": false, "rationale": "El $\\text{movimiento}$ $\\text{de}$ $\\text{vesículas}$ $\\text{es}$ $\\text{por}$ $\\text{motores}$ $\\text{del}$ $\\text{citoesqueleto}$." }
+            ]
+        },
+        {
+            "questionNumber": 69,
+            "question": "El $\\text{transporte}$ $\\text{de}$ $\\text{vesículas}$ $\\text{que}$ $\\text{sale}$ $\\text{del}$ $\\text{RE}$ $\\text{($\text{tráfico}$ $\text{anterógrado}$)} $\\text{es}$ $\\text{mediado}$ $\\text{por}$:",
+            "answerOptions": [
+                { "text": "COP $\\text{II}$", "isCorrect": true, "rationale": "Las $\\text{vesículas}$ $\\text{cubiertas}$ $\\text{por}$ $\\text{COP}$ $\\text{II}$ $\\text{median}$ $\\text{el}$ $\\text{transporte}$ $\\text{de}$ $\\text{proteínas}$ $\\text{y}$ $\\text{lípidos}$ $\\text{recién}$ $\\text{sintetizados}$ $\\text{desde}$ $\\text{el}$ $\\text{RE}$ $\\text{hacia}$ $\\text{la}$ $\\text{cara}$ $\\text{cis}$ $\\text{del}$ $\\text{Golgi}$ $\\text{($\text{tráfico}$ $\text{anterógrado}$)}$." },
+                { "text": "Clatrina", "isCorrect": false, "rationale": "La $\\text{clatrina}$ $\\text{media}$ $\\text{la}$ $\\text{endocitosis}$ $\\text{y}$ $\\text{el}$ $\\text{tráfico}$ $\\text{Golgi} \rightarrow \text{lisosoma}$." },
+                { "text": "COP $\\text{I}$", "isCorrect": false, "rationale": "El $\\text{COP}$ $\\text{I}$ $\\text{media}$ $\\text{el}$ $\\text{transporte}$ $\\text{retrógrado}$ $\\text{($\text{Golgi} \rightarrow \text{RE}$)}$." },
+                { "text": "Dineína", "isCorrect": false, "rationale": "La $\\text{dineína}$ $\\text{es}$ $\\text{un}$ $\\text{motor}$ $\\text{de}$ $\\text{microtúbulos}$." }
+            ]
+        },
+        {
+            "questionNumber": 70,
+            "question": "Las $\\text{GTPasas}$ $\\text{Rab}$ $\\text{son}$ $\\text{esenciales}$ $\\text{para}$:",
+            "answerOptions": [
+                { "text": "Anclaje $\\text{y}$ $\\text{especificidad}$ $\\text{del}$ $\\text{tráfico}$ $\\text{vesicular}$", "isCorrect": true, "rationale": "Las $\\text{proteínas}$ $\\text{Rab}$ $\\text{($\text{GTPasas}$)}$ $\\text{se}$ $\\text{unen}$ $\\text{a}$ $\\text{las}$ $\\text{vesículas}$ $\\text{y}$ $\\text{reclutan}$ $\\text{proteínas}$ $\\text{de}$ $\\text{anclaje}$ $\\text{($\text{tethering}$)} $\\text{que}$ $\\text{aseguran}$ $\\text{el}$ $\\text{reconocimiento}$ $\\text{de}$ $\\text{la}$ $\\text{vesícula}$ $\\text{con}$ $\\text{la}$ $\\text{membrana}$ $\\text{diana}$ $\\text{($\text{especificidad}$)}$." },
+                { "text": "Fusión $\\text{de}$ $\\text{membranas}$ $\\text{($\text{catalizan}$ $\text{la}$ $\text{fusión}$)}$", "isCorrect": false, "rationale": "La $\\text{fusión}$ $\\text{es}$ $\\text{catalizada}$ $\\text{por}$ $\\text{SNAREs}$." },
+                { "text": "Formación $\\text{del}$ $\\text{poro}$ $\\text{nuclear}$", "isCorrect": false, "rationale": "La $\\text{formación}$ $\\text{del}$ $\\text{poro}$ $\\text{nuclear}$ $\\text{es}$ $\\text{un}$ $\\text{proceso}$ $\\text{de}$ $\\text{síntesis}$." },
+                { "text": "Despolimerización $\\text{de}$ $\\text{microtúbulos}$", "isCorrect": false, "rationale": "La $\\text{despolimerización}$ $\\text{de}$ $\\text{microtúbulos}$ $\\text{es}$ $\\text{por}$ $\\text{hidrólisis}$ $\\text{de}$ $\\text{GTP}$ $\\text{($\text{catástrofe}$)}$." }
+            ]
+        },
+        {
+            "questionNumber": 71,
+            "question": "El $\\text{retículo}$ $\\text{endoplásmico}$ $\\text{liso}$ ($\text{REL}$) $\\text{es}$ $\\text{el}$ $\\text{sitio}$ $\\text{de}$:",
+            "answerOptions": [
+                { "text": "Detoxificación $\\text{y}$ $\\text{síntesis}$ $\\text{de}$ $\\text{lípidos}$", "isCorrect": true, "rationale": "El $\\text{REL}$ $\\text{es}$ $\\text{el}$ $\\text{sitio}$ $\\text{primario}$ $\\text{de}$ $\\text{síntesis}$ $\\text{de}$ $\\text{fosfolípidos}$ $\\text{y}$ $\\text{colesterol}$, $\\text{además}$ $\\text{de}$ $\\text{almacenar}$ $\\text{Ca}^{2+}$ $\\text{y}$ $\\text{contener}$ $\\text{enzimas}$ $\\text{de}$ $\\text{detoxificación}$ $\\text{($\text{citocromo}$ $\text{P}450$)}$." },
+                { "text": "Traducción $\\text{de}$ $\\text{proteínas}$ $\\text{secretoras}$", "isCorrect": false, "rationale": "La $\\text{traducción}$ $\\text{de}$ $\\text{proteínas}$ $\\text{secretoras}$ $\\text{es}$ $\\text{en}$ $\\text{el}$ $\\text{RER}$." },
+                { "text": "Glicosilación $\\text{final}$", "isCorrect": false, "rationale": "La $\\text{glicosilación}$ $\\text{final}$ $\\text{es}$ $\\text{en}$ $\\text{el}$ $\\text{Golgi}$." },
+                { "text": "Regulación $\\text{de}$ $\\text{la}$ $\\text{cromatina}$", "isCorrect": false, "rationale": "La $\\text{regulación}$ $\\text{de}$ $\\text{la}$ $\\text{cromatina}$ $\\text{es}$ $\\text{nuclear}$." }
+            ]
+        },
+        {
+            "questionNumber": 72,
+            "question": "La $\\text{endocitosis}$ $\\text{mediada}$ $\\text{por}$ $\\text{receptor}$ $\\text{($\text{clatrina}$)} $\\text{es}$ $\\text{un}$ $\\text{ejemplo}$ $\\text{de}$:",
+            "answerOptions": [
+                { "text": "Pinocitosis $\\text{selectiva}$", "isCorrect": true, "rationale": "La $\\text{endocitosis}$ $\\text{mediada}$ $\\text{por}$ $\\text{receptor}$ $\\text{es}$ $\\text{una}$ $\\text{forma}$ $\\text{de}$ $\\text{pinocitosis}$ $\\text{($\text{ingesta}$ $\text{de}$ $\text{fluido}$ $\text{y}$ $\text{solutos}$)} $\\text{que}$ $\\text{es}$ $\\text{altamente}$ $\\text{selectiva}$, $\\text{permitiendo}$ $\\text{la}$ $\\text{captura}$ $\\text{eficiente}$ $\\text{de}$ $\\text{macromoléculas}$ $\\text{($\text{ej}$. $\text{LDL}$ $\text{o}$ $\text{transferrina}$)}." },
+                { "text": "Fagocitosis", "isCorrect": false, "rationale": "La $\\text{fagocitosis}$ $\\text{es}$ $\\text{para}$ $\\text{partículas}$ $\\text{grandes}$ $\\text{($\text{ej}$. $\text{bacterias}$)}$." },
+                { "text": "Exocitosis", "isCorrect": false, "rationale": "La $\\text{exocitosis}$ $\\text{es}$ $\\text{el}$ $\\text{transporte}$ $\\text{hacia}$ $\\text{el}$ $\\text{exterior}$." },
+                { "text": "Transporte $\\text{activo}$ $\\text{secundario}$", "isCorrect": false, "rationale": "El $\\text{transporte}$ $\\text{activo}$ $\\text{secundario}$ $\\text{es}$ $\\text{para}$ $\\text{moléculas}$ $\\text{pequeñas}$." }
+            ]
+        },
+        {
+            "questionNumber": 73,
+            "question": "El $\\text{destino}$ $\\text{más}$ $\\text{común}$ $\\text{de}$ $\\text{los}$ $\\text{endosomas}$ $\\text{tempranos}$ $\\text{es}$:",
+            "answerOptions": [
+                { "text": "Reciclaje $\\text{a}$ $\\text{membrana}$ $\\text{plasmática}$", "isCorrect": true, "rationale": "Una $\\text{vez}$ $\\text{que}$ $\\text{el}$ $\\text{endosoma}$ $\\text{temprano}$ $\\text{libera}$ $\\text{el}$ $\\text{ligando}$ $\\text{($\text{pH}$ $\text{bajo}$)}, $\\text{los}$ $\\text{receptores}$ $\\text{son}$ $\\text{clasificados}$ $\\text{y}$ $\\text{devueltos}$ $\\text{a}$ $\\text{la}$ $\\text{membrana}$ $\\text{plasmática}$ $\\text{para}$ $\\text{ser}$ $\\text{reutilizados}$ $\\text{($\text{reciclaje}$)}$." },
+                { "text": "Fusión $\\text{con}$ $\\text{Golgi}$", "isCorrect": false, "rationale": "La $\\text{fusión}$ $\\text{con}$ $\\text{el}$ $\\text{Golgi}$ $\\text{ocurre}$ $\\text{en}$ $\\text{algunas}$ $\\text{rutas}$ $\\text{específicas}$." },
+                { "text": "Formación $\\text{de}$ $\\text{microtúbulos}$", "isCorrect": false, "rationale": "La $\\text{formación}$ $\\text{de}$ $\\text{microtúbulos}$ $\\text{es}$ $\\text{por}$ $\\text{tubulina}$." },
+                { "text": "Activación $\\text{de}$ $\\text{Caspasa}$ $\\text{8}$", "isCorrect": false, "rationale": "La $\\text{Caspasa}$ $\\text{8}$ $\\text{es}$ $\\text{de}$ $\\text{la}$ $\\text{vía}$ $\\text{extrínseca}$." }
+            ]
+        },
+        {
+            "questionNumber": 74,
+            "question": "La $\\text{ubiquitinación}$ $\\text{de}$ $\\text{receptores}$ $\\text{($\text{ej}$. $\text{EGFR}$ $\text{activado}$)} $\\text{los}$ $\\text{dirige}$ $\\text{a}$:",
+            "answerOptions": [
+                { "text": "MVB $\\rightarrow \text{lisosoma}$ $\\text{para}$ $\\text{degradación}$", "isCorrect": true, "rationale": "Los $\\text{receptores}$ $\\text{ubiquitinados}$ $\\text{son}$ $\\text{reconocidos}$ $\\text{por}$ $\\text{el}$ $\\text{complejo}$ $\\text{ESCRT}$ $\\text{que}$ $\\text{los}$ $\\text{separa}$ $\\text{en}$ $\\text{vesículas}$ $\\text{intraluminales}$ $\\text{($\text{MVB}$)}$, $\\text{asegurando}$ $\\text{su}$ $\\text{degradación}$ $\\text{completa}$ $\\text{en}$ $\\text{el}$ $\\text{lisosoma}$ $\\text{y}$ $\\text{terminando}$ $\\text{la}$ $\\text{señal}$." },
+                { "text": "Reciclaje $\\text{rápido}$ $\\text{a}$ $\\text{membrana}$", "isCorrect": false, "rationale": "La $\\text{ubiquitinación}$ $\\text{marca}$ $\\text{un}$ $\\text{destino}$ $\\text{de}$ $\\text{degradación}$." },
+                { "text": "Proteasoma", "isCorrect": false, "rationale": "El $\\text{proteasoma}$ $\\text{degrada}$ $\\text{proteínas}$ $\\text{citosólicas}$ $\\text{o}$ $\\text{del}$ $\\text{RE}$ $\\text{($\text{ERAD}$)}$." },
+                { "text": "Núcleo", "isCorrect": false, "rationale": "El $\\text{núcleo}$ $\\text{almacena}$ $\\text{el}$ $\\text{ADN}$." }
+            ]
+        },
+        {
+            "questionNumber": 75,
+            "question": "La $\\text{transferrina}$ $\\text{es}$ $\\text{reciclada}$ $\\text{desde}$ $\\text{el}$ $\\text{endosoma}$ $\\text{porque}$:",
+            "answerOptions": [
+                { "text": "El $\\text{receptor}$ $\\text{permanece}$ $\\text{unido}$ $\\text{al}$ $\\text{ligando}$ $\\text{($\text{transferrina}$)} $\\text{en}$ $\\text{pH}$ $\\text{ácido}$", "isCorrect": true, "rationale": "La $\\text{transferrina}$ $\\text{($\text{ligando}$ $\text{de}$ $\text{hierro}$)}$ $\\text{libera}$ $\\text{el}$ $\\text{hierro}$ $\\text{en}$ $\\text{el}$ $\\text{ambiente}$ $\\text{ácido}$ $\\text{del}$ $\\text{endosoma}$, $\\text{pero}$ $\\text{la}$ $\text{apoproteína}$ $\\text{($\text{transferrina}$ $\text{sin}$ $\text{hierro}$)} $\\text{permanece}$ $\\text{unida}$ $\\text{a}$ $\\text{su}$ $\text{receptor}$ $\\text{en}$ $\\text{ese}$ $\\text{pH}$, $\\text{siendo}$ $\\text{reciclada}$ $\\text{junto}$ $\\text{al}$ $\\text{receptor}$ $\\text{a}$ $\\text{la}$ $\\text{membrana}$." },
+                { "text": "El $\\text{receptor}$ $\\text{de}$ $\\text{transferrina}$ $\\text{es}$ $\\text{ubiquitinado}$", "isCorrect": false, "rationale": "La $\\text{ubiquitinación}$ $\\text{marcaría}$ $\\text{la}$ $\\text{degradación}$." },
+                { "text": "La $\\text{transferrina}$ $\\text{es}$ $\\text{una}$ $\\text{molécula}$ $\\text{lipofílica}$", "isCorrect": false, "rationale": "La $\\text{transferrina}$ $\\text{es}$ $\\text{una}$ $\\text{proteína}$ $\\text{hidrosoluble}$." },
+                { "text": "La $\\text{transferrina}$ $\\text{activa}$ $\\text{los}$ $\\text{lisosomas}$", "isCorrect": false, "rationale": "La $\\text{activación}$ $\\text{de}$ $\\text{los}$ $\\text{lisosomas}$ $\\text{es}$ $\\text{por}$ $\\text{acidificación}$." }
+            ]
+        },
+        {
+            "questionNumber": 76,
+            "question": "Los $\\text{ribosomas}$ $\\text{mitocondriales}$ $\\text{($\text{mitoribosomas}$)} $\\text{son}$ $\\text{similares}$ $\\text{a}$ $\\text{los}$ $\\text{de}$:",
+            "answerOptions": [
+                { "text": "Procariotas $\\text{($\text{70S}$)}", "isCorrect": true, "rationale": "De $\\text{acuerdo}$ $\\text{con}$ $\\text{la}$ $\\text{teoría}$ $\\text{endosimbiótica}$, $\\text{las}$ $\\text{mitocondrias}$ $\\text{tienen}$ $\\text{su}$ $\\text{propia}$ $\\text{maquinaria}$ $\\text{de}$ $\\text{traducción}$ $\\text{($\text{mitoribosomas}$)} $\\text{que}$ $\\text{es}$ $\\text{similar}$ $\\text{a}$ $\\text{la}$ $\\text{de}$ $\\text{las}$ $\\text{bacterias}$ $\\text{($\text{70S}$ $\text{en}$ $\text{lugar}$ $\text{de}$ $\text{80S}$)}." },
+                { "text": "Eucariotas $\\text{($\text{80S}$)}", "isCorrect": false, "rationale": "Los $\\text{ribosomas}$ $\\text{eucariotas}$ $\\text{($\text{citosólicos}$)} $\\text{son}$ $\\text{80S}$." },
+                { "text": "Lisosomas", "isCorrect": false, "rationale": "Los $\\text{lisosomas}$ $\\text{no}$ $\\text{tienen}$ $\\text{ribosomas}$." },
+                { "text": "Núcleo", "isCorrect": false, "rationale": "El $\\text{núcleo}$ $\\text{contiene}$ $\\text{el}$ $\\text{ADN}$." }
+            ]
+        },
+        {
+            "questionNumber": 77,
+            "question": "Los $\\text{microtúbulos}$ $\\text{se}$ $\\text{organizan}$ $\\text{alrededor}$ $\\text{del}$ $\\text{centrosoma}$ $\\text{con}$ $\\text{el}$ $\\text{extremo}$:",
+            "answerOptions": [
+                { "text": "Extremo $\\text{(-)}$ $\\text{anclado}$", "isCorrect": true, "rationale": "El $\\text{extremo}$ $\\text{(-)}$ $\\text{de}$ $\\text{los}$ $\\text{microtúbulos}$ $\\text{es}$ $\\text{el}$ $\\text{de}$ $\\text{lento}$ $\\text{crecimiento}$ $\\text{y}$ $\\text{se}$ $\\text{encuentra}$ $\\text{anclado}$ $\\text{y}$ $\\text{nucleado}$ $\\text{en}$ $\\text{el}$ $\\text{centrosoma}$ $\\text{($\text{MTOC}$)} $\\text{por}$ $\\text{el}$ $\\text{complejo}$ $\\gamma$-$\\text{TuRC}$." },
+                { "text": "Extremo $\\text{(+)}$ $\\text{anclado}$", "isCorrect": false, "rationale": "El $\\text{extremo}$ $\\text{(+)}$ $\\text{se}$ $\\text{proyecta}$ $\\text{hacia}$ $\\text{la}$ $\\text{periferia}$ $\\text{($\text{crecimiento}$ $\text{rápido}$)}$." },
+                { "text": "Centro $\\text{nucleado}$", "isCorrect": false, "rationale": "El $\\text{centro}$ $\\text{del}$ $\\text{filamento}$ $\\text{no}$ $\\text{es}$ $\\text{el}$ $\\text{punto}$ $\\text{de}$ $\\text{nucleación}$." },
+                { "text": "Extremo $\\text{de}$ $\\text{tubulina}$ $\\beta$", "isCorrect": false, "rationale": "El $\\text{extremo}$ $\\text{(+)}$ $\\text{termina}$ $\\text{en}$ $\\text{tubulina}$ $\\beta$." }
+            ]
+        },
+        {
+            "questionNumber": 78,
+            "question": "El $\\text{mecanismo}$ $\\text{de}$ $\\text{curvatura}$ $\\text{de}$ $\\text{membrana}$ $\\text{de}$ $\\text{las}$ $\\text{caveolas}$ $\\text{es}$:",
+            "answerOptions": [
+                { "text": "Dependiente $\\text{de}$ $\\text{caveolina}$ $\\text{($\text{andamiaje}$ $\text{proteico}$)}$", "isCorrect": true, "rationale": "Las $\\text{caveolas}$ $\\text{son}$ $\\text{una}$ $\\text{forma}$ $\\text{de}$ $\\text{invaginación}$ $\\text{de}$ $\\text{membrana}$ $\\text{que}$ $\\text{dependen}$ $\\text{de}$ $\\text{la}$ $\\text{proteína}$ $\\text{caveolina}$ $\\text{para}$ $\\text{inducir}$ $\\text{y}$ $\\text{mantener}$ $\\text{la}$ $\\text{forma}$ $\\text{curva}$ $\\text{($\text{a}$ $\text{diferencia}$ $\text{de}$ $\text{la}$ $\text{clatrina}$ $\text{que}$ $\text{usa}$ $\text{dinamina}$ $\text{para}$ $\text{el}$ $\text{corte}$)}$." },
+                { "text": "Dependiente $\\text{de}$ $\\text{clatrina}$", "isCorrect": false, "rationale": "La $\\text{clatrina}$ $\\text{media}$ $\\text{las}$ $\\text{vesículas}$ $\\text{de}$ $\\text{endocitosis}$ $\\text{convencional}$." },
+                { "text": "Generado $\\text{por}$ $\\text{actina}$ $\\text{y}$ $\\text{miosina}$ $\\text{II}$", "isCorrect": false, "rationale": "La $\\text{actina}$ $\\text{y}$ $\\text{la}$ $\\text{miosina}$ $\\text{II}$ $\\text{son}$ $\\text{contráctiles}$." },
+                { "text": "Por $\\text{presión}$ $\\text{osmótica}$", "isCorrect": false, "rationale": "La $\\text{presión}$ $\\text{osmótica}$ $\\text{afecta}$ $\\text{al}$ $\\text{volumen}$ $\\text{celular}$." }
+            ]
+        },
+        {
+            "questionNumber": 79,
+            "question": "La $\\text{fosfatidilserina}$ $\\text{se}$ $\\text{encuentra}$ $\\text{principalmente}$ $\\text{en}$:",
+            "answerOptions": [
+                { "text": "Monocapa $\\text{interna}$", "isCorrect": true, "rationale": "La $\\text{fosfatidilserina}$ $\\text{es}$ $\\text{un}$ $\\text{lípido}$ $\\text{cargado}$ $\\text{negativamente}$ $\\text{que}$ $\\text{es}$ $\\text{mantenido}$ $\\text{en}$ $\\text{la}$ $\\text{monocapa}$ $\\text{citosólica}$ $\\text{($\text{interna}$)} $\\text{por}$ $\\text{las}$ $\\text{flipasas}$." },
+                { "text": "Monocapa $\\text{externa}$", "isCorrect": false, "rationale": "La $\\text{monocapa}$ $\\text{externa}$ $\\text{es}$ $\\text{rica}$ $\\text{en}$ $\\text{esfingomielina}$ $\\text{y}$ $\\text{glucolípidos}$." },
+                { "text": "Matriz $\\text{mitocondrial}$", "isCorrect": false, "rationale": "La $\\text{matriz}$ $\\text{mitocondrial}$ $\\text{no}$ $\\text{tiene}$ $\\text{membrana}$ $\\text{plasmática}$." },
+                { "text": "Lumen $\\text{del}$ $\\text{Golgi}$", "isCorrect": false, "rationale": "El $\\text{lumen}$ $\\text{del}$ $\\text{Golgi}$ $\\text{es}$ $\\text{un}$ $\\text{espacio}$ $\\text{intracelular}$." }
+            ]
+        },
+        {
+            "questionNumber": 80,
+            "question": "Las $\\text{escramblasas}$ $\\text{pueden}$ $\\text{activarse}$ $\\text{en}$ $\\text{la}$ $\\text{membrana}$ $\\text{plasmática}$ $\\text{por}$:",
+            "answerOptions": [
+                { "text": "Aumento $\\text{de}$ $\\text{Ca}^{2+}$ $\\text{citosólico}$", "isCorrect": true, "rationale": "Las $\\text{escramblasas}$ $\\text{son}$ $\\text{proteínas}$ $\\text{que}$ $\\text{mezclan}$ $\\text{lípidos}$ $\\text{entre}$ $\\text{monocapas}$ $\\text{y}$ $\\text{son}$ $\\text{activadas}$ $\\text{por}$ $\\text{el}$ $\\text{aumento}$ $\\text{de}$ $\\text{Ca}^{2+}$ $\\text{citosólico}$, $\\text{provocando}$ $\\text{la}$ $\\text{pérdida}$ $\\text{de}$ $\\text{asimetría}$ $\\text{en}$ $\\text{la}$ $\\text{apoptosis}$." },
+                { "text": "Disminución $\\text{de}$ $\\text{ATP}$", "isCorrect": false, "rationale": "La $\\text{disminución}$ $\\text{de}$ $\\text{ATP}$ $\\text{inactiva}$ $\\text{flipasas}$." },
+                { "text": "Ran-GTP", "isCorrect": false, "rationale": "Ran-GTP $\\text{regula}$ $\\text{el}$ $\\text{transporte}$ $\\text{nuclear}$." },
+                { "text": "Fosforilación $\\text{de}$ $\\text{microtúbulos}$", "isCorrect": false, "rationale": "La $\\text{fosforilación}$ $\\text{de}$ $\\text{microtúbulos}$ $\\text{es}$ $\\text{mitótica}$." }
+            ]
+        },
+        {
+            "questionNumber": 81,
+            "question": "El $\\text{transporte}$ $\\text{activo}$ $\\text{primario}$ $\\text{ATPasa}$ $\\text{se}$ $\\text{denomina}$ $\\text{P}$-$\\text{type}$ $\\text{porque}$:",
+            "answerOptions": [
+                { "text": "Se $\\text{fosforila}$ $\\text{durante}$ $\\text{el}$ $\\text{ciclo}$ $\\text{de}$ $\\text{transporte}$", "isCorrect": true, "rationale": "Las $\\text{bombas}$ $\\text{P}$-$\\text{type}$ ($\text{ej}$. $\text{Na}^{+}/\text{K}^{+}$ $\text{ATPasa}$) $\\text{se}$ $\\text{caracterizan}$ $\\text{por}$ $\\text{sufrir}$ $\\text{una}$ $\\text{fosforilación}$ $\\text{transitoria}$ $\\text{en}$ $\\text{un}$ $\\text{residuo}$ $\\text{de}$ $\\text{Aspartato}$ $\\text{durante}$ $\\text{el}$ $\\text{ciclo}$ $\\text{de}$ $\\text{transporte}$ $\\text{para}$ $\\text{inducir}$ $\\text{el}$ $\\text{cambio}$ $\\text{conformacional}$." },
+                { "text": "Transporta $\\text{proteínas}$ $\\text{al}$ $\\text{proteasoma}$", "isCorrect": false, "rationale": "El $\\text{transporte}$ $\\text{al}$ $\\text{proteasoma}$ $\\text{es}$ $\\text{por}$ $\\text{ubiquitinación}$." },
+                { "text": "Es $\\text{inhibido}$ $\\text{por}$ $\\text{proteínas}$ $\\text{de}$ $\\text{p}53$", "isCorrect": false, "rationale": "La $\\text{p}53$ $\\text{regula}$ $\\text{el}$ $\\text{ciclo}$ $\\text{celular}$." },
+                { "text": "Se $\\text{encuentra}$ $\\text{solo}$ $\\text{en}$ $\\text{procariotas}$", "isCorrect": false, "rationale": "Las $\\text{bombas}$ $\\text{P}$-$\\text{type}$ $\\text{son}$ $\\text{comunes}$ $\\text{en}$ $\\text{eucariotas}$." }
+            ]
+        },
+        {
+            "questionNumber": 82,
+            "question": "La $\\text{bomba}$ $\\text{de}$ $\\text{protones}$ $\\text{V}$-$\\text{ATPasa}$ $\\text{se}$ $\\text{encuentra}$ $\\text{en}$:",
+            "answerOptions": [
+                { "text": "Lisosomas", "isCorrect": true, "rationale": "La $\\text{V}$-$\\text{ATPasa}$ $\\text{($\text{bomba}$ $\text{H}^{+}$-$\\text{ATPasa}$ $\text{vacuolar}$)}$ $\\text{se}$ $\\text{encuentra}$ $\\text{en}$ $\\text{las}$ $\\text{membranas}$ $\\text{de}$ $\\text{los}$ $\\text{lisosomas}$ $\\text{y}$ $\\text{endosomas}$, $\\text{y}$ $\\text{su}$ $\\text{función}$ $\\text{es}$ $\\text{mantener}$ $\\text{el}$ $\\text{pH}$ $\\text{ácido}$ $\\text{necesario}$ $\\text{para}$ $\\text{la}$ $\\text{digestión}$." },
+                { "text": "Membrana $\\text{mitocondrial}$ $\\text{interna}$", "isCorrect": false, "rationale": "La $\\text{membrana}$ $\\text{mitocondrial}$ $\\text{interna}$ $\\text{contiene}$ $\\text{la}$ $\\text{ATP}$ $\\text{sintasa}$ ($\text{F-type}$ $\text{ATPasa}$)." },
+                { "text": "RE", "isCorrect": false, "rationale": "El $\\text{RE}$ $\\text{contiene}$ $\\text{la}$ $\\text{bomba}$ $\\text{SERCA}$ $\\text{($\text{Ca}^{2+}$)}$." },
+                { "text": "Membrana $\\text{plasmática}$ $\\text{($\text{P}$-$\\text{type}$)}$", "isCorrect": false, "rationale": "La $\\text{membrana}$ $\\text{plasmática}$ $\\text{contiene}$ $\\text{bombas}$ $\\text{tipo}$ $\\text{P}$ $\\text{($\text{Na}^{+}/\text{K}^{+}$)}$." }
+            ]
+        },
+        {
+            "questionNumber": 83,
+            "question": "La $\\text{despolarización}$ $\\text{de}$ $\\text{la}$ $\\text{membrana}$ $\\text{es}$ $\\text{causada}$ $\\text{por}$:",
+            "answerOptions": [
+                { "text": "Entrada $\\text{de}$ $\\text{iones}$ $\\text{positivos}$", "isCorrect": true, "rationale": "La $\\text{despolarización}$ $\\text{($\text{el}$ $\text{potencial}$ $\text{de}$ $\text{membrana}$ $\text{se}$ $\text{vuelve}$ $\text{menos}$ $\text{negativo}$)} $\\text{es}$ $\\text{causada}$ $\\text{por}$ $\\text{la}$ $\\text{entrada}$ $\\text{de}$ $\\text{iones}$ $\\text{positivos}$ $\\text{($\text{ej}$. $\text{Na}^{+}$ $\text{o}$ $\text{Ca}^{2+}$)} $\\text{a}$ $\\text{través}$ $\\text{de}$ $\\text{canales}$ $\\text{iónicos}$ $\\text{activados}$." },
+                { "text": "Salida $\\text{de}$ $\\text{K}^{+}$", "isCorrect": false, "rationale": "La $\\text{salida}$ $\\text{de}$ $\\text{K}^{+}$ $\\text{causa}$ $\\text{hiperpolarización}$ $\\text{($\text{más}$ $\text{negativo}$)}$." },
+                { "text": "Entrada $\\text{de}$ $\\text{Cl}^{-}$", "isCorrect": false, "rationale": "La $\\text{entrada}$ $\\text{de}$ $\\text{Cl}^{-}$ $\\text{causa}$ $\\text{hiperpolarización}$." },
+                { "text": "Activación $\\text{de}$ $\\text{Rb}$", "isCorrect": false, "rationale": "La $\\text{activación}$ $\\text{de}$ $\\text{Rb}$ $\\text{es}$ $\\text{nuclear}$." }
+            ]
+        },
+        {
+            "questionNumber": 84,
+            "question": "El $\\text{potencial}$ $\\text{de}$ $\\text{acción}$ $\\text{en}$ $\\text{neuronas}$ $\\text{es}$ $\\text{iniciado}$ $\\text{por}$:",
+            "answerOptions": [
+                { "text": "Canales $\\text{de}$ $\\text{Na}^{+}$ $\\text{dependientes}$ $\\text{de}$ $\\text{voltaje}$", "isCorrect": true, "rationale": "El $\\text{potencial}$ $\\text{de}$ $\\text{acción}$ $\\text{se}$ $\\text{inicia}$ $\\text{cuando}$ $\\text{la}$ $\\text{membrana}$ $\\text{se}$ $\\text{despolariza}$ $\\text{hasta}$ $\\text{alcanzar}$ $\\text{el}$ $\\text{umbral}$, $\\text{lo}$ $\\text{que}$ $\\text{provoca}$ $\\text{la}$ $\\text{apertura}$ $\\text{explosiva}$ $\\text{de}$ $\\text{los}$ $\\text{canales}$ $\\text{de}$ $\\text{Na}^{+}$ $\\text{dependientes}$ $\\text{de}$ $\\text{voltaje}$, $\\text{causando}$ $\\text{una}$ $\\text{rápida}$ $\\text{entrada}$ $\\text{de}$ $\\text{Na}^{+}$." },
+                { "text": "Canales $\\text{de}$ $\\text{K}^{+}$ $\\text{de}$ $\\text{fuga}$", "isCorrect": false, "rationale": "Los $\\text{canales}$ $\\text{de}$ $\\text{K}^{+}$ $\\text{de}$ $\\text{fuga}$ $\\text{mantienen}$ $\\text{el}$ $\\text{potencial}$ $\\text{de}$ $\\text{reposo}$." },
+                { "text": "Fas $\\text{($\text{receptor}$ $\text{de}$ $\text{muerte}$)}$", "isCorrect": false, "rationale": "Fas $\\text{activa}$ $\\text{la}$ $\\text{apoptosis}$." },
+                { "text": "Bomba $\\text{Ca}^{2+}$", "isCorrect": false, "rationale": "La $\\text{bomba}$ $\\text{Ca}^{2+}$ $\\text{mantiene}$ $\\text{el}$ $\\text{gradiente}$ $\\text{de}$ $\\text{Ca}^{2+}$." }
+            ]
+        },
+        {
+            "questionNumber": 85,
+            "question": "La $\\text{repolarización}$ $\\text{del}$ $\\text{potencial}$ $\\text{de}$ $\\text{acción}$ $\\text{es}$ $\\text{causada}$ $\\text{por}$:",
+            "answerOptions": [
+                { "text": "Inactivación $\\text{de}$ $\\text{canales}$ $\\text{de}$ $\\text{Na}^{+}$ $\\text{y}$ $\\text{apertura}$ $\\text{de}$ $\\text{canales}$ $\\text{de}$ $\\text{K}^{+}$", "isCorrect": true, "rationale": "La $\\text{repolarización}$ $\\text{es}$ $\\text{el}$ $\\text{regreso}$ $\\text{al}$ $\\text{potencial}$ $\\text{de}$ $\\text{reposo}$. $\\text{Ocurre}$ $\\text{porque}$ $\\text{los}$ $\\text{canales}$ $\\text{de}$ $\\text{Na}^{+}$ $\\text{se}$ $\\text{inactivan}$ $\\text{y}$ $\\text{se}$ $\\text{abren}$ $\\text{canales}$ $\\text{de}$ $\\text{K}^{+}$ $\\text{($\text{dependientes}$ $\text{de}$ $\text{voltaje}$)}, $\\text{permitiendo}$ $\\text{una}$ $\\text{rápida}$ $\\text{salida}$ $\\text{de}$ $\\text{K}^{+}$ $\\text{($\text{carga}$ $\text{positiva}$)}$." },
+                { "text": "Entrada $\\text{de}$ $\\text{Ca}^{2+}$", "isCorrect": false, "rationale": "La $\\text{entrada}$ $\\text{de}$ $\\text{Ca}^{2+}$ $\\text{mantiene}$ $\\text{la}$ $\\text{despolarización}$." },
+                { "text": "Activación $\\text{de}$ $\\text{Rb}$", "isCorrect": false, "rationale": "La $\\text{activación}$ $\\text{de}$ $\\text{Rb}$ $\\text{es}$ $\\text{nuclear}$." },
+                { "text": "Aumento $\\text{de}$ $\\text{Cl}^{-}$", "isCorrect": false, "rationale": "El $\\text{aumento}$ $\\text{de}$ $\\text{Cl}^{-}$ $\\text{causa}$ $\\text{hiperpolarización}$." }
+            ]
+        },
+        {
+            "questionNumber": 86,
+            "question": "Los $\\text{endosomas}$ $\\text{tardíos}$ $\\text{contienen}$ $\\text{proteínas}$ $\\text{($\text{receptores}$)} $\\text{destinadas}$ $\\text{a}$:",
+            "answerOptions": [
+                { "text": "Degradación", "isCorrect": true, "rationale": "El $\\text{endosoma}$ $\\text{tardío}$ $\\text{es}$ $\\text{la}$ $\\text{estación}$ $\\text{previa}$ $\\text{al}$ $\\text{lisosoma}$ $\\text{en}$ $\\text{la}$ $\\text{vía}$ $\\text{de}$ $\\text{endocitosis}$. $\\text{Contiene}$ $\\text{el}$ $\\text{material}$ $\\text{($\text{incluidos}$ $\text{receptores}$ $\text{marcados}$ $\text{con}$ $\text{ubiquitina}$)} $\\text{que}$ $\\text{será}$ $\\text{degradado}$ $\\text{por}$ $\\text{las}$ $\\text{hidrolasas}$ $\\text{lisosomales}$." },
+                { "text": "RE", "isCorrect": false, "rationale": "El $\\text{RE}$ $\\text{es}$ $\\text{el}$ $\\text{sitio}$ $\\text{de}$ $\\text{síntesis}$." },
+                { "text": "Reciclaje $\\text{a}$ $\\text{membrana}$", "isCorrect": false, "rationale": "El $\\text{reciclaje}$ $\\text{ocurre}$ $\\text{desde}$ $\\text{el}$ $\\text{endosoma}$ $\\text{temprano}$." },
+                { "text": "Golgi", "isCorrect": false, "rationale": "El $\\text{Golgi}$ $\\text{clasifica}$ $\\text{proteínas}$." }
+            ]
+        },
+        {
+            "questionNumber": 87,
+            "question": "El $\\text{retículo}$ $\\text{sarcoplásmico}$ $\\text{es}$ $\\text{una}$ $\\text{variante}$ $\\text{de}$ $\\text{RE}$ $\\text{que}$ $\\text{expresa}$ $\\text{alta}$ $\\text{cantidad}$ $\\text{de}$:",
+            "answerOptions": [
+                { "text": "SERCA", "isCorrect": true, "rationale": "El $\\text{RS}$ $\\text{($\text{Retículo}$ $\text{Sarcoplásmico}$)} $\\text{es}$ $\\text{el}$ $\\text{principal}$ $\\text{almacén}$ $\\text{de}$ $\\text{Ca}^{2+}$ $\\text{muscular}$ $\\text{y}$ $\\text{expresa}$ $\\text{altos}$ $\\text{niveles}$ $\\text{de}$ $\\text{SERCA}$ ($\text{la}$ $\text{bomba}$ $\text{Ca}^{2+}$ $\text{ATPasa}$ $\text{que}$ $\text{introduce}$ $\text{Ca}^{2+}$ $\text{al}$ $\text{lumen}$)." },
+                { "text": "Colágeno", "isCorrect": false, "rationale": "El $\\text{colágeno}$ $\\text{es}$ $\\text{una}$ $\\text{proteína}$ $\\text{de}$ $\\text{la}$ $\\text{MEC}$." },
+                { "text": "Actina", "isCorrect": false, "rationale": "La $\\text{actina}$ $\\text{es}$ $\\text{una}$ $\\text{proteína}$ $\\text{citosólica}$ $\\text{($\text{miofilamento}$)}$." },
+                { "text": "Clatrina", "isCorrect": false, "rationale": "La $\\text{clatrina}$ $\\text{es}$ $\\text{una}$ $\\text{proteína}$ $\\text{de}$ $\\text{cubierta}$ $\\text{vesicular}$." }
+            ]
+        },
+        {
+            "questionNumber": 88,
+            "question": "La $\\text{reparación}$ $\\text{de}$ $\\text{membrana}$ $\\text{tras}$ $\\text{lesión}$ $\\text{se}$ $\\text{lleva}$ $\\text{a}$ $\\text{cabo}$ $\\text{por}$:",
+            "answerOptions": [
+                { "text": "Fusión $\\text{de}$ $\\text{vesículas}$ $\\text{de}$ $\\text{RE}$ $\\text{o}$ $\\text{lisosoma}$", "isCorrect": true, "rationale": "La $\\text{reparación}$ $\\text{rápida}$ $\\text{de}$ $\\text{lesiones}$ $\\text{grandes}$ $\\text{en}$ $\\text{la}$ $\\text{membrana}$ $\\text{plasmática}$ $\\text{se}$ $\\text{logra}$ $\\text{mediante}$ $\\text{la}$ $\\text{exocitosis}$ $\\text{y}$ $\\text{fusión}$ $\\text{de}$ $\\text{membranas}$ $\\text{de}$ $\\text{compartimentos}$ $\\text{internos}$ $\\text{($\text{ej}$. $\text{RE}, \text{lisosoma}$ $\text{o}$ $\text{endosomas}$)} $\\text{en}$ $\\text{el}$ $\\text{sitio}$ $\\text{de}$ $\\text{la}$ $\\text{lesión}$." },
+                { "text": "Síntesis $\\text{de}$ $\\text{ADN}$", "isCorrect": false, "rationale": "La $\\text{síntesis}$ $\\text{de}$ $\\text{ADN}$ $\\text{es}$ $\\text{nuclear}$." },
+                { "text": "Fagocitosis", "isCorrect": false, "rationale": "La $\\text{fagocitosis}$ $\\text{es}$ $\\text{la}$ $\\text{ingesta}$ $\\text{de}$ $\\text{partículas}$ $\\text{grandes}$." },
+                { "text": "Activación $\\text{de}$ $\\text{Mdm}2$", "isCorrect": false, "rationale": "Mdm2 $\\text{degrada}$ $\\text{p}53$." }
+            ]
+        },
+        {
+            "questionNumber": 89,
+            "question": "El $\\text{transporte}$ $\\text{vesicular}$ $\\text{es}$ $\\text{principalmente}$ $\\text{dirigido}$ $\\text{por}$ $\\text{el}$ $\\text{citoesqueleto}$ $\\text{de}$:",
+            "answerOptions": [
+                { "text": "Microtúbulos", "isCorrect": true, "rationale": "El $\\text{transporte}$ $\\text{de}$ $\\text{larga}$ $\\text{distancia}$ $\\text{de}$ $\\text{vesículas}$ $\\text{y}$ $\\text{orgánulos}$ $\\text{en}$ $\\text{la}$ $\\text{mayoría}$ $\\text{de}$ $\\text{las}$ $\\text{células}$ $\\text{eucariotas}$ $\\text{es}$ $\\text{mediado}$ $\\text{por}$ $\\text{los}$ $\\text{motores}$ $\\text{($\text{quinesina}, \text{dineína}$)} $\\text{que}$ $\\text{se}$ $\\text{mueven}$ $\\text{a}$ $\\text{lo}$ $\\text{largo}$ $\\text{de}$ $\\text{los}$ $\\text{microtúbulos}$." },
+                { "text": "Actina", "isCorrect": false, "rationale": "La $\\text{actina}$ $\\text{se}$ $\\text{usa}$ $\\text{para}$ $\\text{el}$ $\\text{transporte}$ $\\text{de}$ $\\text{corta}$ $\\text{distancia}$ $\\text{($\text{córtex}$ $\text{celular}$)}$." },
+                { "text": "Filamentos $\\text{intermedios}$", "isCorrect": false, "rationale": "Los $\\text{filamentos}$ $\\text{intermedios}$ $\\text{no}$ $\\text{son}$ $\\text{vías}$ $\\text{de}$ $\\text{transporte}$ $\\text{activo}$." },
+                { "text": "Laminas", "isCorrect": false, "rationale": "Las $\\text{láminas}$ $\\text{son}$ $\\text{proteínas}$ $\\text{nucleares}$." }
+            ]
+        },
+        {
+            "questionNumber": 90,
+            "question": "La $\\text{fosfatidilserina}$ $\\text{es}$ $\\text{esencial}$ $\\text{para}$ $\\text{el}$ $\\text{reclutamiento}$ $\\text{de}$ $\\text{proteínas}$ $\\text{con}$ $\\text{dominio}$:",
+            "answerOptions": [
+                { "text": "PH", "isCorrect": true, "rationale": "Los $\\text{dominios}$ $\\text{PH}$ ($\text{Pleckstrin}$ $\\text{Homology}$) $\\text{reconocen}$ $\\text{fosfolípidos}$ $\\text{($\text{ej}$. $\text{PIP}2, \text{PIP}3$ $\text{o}$ $\text{fosfatidilserina}$)} $\\text{en}$ $\\text{la}$ $\\text{membrana}$, $\\text{siendo}$ $\\text{esenciales}$ $\\text{para}$ $\\text{el}$ $\\text{reclutamiento}$ $\\text{de}$ $\\text{proteínas}$ $\\text{de}$ $\\text{señalización}$ $\\text{($\text{ej}$. $\text{Akt}$)}$." },
+                { "text": "SH2", "isCorrect": false, "rationale": "Los $\\text{dominios}$ $\\text{SH}2$ $\\text{reconocen}$ $\\text{tirosinas}$ $\\text{fosforiladas}$." },
+                { "text": "RGD", "isCorrect": false, "rationale": "El $\\text{motivo}$ $\\text{RGD}$ $\\text{es}$ $\\text{de}$ $\\text{la}$ $\\text{MEC}$ $\\text{($\text{para}$ $\text{integrinas}$)}$." },
+                { "text": "NES", "isCorrect": false, "rationale": "NES $\\text{es}$ $\\text{la}$ $\\text{secuencia}$ $\\text{de}$ $\\text{exportación}$ $\\text{nuclear}$." }
+            ]
+        },
+        {
+            "questionNumber": 91,
+            "question": "Los $\\text{glucolípidos}$ $\\text{en}$ $\\text{la}$ $\\text{membrana}$ $\\text{plasmática}$ $\\text{se}$ $\\text{encuentran}$:",
+            "answerOptions": [
+                { "text": "Exclusivamente $\\text{en}$ $\\text{la}$ $\\text{monocapa}$ $\\text{externa}$", "isCorrect": true, "rationale": "Los $\\text{glucolípidos}$ $\\text{($\text{lípidos}$ $\text{con}$ $\text{azúcares}$)} $\\text{se}$ $\\text{sintetizan}$ $\\text{en}$ $\\text{el}$ $\\text{lumen}$ $\\text{del}$ $\\text{Golgi}$ $\\text{y}$ $\\text{se}$ $\\text{transportan}$ $\\text{a}$ $\\text{la}$ $\\text{membrana}$ $\\text{plasmática}$, $\\text{donde}$ $\\text{los}$ $\\text{grupos}$ $\\text{de}$ $\\text{azúcar}$ $\\text{se}$ $\\text{orientan}$ $\\text{hacia}$ $\\text{el}$ $\\text{exterior}$ $\\text{celular}$ $\\text{($\text{asimetría}$ $\text{de}$ $\text{membrana}$)}$." },
+                { "text": "Equitativamente $\\text{distribuidos}$ $\\text{en}$ $\\text{ambas}$ $\\text{monocapas}$", "isCorrect": false, "rationale": "La $\\text{distribución}$ $\\text{es}$ $\\text{asimétrica}$." },
+                { "text": "Solo $\\text{en}$ $\\text{la}$ $\\text{monocapa}$ $\\text{interna}$", "isCorrect": false, "rationale": "La $\\text{monocapa}$ $\\text{interna}$ $\\text{es}$ $\\text{rica}$ $\\text{en}$ $\\text{fosfolípidos}$ $\\text{aminados}$." },
+                { "text": "Solo $\\text{en}$ $\\text{el}$ $\\text{RE}$ $\\text{liso}$", "isCorrect": false, "rationale": "El $\\text{RE}$ $\\text{liso}$ $\\text{sintetiza}$ $\\text{lípidos}$, $\\text{pero}$ $\\text{los}$ $\\text{glucolípidos}$ $\\text{se}$ $\\text{modifican}$ $\\text{en}$ $\\text{el}$ $\\text{Golgi}$." }
+            ]
+        },
+        {
+            "questionNumber": 92,
+            "question": "El $\\text{transporte}$ $\\text{de}$ $\\text{proteínas}$ $\\text{hacia}$ $\\text{la}$ $\\text{matriz}$ $\\text{mitocondrial}$ $\\text{requiere}$:",
+            "answerOptions": [
+                { "text": "Secuencia $\\text{señal}$ $\\text{N}$-$\\text{terminal}$ $\\text{y}$ $\\text{translocadores}$ $\\text{TOM}/\text{TIM}$", "isCorrect": true, "rationale": "Las $\\text{proteínas}$ $\\text{mitocondriales}$ $\\text{($\text{codificadas}$ $\text{nuclearmente}$)} $\\text{contienen}$ $\\text{una}$ $\\text{presecuencia}$ $\\text{N}$-$\\text{terminal}$ $\\text{que}$ $\\text{es}$ $\\text{reconocida}$ $\\text{y}$ $\\text{transportada}$ $\\text{a}$ $\\text{través}$ $\\text{de}$ $\\text{los}$ $\\text{complejos}$ $\\text{TOM}$ $\\text{($\text{Outer}$ $\text{Membrane}$)} $\\text{y}$ $\\text{TIM}$ $\\text{($\text{Inner}$ $\text{Membrane}$)}$." },
+                { "text": "KDEL", "isCorrect": false, "rationale": "KDEL $\\text{es}$ $\\text{la}$ $\\text{señal}$ $\\text{de}$ $\\text{retención}$ $\\text{del}$ $\\text{RE}$." },
+                { "text": "Clatrina", "isCorrect": false, "rationale": "La $\\text{clatrina}$ $\\text{es}$ $\\text{una}$ $\\text{proteína}$ $\\text{de}$ $\\text{cubierta}$ $\\text{vesicular}$." },
+                { "text": "SNAREs", "isCorrect": false, "rationale": "Las $\\text{SNAREs}$ $\\text{median}$ $\\text{la}$ $\\text{fusión}$ $\\text{vesicular}$." }
+            ]
+        },
+        {
+            "questionNumber": 93,
+            "question": "La $\\text{unión}$ $\\text{del}$ $\\text{colesterol}$ $\\text{a}$ $\\text{la}$ $\\text{membrana}$ $\\text{plasmática}$ $\\text{es}$:",
+            "answerOptions": [
+                { "text": "Bidireccional $\\text{($\text{ambas}$ $\text{monocapas}$)}$", "isCorrect": true, "rationale": "El $\\text{colesterol}$ $\\text{es}$ $\\text{un}$ $\\text{lípido}$ $\\text{pequeño}$ $\\text{que}$ $\\text{puede}$ $\\text{cambiar}$ $\\text{fácilmente}$ $\\text{de}$ $\\text{monocapa}$ $\\text{($\text{flip}$-$\\text{flop}$ $\\text{rápido}$)} $\\text{y}$ $\\text{se}$ $\\text{distribuye}$ $\\text{en}$ $\\text{ambas}$ $\\text{capas}$ $\\text{($\text{aunque}$ $\text{se}$ $\text{concentra}$ $\text{en}$ $\text{balsas}$ $\text{lipídicas}$)}$." },
+                { "text": "Solo $\\text{en}$ $\\text{la}$ $\\text{monocapa}$ $\\text{interna}$", "isCorrect": false, "rationale": "El $\\text{colesterol}$ $\\text{se}$ $\\text{encuentra}$ $\\text{en}$ $\\text{ambas}$ $\\text{monocapas}$." },
+                { "text": "Solo $\\text{en}$ $\\text{la}$ $\\text{monocapa}$ $\\text{externa}$", "isCorrect": false, "rationale": "El $\\text{colesterol}$ $\\text{se}$ $\\text{encuentra}$ $\\text{en}$ $\\text{ambas}$ $\\text{monocapas}$." },
+                { "text": "Dependiente $\\text{de}$ $\\text{flipasas}$", "isCorrect": false, "rationale": "El $\\text{movimiento}$ $\\text{del}$ $\\text{colesterol}$ $\\text{es}$ $\\text{espontáneo}$." }
+            ]
+        },
+        {
+            "questionNumber": 94,
+            "question": "Los $\\text{canales}$ $\\text{TRP}$ $\\text{($\text{Transient}$ $\text{Receptor}$ $\text{Potential}$)} $\\text{son}$:",
+            "answerOptions": [
+                { "text": "Mecanosensores $\\text{y}$ $\\text{termosensores}$", "isCorrect": true, "rationale": "Los $\\text{canales}$ $\\text{TRP}$ $\\text{son}$ $\\text{un}$ $\\text{grupo}$ $\\text{diverso}$ $\\text{de}$ $\\text{canales}$ $\\text{iónicos}$ $\\text{que}$ $\\text{actúan}$ $\\text{como}$ $\\text{sensores}$ $\\text{biológicos}$, $\\text{activándose}$ $\\text{en}$ $\\text{respuesta}$ $\\text{a}$ $\\text{estímulos}$ $\\text{físicos}$ $\\text{($\text{temperatura}, \text{presión}$ $\text{osmótica}$)} $\\text{y}$ $\\text{químicos}$." },
+                { "text": "Regulados $\\text{por}$ $\\text{voltaje}$ $\\text{únicamente}$", "isCorrect": false, "rationale": "Los $\\text{canales}$ $\\text{TRP}$ $\\text{se}$ $\\text{activan}$ $\\text{por}$ $\\text{una}$ $\\text{amplia}$ $\\text{gama}$ $\\text{de}$ $\\text{estímulos}$." },
+                { "text": "Acoplados $\\text{a}$ $\\text{proteínas}$ $\\text{G}$", "isCorrect": false, "rationale": "Los $\\text{canales}$ $\\text{acoplados}$ $\\text{a}$ $\\text{proteínas}$ $\\text{G}$ $\\text{son}$ $\\text{receptores}$ $\\text{metabotrópicos}$." },
+                { "text": "Inhibidos $\\text{por}$ $\\text{el}$ $\\text{frío}$ $\\text{siempre}$", "isCorrect": false, "rationale": "Algunos $\\text{TRP}$ $\\text{son}$ $\\text{activados}$ $\\text{por}$ $\\text{el}$ $\\text{frío}$ $\\text{($\text{ej}$. $\text{TRPM}8$)}$." }
+            ]
+        },
+        {
+            "questionNumber": 95,
+            "question": "El $\\text{transporte}$ $\\text{activo}$ $\\text{primario}$ $\\text{P}$-$\\text{type}$ $\\text{incluye}$:",
+            "answerOptions": [
+                { "text": "Bomba $\\text{Na}^{+}/\text{K}^{+}$ $\\text{y}$ $\\text{bomba}$ $\\text{Ca}^{2+}$", "isCorrect": true, "rationale": "Las $\\text{bombas}$ $\\text{P}$-$\\text{type}$ $\\text{son}$ $\\text{transportadores}$ $\\text{multipaso}$ $\\text{que}$ $\\text{sufren}$ $\\text{una}$ $\\text{fosforilación}$ $\\text{transitoria}$ $\\text{($\text{de}$ $\text{un}$ $\text{residuo}$ $\text{de}$ $\text{Aspartato}$)} $\\text{durante}$ $\\text{su}$ $\\text{ciclo}$ $\\text{de}$ $\\text{transporte}$, $\\text{siendo}$ $\\text{la}$ $\\text{bomba}$ $\\text{Na}^{+}/\text{K}^{+}$ $\\text{y}$ $\\text{la}$ $\text{Ca}^{2+}$ $\\text{ATPasa}$ $\\text{ejemplos}$ $\\text{clave}$." },
+                { "text": "Bomba $\\text{V}$-$\\text{ATPasa}$", "isCorrect": false, "rationale": "La $\\text{bomba}$ $\\text{V}$-$\\text{ATPasa}$ $\\text{es}$ $\\text{un}$ $\\text{tipo}$ $\\text{diferente}$ $\\text{de}$ $\\text{bomba}$ $\\text{($\text{en}$ $\text{lisosomas}$)}$." },
+                { "text": "Transportador $\\text{ABC}$", "isCorrect": false, "rationale": "El $\\text{transportador}$ $\\text{ABC}$ $\\text{es}$ $\\text{otro}$ $\\text{tipo}$ $\\text{de}$ $\\text{bomba}$ $\\text{($\text{transportadores}$ $\text{de}$ $\text{moléculas}$ $\text{pequeñas}$)}$." },
+                { "text": "SERCA", "isCorrect": false, "rationale": "SERCA $\\text{es}$ $\\text{la}$ $\\text{bomba}$ $\\text{Ca}^{2+}$ $\\text{del}$ $\\text{RE}$, $\\text{un}$ $\\text{ejemplo}$ $\\text{de}$ $\\text{bomba}$ $\\text{P}$-$\\text{type}$." }
+            ]
+        },
+        {
+            "questionNumber": 96,
+            "question": "La $\\text{fosfatidilcolina}$ $\\text{es}$ $\\text{un}$ $\\text{fosfolípido}$ $\\text{que}$ $\\text{es}$ $\\text{más}$ $\\text{abundante}$ $\\text{en}$:",
+            "answerOptions": [
+                { "text": "Monocapa $\\text{externa}$ $\\text{($\text{extracitosólica}$)}", "isCorrect": true, "rationale": "La $\\text{fosfatidilcolina}$ $\\text{($\text{PC}$)} $\\text{es}$ $\\text{el}$ $\\text{fosfolípido}$ $\\text{más}$ $\\text{abundante}$ $\\text{en}$ $\\text{la}$ $\\text{mayoría}$ $\\text{de}$ $\\text{las}$ $\\text{membranas}$ $\\text{eucariotas}$ $\\text{y}$ $\\text{predomina}$ $\\text{en}$ $\\text{la}$ $\\text{monocapa}$ $\\text{externa}$ $\\text{($\text{extracitosólica}$)}$." },
+                { "text": "Monocapa $\\text{interna}$ $\\text{($\text{citosólica}$)}$", "isCorrect": false, "rationale": "La $\\text{monocapa}$ $\\text{interna}$ $\\text{es}$ $\\text{rica}$ $\\text{en}$ $\\text{fosfatidilserina}$ $\\text{y}$ $\\text{fosfatidiletanolamina}$." },
+                { "text": "Matriz $\\text{mitocondrial}$", "isCorrect": false, "rationale": "La $\\text{matriz}$ $\\text{mitocondrial}$ $\\text{es}$ $\\text{un}$ $\\text{espacio}$ $\\text{acuoso}$." },
+                { "text": "Lumen $\\text{del}$ $\\text{lisosoma}$", "isCorrect": false, "rationale": "El $\\text{lumen}$ $\\text{del}$ $\\text{lisosoma}$ $\\text{es}$ $\\text{ácido}$." }
+            ]
+        },
+        {
+            "questionNumber": 97,
+            "question": "El $\\text{núcleo}$ $\\text{contiene}$:",
+            "answerOptions": [
+                { "text": "ADN, $\\text{cromatina}$ $\\text{y}$ $\\text{nucleolo}$", "isCorrect": true, "rationale": "El $\\text{núcleo}$ $\\text{es}$ $\\text{el}$ $\\text{orgánulo}$ $\\text{que}$ $\\text{alberga}$ $\\text{el}$ $\\text{material}$ $\\text{genético}$ $\\text{($\text{ADN}$ $\text{empaquetado}$ $\text{como}$ $\text{cromatina}$)}$ $\\text{y}$ $\\text{contiene}$ $\\text{el}$ $\\text{nucleolo}$ $\\text{($\text{sitio}$ $\text{de}$ $\text{síntesis}$ $\text{de}$ $\text{ribosomas}$)}$." },
+                { "text": "Mitocondria", "isCorrect": false, "rationale": "La $\\text{mitocondria}$ $\\text{es}$ $\\text{un}$ $\\text{orgánulo}$ $\\text{de}$ $\\text{energía}$." },
+                { "text": "Ribosomas $\\text{libres}$", "isCorrect": false, "rationale": "Los $\\text{ribosomas}$ $\\text{libres}$ $\\text{están}$ $\\text{en}$ $\\text{el}$ $\\text{citosol}$." },
+                { "text": "Lisosomas", "isCorrect": false, "rationale": "Los $\\text{lisosomas}$ $\\text{degradan}$." }
+            ]
+        },
+        {
+            "questionNumber": 98,
+            "question": "La $\\text{importación}$ $\\text{mitocondrial}$ $\\text{es}$ $\\text{un}$ $\\text{proceso}$:",
+            "answerOptions": [
+                { "text": "Post-traduccional", "isCorrect": true, "rationale": "Las $\\text{proteínas}$ $\\text{mitocondriales}$ $\\text{se}$ $\\text{sintetizan}$ $\\text{en}$ $\\text{ribosomas}$ $\\text{libres}$ $\\text{en}$ $\\text{el}$ $\\text{citosol}$ $\\text{y}$ $\\text{luego}$ $\\text{se}$ $\\text{transportan}$ $\\text{a}$ $\\text{la}$ $\\text{mitocondria}$ $\\text{después}$ $\\text{de}$ $\\text{que}$ $\\text{la}$ $\\text{traducción}$ $\\text{haya}$ $\\text{finalizado}$ $\\text{($\text{post}$-$\\text{traduccional}$)}." },
+                { "text": "Co-traduccional", "isCorrect": false, "rationale": "La $\\text{translocación}$ $\\text{co}$-$\\text{traduccional}$ $\\text{es}$ $\\text{para}$ $\\text{el}$ $\\text{RE}$ $\\text{rugoso}$." },
+                { "text": "Dependiente $\\text{de}$ $\\text{SNARE}$", "isCorrect": false, "rationale": "El $\\text{transporte}$ $\\text{mitocondrial}$ $\\text{es}$ $\\text{mediado}$ $\\text{por}$ $\\text{translocadores}$." },
+                { "text": "Pasivo", "isCorrect": false, "rationale": "El $\\text{transporte}$ $\\text{es}$ $\\text{activo}$ $\\text{y}$ $\\text{requiere}$ $\\text{ATP}$ $\\text{($\text{y}$ $\text{gradiente}$ $\text{eléctrico}$ $\text{en}$ $\text{la}$ $\text{membrana}$ $\text{interna}$)}$." }
+            ]
+        },
+        {
+            "questionNumber": 99,
+            "question": "El $\\text{lumen}$ $\\text{del}$ $\\text{Golgi}$ $\\text{es}$ $\\text{topológicamente}$ $\\text{equivalente}$ $\\text{a}$:",
+            "answerOptions": [
+                { "text": "Exterior $\\text{celular}$", "isCorrect": true, "rationale": "El $\\text{lumen}$ $\\text{del}$ $\\text{Golgi}$ $\\text{es}$ $\\text{parte}$ $\\text{del}$ $\\text{sistema}$ $\\text{endomembranoso}$, $\\text{siendo}$ $\\text{topológicamente}$ $\\text{equivalente}$ $\\text{al}$ $\\text{lumen}$ $\\text{del}$ $\\text{RE}$ $\\text{y}$ $\\text{al}$ $\\text{exterior}$ $\\text{de}$ $\\text{la}$ $\\text{célula}$." },
+                { "text": "Citoplasma", "isCorrect": false, "rationale": "El $\\text{citoplasma}$ $\\text{es}$ $\\text{el}$ $\\text{espacio}$ $\\text{extramembrana}$." },
+                { "text": "Núcleo", "isCorrect": false, "rationale": "El $\\text{núcleo}$ $\\text{es}$ $\\text{un}$ $\\text{compartimento}$ $\\text{separado}$." },
+                { "text": "Matriz $\\text{mitocondrial}$", "isCorrect": false, "rationale": "La $\\text{matriz}$ $\\text{mitocondrial}$ $\\text{es}$ $\\text{un}$ $\\text{compartimento}$ $\\text{separado}$ $\\text{y}$ $\\text{de}$ $\\text{origen}$ $\\text{endosimbiótico}$." }
+            ]
+        },
+        {
+            "questionNumber": 100,
+            "question": "Los $\\text{microtúbulos}$ $\\text{se}$ $\\text{caracterizan}$ $\\text{por}$:",
+            "answerOptions": [
+                { "text": "Inestabilidad $\\text{dinámica}$", "isCorrect": true, "rationale": "Los $\\text{microtúbulos}$ $\\text{presentan}$ $\\text{inestabilidad}$ $\\text{dinámica}$, $\\text{alternando}$ $\\text{rápidamente}$ $\\text{entre}$ $\\text{polimerización}$ $\\text{($\text{crecimiento}$)} $\\text{y}$ $\\text{despolimerización}$ $\\text{($\text{catástrofe}$)}$." },
+                { "text": "Estructura $\\text{sólida}$ $\\text{y}$ $\\text{estable}$", "isCorrect": false, "rationale": "Los $\\text{filamentos}$ $\\text{intermedios}$ $\\text{son}$ $\\text{sólidos}$ $\\text{y}$ $\\text{estables}$." },
+                { "text": "Formación $\\text{de}$ $\\text{anillo}$ $\\text{contráctil}$", "isCorrect": false, "rationale": "El $\\text{anillo}$ $\\text{contráctil}$ $\\text{es}$ $\\text{de}$ $\\text{actina}$ $\\text{y}$ $\\text{miosina}$." },
+                { "text": "Desplazamiento $\\text{de}$ $\\text{miosina}$", "isCorrect": false, "rationale": "La $\\text{miosina}$ $\\text{se}$ $\\text{desplaza}$ $\\text{sobre}$ $\\text{la}$ $\\text{actina}$." }
+        ]
+    }
+    ];
+
+    let score = 0;
+    const totalQuestions = quizData.length;
+    const quizContent = document.getElementById('quiz-content');
+    const scoreDisplay = document.getElementById('current-score');
+    const totalQuestionsDisplay = document.getElementById('total-questions');
+    const finalScoreDisplay = document.getElementById('final-score');
+
+    totalQuestionsDisplay.textContent = totalQuestions;
+
+    // Función para renderizar el cuestionario
+    function renderQuiz() {
+        quizData.forEach(q => {
+            const questionCard = document.createElement('div');
+            questionCard.className = 'question-card';
+            // Usamos un ID único y basado en el número de pregunta original
+            questionCard.id = `q-${q.questionNumber}`;
+
+            // Título de la pregunta
+            const title = document.createElement('div');
+            title.className = 'question-title';
+            title.innerHTML = `Pregunta ${q.questionNumber}: ${q.question}`;
+            questionCard.appendChild(title);
+
+            // Opciones de respuesta
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'options-container';
+
+            q.answerOptions.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'answer-option';
+                optionDiv.textContent = option.text;
+                // El índice del array (0-54) y el índice de la opción
+                optionDiv.setAttribute('data-q-index', q.questionNumber - 1); 
+                optionDiv.setAttribute('data-option-index', index); 
+                optionDiv.onclick = handleAnswerClick;
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            questionCard.appendChild(optionsContainer);
+            quizContent.appendChild(questionCard);
+        });
+    }
+
+    // Función para manejar el clic en la respuesta
+    function handleAnswerClick(event) {
+        const selectedOption = event.target;
+        
+        // Evitar doble clic
+        if (selectedOption.classList.contains('disabled')) {
+            return;
+        }
+
+        // El qIndex debe ser el índice de la pregunta en el array quizData
+        const qIndexInArray = parseInt(selectedOption.getAttribute('data-q-index'));
+        const optionIndex = parseInt(selectedOption.getAttribute('data-option-index'));
+        
+        const questionData = quizData[qIndexInArray]; 
+        const isCorrect = questionData.answerOptions[optionIndex].isCorrect;
+        const rationaleText = questionData.answerOptions[optionIndex].rationale;
+        const optionsContainer = selectedOption.parentElement;
+
+        // 1. Desactivar clics en todas las opciones de esta pregunta
+        Array.from(optionsContainer.children).forEach(option => {
+            option.classList.add('disabled');
+            option.onclick = null; 
+        });
+
+        // 2. Marcar la respuesta seleccionada como correcta/incorrecta
+        if (isCorrect) {
+            selectedOption.classList.add('correct');
+            score++;
+        } else {
+            selectedOption.classList.add('incorrect');
+            
+            // 3. Resaltar la respuesta correcta si la selección fue incorrecta
+            optionsContainer.childNodes.forEach(option => {
+                const optIdx = parseInt(option.getAttribute('data-option-index'));
+                if (questionData.answerOptions[optIdx].isCorrect) {
+                    option.classList.add('correct');
+                }
+            });
+        }
+        
+        // 4. Mostrar la explicación
+        const rationaleDiv = document.createElement('div');
+        rationaleDiv.className = `rationale ${isCorrect ? 'correct' : 'incorrect'}`;
+        rationaleDiv.textContent = `Explicación: ${rationaleText}`;
+        optionsContainer.after(rationaleDiv);
+
+        // 5. Actualizar puntuación
+        scoreDisplay.textContent = score;
+
+        // 6. Verificar si el quiz ha terminado
+        checkQuizCompletion();
+    }
+
+    // Función para verificar si todas las preguntas han sido respondidas
+    function checkQuizCompletion() {
+        const answeredCount = Array.from(document.querySelectorAll('.question-card')).filter(card => {
+            // Un card se considera respondido si tiene al menos una opción con la clase 'disabled' 
+            return card.querySelector('.options-container .disabled');
+        }).length;
+
+        if (answeredCount === totalQuestions) {
+            document.getElementById('quiz-content').classList.add('hidden');
+            document.querySelector('.score-display').classList.add('hidden');
+            finalScoreDisplay.textContent = score;
+            document.getElementById('quiz-results').classList.remove('hidden');
+        }
+    }
+
+    // Inicializar el quiz
+    document.addEventListener('DOMContentLoaded', renderQuiz);
+</script>
+
+</body>
+</html>

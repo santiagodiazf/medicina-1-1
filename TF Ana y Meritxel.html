@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Investigación: Llorca & Muñoz-Manchado</title>
+    <style>
+        :root {
+            --primary: #4a235a; /* Morado investigación */
+            --secondary: #8e44ad;
+            --success: #27ae60;
+            --error: #c0392b;
+            --light: #f4ecf7;
+            --dark: #1a1a2e;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-top: 6px solid var(--primary);
+        }
+        header {
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        h1 { color: var(--primary); margin: 0; font-size: 2.2rem; }
+        .intro { font-size: 1.1rem; color: #555; margin-bottom: 10px; }
+        
+        .status-panel {
+            background: #d7bde2;
+            padding: 15px 25px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 25px;
+            color: var(--primary);
+            border: 1px solid #af7ac5;
+        }
+
+        .question-card {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+        .question-card.active { display: block; }
+
+        .researcher-tag {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .tag-llorca { background-color: #e67e22; } /* Naranja para Llorca (Dolor/Señal) */
+        .tag-munoz { background-color: #2980b9; } /* Azul para Muñoz (Genética/Neuro) */
+
+        .question-text {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .options-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid #d2b4de;
+            padding: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 1.05rem;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: #fdfefe;
+            transform: translateX(5px);
+        }
+
+        .option-btn:disabled { cursor: default; opacity: 0.8; }
+
+        .correct {
+            background-color: #d5f5e3 !important;
+            border-color: var(--success) !important;
+            color: #145a32;
+        }
+
+        .incorrect {
+            background-color: #fadbd8 !important;
+            border-color: var(--error) !important;
+            color: #7b241c;
+        }
+
+        .feedback-area {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            background: #fcf3cf; /* Amarillo suave para notas de investigación */
+            border-left: 6px solid #f1c40f;
+            display: none;
+        }
+        .feedback-area.show { display: block; }
+        .rationale { margin-top: 8px; font-size: 0.95rem; }
+
+        .nav-btn {
+            display: none;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            margin-top: 25px;
+            cursor: pointer;
+            float: right;
+            transition: background 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .nav-btn:hover { background: var(--secondary); }
+
+        .results-view {
+            text-align: center;
+            display: none;
+        }
+        .final-score {
+            font-size: 5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Investigación y Biología Celular</h1>
+        <p class="intro">Uniendo la ciencia de tus profesoras (Llorca & Muñoz-Manchado) con el temario.</p>
+    </header>
+
+    <div class="status-panel" id="statusBar">
+        <span id="q-progress">Pregunta 1 de 50</span>
+        <span id="score-display">Aciertos: 0</span>
+    </div>
+
+    <div id="quiz-container">
+        </div>
+
+    <div id="results-screen" class="results-view">
+        <h2>Test Completado</h2>
+        <p>Has explorado la biología celular a través de la investigación real.</p>
+        <div class="final-score" id="final-number">0/50</div>
+        <p id="final-text" style="font-size: 1.2rem; margin-bottom: 30px;"></p>
+        <button class="nav-btn" style="display:inline-block; float:none;" onclick="location.reload()">Reiniciar</button>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    // --- PARTE 1: MERITXELL LLORCA (Dolor, GPCRs, Señalización, Neuronas) ---
+    {
+        researcher: "Llorca (Neurofarmacología)",
+        topic: "Señalización Celular (Bloque 7)",
+        question: "La Dra. Llorca estudia los receptores opioides en el dolor. ¿A qué gran familia de receptores de superficie pertenecen estos receptores?",
+        options: ["Receptores Tirosina Quinasa (RTK).", "Canales iónicos.", "Receptores Acoplados a Proteínas G (GPCR).", "Receptores nucleares."],
+        correct: 2,
+        explanation: "Los receptores opioides (mu, delta, kappa) son clásicos GPCRs que modulan la excitabilidad neuronal."
+    },
+    {
+        topic: "Señalización Celular (Bloque 7)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "Al activarse un receptor de dolor tipo GPCR, ¿qué subunidad de la proteína G suele inhibir la adenilato ciclasa para reducir la señal?",
+        options: ["La subunidad Gs.", "La subunidad Gi (inhibitoria).", "La subunidad Gq.", "La subunidad Ras."],
+        correct: 1,
+        explanation: "La investigación en dolor a menudo se centra en proteínas Gi que reducen el AMPc, disminuyendo la excitabilidad."
+    },
+    {
+        topic: "Citoesqueleto (Bloque 5)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "Para que los receptores de dolor lleguen desde el cuerpo neuronal hasta la sinapsis, ¿qué 'autopista' del citoesqueleto utilizan?",
+        options: ["Filamentos intermedios.", "Microtúbulos.", "Actina.", "Lámina nuclear."],
+        correct: 1,
+        explanation: "El transporte axonal de vesículas con receptores se realiza sobre microtúbulos mediante motores moleculares."
+    },
+    {
+        topic: "Membrana (Bloque 5)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "El Locus Coeruleus (estudiado por la Dra. Llorca) libera noradrenalina. ¿Qué ion dispara la liberación de este neurotransmisor en la sinapsis?",
+        options: ["Entrada de Na+.", "Salida de K+.", "Entrada de Ca2+.", "Entrada de Cl-."],
+        correct: 2,
+        explanation: "La fusión de las vesículas sinápticas (exocitosis) es dependiente de la entrada de calcio por canales voltaje-dependientes."
+    },
+    {
+        topic: "Señalización (Bloque 7)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "En el dolor crónico, las neuronas pueden volverse hiperexcitables. ¿Qué canal iónico es fundamental para generar la fase ascendente del potencial de acción que transmite el dolor?",
+        options: ["Canal de K+.", "Canal de Na+ dependiente de voltaje.", "Bomba Na/K.", "Acuaporina."],
+        correct: 1,
+        explanation: "Los canales de sodio son la diana de muchos analgésicos locales porque inician el impulso nervioso."
+    },
+    {
+        topic: "Orgánulos (Bloque 1/5)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "Las neuronas del dolor requieren mucha energía para mantener sus gradientes iónicos. ¿Qué orgánulo es vital para suministrar este ATP en la sinapsis?",
+        options: ["El núcleo.", "La mitocondria.", "El lisosoma.", "El nucléolo."],
+        correct: 1,
+        explanation: "Las mitocondrias se transportan activamente a las sinapsis para alimentar las bombas iónicas necesarias para la transmisión del dolor."
+    },
+    {
+        topic: "Expresión Génica (Bloque 3)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "El estrés y el dolor pueden cambiar la expresión de genes en el cerebro a largo plazo (plasticidad). ¿Qué factor regula este proceso en el núcleo?",
+        options: ["Los ribosomas.", "Los Factores de Transcripción.", "La membrana plasmática.", "El aparato de Golgi."],
+        correct: 1,
+        explanation: "La señalización de dolor llega al núcleo activando factores de transcripción (ej. CREB) que modifican la expresión génica."
+    },
+    {
+        topic: "Citoesqueleto (Bloque 5)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "En las neuronas que estudian, los neurofilamentos son cruciales para:",
+        options: ["La contracción.", "Determinar el calibre del axón y dar soporte estructural.", "El transporte de vesículas.", "La división celular."],
+        correct: 1,
+        explanation: "Los neurofilamentos (filamentos intermedios neuronales) son esenciales para la estructura y grosor del axón."
+    },
+    {
+        topic: "Técnicas (Bloque 1)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "Si la Dra. Llorca quiere ver dónde se localiza un receptor opioide en la neurona, ¿qué técnica utilizaría?",
+        options: ["Microscopía de contraste de fases.", "Inmunofluorescencia (Microscopía de Fluorescencia).", "Cariotipo.", "PCR."],
+        correct: 1,
+        explanation: "La inmunofluorescencia permite marcar proteínas específicas (receptores) para ver su ubicación celular."
+    },
+    {
+        topic: "Señalización (Bloque 7)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "Muchos fármacos para el dolor actúan sobre receptores de membrana. ¿Por qué no entran directamente a la célula?",
+        options: ["Porque son hidrofóbicos.", "Porque son moléculas grandes o hidrofílicas que no cruzan la bicapa lipídica.", "Porque la célula los expulsa.", "Porque el núcleo está cerrado."],
+        correct: 1,
+        explanation: "La mayoría de neurotransmisores y fármacos (opioides, catecolaminas) son hidrofílicos y requieren receptores de superficie."
+    },
+    {
+        topic: "Sinapsis (Bloque 7)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "El estudio de la ansiedad inducida por dolor implica la amígdala. ¿Qué tipo de comunicación celular es la base de los circuitos neuronales?",
+        options: ["Endocrina.", "Sináptica.", "Por contacto.", "Autocrina."],
+        correct: 1,
+        explanation: "La transmisión rápida y precisa entre neuronas en circuitos cerebrales es sináptica."
+    },
+    {
+        topic: "Receptores (Bloque 7)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "Algunos receptores de dolor se desensibilizan (dejan de responder) tras un uso continuo. ¿Cómo ocurre esto a nivel molecular?",
+        options: ["El receptor se muta.", "El receptor es fosforilado y endocitado (internalizado) en vesículas.", "La célula muere.", "El ligando se rompe."],
+        correct: 1,
+        explanation: "La endocitosis de receptores GPCR es un mecanismo clásico de regulación a la baja (tolerancia)."
+    },
+    {
+        topic: "Transporte (Bloque 5)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "¿Qué proteína motora transporta los receptores recién sintetizados desde el cuerpo neuronal hacia el axón (anterógrado)?",
+        options: ["Dineína.", "Cinesina.", "Miosina.", "Actina."],
+        correct: 1,
+        explanation: "Las cinesinas llevan la carga hacia el extremo positivo (+) de los microtúbulos, es decir, hacia la terminal axónica."
+    },
+    {
+        topic: "Citoesqueleto (Bloque 5)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "El Locus Coeruleus tiene proyecciones muy largas. ¿Qué elemento del citoesqueleto es esencial para mantener estos axones largos?",
+        options: ["Microfilamentos de actina.", "Microtúbulos estables.", "Lámina nuclear.", "Centriolos."],
+        correct: 1,
+        explanation: "Los microtúbulos forman los 'raíles' estructurales largos que soportan el axón."
+    },
+    {
+        topic: "Lisosomas (Bloque 5)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "Cuando los receptores de dolor viejos son retirados de la membrana, ¿dónde son degradados?",
+        options: ["En el núcleo.", "En el lisosoma.", "En la mitocondria.", "En el ribosoma."],
+        correct: 1,
+        explanation: "La vía endocítica lleva los receptores viejos al lisosoma para su digestión y reciclaje."
+    },
+    {
+        topic: "Señalización (Bloque 7)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "¿Qué segundo mensajero suele disminuir cuando se activan los receptores opioides (Gi)?",
+        options: ["Calcio.", "AMP cíclico (AMPc).", "IP3.", "Glucosa."],
+        correct: 1,
+        explanation: "La proteína Gi inhibe la adenilato ciclasa, reduciendo los niveles de AMPc y 'apagando' la neurona."
+    },
+    {
+        topic: "Membrana (Bloque 5)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "Para que una neurona vuelva al reposo tras transmitir dolor, ¿qué bomba debe trabajar intensamente?",
+        options: ["Bomba de protones.", "Bomba Na+/K+ ATPasa.", "Bomba de Cloro.", "Transportador de glucosa."],
+        correct: 1,
+        explanation: "Restablece los gradientes iónicos alterados durante el potencial de acción."
+    },
+    {
+        topic: "Uniones (Bloque 6)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "En el sistema nervioso, ¿qué células forman la vaina de mielina para acelerar la señal?",
+        options: ["Neuronas.", "Células de la glía (Schwann/Oligodendrocitos).", "Fibroblastos.", "Macrófagos."],
+        correct: 1,
+        explanation: "La interacción célula-célula entre neurona y glía es vital para la conducción rápida."
+    },
+    {
+        topic: "Núcleo (Bloque 4)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "Las neuronas del Locus Coeruleus tienen un núcleo grande y nucléolo prominente. ¿Qué indica esto?",
+        options: ["Que se están dividiendo.", "Que tienen una alta tasa de síntesis de proteínas (ribosomas).", "Que están muertas.", "Que tienen mucho ADN."],
+        correct: 1,
+        explanation: "Un nucléolo grande indica una gran demanda de ribosomas para mantener la síntesis de neurotransmisores y proteínas."
+    },
+    {
+        topic: "Ciclo Celular (Bloque 8)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "Las neuronas adultas que estudia la Dra. Llorca están en una fase específica del ciclo. ¿Cuál?",
+        options: ["G1.", "S.", "G2.", "G0 (quiescencia permanente)."],
+        correct: 3,
+        explanation: "Las neuronas son células terminalmente diferenciadas que no se dividen."
+    },
+    {
+        topic: "Muerte Celular (Bloque 7)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "En enfermedades neurodegenerativas o dolor crónico severo, las neuronas pueden morir por excitotoxicidad (exceso de calcio). ¿Qué tipo de muerte es la más controlada?",
+        options: ["Necrosis.", "Apoptosis.", "Lisis.", "Mitosis."],
+        correct: 1,
+        explanation: "La apoptosis permite eliminar neuronas dañadas sin causar inflamación en el cerebro."
+    },
+    {
+        topic: "Señalización (Bloque 7)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "¿Qué gas actúa como neurotransmisor retrógrado en las vías del dolor?",
+        options: ["Óxido Nítrico (NO).", "Oxígeno.", "Nitrógeno.", "Helio."],
+        correct: 0,
+        explanation: "El NO difunde desde la neurona postsináptica a la presináptica para modular la señal (plasticidad)."
+    },
+    {
+        topic: "Retículo (Bloque 5)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "Los receptores de dolor son proteínas de membrana. ¿Dónde se inicia su síntesis?",
+        options: ["En ribosomas libres del citosol.", "En ribosomas unidos al Retículo Endoplásmico Rugoso (RER).", "En el núcleo.", "En el Golgi."],
+        correct: 1,
+        explanation: "Todas las proteínas transmembrana entran en la ruta secretora a través del RER."
+    },
+    {
+        topic: "Golgi (Bloque 5)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "¿Dónde se empaquetan los neuropéptidos implicados en el dolor?",
+        options: ["En el lisosoma.", "En el Aparato de Golgi.", "En la mitocondria.", "En el núcleo."],
+        correct: 1,
+        explanation: "El Golgi clasifica y empaqueta las proteínas en vesículas secretoras."
+    },
+    {
+        topic: "Adhesión (Bloque 6)",
+        researcher: "Llorca (Neurofarmacología)",
+        question: "¿Qué molécula de adhesión es importante para mantener la sinapsis unida?",
+        options: ["Cadherinas (N-cadherina).", "Integrinas de la matriz.", "Colágeno.", "Selectinas."],
+        correct: 0,
+        explanation: "Las cadherinas neuronales ayudan a pegar las membranas pre y postsinápticas."
+    },
+
+    // --- PARTE 2: ANA MUÑOZ-MANCHADO (Transcriptómica, Parkinson, Diferenciación) ---
+    {
+        topic: "Expresión Génica (Bloque 3)",
+        researcher: "Muñoz-Manchado (Transcriptómica)",
+        question: "La Dra. Muñoz estudia el 'transcriptoma de célula única'. ¿Qué nos dice el transcriptoma?",
+        options: ["La secuencia de ADN.", "Qué genes se están expresando (transcribiendo a ARN) en esa célula específica.", "Qué proteínas se degradan.", "La forma de la célula."],
+        correct: 1,
+        explanation: "Permite identificar qué 'hace' cada célula individualmente analizando sus ARNm."
+    },
+    {
+        topic: "Genómica (Bloque 3)",
+        researcher: "Muñoz-Manchado (Transcriptómica)",
+        question: "¿Por qué dos células del cerebro (una neurona y una glía) tienen transcriptomas diferentes?",
+        options: ["Tienen diferente ADN.", "Tienen diferentes ribosomas.", "Expresan diferentes sets de genes (Regulación diferencial).", "Una no tiene núcleo."],
+        correct: 2,
+        explanation: "La base de la identidad celular es la expresión diferencial del mismo genoma."
+    },
+    {
+        topic: "Enfermedad (Bloque 7)",
+        researcher: "Muñoz-Manchado (Neurodegeneración)",
+        question: "En la Enfermedad de Parkinson, se acumulan proteínas mal plegadas (alfa-sinucleína). ¿Qué sistema debería degradarlas normalmente?",
+        options: ["El ribosoma.", "El sistema Ubiquitina-Proteasoma.", "El aparato de Golgi.", "La ADN polimerasa."],
+        correct: 1,
+        explanation: "El fallo en el proteasoma es una causa clave de la muerte neuronal en Parkinson."
+    },
+    {
+        topic: "Mitocondria (Bloque 5)",
+        researcher: "Muñoz-Manchado (Neurodegeneración)",
+        question: "El Parkinson está muy ligado a fallos mitocondriales. Si la mitocondria falla, ¿qué proceso se detiene?",
+        options: ["La glucólisis.", "La fosforilación oxidativa (producción de ATP).", "La transcripción.", "La mitosis."],
+        correct: 1,
+        explanation: "Las neuronas mueren por falta de energía (ATP) y estrés oxidativo."
+    },
+    {
+        topic: "Lisosoma (Bloque 5)",
+        researcher: "Muñoz-Manchado (Neurodegeneración)",
+        question: "La autofagia es vital para prevenir el Parkinson. ¿Qué orgánulo realiza la autofagia (digestión de orgánulos propios)?",
+        options: ["Núcleo.", "Retículo.", "Lisosoma.", "Peroxisoma."],
+        correct: 2,
+        explanation: "El lisosoma recicla las mitocondrias dañadas (mitofagia); si falla, la neurona enferma."
+    },
+    {
+        topic: "Diferenciación (Bloque 7)",
+        researcher: "Muñoz-Manchado (Transcriptómica)",
+        question: "La Dra. Muñoz investiga la diversidad celular. ¿Qué define el 'tipo celular' en sus estudios?",
+        options: ["El tamaño.", "El perfil específico de expresión de ARN (firma molecular).", "La cantidad de ADN.", "El color."],
+        correct: 1,
+        explanation: "La transcriptómica clasifica las células según los genes que tienen activos."
+    },
+    {
+        topic: "Células Madre (Bloque 7)",
+        researcher: "Muñoz-Manchado (Reprogramación)",
+        question: "Su grupo 'NeurOmics' trabaja en reprogramación. ¿Qué son las células iPS que podrían usarse para reparar el cerebro?",
+        options: ["Células madre embrionarias.", "Células adultas reprogramadas a pluripotencia.", "Células tumorales.", "Neuronas viejas."],
+        correct: 1,
+        explanation: "La reprogramación convierte células de la piel en células madre capaces de generar nuevas neuronas."
+    },
+    {
+        topic: "Regulación (Bloque 3)",
+        researcher: "Muñoz-Manchado (Transcriptómica)",
+        question: "Para estudiar qué genes se expresan, se aíslan los ARNm. ¿Qué característica del ARNm eucariota permite su purificación?",
+        options: ["La cola de poli-A.", "El intrón.", "La histona.", "El promotor."],
+        correct: 0,
+        explanation: "La cola de poli-A es la 'etiqueta' universal de los ARNm que permite separarlos del resto de ARNs."
+    },
+    {
+        topic: "Núcleo (Bloque 4)",
+        researcher: "Muñoz-Manchado (Transcriptómica)",
+        question: "Si queremos ver la expresión génica, debemos mirar dentro del núcleo. ¿En qué estado está la cromatina de los genes activos que ella estudia?",
+        options: ["Heterocromatina (condensada).", "Eucromatina (relajada).", "Cromosoma mitótico.", "ADN degradado."],
+        correct: 1,
+        explanation: "La eucromatina es accesible a la maquinaria de transcripción y es donde ocurre la expresión."
+    },
+    {
+        topic: "Técnicas (Bloque 1)",
+        researcher: "Muñoz-Manchado (Transcriptómica)",
+        question: "Para estudiar una población neuronal específica (ej. interneuronas 5-HT3a), a menudo se usan ratones transgénicos con proteína fluorescente (GFP). ¿Para qué sirve la GFP?",
+        options: ["Para matar la célula.", "Para visualizar y separar las células vivas específicas mediante fluorescencia.", "Para aumentar el ATP.", "Para teñir el núcleo."],
+        correct: 1,
+        explanation: "La GFP actúa como un marcador luminoso que permite identificar y aislar (FACS) las células de interés."
+    },
+    {
+        topic: "Citoesqueleto (Bloque 5)",
+        researcher: "Muñoz-Manchado (Neurodegeneración)",
+        question: "En el Parkinson, el transporte de dopamina falla. ¿Qué motores moleculares mueven las vesículas de dopamina hacia la sinapsis?",
+        options: ["Dineínas.", "Cinesinas.", "Miosinas.", "Actinas."],
+        correct: 1,
+        explanation: "Las cinesinas transportan vesículas hacia el extremo (+) del axón (transporte anterógrado)."
+    },
+    {
+        topic: "Apoptosis (Bloque 7)",
+        researcher: "Muñoz-Manchado (Neurodegeneración)",
+        question: "Las neuronas dopaminérgicas mueren en el Parkinson. ¿Qué proteína anti-apoptótica podría protegerlas si se sobreexpresa?",
+        options: ["Bax.", "Bak.", "Bcl2.", "Caspasa."],
+        correct: 2,
+        explanation: "Bcl2 frena la muerte celular programada; su fallo facilita la neurodegeneración."
+    },
+    {
+        topic: "Epigenética (Bloque 3)",
+        researcher: "Muñoz-Manchado (Transcriptómica)",
+        question: "Además de los genes, ¿qué regula la identidad de las neuronas que estudia?",
+        options: ["La temperatura.", "Marcas epigenéticas (metilación del ADN y de histonas).", "La cantidad de agua.", "Los ribosomas."],
+        correct: 1,
+        explanation: "El epigenoma estabiliza el perfil de expresión génica que define a la neurona."
+    },
+    {
+        topic: "Splicing (Bloque 2)",
+        researcher: "Muñoz-Manchado (Transcriptómica)",
+        question: "La diversidad neuronal también se genera porque un mismo gen produce varias proteínas. ¿Cómo se llama este proceso?",
+        options: ["Transcripción.", "Splicing Alternativo.", "Traducción.", "Replicación."],
+        correct: 1,
+        explanation: "El splicing alternativo es clave en el cerebro para generar la enorme diversidad de receptores y canales."
+    },
+    {
+        topic: "ARN no codificante (Bloque 3)",
+        researcher: "Muñoz-Manchado (Transcriptómica)",
+        question: "¿Qué moléculas pequeñas de ARN podrían estar desreguladas en enfermedades neurodegenerativas y silenciar genes protectores?",
+        options: ["ARNm.", "miARN (microARN).", "ARNr.", "ARNt."],
+        correct: 1,
+        explanation: "Los microARN son reguladores maestros finos de la expresión génica en el desarrollo y enfermedad."
+    },
+    {
+        topic: "Organismos Modelo (Bloque 1)",
+        researcher: "Muñoz-Manchado (Transcriptómica)",
+        question: "Sus estudios suelen usar ratones. ¿Por qué el ratón es un buen modelo para estudiar biología celular humana?",
+        options: ["Es pequeño.", "Comparte procesos celulares fundamentales y genes homólogos con los humanos (mamífero).", "No tiene células.", "Es procariota."],
+        correct: 1,
+        explanation: "La conservación evolutiva permite extrapolar hallazgos básicos del ratón al humano."
+    },
+    {
+        topic: "Ciclo Celular (Bloque 8)",
+        researcher: "Muñoz-Manchado (Neurodegeneración)",
+        question: "¿Qué proteína supresora de tumores también vigila el estrés en las neuronas y puede inducir su muerte si hay daño?",
+        options: ["p53.", "Ras.", "Actina.", "Colágeno."],
+        correct: 0,
+        explanation: "p53 no solo actúa en cáncer; también decide la muerte neuronal ante estrés oxidativo o daño al ADN."
+    },
+    {
+        topic: "Transmisión (Bloque 9)",
+        researcher: "Muñoz-Manchado (Genética)",
+        question: "Algunas formas de Parkinson son hereditarias. Si la mutación está en el ADN mitocondrial, ¿quién la transmite?",
+        options: ["El padre.", "La madre.", "Ambos.", "Nadie."],
+        correct: 1,
+        explanation: "Las mitocondrias se heredan exclusivamente por vía materna."
+    },
+    {
+        topic: "Células Madre (Bloque 7)",
+        researcher: "Muñoz-Manchado (Neurogénesis)",
+        question: "¿Dónde existen células madre neuronales en el cerebro adulto?",
+        options: ["En todo el cerebro.", "En nichos específicos (ej. hipocampo, zona subventricular).", "No existen.", "En la meninge."],
+        correct: 1,
+        explanation: "Aunque escasas, existen células madre en nichos concretos capaces de generar nuevas neuronas."
+    },
+    {
+        topic: "Membrana (Bloque 5)",
+        researcher: "Muñoz-Manchado (Neurodegeneración)",
+        question: "En la neurodegeneración, las membranas se dañan por oxidación. ¿Qué componente lipídico regula la fluidez y podría alterarse?",
+        options: ["Colesterol.", "Proteínas.", "ADN.", "Agua."],
+        correct: 0,
+        explanation: "El colesterol es vital para la estabilidad y fluidez de la membrana neuronal."
+    },
+    {
+        topic: "Señalización (Bloque 7)",
+        researcher: "Muñoz-Manchado (Neurofarmacología)",
+        question: "El receptor 5-HT3a (serotonina) que menciona su investigación es un canal iónico. ¿Qué efecto tiene su apertura?",
+        options: ["Cambio en la expresión génica lento.", "Flujo rápido de iones y cambio del potencial eléctrico.", "Síntesis de lípidos.", "División celular."],
+        correct: 1,
+        explanation: "Es un receptor ionotrópico que media transmisión sináptica rápida."
+    },
+    {
+        topic: "Transporte Nuclear (Bloque 4)",
+        researcher: "Muñoz-Manchado (Neurodegeneración)",
+        question: "En algunas enfermedades (ELA), las proteínas se acumulan mal en el citoplasma en lugar de ir al núcleo. ¿Qué señal falla?",
+        options: ["NLS (Señal de Localización Nuclear).", "Señal de mitocondria.", "Señal de membrana.", "Señal de muerte."],
+        correct: 0,
+        explanation: "El fallo en el reconocimiento de la NLS o el poro impide que proteínas vitales lleguen al núcleo."
+    },
+    {
+        topic: "Citoesqueleto (Bloque 5)",
+        researcher: "Muñoz-Manchado (Neurodegeneración)",
+        question: "¿Qué proteína asociada a microtúbulos se agrega en ovillos en el Alzheimer y otras tauopatías?",
+        options: ["Actina.", "Tau.", "Miosina.", "Queratina."],
+        correct: 1,
+        explanation: "Tau estabiliza microtúbulos; si se hiperfosforila y agrega, el transporte axonal colapsa."
+    },
+    {
+        topic: "Matriz Extracelular (Bloque 6)",
+        researcher: "Muñoz-Manchado (Neurociencia)",
+        question: "En el cerebro no hay colágeno fibroso como en la piel. ¿Qué componente de la matriz es abundante y forma una red alrededor de las neuronas?",
+        options: ["Proteoglucanos (redes perineuronales).", "Hueso.", "Grasa.", "Celulosa."],
+        correct: 0,
+        explanation: "La matriz cerebral es rica en proteoglucanos que regulan la plasticidad sináptica."
+    },
+    {
+        topic: "Resumen Investigación",
+        researcher: "Ambas (Conclusión)",
+        question: "¿Por qué es crucial la Biología Celular para la investigación de Llorca y Muñoz-Manchado?",
+        options: ["Para clasificar plantas.", "Porque las enfermedades (dolor, Parkinson) son fallos en los mecanismos celulares básicos (señalización, expresión, transporte).", "Para estudiar fósiles.", "No es importante."],
+        correct: 1,
+        explanation: "Su trabajo demuestra el lema del curso: 'La medicina (y la cura) comienza en la célula'."
+    }
+];
+
+let currentQuestion = 0;
+let score = 0;
+let answered = false;
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadQuestion();
+});
+
+function loadQuestion() {
+    const container = document.getElementById('quiz-container');
+    const q = quizData[currentQuestion];
+    
+    // UI Updates
+    document.getElementById('q-progress').innerText = `Pregunta ${currentQuestion + 1} de ${quizData.length}`;
+    document.getElementById('score-display').innerText = `Aciertos: ${score}`;
+    
+    // Researcher badge style
+    let badgeClass = q.researcher.includes("Llorca") ? "tag-llorca" : "tag-munoz";
+    if (q.researcher.includes("Ambas")) badgeClass = "tag-llorca"; // Default or mixed
+
+    let html = `
+        <div class="question-card active">
+            <span class="researcher-tag ${badgeClass}">${q.researcher}</span>
+            <div style="font-size: 0.9rem; color: #7f8c8d; margin-bottom: 5px;">${q.topic}</div>
+            <div class="question-text">${q.question}</div>
+            <div class="options-list">
+                ${q.options.map((opt, i) => `
+                    <button class="option-btn" onclick="checkAnswer(${i}, ${q.correct}, this)">
+                        ${String.fromCharCode(65+i)}. ${opt}
+                    </button>
+                `).join('')}
+            </div>
+            <div class="feedback-area" id="feedback"></div>
+            <button class="nav-btn" id="next-btn" onclick="nextQuestion()">Siguiente</button>
+        </div>
+    `;
+    
+    container.innerHTML = html;
+    answered = false;
+}
+
+function checkAnswer(selected, correct, btn) {
+    if(answered) return;
+    answered = true;
+
+    const allBtns = document.querySelectorAll('.option-btn');
+    const feedback = document.getElementById('feedback');
+    const nextBtn = document.getElementById('next-btn');
+
+    allBtns.forEach(b => b.disabled = true);
+
+    if(selected === correct) {
+        score++;
+        btn.classList.add('correct');
+        feedback.innerHTML = `<strong style="color:var(--success)">¡Correcto!</strong> <div class="rationale">${quizData[currentQuestion].explanation}</div>`;
+    } else {
+        btn.classList.add('incorrect');
+        allBtns[correct].classList.add('correct');
+        feedback.innerHTML = `<strong style="color:var(--error)">Conexión Investigadora:</strong> <div class="rationale">${quizData[currentQuestion].explanation}</div>`;
+    }
+
+    feedback.classList.add('show');
+    nextBtn.style.display = 'block';
+    
+    document.getElementById('score-display').innerText = `Aciertos: ${score}`;
+}
+
+function nextQuestion() {
+    if(currentQuestion < quizData.length - 1) {
+        currentQuestion++;
+        loadQuestion();
+    } else {
+        showResults();
+    }
+}
+
+function showResults() {
+    document.getElementById('statusBar').style.display = 'none';
+    document.getElementById('quiz-container').style.display = 'none';
+    document.getElementById('results-screen').style.display = 'block';
+    
+    document.getElementById('final-number').innerText = `${score} / ${quizData.length}`;
+    
+    const percent = (score / quizData.length) * 100;
+    let msg = "";
+    if(percent >= 90) msg = "¡Investigador Principal! Has conectado la teoría con la ciencia real.";
+    else if(percent >= 70) msg = "¡Muy bien! Entiendes la aplicación clínica.";
+    else if(percent >= 50) msg = "Bien. Sigue explorando las bases moleculares.";
+    else msg = "Ánimo. La investigación requiere curiosidad y estudio.";
+    
+    document.getElementById('final-text').innerText = msg;
+}
+</script>
+
+</body>
+</html>

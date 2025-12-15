@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIOLOGÍA - MENÚ PRINCIPAL</title>
+    <style>
+        :root {
+            --bg-color: #fdfbf7;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --accent-1: #e74c3c; /* Rojo para TF */
+            --accent-2: #2980b9; /* Azul para Temática */
+            --accent-3: #8e44ad; /* Morado para Sevilla */
+            --accent-4: #27ae60; /* Verde para Note Book */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            color: #34495e;
+            border-bottom: 4px solid #34495e;
+            padding-bottom: 15px;
+        }
+
+        p.subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .menu-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-color);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 8px solid gray; /* Color por defecto */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 200px;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .menu-card h2 {
+            margin: 0 0 10px 0;
+            font-size: 1.5rem;
+        }
+
+        .menu-card span {
+            font-size: 0.95rem;
+            color: #95a5a6;
+        }
+
+        /* Colores específicos para cada tarjeta */
+        .card-tf { border-top-color: var(--accent-1); }
+        .card-tf h2 { color: var(--accent-1); }
+
+        .card-tematica { border-top-color: var(--accent-2); }
+        .card-tematica h2 { color: var(--accent-2); }
+
+        .card-sevilla { border-top-color: var(--accent-3); }
+        .card-sevilla h2 { color: var(--accent-3); }
+
+        .card-notebook { border-top-color: var(--accent-4); }
+        .card-notebook h2 { color: var(--accent-4); }
+
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Biología Celular</h1>
+    <p class="subtitle">Panel de Navegación Central</p>
+
+    <div class="menu-grid">
+        
+        <a href="SERIE TEMATICA.html" class="menu-card card-tematica">
+            <span class="icon">🧬</span>
+            <h2>Serie Temática</h2>
+            <span>Tests específicos por tema<br>(Citoesqueleto, Ciclo, etc.)</span>
+        </a>
+
+        <a href="TEMARIO FINAL BIO1.html" class="menu-card card-tf">
+            <span class="icon">🎓</span>
+            <h2>Exámenes Finales (TF)</h2>
+            <span>Bloques completos 1 al 9<br>+ Especiales</span>
+        </a>
+
+        <a href="SEVILLA Y GRANADA.html" class="menu-card card-sevilla">
+            <span class="icon">📚</span>
+            <h2>Sevilla y Granada</h2>
+            <span>Recopilación de exámenes<br>(Preguntas 1-296)</span>
+        </a>
+
+        <a href="BIOLOGIA NOTE FINALES1.html" class="menu-card card-notebook">
+            <span class="icon">📓</span>
+            <h2>Note Book</h2>
+            <span>Seguimiento de progreso<br>y estadísticas</span>
+        </a>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Biología Parte 2 (Preguntas 81-160)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            text-align: left;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #eef2f5;
+            padding-bottom: 15px;
+        }
+
+        .progress {
+            font-weight: 600;
+            color: #7f8c8d;
+        }
+
+        .score {
+            color: #2980b9;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .question {
+            font-size: 1.25em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .options {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .option-btn {
+            background-color: #fff;
+            border: 2px solid #eef2f5;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 12px;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+            color: #34495e;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-btn:hover:not([disabled]) {
+            background-color: #f8f9fa;
+            border-color: #bdc3c7;
+        }
+
+        /* Estados de respuesta */
+        .correct {
+            background-color: #d4edda !important;
+            border-color: #28a745 !important;
+            color: #155724 !important;
+        }
+
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #721c24 !important;
+        }
+
+        .next-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: none;
+            margin-top: 25px;
+            float: right;
+            transition: background 0.2s;
+        }
+
+        .next-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .result-container {
+            text-align: center;
+            display: none;
+        }
+        
+        .restart-btn {
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 1rem;
+        }
+        
+        .restart-btn:hover {
+            background-color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container" id="quiz-box">
+    <div class="header">
+        <span class="progress" id="progress">Pregunta 1 de 80</span>
+        <span class="score" id="score">Aciertos: 0</span>
+    </div>
+    
+    <div class="question" id="question-text">Cargando...</div>
+    
+    <div class="options" id="options-container"></div>
+
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">Siguiente Pregunta</button>
+</div>
+
+<div class="quiz-container result-container" id="result-box">
+    <h2>¡Has terminado la Segunda Parte!</h2>
+    <p style="font-size: 1.3em; margin: 20px 0;">Tu puntuación: <span id="final-score" style="font-weight:bold; color:#27ae60;"></span> de <span id="total-questions"></span></p>
+    <button class="restart-btn" onclick="restartQuiz()">Reiniciar Test</button>
+</div>
+
+<script>
+    // Preguntas 81 a 160 extraídas del documento
+    // Corresponde a parte final Bloque 2, Bloque 3 completo y parte de Bloque 4
+    const questions = [
+        // --- FINAL BLOQUE 2: Embriología ---
+        { q: "En el desarrollo embrionario, los somitas se originan a partir", options: ["Mesodermo extraembrionario", "Mesodermo paraxial", "Mesodermo intermedio", "Mesodermo lateral"], correct: 1 },
+        { q: "¿Cuál de las siguientes afirmaciones sobre el cordón umbilical no es correcta?", options: ["Contiene restos del alantoides", "Contiene vellosidades coriales", "Contiene los vasos umbilicales", "Contiene mesénquima"], correct: 1 },
+        { q: "El sistema nervioso es", options: ["Mesodérmico", "Notocordal", "Endodérmico", "Ectodérmico"], correct: 3 },
+        { q: "¿Cuál de los siguientes componentes embrionario aparece antes?", options: ["Mesénquima", "Celoma extraembrionario", "Cavidad amniótica", "Membrana de Heuser."], correct: 1 },
+        { q: "Los gemelos que comparten cavidad amniótica son:", options: ["Monocigóticos y bicoriales", "Monocigóticos, monocoriales y monoamnióticos", "Monocigóticos, bicoriales y monoamnióticos", "Dicigóticos"], correct: 1 },
+        { q: "Como consecuencia de la delimitación longitudinal y transversal del embrión, es falso que:", options: ["El esbozo cardiaco adopta una localización ventral", "El saco vitelino se divide en dos cavidades", "La cavidad amniótica rodea al embrión", "El celoma extraembrionario desaparece"], correct: 2 },
+        { q: "¿Cuál de los siguientes fenómenos no se produce como consecuencia de la fecundación?", options: ["Unión de los pronúcleos masculino y femenino", "Restablecimiento del número haploide de cromosomas", "Bloqueo de la polispermia", "Activación del metabolismo ovular"], correct: 1 },
+        { q: "La adición de una cadena de ubiquitina a una proteína blanco provoca:", options: ["Su modificación por chaperonas moleculares", "Su activación por una quinasa", "Su destrucción vía proteasoma", "Su incorporación a la membrana de un orgánulo"], correct: 2 },
+        { q: "¿Cuál de los siguientes microscopios no es electrónico?", options: ["Alto voltaje", "Transmisión", "Nomarski", "Barrido"], correct: 2 },
+
+        // --- BLOQUE 3: Biología Molecular ---
+        { q: "La ADN polimerasa", options: ["Tiene actividad exonucleasa 5'-3'", "Tiene actividad polimerasa 3'-5'", "Realiza el ensamblaje instantáneo de la cadena de ADN...", "Tiene actividad exonucleasa 5'-3' y 3'-5'"], correct: 3 },
+        { q: "La Helicasa", options: ["Participa en la replicación del ADN", "Rompe los puentes de hidrógeno del ADN", "Es una de las principales enzimas en los procesos genéticos", "Todas son correctas"], correct: 3 },
+        { q: "¿Qué enzima se encarga de sintetizar ARN cebadores o primers?", options: ["Topoisomerasa I", "Topoisomerasa II", "Primasa", "Helicasa"], correct: 2 },
+        { q: "Referido al origen de replicación en eucariotas", options: ["Hay uno en cada bucle de la fibra de cromatina de 300nm", "Son de pequeño tamaño", "Hay un solo bucle en cada molécula de ADN", "Es reconocido por la ADN polimerasa"], correct: 0 },
+        { q: "Las proteínas SSB", options: ["Son enzimas quinasas", "Forman parte del complejo proteico de reconocimiento de origen", "Se unen a la burbuja de replicación para evitar que lo puentes de hidrógeno vuelvan a unirse", "Ninguna es correcta"], correct: 2 },
+        { q: "Cómo actúan las topoisomerasas", options: ["Evitan el sobreenrollamiento mediante la rotación del ADN", "Evitan el que se unan los puentes de hidrógeno...", "Evitan en sobreenrollamiento mediante el core...", "Forman parte del complejo de reconocimiento..."], correct: 0 },
+        { q: "¿Qué es la PCNA?", options: ["Una enzima que participa en el proceso de transcripción", "Una enzima que no participa directamente en el proceso de traducción", "Una enzima que mantiene unida a la ADNpol al ADN", "Ninguna es correcta"], correct: 2 },
+        { q: "La telomerasa", options: ["Es una enzima presente en los embriones", "Es una enzima presente en la células cancerígenas", "Es una enzima que alarga los telómeros", "Todas son correctas"], correct: 3 },
+        { q: "¿Qué enzima tiene actividad retrotranscriptasa?", options: ["La ADN polimerasa", "La primasa", "La Telomerasa", "La única con esta capacidad es la retrotranscriptasa de los virus"], correct: 2 },
+        { q: "Cómo es la distribución de histonas en la cadena de ADN hija?", options: ["Es al azar, mezclando histonas viejas y nuevas", "Es controlada, mezclando histonas viejas y nuevas", "Se sintetizan nuevas histonas para la cadena nueva", "Se añaden histonas viejas a la nueva cadena"], correct: 1 },
+        { q: "La transcripción", options: ["Solo se replica una hebra por lo que es un proceso simétrico", "Se necesita también un ARN cebador", "Se lleva a cabo en dirección 3'-5'", "Se emplean ATP, GTP, CTP, UTP"], correct: 3 },
+        { q: "En la transcripción", options: ["La hebra molde es la informativa", "La hebra no molde es la informativa", "La hebra molde es la codificante", "La hebra no molde tiene sentido - y la molde +"], correct: 1 },
+        { q: "La iniciación termina cuando", options: ["Se añaden los primero 100 nucleótidos", "Se sintetiza el primer ARN cebador", "Se reconoce el promotor", "Se liberan los factores generales de la transcripción"], correct: 2 },
+        { q: "En las procariotas", options: ["Existen las secuencias de consenso en la posición +1", "No existe promotor, sino que la transcripción empieza en cualquier lugar", "Existen las secuencias de consenso en la posición-10 y -35", "No existen las secuencias de consenso, son propias de eucariotas"], correct: 3 },
+        { q: "El factor sigma", options: ["Se encuentra unido a la ARN polimerasa", "Reconoce el promotor en procariotas", "Se separa tras iniciarse la síntesis", "Todas son correctas"], correct: 1 },
+        { q: "La síntesis de ARNm en eucariotas es llevada a cabo por", options: ["ARN polimerasa", "ARN pol I", "ARN pol II", "ARN pol III"], correct: 0 },
+        { q: "¿Cómo se lleva a cabo el desprendimiento del ADN de las histonas durante la transcripción?", options: ["Mediante el factor liberador de los nucleosomas", "Mediante complejos enzimáticos", "Mediante factores de transcripción", "El ADN no se separa de las histonas"], correct: 2 },
+        { q: "La vida de un ARN es más larga cuanto...", options: ["Más larga es su caperuza", "Más larga es su cola o poli A", "Más larga es la hebra", "Todos tienen la misma vida"], correct: 3 },
+        { q: "¿Cuándo se añade la caperuza en eucariotas?", options: ["Al inicio de la transcripción", "Al final de la transcripción", "Durante la transcripción", "No se añade"], correct: 1 },
+        { q: "¿Cuándo se añade la cola o poli A en eucariotas?", options: ["Al inicio de la transcripción", "Al final de la transcripción", "Durante la transcripción", "No se añade"], correct: 1 },
+        { q: "¿Cuándo se añade la caperuza en procariotas?", options: ["Al inicio de la transcripción", "Al final de la transcripción", "Durante la transcripción", "No se añade"], correct: 3 },
+        { q: "¿Qué proceso es más rápido? ¿Replicación o transcripción?", options: ["Transcripción", "Replicación", "Los dos son rápidos", "Los dos son lentos"], correct: 0 },
+        { q: "¿Qué diferencia hay entre intrón y ADN espaciador?", options: ["Ninguna, es lo mismo", "Los intrones no se transcriben y los ADN espaciadores si", "Los ADN espaciadores no se transcriben y los intrones sí", "Los intrones no se traducen y los ADN espaciadores sí"], correct: 2 },
+        { q: "¿Qué tipo de ARN se transcribe en el nucleolo?", options: ["ARNr", "ARNnso", "ARNsn", "ARNt"], correct: 0 },
+        { q: "¿En qué cromosomas se encuentran las unidades de transcripción de los ARNr?", options: ["En el brazo corto de los cromosomas acrocéntricos", "En el brazo largo de los cromosomas submetacéntricos", "En el extremo de los cromosomas metacéntricos", "En los cromosomas telocéntricos"], correct: 0 },
+        { q: "¿En qué partes están divididos los organizadores nucleolares?", options: ["ADN espaciador y ADN transcribible", "Unidad de transcripción y unidad espaciadora", "Unidad de transcripción y ADN espaciador", "No están divididos"], correct: 2 },
+        { q: "Elige la secuencia correcta de cortes de pre-ARNr", options: ["ARNr 45s - ARNr 41s - ARNr 18s y ARNr 32s...", "ARNr 41s - ARNr 18s y ARNr 32s...", "ARNr 45s - ARNr 41s-ARNr 20s...", "ARNr 45s - ARNr 18s y ARNr 32s..."], correct: 3 },
+        { q: "El proceso de cortes es llevado a cabo por", options: ["ARNsno", "Complejos protéicos", "Enzimas liasas", "a y b son correctas"], correct: 3 },
+        { q: "El ARNsno se transcribe", options: ["En el nucleolo por la ARNpol I", "En el nucleolo por la ARN pol III", "En el núcleo por la ARN pol I", "En el núcleo por la ARN pol III"], correct: 3 },
+        { q: "El promotor de ARNsno se encuentra en", options: ["Dentro de la secuencia codificada", "Antes de la secuencia codifcada", "Después de la secuencia codificada", "No presenta promotor"], correct: 0 },
+        { q: "¿De qué se encarga la aminoacil-ARNt sintasa?", options: ["De sintetizar los ARNt", "Participa en el proceso de maduración de los ARNt", "Cataliza la unión del ARNt a su respectivo Aa", "Es un factor de iniciación"], correct: 2 },
+        { q: "¿Cómo se inicia la traducción en procariotas?", options: ["La subunidad menor se une a la caperuza 5' hasta encontrar la secuencia de iniciación", "La subunidad menor se une a la secuencia de iniciación", "La subunidad menor junto con los factores de iniciación se une a un lugar aleatorio del ARNm", "Ninguna es correcta"], correct: 1 },
+        { q: "¿Cómo se inicia la traducción en eucariotas?", options: ["La subunidad menor se une a la caperuza 5' hasta encontrar la secuencia de iniciación", "La subunidad menor se une a la secuencia de iniciación", "La subunidad menor junto con los factores de iniciación se une a un lugar aleatorio del ARNm", "Ninguna es correcta"], correct: 0 },
+        { q: "¿Por qué está formado el complejo de pre-iniciación?", options: ["El ARNt, la subunidad menor y el ARNm", "El ARNt y la subunidad menor", "La subunidad menor y el ARNm", "El complejo de pre-iniciación no existe"], correct: 2 },
+        { q: "Proteína que recubre al ERGIC", options: ["Cop I", "BAD", "Cop II", "No está recubierto por ninguna proteína"], correct: 2 },
+        { q: "La N-glucosilaciones se producen en", options: ["RE", "Golgi", "Ambos", "Ninguno"], correct: 2 },
+        { q: "Las proteínas sintetizadas por ribosomas libres son", options: ["Periféricas", "Transmembrana", "Fibrosas", "Todas son correctas"], correct: 3 },
+        { q: "Las proteínas sintetizadas por ribosomas adosados al RE son", options: ["Periféricas", "Transmembrana", "Fibrosas", "Todas son correctas"], correct: 1 },
+        { q: "El ligando del translocón es", options: ["Secuencia de localización", "Un bloqueante del sitio A", "Partícula de reconocimiento de la señal", "By c son correctas"], correct: 2 },
+        { q: "Las proteínas transmembrana permanecen unidas a la membrana mediante", options: ["Secuencias hidrofílicas", "Proteínas de adhesión", "Interacciones hidrofóbicas", "Secuencias topogénicas"], correct: 2 },
+        { q: "El dolicol fosfato", options: ["En un ácido graso que actúa como transportador", "Es un glucolípido precursor de las glucosilaciones", "Es un lípido de membrana que actúa como transportador", "Es un lípido que tiene funciones reguladoras"], correct: 2 },
+        { q: "Las moléculas plegadas incorrectamente", options: ["Se degradan en el proteosoma", "Son transportadas por la ubiquitina", "Son transportadas por la ubiquinona", "A y b son correctas"], correct: 3 },
+        { q: "La citidín difosfocolina", options: ["Es una enzima que participa en el proceso de glucosilación", "Es un lípido de membrana", "Es un precursor de los lípidos", "Es una proteína transmembrana"], correct: 2 },
+        { q: "El citocromo p450", options: ["Participa en los procesos de dextoxificación", "Se encuentra en el RER", "Realiza el proceso mediante la hidrólisis de las sustancias", "Todas son correctas"], correct: 0 },
+        { q: "La proteína cop I", options: ["Recubre vesículas de transporte retrógrado", "Recubre vesículas que van del Golgi al RE", "Recubre vesículas de transporte anterógrado", "Recubre las vesículas del ERGIC"], correct: 1 },
+        { q: "El Ph", options: ["Es más ácido en la cara cis", "Es más ácido en la cara trans", "Va haciéndose más básico hasta los lisosomas", "No cambia"], correct: 1 },
+        { q: "La proteína Rab", options: ["Funciona de manera complementaria a SNARE", "Le indica a la vesícula a qué membrana se tiene que unir", "Es una GTPasa", "Todas son correctas"], correct: 3 },
+        { q: "La adición de residuos azúcares a lípidos se produce en", options: ["REL", "RER", "Golgi", "A y c son correctas"], correct: 2 },
+        { q: "¿Qué vesículas están cubiertas de clatrina?", options: ["Secreción constitutiva", "Secreción regulada", "Ambas", "Ninguna"], correct: 3 },
+        { q: "¿Qué vesículas necesitan una señal para ser liberadas?", options: ["Secreción constitutiva", "Secreción regulada", "Ambas", "Ninguna"], correct: 1 },
+        { q: "Los lisosomas", options: ["Son orgánulos muy heterogéneos", "Participan en el tráfico vesicular", "Poseen dos membranas", "Todas son correctas"], correct: 0 },
+        { q: "¿Qué membrana es más permeable a H+?", options: ["Mitocondrial interna", "Mitocondrial externa", "Las dos son muy permeables", "Ninguna es permeable"], correct: 1 },
+        { q: "La proteína Bcl2 está implicada en", options: ["Apoptosis", "Detoxificación", "Transporte", "Es una enzima"], correct: 0 },
+        { q: "El citocromo c es el encargado de", options: ["Participa en la cadena transportadora de electrones", "Cede los electrones del complejo 1 al 3", "Participa en apoptosis", "Las respuestas a y c son correctas"], correct: 3 },
+        { q: "¿Cuántas proteínas son reconocidas por el ADN mitocondrial?", options: ["13", "37", "25", "63"], correct: 0 },
+
+        // --- BLOQUE 4: Examen General ---
+        { q: "En el fraccionamiento celular mediante centrifugación diferencial, el orden de sedimentación de sus fracciones es respectivamente:", options: ["1º nuclear, 2º mitocondrial, 3º microsómica y 4º soluble", "1° mitocondrial, 2º microsomica, 3º soluble y 4º nuclear", "1º nuclear, 2º microsómica, 3º mitocondrial y 4º soluble", "1° nuclear, 2º soluble, 3º mitocondrial y 4º microsómica"], correct: 0 },
+        { q: "Sobre las moléculas de adhesión celular (CAM) podemos afirmar que:", options: ["Las cadherinas sólo establecen uniones heterófilas", "Las inmunoglobulinas sólo establecen uniones homófilas", "Las integrinas y selectinas establecen uniones tanto homófilas como heterófilas", "Todas las CAM presentan un dominio citosólico y otro extracelular"], correct: 3 },
+        { q: "La fluidez de las membranas es mayor mientras", options: ["Más largas sean las cadenas hidrocarbonadas de los fosfolípidos", "Más enlaces insaturados presenten las cadenas hidrocarbonadas", "Mayor concentración de colesterol haya en la bicapa", "Más interactúen entre sí las cadenas hidrocarbonadas"], correct: 1 },
+        { q: "Cuál de las siguientes afirmaciones sobre las uniones de anclaje es falsa?", options: ["Presentan proteínas de adhesión intracelular", "Presentan glucoproteínas transmembrana de unión", "Conectan el citoesqueleto entre las células adyacentes...", "Se llaman también uniones ocluyentes porque sellan las membranas plasmáticas de células adyacentes"], correct: 3 },
+        { q: "Cuál de las siguientes afirmaciones sobre el desmosoma es falsa?", options: ["Es una unión célula-célula", "Conecta filamentos de actina entre células adyacentes", "Las proteínas de adhesión forman una placa citoplásmica", "Las proteínas transmembrana son del tipo de las cadherinas"], correct: 1 },
+        { q: "El glucocálix:", options: ["Se extiende hacia el interior de la célula", "Sus componentes principales son los lípidos anfipáticos", "Es un tipo especial de unión celular", "Constituye el componente carbohidratado de la membrana plasmática"], correct: 3 },
+        { q: "Cuál de las siguientes afirmaciones sobre el núcleo es falsa?", options: ["Contiene la información genética", "Dirige las actividades celulares", "Replica el material genético", "Transcribe y traduce la información"], correct: 3 },
+        { q: "El espacio perinuclear:", options: ["Está limitado por las dos membranas nucleares", "Está en comunicación con las cisternas del Golgi", "Es visible al microscopio óptico", "Se hace más patente en células procariotas"], correct: 0 },
+        { q: "Los complejos de los poros son de naturaleza:", options: ["Proteica", "Ribonucleoproteica", "Lipídica", "Desconocida"], correct: 0 },
+        { q: "A través de los poros de la envoltura nuclear no pasan:", options: ["Proteínas enzimáticas y estructurales", "Partículas ribonucleoproteicas", "Nucleótidos", "Polirribosomas"], correct: 3 },
+        { q: "Cuál de las siguientes afirmaciones sobre los complejos de los poros es falsa?", options: ["Controlan todos los intercambios nucleo-citoplasma", "Las unidades proteicas que lo forman se disponen según un patrón octogonal", "Sus componentes moleculares son esencialmente ADN, ARN y proteínas", "Disminuyen considerablemente el tamaño de los poros nucleares"], correct: 2 },
+        { q: "En una molécula de ADN en la que el 15% de los nucleótidos son de timina cuál será el porcentaje de citosina?", options: ["15%", "35%", "70%", "30%"], correct: 1 },
+        { q: "Cuál es la enzima que sintetiza el cebador", options: ["Primasa", "Helicasa", "Topoisomerasa", "ADN polimerasa"], correct: 0 },
+        { q: "Cuál es la causa de que los cromosomas de las células eucariotas tengan más de un punto de origen de replicación?", options: ["Su forma", "Su tamaño", "Su composición", "Su actividad"], correct: 1 },
+        { q: "La transcripción se realiza:", options: ["Previa a la traducción", "De forma simultánea a la replicación", "Preferentemente en células mitóticas", "Preferentemente en células eucariotas"], correct: 0 },
+        { q: "Cómo se llaman las proteínas que reconocen la señal de localización nuclear?", options: ["Transportinas", "Nucleoporinas", "Exportinas", "Importinas"], correct: 3 }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let answered = false;
+
+    const questionElement = document.getElementById("question-text");
+    const optionsContainer = document.getElementById("options-container");
+    const nextBtn = document.getElementById("next-btn");
+    const progressText = document.getElementById("progress");
+    const scoreText = document.getElementById("score");
+    const quizBox = document.getElementById("quiz-box");
+    const resultBox = document.getElementById("result-box");
+    const finalScore = document.getElementById("final-score");
+    const totalQuestions = document.getElementById("total-questions");
+
+    function loadQuestion() {
+        answered = false;
+        nextBtn.style.display = "none";
+        
+        const currentQuestion = questions[currentQuestionIndex];
+        
+        // Actualizar textos
+        questionElement.innerText = `${currentQuestionIndex + 81}. ${currentQuestion.q}`;
+        progressText.innerText = `Pregunta ${currentQuestionIndex + 1} de ${questions.length}`;
+        
+        // Limpiar opciones anteriores
+        optionsContainer.innerHTML = "";
+
+        // Generar botones de opción
+        currentQuestion.options.forEach((option, index) => {
+            const button = document.createElement("button");
+            button.innerText = option;
+            button.classList.add("option-btn");
+            button.onclick = () => checkAnswer(index, button);
+            optionsContainer.appendChild(button);
+        });
+    }
+
+    function checkAnswer(selectedIndex, selectedButton) {
+        if (answered) return;
+        answered = true;
+
+        const currentQuestion = questions[currentQuestionIndex];
+        const allButtons = optionsContainer.children;
+
+        if (selectedIndex === currentQuestion.correct) {
+            selectedButton.classList.add("correct");
+            score++;
+            scoreText.innerText = `Aciertos: ${score}`;
+        } else {
+            selectedButton.classList.add("incorrect");
+            // Mostrar la correcta
+            allButtons[currentQuestion.correct].classList.add("correct");
+        }
+
+        // Deshabilitar todos los botones
+        for (let btn of allButtons) {
+            btn.disabled = true;
+            btn.style.cursor = "default";
+        }
+
+        // Mostrar botón siguiente
+        nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        quizBox.style.display = "none";
+        resultBox.style.display = "block";
+        finalScore.innerText = score;
+        totalQuestions.innerText = questions.length;
+    }
+
+    function restartQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        scoreText.innerText = "Aciertos: 0";
+        quizBox.style.display = "block";
+        resultBox.style.display = "none";
+        loadQuestion();
+    }
+
+    // Iniciar el quiz
+    loadQuestion();
+</script>
+<script>
+(function() {
+    // 1. Obtener ID del examen
+    const params = new URLSearchParams(window.location.search);
+    const testId = params.get('id');
+
+    if (testId) {
+        // 2. Vigilar cuando aparece la caja de resultados
+        const resultBox = document.getElementById('result-box');
+        
+        // Creamos un observador que detecta cambios en el estilo (display: none -> block)
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                // Si la caja de resultados se hace visible
+                if (resultBox.style.display === 'block') {
+                    
+                    // A. Leer la puntuación que calculó el test
+                    // El test pone el número de aciertos en el span id="final-score"
+                    const scoreText = document.getElementById('final-score').innerText;
+                    // Limpiamos el texto por si dice "50 / 80" o solo "50"
+                    const aciertos = parseInt(scoreText.split('/')[0]);
+                    
+                    // B. Calcular porcentaje (usamos la variable 'questions' que ya existe en tu test)
+                    const total = questions.length;
+                    const porcentaje = Math.round((aciertos / total) * 100);
+
+                    // C. Guardar datos
+                    let intentos = parseInt(localStorage.getItem('intentos_' + testId) || 0);
+                    localStorage.setItem('intentos_' + testId, intentos + 1);
+
+                    let notaMax = localStorage.getItem('nota_' + testId);
+                    if (!notaMax || porcentaje > parseInt(notaMax)) {
+                        localStorage.setItem('nota_' + testId, porcentaje);
+                    }
+
+                    // D. Añadir botón de "Volver" si no existe
+                    if (!document.getElementById('btn-volver-menu')) {
+                        const btn = document.createElement('button');
+                        btn.id = 'btn-volver-menu';
+                        btn.innerText = "🏠 Volver al Índice";
+                        btn.style.cssText = "display:block; margin: 20px auto; padding: 15px 30px; background: #2c3e50; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; font-weight: bold;";
+                        btn.onclick = function() { window.location.href = 'index.html'; };
+                        resultBox.appendChild(btn);
+                    }
+                }
+            });
+        });
+
+        // Iniciar la vigilancia
+        observer.observe(resultBox, { attributes: true, attributeFilter: ['style'] });
+    }
+})();
+</script>
+
+</body>
+</html>

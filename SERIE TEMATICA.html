@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SERIE TEMÁTICA - BIOLOGÍA</title>
+    <style>
+        :root {
+            --primary-color: #2980b9;   /* Azul para Temáticos */
+            --secondary-color: #3498db;
+            --bg: #f0f3f5;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text); 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 20px; 
+        }
+        
+        header { 
+            text-align: center; 
+            margin-bottom: 40px; 
+            padding: 40px; 
+            background: var(--card-bg); 
+            border-radius: 12px; 
+            border-top: 6px solid var(--primary-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        
+        h1 { margin: 0; font-size: 2.2em; color: var(--primary-color); text-transform: uppercase; letter-spacing: 1.5px; }
+        .subtitle { color: #7f8c8d; margin-top: 10px; font-size: 1.2em; }
+
+        /* Rejilla */
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 20px; 
+        }
+
+        /* Tarjetas */
+        .test-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 5px solid var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .test-card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+        }
+
+        .card-cat {
+            font-size: 0.8em;
+            text-transform: uppercase;
+            color: #95a5a6;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .test-title { 
+            font-weight: 700; 
+            font-size: 1.15em; 
+            margin-bottom: 20px; 
+            color: #34495e; 
+            line-height: 1.4;
+        }
+        
+        .btn-start {
+            display: block;
+            width: 100%;
+            text-align: center;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            padding: 12px 0;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-top: auto;
+            transition: background 0.2s;
+        }
+        
+        .btn-start:hover { background-color: var(--secondary-color); }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Serie Temática</h1>
+        <div class="subtitle">Colección de Tests Prácticos</div>
+    </header>
+
+    <div class="grid-container" id="container-new"></div>
+
+    <script>
+        // LISTADO DE ARCHIVOS DE LA SERIE TEMÁTICA
+        const seriesNew = [
+            { file: 'Celula unidad estructural-1.html', title: 'Célula: Unidad Estructural 1' },
+            { file: 'Celula unidad estructural-2.html', title: 'Célula: Unidad Estructural 2' },
+            { file: 'Ciclo celular-1.html', title: 'Ciclo Celular 1' },
+            { file: 'Ciclo celular-2.html', title: 'Ciclo Celular 2' },
+            { file: 'Ciclo celular,citoesqueleto metabolismo.html', title: 'Ciclo, Citoesqueleto y Metabolismo' },
+            { file: 'Citoesqueleto celular-1.html', title: 'Citoesqueleto Celular' },
+            { file: 'Compartimentación celular-1.html', title: 'Compartimentación 1' },
+            { file: 'Compartimentación celular-2.html', title: 'Compartimentación 2' },
+            { file: 'Control expresión génica.html', title: 'Control Expresión Génica' },
+            { file: 'Diferenciación celular-1.html', title: 'Diferenciación Celular' },
+            { file: 'Relaciones celulas-1.html', title: 'Relaciones Celulares 1' },
+            { file: 'Relaciones celulas-2.html', title: 'Relaciones Celulares 2' },
+            { file: 'Señalización celular-1.html', title: 'Señalización Celular 1' },
+            { file: 'Señalización celular-2.html', title: 'Señalización Celular 2' },
+            { file: 'Señalización celular-3.html', title: 'Señalización Celular 3' }
+        ];
+
+        // RENDERIZADO
+        const container = document.getElementById('container-new');
+
+        seriesNew.forEach((ex, index) => {
+            const html = `
+                <div class="test-card">
+                    <div>
+                        <div class="card-cat">Test ${index + 1}</div>
+                        <span class="test-title">${ex.title}</span>
+                    </div>
+                    <a href="${ex.file}" class="btn-start">Abrir Examen</a>
+                </div>
+            `;
+            container.innerHTML += html;
+        });
+    </script>
+</body>
+</html>

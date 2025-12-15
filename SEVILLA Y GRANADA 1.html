@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Biología Celular y Embriología (Preguntas 1-80)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            text-align: left;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 15px;
+        }
+
+        .progress {
+            font-weight: bold;
+            color: #666;
+        }
+
+        .score {
+            color: #2c3e50;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .question {
+            font-size: 1.25em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .options {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .option-btn {
+            background-color: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 12px;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+            color: #444;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-btn:hover:not([disabled]) {
+            background-color: #f8f9fa;
+            border-color: #bdc3c7;
+        }
+
+        /* Estados de respuesta */
+        .correct {
+            background-color: #d4edda !important;
+            border-color: #28a745 !important;
+            color: #155724 !important;
+        }
+
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #721c24 !important;
+        }
+
+        .next-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: none;
+            margin-top: 25px;
+            float: right;
+            transition: background 0.2s;
+        }
+
+        .next-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .result-container {
+            text-align: center;
+            display: none;
+        }
+        
+        .restart-btn {
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 1rem;
+        }
+        
+        .restart-btn:hover {
+            background-color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container" id="quiz-box">
+    <div class="header">
+        <span class="progress" id="progress">Pregunta 1 de 80</span>
+        <span class="score" id="score">Aciertos: 0</span>
+    </div>
+    
+    <div class="question" id="question-text">Cargando...</div>
+    
+    <div class="options" id="options-container"></div>
+
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">Siguiente Pregunta</button>
+</div>
+
+<div class="quiz-container result-container" id="result-box">
+    <h2>¡Quiz Completado!</h2>
+    <p style="font-size: 1.3em; margin: 20px 0;">Has acertado <span id="final-score" style="font-weight:bold; color:#27ae60;"></span> de <span id="total-questions"></span></p>
+    <button class="restart-btn" onclick="restartQuiz()">Volver a intentar</button>
+</div>
+
+<script>
+    // Preguntas extraídas del documento unificado sevilla y granada.docx
+    // Bloque 1 (1-36) y Bloque 2 (1-44) para sumar 80 preguntas.
+    const questions = [
+        // --- BLOQUE 1: Biología Celular ---
+        { q: "¿Cuál de los siguientes orgánulos contiene las enzimas oxidativas para la degradación de lípidos y sustancias tóxicas?", options: ["lisosomas", "endosoma", "peroxisoma", "RE"], correct: 2 },
+        { q: "Los hemidesmosomas son un tipo de unión:", options: ["célula-célula con anclaje de filamentos intermedios", "célula-matriz con anclaje de microfilamentos de actina", "célula-célula con anclaje de microfilamentos de actina", "célula-matriz con anclaje de filamentos intermedios"], correct: 3 },
+        { q: "Los hidratos de carbono de la membrana:", options: ["son inestables cuando se unen a fosfolípidos de la hemicapa externa", "son inestables cuando se unen a proteínas periféricas", "se encuentran situados entre los lípidos de forma fluida", "forman el glicocálix al unirse a lípidos y proteínas"], correct: 3 },
+        { q: "¿Cuál de los siguientes organismos tendrá probablemente el mayor porcentaje de fosfolípidos insaturados en su membrana celular?", options: ["el hombre", "un pez antártico", "iguana tropical", "bacteria termófila"], correct: 1 },
+        { q: "La interacción célula-membrana basal en los epitelios se realiza por medio de moléculas CAM del tipo:", options: ["ICAM", "integrinas", "cadherinas", "selectinas"], correct: 1 },
+        { q: "En cada replicón se necesita:", options: ["un cebador para la hebra conductora y otro para la retardada", "los replicones no necesitan cebadores", "un cebador para la hebra conductora y muchos para la retardada", "la hebra retardada necesita cebadores y la conductora no"], correct: 2 },
+        { q: "¿Cuál de los siguientes estructuras del citoesqueleto se encuentra anclada a la membrana plasmática?:", options: ["filamentos del anillo contráctil", "todos los anteriores", "filamentos de las fibras de estrés", "filamentos de las microvellosidades"], correct: 1 },
+        { q: "¿Cuál de las siguientes proteínas no forma parte de la estructura ciliar?:", options: ["tubulina beta", "tubulina alfa", "actina", "dineína"], correct: 2 },
+        { q: "En las uniones estrechas celulares (tight junction) intervienen moléculas del tipo:", options: ["ocludinas", "junctinas", "cadherinas", "tightinas"], correct: 0 },
+        { q: "Los filamentos intermedios:", options: ["presentan inestabilidad dinámica, pero no son estructuras polares", "están compuestos por diversas proteínas que se expresan en distintos tipos celulares", "forman el huso mitótico", "tienen siempre localización citoplasmática en las células eucariotas"], correct: 1 },
+        { q: "Los ribosomas:", options: ["sus subunidades pueden unirse antes de salir del núcleo", "son orgánulos citoplasmáticos encapsulados por una membrana", "la subunidad mayor es ribonucleoproteica y la menor proteica", "la capacidad catalítica recae en los RNA ribosómicos"], correct: 3 },
+        { q: "¿Cuál de los siguientes orgánulos funciona como principal reservorio de Ca++ celular:", options: ["mitocondria", "lisosoma", "RER", "REL"], correct: 3 },
+        { q: "De las siguientes moléculas cuál sería en orden decreciente la permeabilidad a través de la membrana:", options: ["RNA, Ca++, glucosa, N2", "Ca++, glucosa, N2, RNA", "glucosa, N2, Ca++, RNA", "N2, glucosa, Ca++, RNA"], correct: 3 },
+        { q: "La síntesis del DNA comienza en:", options: ["los ORC", "los centrómeros", "los telómeros", "los promotores"], correct: 0 },
+        { q: "Las moléculas de señalización que se unen a los receptores intracelulares deben ser:", options: ["pequeñas e hidrofílicas", "pequeñas e hidrofóbicas", "grandes e hidrofóbicas", "grandes e hidrofílicas"], correct: 1 },
+        { q: "En relación a las proteínas que se localizan en el RER, es falso:", options: ["su translocación puede ser co-traduccional o post-traduccional", "la secuencia señal de las proteínas translocadas co- y post-traduccionalmente es la misma", "La PRS detiene transitoriamente la traducción", "comienzan su traducción por ribosomas libres"], correct: 1 },
+        { q: "Podríamos comparar la señalización paracrina con:", options: ["Hablar con gente en un botellón", "Una conversación telefónica", "Hablar consigo mismo", "un anuncio por radio"], correct: 0 },
+        { q: "¿Cuál de los siguientes ARN se transporta al citoplasma en un modo independiente de Ran?:", options: ["ARNm", "ARNsn", "ARNt", "Todos tienen transporte dependiente de Ran"], correct: 0 },
+        { q: "Los microtúbulos:", options: ["en su polimerización consumen energía aportada por el ATP", "mantienen protegido el extremo negativo durante la interfase", "se despolimerizan por acción del complejo Tau", "forman haces paralelos y contráctiles, y redes"], correct: 1 },
+        { q: "¿Cuál de los siguientes fosfolípidos se encuentra exclusivamente en la cara interna de las membranas plasmáticas y en cantidades muy pequeñas?", options: ["fosfatidilserina", "fosfatidilcolina", "fosfatidilinositol", "colesterol"], correct: 2 },
+        { q: "Todos los ARN ribosómicos son:", options: ["procesados y unidos a las proteínas en el nucléolo", "sintetizados en el nucléolo", "transcritos por la RNA polimerasa I", "transcritos por la RNA polimerasa II"], correct: 0 },
+        { q: "El complejo ARP2/3 se une a los microfilamentos para:", options: ["orientarlos en el mismo sentido para formar haces apretados", "permitir las uniones diagonales para formar redes", "orientarlos en sentido contrario para formar haces laxos contráctiles", "favorecer la nucleación lateral"], correct: 3 },
+        { q: "La lámina nuclear:", options: ["forma una red proteica fibrosa continua en el espacio perinuclear", "sus proteínas NO están conectadas con la cromatina", "mantiene la estructura del núcleo por interacciones con proteínas transmembrana de la membrana nuclear interna", "está formada por microfilamentos de actina"], correct: 2 },
+        { q: "¿Cuál de las siguientes proteínas se encuentra en la membrana mitocondrial interna?", options: ["porinas", "el complejo Tom", "Bcl2", "ATP sintasa"], correct: 3 },
+        { q: "Las dineinas son proteínas motoras asociadas a microtúbulos que utilizan:", options: ["la hidrólisis del ATP para desplazarse al extremo +", "la hidrólisis del ATP para desplazarse al extremo -", "la hidrólisis del GTP para desplazarse al extremo +", "la hidrólisis del GTP para desplazarse al extremo"], correct: 1 },
+        { q: "En relación a los microfilamentos, es FALSO que:", options: ["pueden formar filopodios y lamelipodios", "son estructuras filamentosas constituidas por actina", "participan en la formación del anillo contráctil en la división", "sólo pueden crecer por su extremo más"], correct: 3 },
+        { q: "En las membranas es cierto que:", options: ["Todas las proteínas están agrupadas en la misma zona", "las proteínas periféricas se encuentran siempre en la cara extracelular", "las proteínas están orientadas según sus dominios", "las proteínas periféricas se encuentran siempre en la cara citosólica"], correct: 2 },
+        { q: "Entre las propiedades de las histonas:", options: ["los nucleosomas se unen tan fuertemente al DNA que no se pueden mover de la posición donde han sido ensamblados", "presentan una cola de aminoácidos con carga negativa que permite su unión estrecha al DNA", "presentan un núcleo globular que les confiere afinidaad al DNA", "presentan un núcleo globular que les confiere afinidad entre ellas"], correct: 3 },
+        { q: "¿En qué caso son necesarios los detergentes para solubilizar proteínas de membrana?", options: ["proteínas periféricas de la superficie externa ancladas a proteínas integrales", "proteínas periféricas de la superficie interna ancladas a proteínas integrales", "proteínas periféricas ancladas a lípidos", "proteínas integrales"], correct: 3 },
+        { q: "El centrosoma:", options: ["se localiza generalmente en la periferia celular", "es la estructura celular que mantiene adherida a las células", "es la unidad estructural del ADN", "es el principal centro organizador de microtúbulos en células animales"], correct: 3 },
+        { q: "¿Por qué la célula utiliza el Ca2+ como segundo mensajero en lugar de otra molécula, como por ejemplo el Na+?", options: ["la concentración citosólica del Na+ es muy alta", "la concentración citosólica de Ca2+ es muy alta", "la concentración citosólica de Ca2+ es muy baja", "la concentración citosólica del Na+ es muy baja"], correct: 2 },
+        { q: "En relación a la proteína G, la activación depende de proteínas que catalizan el intercambio:", options: ["ATP-ADP", "ATP-GTP", "ATP-CAMP", "GTP-GDP"], correct: 3 },
+        { q: "¿Cuál de las siguientes afirmaciones sobre el corpúsculo basal es FALSA?", options: ["es capaz de polimerizar microfilamentos", "se encuentra en la base de cilios y flagelos", "su estructura es de 9x3 microtúbulos", "su estructura es semejante a la del centriolo"], correct: 0 },
+        { q: "Los microtúbulos:", options: ["se forman por la polimerización reversible de la tubulina", "son los elementos más estables del citoesqueleto", "se sitúan por debajo de la membrana plasmática formando el córtex celular", "se organizan formando haces paralelos"], correct: 0 },
+        { q: "La inestabilidad dinámica es el proceso por el cual:", options: ["las microvellosidades forman un frente de avance en una célula en migración", "unos microtúbulos polimerizan mientras otros despolimerizan", "la célula incorpora lípidos a la membrana plasmática", "los microtúbulos se organizan en haces paralelos"], correct: 1 },
+        { q: "Podríamos comparar la señalización autocrina con:", options: ["hablar con gente en un botellón", "una conversación telefónica", "hablar consigo mismo", "un anuncio por radio"], correct: 2 },
+
+        // --- BLOQUE 2: Examen 2024 / Biología I (Continuación) ---
+        { q: "Los microtúbulos, al asociarse formando dobletes, el primero presenta 13 protofilamentos, y el segundo:", options: ["13, al igual que los demás.", "10, pues comparte 3 con el primero.", "9, pues comparte 4 con el primero.", "3, pues comparte 10 con el primero."], correct: 1 },
+        { q: "¿Cuál de las siguientes sustancias no puede atravesar la membrana plasmática por difusión simple?", options: ["H2O.", "N2.", "CO2.", "HCO3."], correct: 3 },
+        { q: "\"Sincitio funcional\" hace referencia a:", options: ["Células que se fusionan para funcionar como una única célula.", "Espacio vacío que no cumple ninguna función aparente.", "Espacio intercelular con funciones concretas.", "Células de distintos órganos que realizan funciones similares."], correct: 0 },
+        { q: "La cara del complejo del poro nuclear orientada hacia el nucleoplasma, se reconoce por:", options: ["No presenta filamentos.", "La presencia de la cesta nuclear donde se recogen los filamentos.", "Los filamentos cumplen simetría octogonal.", "No se puede diferenciar."], correct: 1 },
+        { q: "¿En la región de los poros nucleares hay lámina nuclear?", options: ["Sí, y es resistente como en el resto del revestimiento interno del núcleo.", "Sí, y se disuelve cuando se va a producir intercambio de sustancias para luego volver a recomponerse.", "No, permitiendo así el intercambio de sustancias núcleo-citoplasma.", "No, puesto que en el núcleo sólo hay membrana nuclear externa e interna."], correct: 2 },
+        { q: "En el proceso de importe de proteínas al núcleo, el péptido señal de localización nuclear (NLS) se une a:", options: ["Ran Gdp.", "Carga.", "Importina.", "Exportina."], correct: 2 },
+        { q: "La cromatina:", options: ["Está formada por proteínas del núcleo, ADN y a veces ARN.", "Puede estar en estado de eucromatina (estado activo).", "Puede estar en estado de heterocromatina (estado activo).", "No se asocia con la lámina nuclear."], correct: 1 },
+        { q: "El ARNr se transcribe a partir del ADN por:", options: ["ARN-polimerasa I.", "ARN-polimerasa II.", "ARN-polimerasa III.", "Las tres."], correct: 0 },
+        { q: "En el ADN, la información para el ARNr se encuentra en:", options: ["ORI.", "ORC.", "Organizadores nucleolares.", "Telómeros."], correct: 2 },
+        { q: "Los procesos de transcripción y traducción se llevan a cabo a la vez en el citoplasma en los organismos procariontes. Por tanto, en las células eucariotas:", options: ["Primero la traducción en el citoplasma y luego la transcripción en el núcleo.", "Primero la traducción en el núcleo y luego la transcripción en el núcleo.", "La traducción en el citoplasma y la transcripción en el núcleo, pero ambos procesos a la vez.", "Primero la transcripción en el núcleo y luego la traducción en el citoplasma."], correct: 3 },
+        { q: "¿Cuál de las siguientes características no hace referencia al código genético?", options: ["Es degenerado.", "Es universal.", "Es un sistema de codones.", "Tiene 16 codones distintos."], correct: 3 },
+        { q: "El codón de inicio (AUG), codifica para:", options: ["Valina.", "Metionina.", "Alanina.", "Histidina."], correct: 1 },
+        { q: "Las proteínas chaperonas:", options: ["Evitan el mal plegamiento de la proteína.", "Añaden a la proteína carbohidratos de 14 subunidades.", "Quitan a la proteína carbohidratos de 14 subunidades.", "Reconocen al PRS."], correct: 0 },
+        { q: "Los complejos Tom y Tim se encuentran en:", options: ["Retículo endoplásmico.", "Aparato de Golgi.", "Lisosoma.", "Mitocondria."], correct: 3 },
+        { q: "La proteína Bcl2 presente en las mitocondrias, interviene en procesos de:", options: ["Necrosis.", "Crecimiento celular.", "Proliferación celular.", "Apoptosis."], correct: 3 },
+        { q: "El proceso de detoxificación es realizado por:", options: ["Lisosoma.", "Retículo endoplasmático rugoso.", "Retículo endoplasmático liso.", "Microtúbulos."], correct: 2 },
+        { q: "La microscopía que permite visualizar las estructuras de forma tridimensional (por medio de programas informáticos), es:", options: ["Microscopía óptica de fluorescencia.", "Microscopía electrónica de barrido.", "Microscopía óptica de interferencia de Nomarski.", "Microscopía electrónica de transmisión."], correct: 1 },
+        { q: "El axonema tiene estructura de:", options: ["9 dobletes de microtúbulos con 3 microtúbulos centrales.", "10 dobletes de microtúbulos con 2 microtúbulos centrales.", "9 tripletes de microtúbulos con 2 microtúbulos centrales.", "9 dobletes de microtúbulos con 2 microtúbulos centrales."], correct: 3 },
+        { q: "¿Qué filamento presenta más resistencia?", options: ["Microtúbulos.", "Microfilamentos.", "Filamentos intermedios.", "Todos por igual."], correct: 2 },
+        { q: "¿Cuál de las siguientes proteínas no pertenece a las uniones ocluyentes?", options: ["Fimbrina.", "Jam.", "Ocludina.", "Claudina."], correct: 0 },
+        { q: "¿Cuál es el punto por el que tienen que pasar todas las células para poder continuar con su ciclo celular conocido como 'punto de no retorno'?", options: ["G2.", "S.", "Punto R o 'start'.", "Quiescencia."], correct: 2 },
+        { q: "El punto de control de G1 no comprueba:", options: ["Tamaño de la célula.", "Daño en el ADN.", "Correcta replicación del ADN.", "Que el entorno sea favorable."], correct: 2 },
+        { q: "El áster está formado por:", options: ["Microtúbulos polares.", "Microtúbulos astrales.", "Microtúbulos cinetocóricos.", "Todos los anteriores."], correct: 1 },
+        { q: "Las zonas por las que se va a producir la recombinación génica se conocen como:", options: ["Quiasmas.", "Nódulos de recombinación.", "Complejo sinaptonémico.", "Placas de unión."], correct: 1 },
+        { q: "Para poner los resultados de los cruzamientos se utiliza:", options: ["Tabla de contingencia.", "Campana de Gauss.", "tabla de Punnet.", "Ninguno de los anteriores."], correct: 2 },
+        { q: "La ley de la segregación de los factores de Mendel, establece que se cumplen las proporciones:", options: ["1/2 : 1/2", "9:3:3:1.", "9:3:2:2.", "4:6:2:4."], correct: 0 },
+        { q: "Una herencia autosómica domintante se caracteriza por:", options: ["Hay salto generacional.", "No se puede transmitir de padre afectado a hijo varon.", "Los afectados son los individuos homocigóticos recesivos.", "El rasgo lo transmite una persona enferma."], correct: 3 },
+        { q: "La alopecia androgénica...", options: ["Es ligada al sexo.", "Se da más en mujeres que en hombres.", "Es una enfermedad limitada por el sexo.", "Se manifiesta más en hombres al ser una herencia influida por el sexo."], correct: 3 },
+        { q: "¿Cuál de las siguientes enfermedades presenta el fenómeno de anticipación?", options: ["Enfermedad de Huntington.", "Daltonismo.", "Hemofilia.", "Síndrome de Morris."], correct: 0 },
+        { q: "La ley de Hardy Weinberg establece que:", options: ["Un carácter desaparece fenotípicamente en la F1 pero vuelve a aparecer en la proporción de % en la F2.", "Las frecuencias génicas de una generación determinada dependen exclusivamente de las frecuencias génicas de la generación anterior.", "Los genes no relacionados se transmiten de forma independiente.", "Ninguna de las anteriores."], correct: 1 },
+        { q: "¿Cuáles de los siguientes factores pueden alterar el equilibro de Hardy-Weinberg?", options: ["Migración.", "Mutación.", "Apareamiento no al azar.", "Todas las anteriores."], correct: 3 },
+        { q: "En las mutaciones estables por sustitución del tipo transición, ocurre que:", options: ["Se elimina una base.", "Se gira una base 180º.", "Se sustituye una base por otra del mismo tipo.", "Se añade otra base."], correct: 2 },
+        { q: "La tasa media de mutación por locus y generación en humanos es de:", options: ["Depende del individuo.", "74.", "4-23 (o aprox 10^-5/10^-6)", "10-6"], correct: 2 },
+        { q: "El periodo embrionario se divide en:", options: ["Embrionario y fetal.", "Preembrionario, embrionario y fetal.", "Todas las etapas hasta la neonatal.", "Preembrionario y embrionario."], correct: 1 },
+        { q: "Los oocitos primarios detienen su meiosis en:", options: ["Paquitene.", "Diplotene.", "Metafase.", "Prometafase."], correct: 1 },
+        { q: "El ciclo ovárico se activa por:", options: ["Gonadotropinas.", "Protaminas.", "Oligosacaril transferasas.", "Contenido de los gránulos corticales."], correct: 0 },
+        { q: "¿Qué participa en la capacitación del espermatozoide?", options: ["Gonadotropinas.", "Protaminas.", "Oligosacaril transferasas.", "Contenido de los gránulos corticales."], correct: 3 },
+        { q: "Las espermatogonias y las oogonias proceden de:", options: ["Espermatocitos y oocitos primarios.", "Espermatocitos y oocitos secundarios.", "Células germinativas primordiales.", "Ninguna de las anteriores."], correct: 2 },
+        { q: "La dotación genética de las oogonias es:", options: ["46 cromosomas, 2 cromátidas y 2N.", "23 cromosomas, 2 cromátidas y 2N.", "23 cromosomas, 2 cromátidas y N.", "46 cromosomas, 4 cromátidas y 2N."], correct: 0 },
+        { q: "La carga genética del primer corpúsculo polar es:", options: ["La misma que la del oocito secundario.", "La misma que la del óvulo.", "46 cromosomas, 2 cromátidas y 2N.", "46 cromosomas, 4 cromátidas y 2N."], correct: 0 },
+        { q: "El espermatozoide:", options: ["Contiene gonadotropinas.", "Tiene 23 cromsomas, 2 cromátidas y N.", "Contiene protaminas.", "Tiene histonas."], correct: 2 },
+        { q: "Los receptores para O-ligados oligosacáridos se encuentran en la zona pelúcida del óvulo, más concretamente en las proteínas del tipo:", options: ["ZP1.", "ZP2.", "ZP3.", "ZP4."], correct: 2 },
+        { q: "En los 3 primeros días de divisiones, el cigoto mantiene su tamaño. Este fenómeno se conoce como:", options: ["Blastocele.", "Holoblástica igual.", "Transformación decidual.", "Compactación."], correct: 1 },
+        { q: "El blastocisto se implanta por la zona del:", options: ["Polo embrionario.", "Polo abembrionario.", "Citotrofoblasto.", "Blastocele."], correct: 0 }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let answered = false;
+
+    const questionElement = document.getElementById("question-text");
+    const optionsContainer = document.getElementById("options-container");
+    const nextBtn = document.getElementById("next-btn");
+    const progressText = document.getElementById("progress");
+    const scoreText = document.getElementById("score");
+    const quizBox = document.getElementById("quiz-box");
+    const resultBox = document.getElementById("result-box");
+    const finalScore = document.getElementById("final-score");
+    const totalQuestions = document.getElementById("total-questions");
+
+    function loadQuestion() {
+        answered = false;
+        nextBtn.style.display = "none";
+        
+        const currentQuestion = questions[currentQuestionIndex];
+        
+        // Actualizar textos
+        questionElement.innerText = `${currentQuestionIndex + 1}. ${currentQuestion.q}`;
+        progressText.innerText = `Pregunta ${currentQuestionIndex + 1} de ${questions.length}`;
+        
+        // Limpiar opciones anteriores
+        optionsContainer.innerHTML = "";
+
+        // Generar botones de opción
+        currentQuestion.options.forEach((option, index) => {
+            const button = document.createElement("button");
+            button.innerText = option;
+            button.classList.add("option-btn");
+            button.onclick = () => checkAnswer(index, button);
+            optionsContainer.appendChild(button);
+        });
+    }
+
+    function checkAnswer(selectedIndex, selectedButton) {
+        if (answered) return;
+        answered = true;
+
+        const currentQuestion = questions[currentQuestionIndex];
+        const allButtons = optionsContainer.children;
+
+        if (selectedIndex === currentQuestion.correct) {
+            selectedButton.classList.add("correct");
+            score++;
+            scoreText.innerText = `Aciertos: ${score}`;
+        } else {
+            selectedButton.classList.add("incorrect");
+            // Mostrar la correcta
+            allButtons[currentQuestion.correct].classList.add("correct");
+        }
+
+        // Deshabilitar todos los botones
+        for (let btn of allButtons) {
+            btn.disabled = true;
+            btn.style.cursor = "default";
+        }
+
+        // Mostrar botón siguiente
+        nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        quizBox.style.display = "none";
+        resultBox.style.display = "block";
+        finalScore.innerText = score;
+        totalQuestions.innerText = questions.length;
+    }
+
+    function restartQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        scoreText.innerText = "Aciertos: 0";
+        quizBox.style.display = "block";
+        resultBox.style.display = "none";
+        loadQuestion();
+    }
+
+    // Iniciar el quiz
+    loadQuestion();
+</script>
+<script>
+(function() {
+    // 1. Obtener ID del examen
+    const params = new URLSearchParams(window.location.search);
+    const testId = params.get('id');
+
+    if (testId) {
+        // 2. Vigilar cuando aparece la caja de resultados
+        const resultBox = document.getElementById('result-box');
+        
+        // Creamos un observador que detecta cambios en el estilo (display: none -> block)
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                // Si la caja de resultados se hace visible
+                if (resultBox.style.display === 'block') {
+                    
+                    // A. Leer la puntuación que calculó el test
+                    // El test pone el número de aciertos en el span id="final-score"
+                    const scoreText = document.getElementById('final-score').innerText;
+                    // Limpiamos el texto por si dice "50 / 80" o solo "50"
+                    const aciertos = parseInt(scoreText.split('/')[0]);
+                    
+                    // B. Calcular porcentaje (usamos la variable 'questions' que ya existe en tu test)
+                    const total = questions.length;
+                    const porcentaje = Math.round((aciertos / total) * 100);
+
+                    // C. Guardar datos
+                    let intentos = parseInt(localStorage.getItem('intentos_' + testId) || 0);
+                    localStorage.setItem('intentos_' + testId, intentos + 1);
+
+                    let notaMax = localStorage.getItem('nota_' + testId);
+                    if (!notaMax || porcentaje > parseInt(notaMax)) {
+                        localStorage.setItem('nota_' + testId, porcentaje);
+                    }
+
+                    // D. Añadir botón de "Volver" si no existe
+                    if (!document.getElementById('btn-volver-menu')) {
+                        const btn = document.createElement('button');
+                        btn.id = 'btn-volver-menu';
+                        btn.innerText = "🏠 Volver al Índice";
+                        btn.style.cssText = "display:block; margin: 20px auto; padding: 15px 30px; background: #2c3e50; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; font-weight: bold;";
+                        btn.onclick = function() { window.location.href = 'index.html'; };
+                        resultBox.appendChild(btn);
+                    }
+                }
+            });
+        });
+
+        // Iniciar la vigilancia
+        observer.observe(resultBox, { attributes: true, attributeFilter: ['style'] });
+    }
+})();
+</script>
+
+</body>
+</html>

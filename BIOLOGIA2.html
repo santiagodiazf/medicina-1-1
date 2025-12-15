@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario: Bloque II - Genética Molecular y Cromosomas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .quiz-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .question-block {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .question-title {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .options-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .option-item {
+            margin-bottom: 10px;
+        }
+        .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 12px 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95em;
+            color: #444;
+        }
+        .option-btn:hover {
+            background-color: #f0f0f0;
+            border-color: #bbb;
+        }
+        
+        /* Estilos de corrección */
+        .correct {
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724 !important;
+            position: relative;
+        }
+        .correct::after {
+            content: " ✓ Correcto";
+            font-weight: bold;
+            float: right;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+            color: #721c24 !important;
+            position: relative;
+        }
+        .incorrect::after {
+            content: " ✗ Incorrecto";
+            font-weight: bold;
+            float: right;
+        }
+
+        .disabled {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Test Bloque II: Cromosomas, Replicación, Transcripción y Traducción</h1>
+    <div class="quiz-container" id="quiz">
+        </div>
+
+    <script>
+        const questions = [
+            {
+                "text": "1. En términos moleculares, ¿cuál de los siguientes enunciados define de manera más precisa un gen?",
+                "options": [
+                    {"text": "La unidad de herencia que determina las características o el fenotipo de un organismo.", "correct": false},
+                    {"text": "La secuencia de ADN que, sin ser transcrita, determina las características de la proteína.", "correct": false},
+                    {"text": "Un segmento de ADN que dirige la producción de una proteína específica o de una molécula de ARN funcional.", "correct": true},
+                    {"text": "La molécula de ADN completa que porta la información genética hereditaria.", "correct": false}
+                ]
+            },
+            {
+                "text": "2. La unidad básica de la estructura de los cromosomas eucariotas, formada por ADN y proteínas, es el nucleosoma. ¿Cuántos pares de bases (pb) de ADN se enrollan alrededor del octámero de histonas para formar esta unidad?",
+                "options": [
+                    {"text": "Más de 60 millones de pares de bases.", "correct": false},
+                    {"text": "147 pb.", "correct": true},
+                    {"text": "1,7 vueltas en espiral levógira.", "correct": false},
+                    {"text": "Cientos de millones de nucleótidos (tamaño del ADN).", "correct": false}
+                ]
+            },
+            {
+                "text": "3. ¿Qué proteína proporciona una compactación adicional en la fibra de cromatina, ayudando a plegar la estructura que se forma tras el octámero de histonas?",
+                "options": [
+                    {"text": "El complejo remodelador de la cromatina.", "correct": false},
+                    {"text": "La proteína Cohesina.", "correct": false},
+                    {"text": "La histona H1.", "correct": true},
+                    {"text": "Las enzimas modificadoras de histonas (Metiltransferasas).", "correct": false}
+                ]
+            },
+            {
+                "text": "4. La información genética de una célula eucariota está contenida en un conjunto de cromosomas. ¿Qué elementos de secuencia son esenciales, además de los genes, para asegurar la duplicación y distribución equitativa de los cromosomas hijos en la división celular?",
+                "options": [
+                    {"text": "Exones, intrones y la fibra de cromatina.", "correct": false},
+                    {"text": "Colas aminoacídicas de las histonas, bucles de ADN y el nucleólo.", "correct": false},
+                    {"text": "Muchos orígenes de replicación, un centrómero y dos telómeros.", "correct": true},
+                    {"text": "Histonas y proteínas no histonas.", "correct": false}
+                ]
+            },
+            {
+                "text": "5. Molecularmente, el proceso que provoca la relajación de la cromatina a un estado más descondensado permite que:",
+                "options": [
+                    {"text": "Se produzca la degradación de proteínas en los proteasomas.", "correct": false},
+                    {"text": "Las histonas H1 se separen del octámero de histonas.", "correct": false},
+                    {"text": "La replicación de ADN se lleve a cabo a 1000 nucleótidos por segundo.", "correct": false},
+                    {"text": "Las proteínas implicadas en la expresión génica, la replicación del ADN y la reparación del ADN tengan acceso a las secuencias de ADN necesarias.", "correct": true}
+                ]
+            },
+            {
+                "text": "6. ¿Qué complejo proteico SMC (Structural Maintenance of Chromosomes) es fundamental para la formación de bucles en la cromatina interfásica y para mantener unidas las cromátidas hermanas antes de la correcta segregación?",
+                "options": [
+                    {"text": "Condensina.", "correct": false},
+                    {"text": "SMC5/6.", "correct": false},
+                    {"text": "Cohesina.", "correct": true},
+                    {"text": "Topoisomerasa.", "correct": false}
+                ]
+            },
+            {
+                "text": "7. Un alto grado de condensación del ADN ocurre en todos los cromosomas durante la mitosis y en la heterocromatina en interfase. Esta condensación:",
+                "options": [
+                    {"text": "Facilita la acción del factor sigma en el promotor.", "correct": false},
+                    {"text": "Impide que sus genes puedan expresarse para producir ARN.", "correct": true},
+                    {"text": "Es el resultado de la acción del empalmosoma.", "correct": false},
+                    {"text": "Se revierte por la acción de la telomerasa.", "correct": false}
+                ]
+            },
+            {
+                "text": "8. La fosforilación, acetilación y metilación de las colas de histonas son modificaciones químicas reversibles. ¿Cuál es la importancia molecular de estas modificaciones?",
+                "options": [
+                    {"text": "Son el mecanismo de corrección de la ADN polimerasa.", "correct": false},
+                    {"text": "Determinan el espaciado de los fragmentos de Okazaki.", "correct": false},
+                    {"text": "Permiten regular la estructura de la cromatina, pudiendo ser heredables.", "correct": true},
+                    {"text": "Definen el marco de lectura en la traducción.", "correct": false}
+                ]
+            },
+            {
+                "text": "9. Según la posición del centrómero, los cromosomas se clasifican en metacéntricos, submetacéntricos, acrocéntricos y telocéntricos. ¿Qué tipo de cromosoma tiene el centrómero muy cerca de un extremo, siendo el tipo telocéntrico inexistente en humanos?",
+                "options": [
+                    {"text": "Metacéntrico.", "correct": false},
+                    {"text": "Submetacéntrico.", "correct": false},
+                    {"text": "Telocéntrico.", "correct": false},
+                    {"text": "Acrocéntrico.", "correct": true}
+                ]
+            },
+            {
+                "text": "10. Los investigadores Hershey y Chase trabajaron con virus T2, compuestos enteramente de proteínas y ADN. ¿Qué demostraron de manera definitiva con este experimento?",
+                "options": [
+                    {"text": "La existencia del nucleosoma.", "correct": false},
+                    {"text": "El mecanismo de corrección de la ADN polimerasa.", "correct": false},
+                    {"text": "La capacidad autocatalítica del ARN.", "correct": false},
+                    {"text": "Que los genes están hechos de ADN.", "correct": true}
+                ]
+            },
+            {
+                "text": "11. La replicación del ADN se considera semiconservadora. Este proceso es altamente eficiente en eucariotas, ¿a qué velocidad aproximada se incorporan los nucleótidos?",
+                "options": [
+                    {"text": "1000 nucleótidos por segundo.", "correct": false},
+                    {"text": "100 nucleótidos por segundo.", "correct": true},
+                    {"text": "1 error cada 10 000 nucleótidos.", "correct": false},
+                    {"text": "10 000 orígenes de replicación por genoma.", "correct": false}
+                ]
+            },
+            {
+                "text": "12. En la replicación del ADN, la ADN polimerasa III es la enzima que realiza la mayor parte de la síntesis. Sin embargo, la síntesis requiere otros componentes. ¿Cuál de estos es un complejo proteico que consume ATP y depende del cargador de la abrazadera para permitir que la polimerasa se desplace por la hebra sin soltarse?",
+                "options": [
+                    {"text": "La Helicasa.", "correct": false},
+                    {"text": "La Primasa.", "correct": false},
+                    {"text": "La abrazadera deslizante.", "correct": true},
+                    {"text": "La Topoisomerasa.", "correct": false}
+                ]
+            },
+            {
+                "text": "13. Para liberar la tensión acumulada que se produce al abrir la doble hélice durante la replicación, interviene una enzima clave. ¿Cuál de las siguientes produce un corte monocateriano transitorio en el ADN con este fin?",
+                "options": [
+                    {"text": "La Nucleasa (corte en reparación).", "correct": false},
+                    {"text": "Una topoisomerasa.", "correct": true},
+                    {"text": "La ADN ligasa (sellado).", "correct": false},
+                    {"text": "La Telomerasa (telómeros).", "correct": false}
+                ]
+            },
+            {
+                "text": "14. Si un patólogo detecta una mutación en un solo nucleótido del gen de la hemoglobina humana, que resulta en una proteína menos soluble que forma precipitados fibrosos intracelulares, el diagnóstico molecular compatible es:",
+                "options": [
+                    {"text": "Atrofia Muscular Espinal (SMA).", "correct": false},
+                    {"text": "Cáncer de colon (relacionado con reparación de apareamientos erróneos).", "correct": false},
+                    {"text": "Anemia drepanocítica.", "correct": true},
+                    {"text": "Una rotura bicatenaria reparada por recombinación homóloga.", "correct": false}
+                ]
+            },
+            {
+                "text": "15. El mecanismo básico de reparación del ADN consta de tres pasos esenciales que involucran la acción secuencial de enzimas. ¿Cuál es la secuencia correcta de estas enzimas?",
+                "options": [
+                    {"text": "Primasa, Nucleasa, Ligasa.", "correct": false},
+                    {"text": "Nucleasa, ADN polimerasa reparadora, ADN ligasa.", "correct": true},
+                    {"text": "Helicasa, Primasa, Topoisomerasa.", "correct": false},
+                    {"text": "ARN polimerasa, Factor de liberación, Proteasoma.", "correct": false}
+                ]
+            },
+            {
+                "text": "16. ¿Qué reacción química frecuente causa daños graves en el ADN, junto con la despurinación?",
+                "options": [
+                    {"text": "La metilación de histonas.", "correct": false},
+                    {"text": "La poliadenilación.", "correct": false},
+                    {"text": "La traducción.", "correct": false},
+                    {"text": "La desaminación.", "correct": true}
+                ]
+            },
+            {
+                "text": "17. En la cadena retrasada de replicación, el ADN polimerasa debe actuar de manera discontinua, generando los denominados:",
+                "options": [
+                    {"text": "Promotores eucariontes.", "correct": false},
+                    {"text": "Cromosomas teloméricos.", "correct": false},
+                    {"text": "Fragmentos de Okazaki.", "correct": true},
+                    {"text": "Nucleótidos trifosfato.", "correct": false}
+                ]
+            },
+            {
+                "text": "18. A nivel molecular, la telomerasa se une al extremo 3’ del telómero para alargarlo y lo repite en varios ciclos. Para realizar esta función, la telomerasa transporta su propia molécula que actúa como:",
+                "options": [
+                    {"text": "Cebador.", "correct": true},
+                    {"text": "Cadena de ADN monocatenario.", "correct": false},
+                    {"text": "Proteína SMC.", "correct": false},
+                    {"text": "Ribonucleasa (degradación).", "correct": false}
+                ]
+            },
+            {
+                "text": "19. El sistema de reparación de apareamientos erróneos es vital porque elimina los errores de replicación que escapan a la corrección de la ADN polimerasa. La mutación de los genes que codifican estas proteínas de reparación aumenta la predisposición a:",
+                "options": [
+                    {"text": "La atrofia muscular espinal.", "correct": false},
+                    {"text": "Ciertos cánceres, sobre todo de colon.", "correct": true},
+                    {"text": "La anemia drepanocítica.", "correct": false},
+                    {"text": "El acortamiento telomérico (TERRA).", "correct": false}
+                ]
+            },
+            {
+                "text": "20. La recombinación homóloga se utiliza como una estrategia de reparación para:",
+                "options": [
+                    {"text": "Corregir dímeros de timina causados por luz UV.", "correct": false},
+                    {"text": "Eliminar intrones de los pre-ARNm.", "correct": false},
+                    {"text": "Reparar roturas bicatenarias del ADN.", "correct": true},
+                    {"text": "Alargar los extremos teloméricos.", "correct": false}
+                ]
+            },
+            {
+                "text": "21. El flujo de información genética en todas las células vivas es ADN > ARN > proteína. El paso de las instrucciones genéticas del ADN a ARN se denomina:",
+                "options": [
+                    {"text": "Traducción.", "correct": false},
+                    {"text": "Replicación.", "correct": false},
+                    {"text": "Silenciamiento génico.", "correct": false},
+                    {"text": "Transcripción.", "correct": true}
+                ]
+            },
+            {
+                "text": "22. Las ARN polimerasas son las enzimas que catalizan la transcripción. ¿Qué molécula entrante aporta la energía necesaria para la formación del enlace fosfodiéster en la cadena de ARN?",
+                "options": [
+                    {"text": "ATP (usado por ligasa o helicasa).", "correct": false},
+                    {"text": "Desoxirribonucleósidos trifosfato.", "correct": false},
+                    {"text": "Ribonucleósidos trifosfato.", "correct": true},
+                    {"text": "El factor sigma.", "correct": false}
+                ]
+            },
+            {
+                "text": "23. A diferencia de la ADN polimerasa, la ARN polimerasa tiene una menor capacidad de corrección. Aproximadamente, ¿cuál es su tasa de error de incorporación?",
+                "options": [
+                    {"text": "1 error cada 10 millones de nucleótidos.", "correct": false},
+                    {"text": "1 error cada 100 nucleótidos.", "correct": false},
+                    {"text": "1 error cada 10 000 nucleótidos.", "correct": true},
+                    {"text": "100 nucleótidos por segundo.", "correct": false}
+                ]
+            },
+            {
+                "text": "24. El ARN difiere del ADN en varios aspectos estructurales. ¿Qué base nitrogenada contiene el ARN en lugar de la timina (T)?",
+                "options": [
+                    {"text": "Adenina (A).", "correct": false},
+                    {"text": "Citosina (C).", "correct": false},
+                    {"text": "Guanina (G).", "correct": false},
+                    {"text": "Uracilo (U).", "correct": true}
+                ]
+            },
+            {
+                "text": "25. El procesamiento de pre-ARNm eucariota incluye el encapuchamiento del extremo 5’. ¿Qué enzima añade el nucleótido GTP, formando un enlace 5’–5’ trifosfato?",
+                "options": [
+                    {"text": "RNA trifosfatasa.", "correct": false},
+                    {"text": "Metiltransferasa.", "correct": false},
+                    {"text": "Guanylil transferasa.", "correct": true},
+                    {"text": "Aminoacil-ARNt sintetasa.", "correct": false}
+                ]
+            },
+            {
+                "text": "26. ¿Cuál de las siguientes funciones es realizada por el encapuchamiento del extremo 5’ y la poliadenilación del extremo 3’ en el pre-ARNm?",
+                "options": [
+                    {"text": "Servir de plantilla para los telómeros.", "correct": false},
+                    {"text": "Codificar la información para la síntesis proteica.", "correct": false},
+                    {"text": "Aumentar la estabilidad de la molécula y facilitar su exportación al citosol.", "correct": true},
+                    {"text": "Silenciar transposones en células germinales.", "correct": false}
+                ]
+            },
+            {
+                "text": "27. La Atrofia Muscular Espinal (SMA) es una patología que se relaciona con el gen, cuya pequeña fracción de transcritos funcionales no basta para la supervivencia neuronal. ¿Qué porcentaje de genes humanos son sometidos al proceso de corte y empalme (splicing) alternativo?",
+                "options": [
+                    {"text": "61%.", "correct": false},
+                    {"text": "20%.", "correct": false},
+                    {"text": "95%.", "correct": true},
+                    {"text": "100%.", "correct": false}
+                ]
+            },
+            {
+                "text": "28. El proceso de splicing o corte y empalme elimina los intrones del ARN y une los exones. Esta reacción es catalizada por pequeños complejos ribonucleoproteicos conocidos como:",
+                "options": [
+                    {"text": "Proteasomas.", "correct": false},
+                    {"text": "Ribosomas.", "correct": false},
+                    {"text": "Factores generales de transcripción.", "correct": false},
+                    {"text": "snRNPs (ribonucleoproteínas nucleares pequeñas).", "correct": true}
+                ]
+            },
+            {
+                "text": "29. En la transcripción de eucariontes, el factor de transcripción general TFIIH tiene dos funciones cruciales:",
+                "options": [
+                    {"text": "Unir el codón de iniciación AUG al ARNm.", "correct": false},
+                    {"text": "Degradar el ARNm una vez en el citosol.", "correct": false},
+                    {"text": "Abrir la doble hélice y fosforilar la cola de la ARN polimerasa.", "correct": true},
+                    {"text": "Añadir el grupo metilo al nucleótido de guanosina en el 5’.", "correct": false}
+                ]
+            },
+            {
+                "text": "30. Se han identificado varios tipos de ARN funcional. ¿Qué molécula de ARN no codificante, de 24-31 nucleótidos, tiene como función principal silenciar transposones (elementos móviles del ADN) y se encuentra en las células germinales?",
+                "options": [
+                    {"text": "siRNA (silenciamiento génico).", "correct": false},
+                    {"text": "miRNA (regulación expresión).", "correct": false},
+                    {"text": "TERRA (regula longitud telómeros).", "correct": false},
+                    {"text": "piRNA.", "correct": true}
+                ]
+            },
+            {
+                "text": "31. ¿Qué molécula de ARN telomérico (ncRNA) sirve de plantilla para alargar los telómeros y está asociada a la enzima telomerasa?",
+                "options": [
+                    {"text": "TERRA.", "correct": false},
+                    {"text": "TERC / hTR.", "correct": true},
+                    {"text": "lncRNA.", "correct": false},
+                    {"text": "siRNA.", "correct": false}
+                ]
+            },
+            {
+                "text": "32. Si dos genes ribosómicos adyacentes en una misma molécula de ADN son transcritos simultáneamente por numerosas RNA polimerasas, ¿qué secuencias contienen estas regiones transcritas?",
+                "options": [
+                    {"text": "Los intrones y las regiones promotoras.", "correct": false},
+                    {"text": "Las regiones promotoras y las secuencias terminadoras.", "correct": false},
+                    {"text": "Las secuencias terminadoras, pero no las promotoras.", "correct": true},
+                    {"text": "El anticodón y el sitio de unión del ARNm.", "correct": false}
+                ]
+            },
+            {
+                "text": "33. ¿Qué caracteriza a las ARN polimerasas respecto a los cebadores?",
+                "options": [
+                    {"text": "Requieren un cebador de ADN para empezar la síntesis.", "correct": false},
+                    {"text": "No necesitan cebador.", "correct": true},
+                    {"text": "Utilizan el cebador de la telomerasa.", "correct": false},
+                    {"text": "Utilizan el cebador sintetizado por la primasa (replicación).", "correct": false}
+                ]
+            },
+            {
+                "text": "34. Una de las funciones diversas de las moléculas de ARN es actuar como catalizador en las células modernas, lo cual es considerado una ventana al antiguo mundo basado en ARN. Este tipo de ARN catalítico se denomina:",
+                "options": [
+                    {"text": "Proteína.", "correct": false},
+                    {"text": "Citoesqueleto.", "correct": false},
+                    {"text": "Ribozima.", "correct": true},
+                    {"text": "LncRNA.", "correct": false}
+                ]
+            },
+            {
+                "text": "35. ¿Cuál es el significado molecular de la presencia de intrones en la secuencia de los ARNm?",
+                "options": [
+                    {"text": "Indican el final de la transcripción.", "correct": false},
+                    {"text": "Son regiones codificantes necesarias para la proteína.", "correct": false},
+                    {"text": "Son regiones no codificantes que son eliminadas de las transcripciones de ARN en el núcleo mediante el empalme.", "correct": true},
+                    {"text": "Son elementos genéticos móviles silenciados por piRNA.", "correct": false}
+                ]
+            },
+            {
+                "text": "36. La traducción de la secuencia de nucleótidos de un ARNm a una proteína ocurre en grandes complejos ribonucleoproteicos llamados ribosomas. El ARNm es leído en conjuntos consecutivos de tres nucleótidos, denominados:",
+                "options": [
+                    {"text": "Nucleosomas.", "correct": false},
+                    {"text": "Anticodones.", "correct": false},
+                    {"text": "Exones.", "correct": false},
+                    {"text": "Codones.", "correct": true}
+                ]
+            },
+            {
+                "text": "37. El código genético se caracteriza porque la mayoría de los aminoácidos están especificados por más de un codón. ¿Cuántas combinaciones distintas generan los 4 nucleótidos diferentes en el ARN?",
+                "options": [
+                    {"text": "20 (número de aminoácidos).", "correct": false},
+                    {"text": "31 (moléculas de ARNt).", "correct": false},
+                    {"text": "64 (codones).", "correct": true},
+                    {"text": "4 (bases de ARN).", "correct": false}
+                ]
+            },
+            {
+                "text": "38. El 'titubeo' (wobble) es un fenómeno molecular que explica por qué:",
+                "options": [
+                    {"text": "Solo 20 tipos de sintetasas son necesarias para los 64 codones.", "correct": false},
+                    {"text": "La ARN polimerasa comete 1 error cada 10 000 nucleótidos.", "correct": false},
+                    {"text": "Existen 61 codones codificantes, pero solo alrededor de 31 moléculas de ARNt.", "correct": true},
+                    {"text": "El código genético tiene diferencias en las mitocondrias.", "correct": false}
+                ]
+            },
+            {
+                "text": "39. ¿Qué enzima consume ATP para generar un enlace de alta energía al unir covalentemente el aminoácido correcto a su molécula de ARNt correspondiente?",
+                "options": [
+                    {"text": "La ADN ligasa.", "correct": false},
+                    {"text": "La metiltransferasa.", "correct": false},
+                    {"text": "El Factor de liberación.", "correct": false},
+                    {"text": "Aminoacil-ARNt sintetasas.", "correct": true}
+                ]
+            },
+            {
+                "text": "40. Los ribosomas están compuestos por un sitio de unión a ARNm y tres sitios para ARNt. ¿Qué componente de la subunidad grande del ribosoma actúa como ribozima para catalizar la unión secuencial de aminoácidos en la cadena polipeptídica?",
+                "options": [
+                    {"text": "El anticodón.", "correct": false},
+                    {"text": "La proteína SMC.", "correct": false},
+                    {"text": "Una molécula de ARNr.", "correct": true},
+                    {"text": "El codón de terminación.", "correct": false}
+                ]
+            },
+            {
+                "text": "41. ¿Cuál de los siguientes codones de terminación (parada) libera la cadena proteica completa del ribosoma con la ayuda de un factor de liberación?",
+                "options": [
+                    {"text": "AUG (iniciación).", "correct": false},
+                    {"text": "G-C o A-T (pares de bases ADN).", "correct": false},
+                    {"text": "UAA, UAG o UGA.", "correct": true},
+                    {"text": "147 pb (nucleosoma).", "correct": false}
+                ]
+            },
+            {
+                "text": "42. Las proteínas se sintetizan en el citoplasma en:",
+                "options": [
+                    {"text": "Núcleosomas.", "correct": false},
+                    {"text": "Moléculas de ARNt.", "correct": false},
+                    {"text": "Polirribosomas.", "correct": true},
+                    {"text": "Ribonucleasas (degradación).", "correct": false}
+                ]
+            },
+            {
+                "text": "43. La degradación de proteínas en el citosol y el núcleo es un proceso esencial para el turnover proteico y ocurre dentro de grandes complejos proteicos denominados:",
+                "options": [
+                    {"text": "snRNPs.", "correct": false},
+                    {"text": "El complejo de poro nuclear.", "correct": false},
+                    {"text": "Proteasomas.", "correct": true},
+                    {"text": "Lisosomas (digestión general).", "correct": false}
+                ]
+            },
+            {
+                "text": "44. El tiempo de vida de una molécula de ARNm una vez que llega al citosol puede ser muy variable y está determinado por:",
+                "options": [
+                    {"text": "El número de nucleosomas en su secuencia.", "correct": false},
+                    {"text": "El número de fragmentos de Okazaki.", "correct": false},
+                    {"text": "La degradación por ribonucleasas y las necesidades de la célula en ese momento.", "correct": true},
+                    {"text": "La actividad del factor sigma.", "correct": false}
+                ]
+            },
+            {
+                "text": "45. ¿Cuál es el significado del concepto de 'Marco de lectura' en la iniciación de la traducción?",
+                "options": [
+                    {"text": "Es el lugar donde la ARN polimerasa se une al promotor (transcripción).", "correct": false},
+                    {"text": "Es el sitio donde la helicasa abre la doble hélice (replicación).", "correct": false},
+                    {"text": "Determina la lectura correcta de los codones a partir del codón de iniciación (AUG).", "correct": true},
+                    {"text": "Es la región 3’ no traducida del ARNm.", "correct": false}
+                ]
+            },
+            {
+                "text": "46. Además del ARNm, ARNr y ARNt, ¿qué otros tipos de ARN presentan actividad reguladora y catalítica?",
+                "options": [
+                    {"text": "ADN y proteínas.", "correct": false},
+                    {"text": "RNAs no codificantes reguladores y RNAs no codificantes.", "correct": true},
+                    {"text": "Histonas y no histonas.", "correct": false},
+                    {"text": "Ribonucleósidos trifosfato.", "correct": false}
+                ]
+            },
+            {
+                "text": "47. Molecularmente, si el código genético tuviera la misma correspondencia que los 20 aminoácidos disponibles, ¿cuántos codones distintos habría?",
+                "options": [
+                    {"text": "64 (real).", "correct": false},
+                    {"text": "3 (codones de parada).", "correct": false},
+                    {"text": "61 (codones codificantes).", "correct": false},
+                    {"text": "20 (si no hubiera redundancia o codones de parada).", "correct": true}
+                ]
+            },
+            {
+                "text": "48. En las células eucariotas, el tiempo de vida del ARNm es variable y es degradado en el citosol por:",
+                "options": [
+                    {"text": "Proteasomas (degradan proteínas).", "correct": false},
+                    {"text": "La telomerasa.", "correct": false},
+                    {"text": "Ribonucleasas.", "correct": true},
+                    {"text": "La Topoisomerasa.", "correct": false}
+                ]
+            },
+            {
+                "text": "49. ¿Cuál de los siguientes ARN está asociado a la patogénesis de cánceres, según los conceptos moleculares de ncRNAs?",
+                "options": [
+                    {"text": "miRNA (regula expresión).", "correct": false},
+                    {"text": "siRNA (silenciamiento génico).", "correct": false},
+                    {"text": "lncRNA.", "correct": true},
+                    {"text": "TERC/hTR (telomerasa).", "correct": false}
+                ]
+            },
+            {
+                "text": "50. La correspondencia entre aminoácidos y codones es crucial para la síntesis proteica. Esta correspondencia está especificada por:",
+                "options": [
+                    {"text": "La abrazadera deslizante.", "correct": false},
+                    {"text": "El código genético.", "correct": true},
+                    {"text": "La estructura del nucleosoma.", "correct": false},
+                    {"text": "La cromatina en interfase.", "correct": false}
+                ]
+            }
+        ];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function renderQuiz() {
+            const quizContainer = document.getElementById('quiz');
+            quizContainer.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const questionBlock = document.createElement('div');
+                questionBlock.className = 'question-block';
+
+                const title = document.createElement('div');
+                title.className = 'question-title';
+                title.innerText = q.text;
+                questionBlock.appendChild(title);
+
+                // Clonar opciones para no modificar el orden original si se recarga
+                let currentOptions = [...q.options];
+                shuffleArray(currentOptions);
+
+                const optionsList = document.createElement('ul');
+                optionsList.className = 'options-list';
+
+                currentOptions.forEach(opt => {
+                    const li = document.createElement('li');
+                    li.className = 'option-item';
+                    
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = opt.text;
+                    
+                    btn.onclick = function() {
+                        // Deshabilitar todos los botones de esta pregunta
+                        const allBtns = optionsList.querySelectorAll('.option-btn');
+                        allBtns.forEach(b => b.classList.add('disabled'));
+
+                        if (opt.correct) {
+                            btn.classList.add('correct');
+                        } else {
+                            btn.classList.add('incorrect');
+                            // Resaltar la correcta
+                            allBtns.forEach(b => {
+                                // Buscar el botón que tiene el texto de la opción correcta
+                                // (Método simple comparando texto)
+                                const originalOpt = q.options.find(o => o.correct);
+                                if (b.innerText === originalOpt.text) {
+                                    b.classList.add('correct');
+                                }
+                            });
+                        }
+                    };
+
+                    li.appendChild(btn);
+                    optionsList.appendChild(li);
+                });
+
+                questionBlock.appendChild(optionsList);
+                quizContainer.appendChild(questionBlock);
+            });
+        }
+
+        // Renderizar al cargar
+        renderQuiz();
+    </script>
+<div style="text-align: center; margin-top: 40px; padding: 20px; background: #eee; border-radius: 8px;">
+    <button id="btn-finish" style="background: #2c3e50; color: white; border: none; padding: 15px 30px; font-size: 1.2em; border-radius: 6px; cursor: pointer; font-weight: bold;">
+        🏁 Finalizar y Guardar Nota
+    </button>
+</div>
+
+<script>
+    // Lógica para capturar el ID desde la URL (viene del index.html)
+    const urlParams = new URLSearchParams(window.location.search);
+    const testID = urlParams.get('id'); // Ej: 'bio-1'
+
+    document.getElementById('btn-finish').onclick = function() {
+        if (!testID) {
+            alert("⚠️ Nota: Abre este test desde el 'index.html' para que se guarde tu progreso.");
+        }
+
+        const allBlocks = document.querySelectorAll('.question-block');
+        let totalQuestions = allBlocks.length;
+        let correctas = 0;
+
+        allBlocks.forEach(block => {
+            // Buscamos si hay algún botón con clase 'incorrect' (usuario falló)
+            const hasIncorrect = block.querySelector('button.incorrect');
+            // Buscamos si hay algún botón con clase 'correct' (usuario acertó o se reveló)
+            const hasCorrect = block.querySelector('button.correct');
+            
+            // Lógica: Si hay un verde Y NO hay un rojo, el usuario acertó a la primera.
+            // Si hay un rojo, falló. Si no hay nada, no contestó.
+            if (hasCorrect && !hasIncorrect) {
+                correctas++;
+            }
+        });
+
+        const notaFinal = Math.round((correctas / totalQuestions) * 100);
+        
+        // Mensaje de resultado
+        alert(`📊 Resultado:\n\nHas acertado ${correctas} de ${totalQuestions}.\nTu nota es: ${notaFinal}%`);
+
+        if (testID) {
+            // 1. Guardar Intento
+            let intentos = parseInt(localStorage.getItem(`intentos_${testID}`) || 0);
+            localStorage.setItem(`intentos_${testID}`, intentos + 1);
+
+            // 2. Guardar Mejor Nota (solo si es mayor a la anterior)
+            let notaAnterior = localStorage.getItem(`nota_${testID}`);
+            if (!notaAnterior || notaFinal > parseInt(notaAnterior)) {
+                localStorage.setItem(`nota_${testID}`, notaFinal);
+            }
+
+            // 3. Volver al menú
+            if(confirm("¿Quieres volver al menú principal?")) {
+                window.location.href = 'index.html';
+            }
+        }
+    };
+</script>
+</body>
+</html>

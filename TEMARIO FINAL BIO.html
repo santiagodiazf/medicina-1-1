@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TF BIOLOGÍA - Índice</title>
+    <style>
+        :root {
+            --primary: #0056b3; /* Azul Medicina Cádiz */
+            --secondary: #004494;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text); 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            padding: 20px; 
+        }
+        
+        header { 
+            text-align: center; 
+            margin-bottom: 40px; 
+            padding: 30px; 
+            background: var(--card-bg); 
+            border-radius: 12px; 
+            border-bottom: 5px solid var(--primary);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        
+        h1 { margin: 0; font-size: 2.2em; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
+        .subtitle { color: #7f8c8d; margin-top: 10px; font-size: 1.1em; }
+
+        /* Rejilla */
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+            gap: 20px; 
+        }
+
+        /* Tarjetas */
+        .test-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 6px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .test-card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+        }
+
+        .card-header {
+            font-size: 0.9em;
+            text-transform: uppercase;
+            color: #95a5a6;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .test-title { 
+            font-weight: 700; 
+            font-size: 1.25em; 
+            margin-bottom: 20px; 
+            color: #34495e; 
+        }
+        
+        .btn-start {
+            display: block;
+            width: 100%;
+            text-align: center;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            padding: 12px 0;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .btn-start:hover { background-color: var(--secondary); }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>TF BIOLOGÍA</h1>
+        <div class="subtitle">Acceso directo a exámenes (Sin seguimiento)</div>
+    </header>
+
+    <div class="grid-container" id="cards-container">
+        </div>
+
+    <script>
+        // LISTADO DE TUS ARCHIVOS TF
+        // Asegúrate de que los nombres coinciden exactamente con tus archivos
+        const examenes = [
+            { file: 'TF BIOLOGIA1.html', title: 'Bloque 1: Fundamentos', desc: 'Teoría celular y Microscopía' },
+            { file: 'TF BIOLOGIA2.html', title: 'Bloque 2: Genoma', desc: 'ADN, Replicación y Cromatina' },
+            { file: 'TF BIOLOGIA3.html', title: 'Bloque 3: Regulación Génica', desc: 'Transcripción y Traducción' },
+            { file: 'TF BIOLOGIA4.html', title: 'Bloque 4: Núcleo', desc: 'Envoltura y Cuerpos Nucleares' },
+            { file: 'TF BIOLOGIA5.1.html', title: 'Bloque 5.1: Membranas', desc: 'Estructura y Transporte' },
+            { file: 'TF BIOLOGIA5.2.html', title: 'Bloque 5.2: Citoesqueleto', desc: 'Energía y Filamentos' },
+            { file: 'TF BIOLOGIA6.html', title: 'Bloque 6: Célula-Entorno', desc: 'Matriz y Uniones Celulares' },
+            { file: 'TF BIOLOGIA7.html', title: 'Bloque 7: Comunicación', desc: 'Señalización y Diferenciación' },
+            { file: 'TF BIOLOGIA8.html', title: 'Bloque 8: Ciclo Celular', desc: 'Regulación y Apoptosis' },
+            { file: 'TF BIOLOGIA9.html', title: 'Bloque 9: Reproducción', desc: 'Meiosis y Gametogénesis' }
+        ];
+
+        const container = document.getElementById('cards-container');
+
+        examenes.forEach((ex, index) => {
+            const html = `
+                <div class="test-card">
+                    <div>
+                        <div class="card-header">TEST ${index + 1}</div>
+                        <span class="test-title">${ex.title}</span>
+                        <p style="color:#7f8c8d; font-size:0.95em;">${ex.desc}</p>
+                    </div>
+                    <a href="${ex.file}" class="btn-start">Abrir Examen</a>
+                </div>
+            `;
+            container.innerHTML += html;
+        });
+    </script>
+</body>
+</html>

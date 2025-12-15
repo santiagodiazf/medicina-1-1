@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario: Bases de la Vida y Biología Celular</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .quiz-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .question-block {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .question-title {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .options-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .option-item {
+            margin-bottom: 10px;
+        }
+        .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 12px 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95em;
+            color: #444;
+        }
+        .option-btn:hover {
+            background-color: #f0f0f0;
+            border-color: #bbb;
+        }
+        
+        /* Estilos de corrección */
+        .correct {
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724 !important;
+            position: relative;
+        }
+        .correct::after {
+            content: " ✓ Correcto";
+            font-weight: bold;
+            float: right;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+            color: #721c24 !important;
+            position: relative;
+        }
+        .incorrect::after {
+            content: " ✗ Incorrecto";
+            font-weight: bold;
+            float: right;
+        }
+
+        .disabled {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Test Bloque I: Bases de la Vida y Célula</h1>
+    <div class="quiz-container" id="quiz">
+        </div>
+
+    <script>
+        const questions = [
+            {
+                text: "1. El principio fundamental de la Teoría Celular, propuesto por Rudolf Virchow, 'Omnis cellula e cellula', se establece como la 'Unidad de Origen celular'. Este postulado médico-científico implica directamente:",
+                options: [
+                    { text: "Que la célula es la unidad más pequeña capaz de obtener energía del entorno.", correct: false },
+                    { text: "Que todas las células comparten una química similar con un ancestro común.", correct: false },
+                    { text: "Que la información hereditaria (ADN) es la base para la proliferación y transmisión de la vida celular.", correct: false },
+                    { text: "Que todas las células provienen de células preexistentes, justificando la continuidad de los tejidos y la propagación de patologías celulares.", correct: true }
+                ]
+            },
+            {
+                text: "2. ¿Cuál de los siguientes criterios define de forma molecular y ultraestructural la célula como 'Unidad Funcional' de la vida?",
+                options: [
+                    { text: "Poseer ADN como material genético hereditario para la transmisión intergeneracional.", correct: false },
+                    { text: "Estar altamente organizada en comparación con objetos inanimados naturales.", correct: false },
+                    { text: "Estar envuelta por una membrana que la separa del medio externo.", correct: false },
+                    { text: "Ser la unidad mínima capaz de realizar todas las funciones vitales, incluyendo la homeostasis, la obtención y transformación de energía, y la respuesta a estímulos.", correct: true }
+                ]
+            },
+            {
+                text: "3. En la comparación de los genomas, el ser humano presenta aproximadamente 19000 genes codificantes de proteínas. Según los datos evolutivos y comparativos, ¿cuántas veces más genes codificantes tiene el ser humano que la bacteria E. coli?",
+                options: [
+                    { text: "50000 veces más.", correct: false },
+                    { text: "50 veces más.", correct: false },
+                    { text: "5 veces más.", correct: true },
+                    { text: "19000 veces más.", correct: false }
+                ]
+            },
+            {
+                text: "4. La célula eucariota es descrita por presentar un núcleo y otros orgánulos limitados por membrana. ¿Cuál es la implicación molecular de la presencia de ADN en la célula, independientemente de su tipo (procariota o eucariota)?",
+                options: [
+                    { text: "La capacidad de adaptación al entorno.", correct: false },
+                    { text: "La función exclusiva de la oxidación de nutrientes.", correct: false },
+                    { text: "Contiene la información necesaria para sintetizar los ARN y proteínas que la célula requiere.", correct: true },
+                    { text: "Define el proceso autocatalítico de la vida.", correct: false }
+                ]
+            },
+            {
+                text: "5. ¿Qué investigador, con formación médica, contribuyó a la Teoría Celular como el postulador de que la célula es la unidad básica y que todos los organismos están formados por células?",
+                options: [
+                    { text: "Matthias Schleiden (botánico).", correct: false },
+                    { text: "Robert Hooke (descubridor del término cellula).", correct: false },
+                    { text: "René Dutrochet (biólogo, fisiólogo y médico).", correct: true },
+                    { text: "Theodoro Schwann (zoólogo).", correct: false }
+                ]
+            },
+            {
+                text: "6. Una de las características definitorias de los seres vivos es la homeostasis. ¿Cuál es el papel ultraestructural crucial de la membrana celular en el mantenimiento de este ambiente interno relativamente constante?",
+                options: [
+                    { text: "Servir de esqueleto proteico interno para la forma celular.", correct: false },
+                    { text: "Almacenar el material genético.", correct: false },
+                    { text: "Permitir la digestión de grandes moléculas.", correct: false },
+                    { text: "Actuar como límite que separa el contenido celular del medio externo.", correct: true }
+                ]
+            },
+            {
+                text: "7. La gran diversidad funcional entre células de un mismo organismo (ej. un miocito vs. una célula de la piel) es posible porque:",
+                options: [
+                    { text: "Cada tipo celular posee un genoma completamente distinto.", correct: false },
+                    { text: "Los distintos tipos celulares heredaron diferentes ancestros (LUCA o LECA).", correct: false },
+                    { text: "Contienen el mismo ADN, pero expresan diferentes sets de genes en respuesta al desarrollo y factores ambientales.", correct: true },
+                    { text: "Solo las células animales tienen orgánulos.", correct: false }
+                ]
+            },
+            {
+                text: "8. En el citosol se produce una gran parte de los procesos bioquímicos esenciales. Molecularmente, ¿qué representa el citosol en la célula eucariota?",
+                options: [
+                    { text: "El conjunto de filamentos proteicos que conforman el citoesqueleto.", correct: false },
+                    { text: "El material genético (ADN y ARN).", correct: false },
+                    { text: "Los orgánulos limitados por membrana.", correct: false },
+                    { text: "Un medio acuoso con una gran mezcla de moléculas grandes y pequeñas.", correct: true }
+                ]
+            },
+            {
+                text: "9. La diferencia clave entre una célula procariota (como E. coli) y una célula eucariota radica en que la procariota, aunque contiene ADN:",
+                options: [
+                    { text: "Es mucho más grande (5-20 μm).", correct: false },
+                    { text: "No posee membrana celular.", correct: false },
+                    { text: "Carece de la capacidad de transformar energía.", correct: false },
+                    { text: "Carece de núcleo y de la mayoría de los orgánulos limitados por membranas.", correct: true }
+                ]
+            },
+            {
+                text: "10. El origen de los cloroplastos en células fotosintéticas y de las mitocondrias en células animales y vegetales se explica por la teoría de la Endosimbiosis. Este proceso evolutivo supuso la adquisición de orgánulos con funciones específicas de:",
+                options: [
+                    { text: "Endosimbiosis de un protozoo cazador.", correct: false },
+                    { text: "Adquisición de ADN nuclear.", correct: false },
+                    { text: "Endosimbiosis con una bacteria aeróbica (mitocondria) y con una bacteria fotosintética (cloroplasto).", correct: true },
+                    { text: "Fusión con el Last Universal Common Ancestor (LUCA).", correct: false }
+                ]
+            },
+            {
+                text: "11. ¿Cuál de los siguientes términos representa al ancestro común más reciente del linaje eucariota?",
+                options: [
+                    { text: "LUCA (Last Universal Common Ancestor).", correct: false },
+                    { text: "E. coli.", correct: false },
+                    { text: "LECA (Last Eukaryotic Common Ancestor).", correct: true },
+                    { text: "La protocélula.", correct: false }
+                ]
+            },
+            {
+                text: "12. Desde el punto de vista molecular y ultraestructural, el Citoesqueleto está formado por:",
+                options: [
+                    { text: "Orgánulos limitados por membrana.", correct: false },
+                    { text: "La información hereditaria (ADN).", correct: false },
+                    { text: "Filamentos proteicos que se extienden por todo el citoplasma.", correct: true },
+                    { text: "Lisosomas y aparato de Golgi.", correct: false }
+                ]
+            },
+            {
+                text: "13. Las células eucariotas unicelulares son complejas y pueden realizar funciones especializadas para la supervivencia en su medio. Un ejemplo de estas capacidades es:",
+                options: [
+                    { text: "La oxidación final de nutrientes para obtener ATP, que es exclusiva de los organismos multicelulares.", correct: false },
+                    { text: "Cazar, nadar y el apareamiento mediante fusión celular.", correct: true },
+                    { text: "Sintetizar glucógeno en el retículo endoplásmico rugoso.", correct: false },
+                    { text: "Almacenar ADN fuera del núcleo.", correct: false }
+                ]
+            },
+            {
+                text: "14. En el contexto de la evolución de la vida, el concepto de que 'La respuesta [al origen de la vida] viene de la energía y los límites que impone, y no de los genes' implica una prioridad para el desarrollo de:",
+                options: [
+                    { text: "El sistema de reparación del ADN.", correct: false },
+                    { text: "El potencial eléctrico de membrana para impulsar el crecimiento.", correct: true },
+                    { text: "La alta especialización en organismos multicelulares.", correct: false },
+                    { text: "La síntesis compleja de moléculas para su exportación.", correct: false }
+                ]
+            },
+            {
+                text: "15. Los organismos multicelulares, incluyendo animales y el ser humano, se caracterizan ultraestructuralmente por:",
+                options: [
+                    { text: "Ser morfológicamente idénticos a LUCA.", correct: false },
+                    { text: "Estar compuestos exclusivamente por células procariotas.", correct: false },
+                    { text: "Consistir en distintos tipos celulares, todos derivados de una única célula huevo fertilizada, cooperando entre sí.", correct: true },
+                    { text: "No poseer mitocondrias, ya que la energía se obtiene del exterior.", correct: false }
+                ]
+            },
+            {
+                text: "16. Si una célula requiere una alta demanda energética para funciones de transporte activo (ej. neurona), la alta densidad de este orgánulo es crucial, ya que es el sitio donde se lleva a cabo la oxidación final de nutrientes para la obtención de ATP:",
+                options: [
+                    { text: "Lisosomas.", correct: false },
+                    { text: "Aparato de Golgi.", correct: false },
+                    { text: "Cloroplastos.", correct: false },
+                    { text: "Mitocondria.", correct: true }
+                ]
+            },
+            {
+                text: "17. El retículo endoplásmico y el aparato de Golgi trabajan de manera coordinada. Específicamente, ¿cuál es su función principal en la ultraestructura de la célula eucariota?",
+                options: [
+                    { text: "Sintetizar moléculas complejas para su exportación o inserción en la membrana celular.", correct: true },
+                    { text: "Digerir grandes moléculas mediante hidrolasas.", correct: false },
+                    { text: "Mantener la forma celular y el movimiento.", correct: false },
+                    { text: "Realizar la fotosíntesis.", correct: false }
+                ]
+            },
+            {
+                text: "18. En una célula eucariota, si una molécula de gran tamaño destinada a la secreción falla en su modificación y clasificación final, ¿qué orgánulo delimitado por membrana está funcionando incorrectamente?",
+                options: [
+                    { text: "Retículo Endoplásmico.", correct: false },
+                    { text: "Lisosoma.", correct: false },
+                    { text: "Aparato de Golgi.", correct: true },
+                    { text: "Mitocondria.", correct: false }
+                ]
+            },
+            {
+                text: "19. La función molecular de los lisosomas es crucial para el recambio celular y la defensa. Esta función se define como:",
+                options: [
+                    { text: "Almacenamiento de ADN.", correct: false },
+                    { text: "Síntesis de proteínas.", correct: false },
+                    { text: "Digestión de grandes moléculas.", correct: true },
+                    { text: "Transporte de orgánulos.", correct: false }
+                ]
+            },
+            {
+                text: "20. ¿Qué estructura ultraestructural se extiende por todo el citoplasma y es esencial para el transporte de orgánulos y macromoléculas entre distintas localizaciones internas de la célula?",
+                options: [
+                    { text: "La membrana celular.", correct: false },
+                    { text: "El núcleo.", correct: false },
+                    { text: "El citoesqueleto.", correct: true },
+                    { text: "El citosol.", correct: false }
+                ]
+            },
+            {
+                text: "21. ¿Qué contiene el Núcleo que lo define como el orgánulo central de la célula eucariota?",
+                options: [
+                    { text: "La mayor parte de los orgánulos limitados por membrana.", correct: false },
+                    { text: "El citosol, donde ocurren los procesos bioquímicos esenciales.", correct: false },
+                    { text: "La principal información genética almacenada en forma de ADN.", correct: true },
+                    { text: "Filamentos proteicos para el movimiento celular.", correct: false }
+                ]
+            },
+            {
+                text: "22. Si un microscopista observa una muestra de tejido animal con el microscopio óptico y logra distinguir sus componentes internos, se refiere a estos componentes como:",
+                options: [
+                    { text: "Moléculas pequeñas.", correct: false },
+                    { text: "Ribosomas.", correct: false },
+                    { text: "Orgánulos.", correct: true },
+                    { text: "Citosol puro.", correct: false }
+                ]
+            },
+            {
+                text: "23. El Citoplasma en la célula eucariota incluye:",
+                options: [
+                    { text: "Únicamente el núcleo y el citoesqueleto.", correct: false },
+                    { text: "Solamente el citosol y el núcleo.", correct: false },
+                    { text: "Todo el contenido fuera del núcleo, que abarca el citosol y la variedad de orgánulos limitados por membranas.", correct: true },
+                    { text: "Únicamente el ADN y los ARN.", correct: false }
+                ]
+            },
+            {
+                text: "24. La microscopía electrónica permite la observación de los orgánulos más pequeños. Esta técnica es superior al microscopio óptico debido a su mayor resolución, pero requiere necesariamente:",
+                options: [
+                    { text: "La observación in vivo de células funcionales.", correct: false },
+                    { text: "El uso de tinciones con fluorescencia.", correct: false },
+                    { text: "Una preparación de muestras compleja.", correct: true },
+                    { text: "Que las muestras tengan un diámetro de 5-20 μm.", correct: false }
+                ]
+            },
+            {
+                text: "25. La Microscopía de Fluorescencia es crucial para la investigación molecular porque permite al científico:",
+                options: [
+                    { text: "Ver células de 5-20 μm sin preparación alguna.", correct: false },
+                    { text: "Realizar la oxidación final de nutrientes en tiempo real.", correct: false },
+                    { text: "Visualizar y localizar con precisión distintos componentes celulares, como proteínas o estructuras, mediante la emisión de luz.", correct: true },
+                    { text: "Identificar el ancestro común (LUCA).", correct: false }
+                ]
+            },
+            {
+                text: "26. ¿Cuál de los siguientes orgánulos se considera que probablemente existía en la célula ancestral procariota debido a su ausencia de núcleo y de la mayoría de orgánulos limitados por membrana?",
+                options: [
+                    { text: "Lisosoma.", correct: false },
+                    { text: "Mitocondria (adquirida por endosimbiosis).", correct: false },
+                    { text: "Cloroplasto (adquirido por endosimbiosis).", correct: false },
+                    { text: "Probablemente, ninguna de las anteriores, ya que la célula procariota ancestral carece de la mayoría de orgánulos.", correct: true }
+                ]
+            },
+            {
+                text: "27. La levadura S. cerevisae se utiliza como organismo modelo. ¿Qué tipo de célula representa este organismo en la clasificación fundamental?",
+                options: [
+                    { text: "Bacteria procariota.", correct: false },
+                    { text: "Procariota ancestral (Archaea).", correct: false },
+                    { text: "Eucariota unicelular.", correct: true },
+                    { text: "Organismo multicelular (Hongo).", correct: false }
+                ]
+            },
+            {
+                text: "28. En células vegetales, los cloroplastos tienen una función ultraestructuralmente análoga a la de la mitocondria en cuanto a la producción de energía, pero mediante un proceso distinto, que es:",
+                options: [
+                    { text: "La oxidación final de nutrientes.", correct: false },
+                    { text: "La digestión de macromoléculas.", correct: false },
+                    { text: "La fotosíntesis.", correct: true },
+                    { text: "La síntesis de ADN nuclear.", correct: false }
+                ]
+            },
+            {
+                text: "29. ¿Qué factor molecular determina que la célula nerviosa (neurona) sea tan funcional y morfológicamente diferente de un macrófago, si ambas contienen el mismo ADN?",
+                options: [
+                    { text: "El número de mitocondrias.", correct: false },
+                    { text: "Los diferentes sets de genes que expresan.", correct: true },
+                    { text: "La presencia o ausencia de lisosomas.", correct: false },
+                    { text: "El tipo de microscopía utilizada para observarlas.", correct: false }
+                ]
+            },
+            {
+                text: "30. Si el citoesqueleto sufre un fallo, ¿cuál de las siguientes funciones se vería comprometida simultáneamente?",
+                options: [
+                    { text: "La síntesis de proteínas para exportación.", correct: false },
+                    { text: "La oxidación de glucosa.", correct: false },
+                    { text: "La digestión de partículas.", correct: false },
+                    { text: "El mantenimiento de la forma celular y el movimiento coordinado de orgánulos.", correct: true }
+                ]
+            },
+            {
+                text: "31. ¿Qué característica de la célula, en su nivel de organización, facilita la homeostasis al crear una barrera y permitir la compartimentalización controlada?",
+                options: [
+                    { text: "La obtención de energía.", correct: false },
+                    { text: "La capacidad de reproducirse.", correct: false },
+                    { text: "Estar envuelta por una membrana celular.", correct: true },
+                    { text: "Compartir un ancestro común.", correct: false }
+                ]
+            },
+            {
+                text: "32. En 1670, Anton Van Leeuwenhoek, considerado el padre de la microbiología, llamó 'animálculos' a los microorganismos que observó. ¿Qué científico, siete años después, también contribuyó a este descubrimiento?",
+                options: [
+                    { text: "Robert Hooke.", correct: false },
+                    { text: "René Dutrochet.", correct: false },
+                    { text: "Johan Ham, estudiante de Medicina.", correct: true },
+                    { text: "Matthias Schleiden.", correct: false }
+                ]
+            },
+            {
+                text: "33. Un organismo modelo frecuentemente utilizado en ciencia que pertenece al grupo de los nematodos (gusanos) y que permite estudiar el desarrollo celular y funciones biológicas es:",
+                options: [
+                    { text: "E. coli (Bacteria).", correct: false },
+                    { text: "S. cerevisae (Levadura).", correct: false },
+                    { text: "El nematodo.", correct: true },
+                    { text: "La mosca D. melanogaster.", correct: false }
+                ]
+            },
+            {
+                text: "34. ¿Cuál de las siguientes afirmaciones sobre la diversidad y abundancia de las células procariotas es molecularmente precisa?",
+                options: [
+                    { text: "Se limitan a hábitats aerobios debido a la presencia de mitocondrias.", correct: false },
+                    { text: "Son menos diversas que las eucariotas debido a la ausencia de núcleo.", correct: false },
+                    { text: "Son extensamente diversas y se encuentran en innumerables hábitats con capacidades químicas muy distintas.", correct: true },
+                    { text: "Son siempre multicelulares.", correct: false }
+                ]
+            },
+            {
+                text: "35. La vida es un proceso autocatalítico. Esto significa, en términos genéticos, que el ADN:",
+                options: [
+                    { text: "No necesita del entorno para obtener materia y energía.", correct: false },
+                    { text: "Se transforma constantemente sin mutaciones.", correct: false },
+                    { text: "Contiene la información necesaria para dirigir la síntesis de sus propios componentes y réplica.", correct: true },
+                    { text: "Está limitado a las células procariotas.", correct: false }
+                ]
+            },
+            {
+                text: "36. La Microscopía Óptica es adecuada para observar células animales, cuyo diámetro aproximado es de:",
+                options: [
+                    { text: "50000 μm.", correct: false },
+                    { text: "19000 μm.", correct: false },
+                    { text: "5-20 μm.", correct: true },
+                    { text: "Menos de 1 μm.", correct: false }
+                ]
+            },
+            {
+                text: "37. ¿Qué tipo de células se caracterizan por ser las más diversas y numerosas en la Tierra?",
+                options: [
+                    { text: "Las células de la piel humana.", correct: false },
+                    { text: "Las células eucariotas especializadas.", correct: false },
+                    { text: "Las células procariotas (bacteria y archaea).", correct: true },
+                    { text: "La célula huevo fertilizada.", correct: false }
+                ]
+            },
+            {
+                text: "38. Para visualizar el contenido acuoso donde se mezclan moléculas grandes y pequeñas y donde ocurren los procesos bioquímicos esenciales, ¿qué parte específica del citoplasma debería ser aislada y estudiada?",
+                options: [
+                    { text: "La membrana celular.", correct: false },
+                    { text: "El retículo endoplásmico.", correct: false },
+                    { text: "El citoesqueleto.", correct: false },
+                    { text: "El citosol.", correct: true }
+                ]
+            },
+            {
+                text: "39. Si un patólogo requiere un detalle ultraestructural del aparato de Golgi (ej. el número exacto de cisternas o vesículas) en una muestra de biopsia, ¿qué técnica de microscopía es obligatoria?",
+                options: [
+                    { text: "Microscopía de fluorescencia.", correct: false },
+                    { text: "Microscopía óptica.", correct: false },
+                    { text: "Microscopía electrónica.", correct: true },
+                    { text: "Tinciones de pigmentos celulares.", correct: false }
+                ]
+            },
+            {
+                text: "40. Las células de un organismo multicelular deben cooperar entre ellas. Esta cooperación es posible gracias a:",
+                options: [
+                    { text: "La variación genética entre los diferentes tipos celulares.", correct: false },
+                    { text: "La presencia de cloroplastos en todas ellas.", correct: false },
+                    { text: "El origen común de todas las células a partir de una única célula huevo y su diferenciación controlada.", correct: true },
+                    { text: "La ausencia de citoesqueleto.", correct: false }
+                ]
+            },
+            {
+                text: "41. ¿Cuál de los siguientes es un ejemplo de un fenómeno de respuesta a estímulos fundamental para la supervivencia?",
+                options: [
+                    { text: "El crecimiento a partir de inicios simples.", correct: false },
+                    { text: "El mantenimiento constante de la temperatura interna (homeostasis).", correct: false },
+                    { text: "La obtención y transformación de materia.", correct: false },
+                    { text: "La contracción de un macrófago o una neurona ante una señal química.", correct: true }
+                ]
+            },
+            {
+                text: "42. ¿Qué orgánulo es el sitio primario para la síntesis de proteínas destinadas a ser ancladas en la membrana celular?",
+                options: [
+                    { text: "Lisosomas.", correct: false },
+                    { text: "Mitocondria.", correct: false },
+                    { text: "Retículo Endoplásmico.", correct: true },
+                    { text: "Citosol (solo para proteínas citosólicas).", correct: false }
+                ]
+            },
+            {
+                text: "43. La evolución celular de los eucariotas se vio marcada por el desarrollo del núcleo. ¿Cuál es el significado molecular de este desarrollo?",
+                options: [
+                    { text: "La digestión de grandes moléculas fuera del núcleo.", correct: false },
+                    { text: "La capacidad de oxidar nutrientes para obtener ATP.", correct: false },
+                    { text: "La compartimentalización de la principal información genética (ADN) en el interior del núcleo.", correct: true },
+                    { text: "La aparición de los filamentos proteicos.", correct: false }
+                ]
+            },
+            {
+                text: "44. ¿Qué científico, botánico, extendió la Teoría Celular al postular que todos los organismos vegetales están formados por células?",
+                options: [
+                    { text: "Theodoro Schwann.", correct: false },
+                    { text: "Rudolf Virchow.", correct: false },
+                    { text: "Matthias Schleiden.", correct: true },
+                    { text: "Robert Hooke.", correct: false }
+                ]
+            },
+            {
+                text: "45. ¿Cuál es el rasgo ultraestructural que distingue al citoplasma de un Paramecio (eucariota unicelular) del citoplasma de una bacteria?",
+                options: [
+                    { text: "Presencia de membrana celular.", correct: false },
+                    { text: "Presencia de ADN.", correct: false },
+                    { text: "Presencia de orgánulos limitados por membrana, como lisosomas o retículo endoplásmico.", correct: true },
+                    { text: "Capacidad de movimiento.", correct: false }
+                ]
+            },
+            {
+                text: "46. Si un genoma humano tiene 50000 veces más genes que la mosca D. melanogaster, y sabiendo que el ser humano tiene el mismo ADN en casi todas sus células, ¿qué factor es el responsable directo de la diferencia entre un cardiomiocito y una célula ósea?",
+                options: [
+                    { text: "El tipo de microscopía utilizada.", correct: false },
+                    { text: "La variabilidad en la forma del citoesqueleto.", correct: false },
+                    { text: "La expresión diferencial de genes.", correct: true },
+                    { text: "La oxidación final de nutrientes.", correct: false }
+                ]
+            },
+            {
+                text: "47. ¿Qué proceso fundamental permite a las células adaptarse a su entorno y es la base de la variabilidad genética y la evolución?",
+                options: [
+                    { text: "Homeostasis.", correct: false },
+                    { text: "La síntesis de moléculas complejas.", correct: false },
+                    { text: "Las mutaciones sobre el material genético.", correct: true },
+                    { text: "El almacenamiento de ATP.", correct: false }
+                ]
+            },
+            {
+                text: "48. La 'vida es un proceso autocatalítico'. En términos moleculares, esto implica que las células son capaces de:",
+                options: [
+                    { text: "Crecer a partir de inicios simples sin necesidad de energía.", correct: false },
+                    { text: "Reproducirse, utilizando su información genética (ADN) para crear nuevos componentes y propagarse.", correct: true },
+                    { text: "Estar siempre en equilibrio constante (homeostasis).", correct: false },
+                    { text: "Observarse únicamente con microscopía electrónica.", correct: false }
+                ]
+            },
+            {
+                text: "49. El organismo modelo Drosophila melanogaster (mosca) es útil para estudiar funciones biológicas, pero tiene la limitación de presentar una complejidad genética significativamente menor que el ser humano. ¿Aproximadamente cuántos genes codificantes tiene el ser humano comparado con la mosca, según las fuentes?",
+                options: [
+                    { text: "5 veces más que E. coli.", correct: false },
+                    { text: "50000 veces más (según la proporción citada).", correct: true },
+                    { text: "Un número idéntico.", correct: false },
+                    { text: "La mitad de los genes de E. coli.", correct: false }
+                ]
+            },
+            {
+                text: "50. Si un agente patógeno inhibe la capacidad de la célula para obtener energía y transformarla, ¿qué proceso fundamental de la célula eucariota se ve directamente afectado a nivel ultraestructural?",
+                options: [
+                    { text: "La capacidad de crecer.", correct: false },
+                    { text: "La oxidación final de nutrientes llevada a cabo por la mitocondria.", correct: true },
+                    { text: "La localización de componentes mediante fluorescencia.", correct: false },
+                    { text: "La capacidad de autodigestión de grandes moléculas por el lisosoma", correct: false }
+                ]
+            }
+        ];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function renderQuiz() {
+            const quizContainer = document.getElementById('quiz');
+            quizContainer.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const questionBlock = document.createElement('div');
+                questionBlock.className = 'question-block';
+
+                const title = document.createElement('div');
+                title.className = 'question-title';
+                title.innerText = q.text;
+                questionBlock.appendChild(title);
+
+                // Clonar opciones para no modificar el orden original si se recarga
+                let currentOptions = [...q.options];
+                shuffleArray(currentOptions);
+
+                const optionsList = document.createElement('ul');
+                optionsList.className = 'options-list';
+
+                currentOptions.forEach(opt => {
+                    const li = document.createElement('li');
+                    li.className = 'option-item';
+                    
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = opt.text;
+                    
+                    btn.onclick = function() {
+                        // Deshabilitar todos los botones de esta pregunta
+                        const allBtns = optionsList.querySelectorAll('.option-btn');
+                        allBtns.forEach(b => b.classList.add('disabled'));
+
+                        if (opt.correct) {
+                            btn.classList.add('correct');
+                        } else {
+                            btn.classList.add('incorrect');
+                            // Resaltar la correcta
+                            allBtns.forEach(b => {
+                                // Buscar el botón que tiene el texto de la opción correcta
+                                // (Método simple comparando texto)
+                                const originalOpt = q.options.find(o => o.correct);
+                                if (b.innerText === originalOpt.text) {
+                                    b.classList.add('correct');
+                                }
+                            });
+                        }
+                    };
+
+                    li.appendChild(btn);
+                    optionsList.appendChild(li);
+                });
+
+                questionBlock.appendChild(optionsList);
+                quizContainer.appendChild(questionBlock);
+            });
+        }
+
+        // Renderizar al cargar
+        renderQuiz();
+    </script>
+<div style="text-align: center; margin-top: 40px; padding: 20px; background: #eee; border-radius: 8px;">
+    <button id="btn-finish" style="background: #2c3e50; color: white; border: none; padding: 15px 30px; font-size: 1.2em; border-radius: 6px; cursor: pointer; font-weight: bold;">
+        🏁 Finalizar y Guardar Nota
+    </button>
+</div>
+
+<script>
+    // Lógica para capturar el ID desde la URL (viene del index.html)
+    const urlParams = new URLSearchParams(window.location.search);
+    const testID = urlParams.get('id'); // Ej: 'bio-1'
+
+    document.getElementById('btn-finish').onclick = function() {
+        if (!testID) {
+            alert("⚠️ Nota: Abre este test desde el 'index.html' para que se guarde tu progreso.");
+        }
+
+        const allBlocks = document.querySelectorAll('.question-block');
+        let totalQuestions = allBlocks.length;
+        let correctas = 0;
+
+        allBlocks.forEach(block => {
+            // Buscamos si hay algún botón con clase 'incorrect' (usuario falló)
+            const hasIncorrect = block.querySelector('button.incorrect');
+            // Buscamos si hay algún botón con clase 'correct' (usuario acertó o se reveló)
+            const hasCorrect = block.querySelector('button.correct');
+            
+            // Lógica: Si hay un verde Y NO hay un rojo, el usuario acertó a la primera.
+            // Si hay un rojo, falló. Si no hay nada, no contestó.
+            if (hasCorrect && !hasIncorrect) {
+                correctas++;
+            }
+        });
+
+        const notaFinal = Math.round((correctas / totalQuestions) * 100);
+        
+        // Mensaje de resultado
+        alert(`📊 Resultado:\n\nHas acertado ${correctas} de ${totalQuestions}.\nTu nota es: ${notaFinal}%`);
+
+        if (testID) {
+            // 1. Guardar Intento
+            let intentos = parseInt(localStorage.getItem(`intentos_${testID}`) || 0);
+            localStorage.setItem(`intentos_${testID}`, intentos + 1);
+
+            // 2. Guardar Mejor Nota (solo si es mayor a la anterior)
+            let notaAnterior = localStorage.getItem(`nota_${testID}`);
+            if (!notaAnterior || notaFinal > parseInt(notaAnterior)) {
+                localStorage.setItem(`nota_${testID}`, notaFinal);
+            }
+
+            // 3. Volver al menú
+            if(confirm("¿Quieres volver al menú principal?")) {
+                window.location.href = 'index.html';
+            }
+        }
+    };
+</script>
+</body>
+</html>

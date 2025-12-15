@@ -1,0 +1,1987 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario: Ciclo Celular y Apoptosis (Bloque VIII)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .quiz-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .question-block {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .question-title {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .options-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .option-item {
+            margin-bottom: 10px;
+        }
+        .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 12px 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95em;
+            color: #444;
+        }
+        .option-btn:hover {
+            background-color: #f0f0f0;
+            border-color: #bbb;
+        }
+        
+        /* Estilos de corrección */
+        .correct {
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724 !important;
+            position: relative;
+        }
+        .correct::after {
+            content: " ✓ Correcto";
+            font-weight: bold;
+            float: right;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+            color: #721c24 !important;
+            position: relative;
+        }
+        .incorrect::after {
+            content: " ✗ Incorrecto";
+            font-weight: bold;
+            float: right;
+        }
+
+        .disabled {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Test Bloque VIII: Ciclo Celular</h1>
+    <div class="quiz-container" id="quiz">
+        </div>
+
+    <script>
+        const questions = [
+  {
+    "id": "1",
+    "text": "El sistema de control del ciclo celular se basa en una compleja red de proteínas reguladoras. El evento molecular central que impulsa el progreso a través de las fases es la:",
+    "options": [
+      {
+        "text": "Inactivación estable de las proteínas Cdk por p27 en la fase S.",
+        "correct": false
+      },
+      {
+        "text": "Degradación de los factores de crecimiento mediada por el Proteasoma.",
+        "correct": false
+      },
+      {
+        "text": "Activación cíclica de las proteínas Cinasas dependientes de Ciclinas (Cdk).",
+        "correct": true
+      },
+      {
+        "text": "Fosforilación exclusiva de las condensinas por las S-Cdk en la fase G1.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "text": "Las Cinasas dependientes de Ciclinas (Cdk) están presentes de forma continua durante el ciclo celular. Sin embargo, solo se activan cuando:",
+    "options": [
+      {
+        "text": "Se unen a una ciclina específica, formando un complejo Ciclina-Cdk.",
+        "correct": true
+      },
+      {
+        "text": "Se fosforilan en sitios inhibidores.",
+        "correct": false
+      },
+      {
+        "text": "Se degradan por ubiquitinación.",
+        "correct": false
+      },
+      {
+        "text": "Se unen al ADN directamente.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "text": "Las concentraciones de ciclinas varían cíclicamente. Las ciclinas mitóticas (M-ciclinas) aumentan durante G2 y desencadenan la mitosis al activar:",
+    "options": [
+      {
+        "text": "El complejo S-Cdk.",
+        "correct": false
+      },
+      {
+        "text": "El complejo M-Cdk.",
+        "correct": true
+      },
+      {
+        "text": "La ADN polimerasa.",
+        "correct": false
+      },
+      {
+        "text": "La telomerasa.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "text": "La transición de G1 a S es un punto de control crítico llamado 'Punto de Restricción' o 'Start'. En este punto, la célula se compromete a:",
+    "options": [
+      {
+        "text": "Entrar en G0.",
+        "correct": false
+      },
+      {
+        "text": "Completar el ciclo celular y dividirse.",
+        "correct": true
+      },
+      {
+        "text": "Iniciar la apoptosis.",
+        "correct": false
+      },
+      {
+        "text": "Diferenciarse.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "5",
+    "text": "La actividad de los complejos Cdk-Ciclina puede ser inhibida rápidamente por:",
+    "options": [
+      {
+        "text": "Fosforilación activadora.",
+        "correct": false
+      },
+      {
+        "text": "Proteínas Inhibidoras de Cdk (CKI), como p27, que abrazan y bloquean el complejo.",
+        "correct": true
+      },
+      {
+        "text": "Síntesis de nuevas ciclinas.",
+        "correct": false
+      },
+      {
+        "text": "La unión de ATP.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "6",
+    "text": "La degradación de ciclinas es un mecanismo irreversible para apagar la actividad Cdk. Este proceso está mediado por la ubiquitinación a cargo de:",
+    "options": [
+      {
+        "text": "El complejo APC/C (Anaphase Promoting Complex).",
+        "correct": true
+      },
+      {
+        "text": "La caspasa 3.",
+        "correct": false
+      },
+      {
+        "text": "La fosfatasa Cdc25.",
+        "correct": false
+      },
+      {
+        "text": "El ribosoma.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "7",
+    "text": "La fosforilación inhibidora de las Cdk es llevada a cabo por la quinasa Wee1. Para activar el complejo M-Cdk al inicio de la mitosis, esta inhibición debe ser eliminada por:",
+    "options": [
+      {
+        "text": "La fosfatasa Cdc25.",
+        "correct": true
+      },
+      {
+        "text": "La quinasa CAK.",
+        "correct": false
+      },
+      {
+        "text": "La proteína p53.",
+        "correct": false
+      },
+      {
+        "text": "La ubiquitina ligasa.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "8",
+    "text": "En respuesta al daño en el ADN en G1, la proteína p53 se estabiliza y activa la transcripción de p21. La función de p21 es:",
+    "options": [
+      {
+        "text": "Reparar el ADN directamente.",
+        "correct": false
+      },
+      {
+        "text": "Inhibir los complejos G1/S-Cdk y S-Cdk, deteniendo el ciclo para permitir la reparación.",
+        "correct": true
+      },
+      {
+        "text": "Promover la entrada en fase S.",
+        "correct": false
+      },
+      {
+        "text": "Degradar p53.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "9",
+    "text": "Si el daño en el ADN es demasiado severo para ser reparado, p53 induce:",
+    "options": [
+      {
+        "text": "Necrosis.",
+        "correct": false
+      },
+      {
+        "text": "Apoptosis (muerte celular programada).",
+        "correct": true
+      },
+      {
+        "text": "Diferenciación.",
+        "correct": false
+      },
+      {
+        "text": "Mitosis rápida.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "10",
+    "text": "El complejo APC/C desencadena la anafase al promover la degradación de la Securina. La degradación de la Securina libera y activa a la enzima:",
+    "options": [
+      {
+        "text": "Cohesina.",
+        "correct": false
+      },
+      {
+        "text": "Separasa, que corta las cohesinas.",
+        "correct": true
+      },
+      {
+        "text": "Cdk1.",
+        "correct": false
+      },
+      {
+        "text": "Condensina.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "11",
+    "text": "Las Cohesinas son complejos proteicos que:",
+    "options": [
+      {
+        "text": "Condensan los cromosomas.",
+        "correct": false
+      },
+      {
+        "text": "Mantienen unidas a las cromátidas hermanas tras la replicación del ADN.",
+        "correct": true
+      },
+      {
+        "text": "Forman el huso mitótico.",
+        "correct": false
+      },
+      {
+        "text": "Regulan la transcripción.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "12",
+    "text": "Las Condensinas son responsables de:",
+    "options": [
+      {
+        "text": "Replicar el ADN.",
+        "correct": false
+      },
+      {
+        "text": "Compactar los cromosomas al inicio de la mitosis (Profase) para facilitar su segregación.",
+        "correct": true
+      },
+      {
+        "text": "Separar las cromátidas.",
+        "correct": false
+      },
+      {
+        "text": "Desensamblar la envoltura nuclear.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "13",
+    "text": "El Cinetocoro es una estructura proteica en el centrómero que sirve como sitio de unión para:",
+    "options": [
+      {
+        "text": "Los microtúbulos del huso mitótico.",
+        "correct": true
+      },
+      {
+        "text": "Los filamentos de actina.",
+        "correct": false
+      },
+      {
+        "text": "Las cohesinas.",
+        "correct": false
+      },
+      {
+        "text": "Los ribosomas.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "14",
+    "text": "Durante la Profase, el evento clave es:",
+    "options": [
+      {
+        "text": "La separación de cromátidas.",
+        "correct": false
+      },
+      {
+        "text": "La condensación de los cromosomas y el inicio de la formación del huso mitótico.",
+        "correct": true
+      },
+      {
+        "text": "La ruptura de la envoltura nuclear.",
+        "correct": false
+      },
+      {
+        "text": "La citocinesis.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "15",
+    "text": "La Prometafase comienza abruptamente con:",
+    "options": [
+      {
+        "text": "La duplicación del centrosoma.",
+        "correct": false
+      },
+      {
+        "text": "El desensamblaje de la envoltura nuclear (fosforilación de láminas), permitiendo a los microtúbulos acceder a los cromosomas.",
+        "correct": true
+      },
+      {
+        "text": "La alineación en el ecuador.",
+        "correct": false
+      },
+      {
+        "text": "La síntesis de ADN.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "16",
+    "text": "En la Metafase, los cromosomas se encuentran:",
+    "options": [
+      {
+        "text": "En los polos opuestos.",
+        "correct": false
+      },
+      {
+        "text": "Alineados en el ecuador del huso (placa metafásica) bajo tensión.",
+        "correct": true
+      },
+      {
+        "text": "Descondensados.",
+        "correct": false
+      },
+      {
+        "text": "En el citosol dispersos.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "17",
+    "text": "La Anafase se desencadena por la pérdida de cohesión entre cromátidas hermanas, permitiendo su:",
+    "options": [
+      {
+        "text": "Replicación.",
+        "correct": false
+      },
+      {
+        "text": "Separación y movimiento hacia los polos opuestos del huso.",
+        "correct": true
+      },
+      {
+        "text": "Condensación máxima.",
+        "correct": false
+      },
+      {
+        "text": "Fusión.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "18",
+    "text": "Durante la Telofase:",
+    "options": [
+      {
+        "text": "Los cromosomas se condensan más.",
+        "correct": false
+      },
+      {
+        "text": "Se reensambla la envoltura nuclear alrededor de cada juego de cromosomas hijos y estos se descondensan.",
+        "correct": true
+      },
+      {
+        "text": "Se rompe el huso mitótico completamente.",
+        "correct": false
+      },
+      {
+        "text": "Se duplica el ADN.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "19",
+    "text": "La Citoquinesis es la división del citoplasma. En células animales, es mediada por:",
+    "options": [
+      {
+        "text": "Una pared celular nueva.",
+        "correct": false
+      },
+      {
+        "text": "Un anillo contráctil de filamentos de actina y miosina II.",
+        "correct": true
+      },
+      {
+        "text": "Microtúbulos del huso.",
+        "correct": false
+      },
+      {
+        "text": "Vesículas del Golgi.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "20",
+    "text": "El anillo contráctil se forma en:",
+    "options": [
+      {
+        "text": "La Profase.",
+        "correct": false
+      },
+      {
+        "text": "La Anafase tardía o Telofase, perpendicular al eje del huso.",
+        "correct": true
+      },
+      {
+        "text": "La Metafase.",
+        "correct": false
+      },
+      {
+        "text": "G1.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "21",
+    "text": "Los Mitógenos estimulan la división celular activando la vía de las MAP quinasas, lo que conduce a la síntesis de ciclinas G1 y:",
+    "options": [
+      {
+        "text": "La entrada en fase S.",
+        "correct": true
+      },
+      {
+        "text": "La apoptosis.",
+        "correct": false
+      },
+      {
+        "text": "La diferenciación.",
+        "correct": false
+      },
+      {
+        "text": "La senescencia.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "22",
+    "text": "Los Factores de Crecimiento estimulan el crecimiento celular (aumento de masa) promoviendo:",
+    "options": [
+      {
+        "text": "La degradación de proteínas.",
+        "correct": false
+      },
+      {
+        "text": "La síntesis de proteínas y macromoléculas e inhibiendo su degradación (vía mTOR).",
+        "correct": true
+      },
+      {
+        "text": "La división sin crecimiento.",
+        "correct": false
+      },
+      {
+        "text": "La condensación de cromatina.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "23",
+    "text": "Los Factores de Supervivencia suprimen la apoptosis regulando:",
+    "options": [
+      {
+        "text": "La familia de proteínas Bcl2 (aumentando anti-apoptóticas como Bcl2).",
+        "correct": true
+      },
+      {
+        "text": "La actividad de la telomerasa.",
+        "correct": false
+      },
+      {
+        "text": "La formación del huso.",
+        "correct": false
+      },
+      {
+        "text": "La síntesis de ADN.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "24",
+    "text": "La Apoptosis es un proceso limpio y ordenado, mediado por caspasas, que evita:",
+    "options": [
+      {
+        "text": "La diferenciación.",
+        "correct": false
+      },
+      {
+        "text": "La respuesta inflamatoria y el daño a células vecinas (a diferencia de la necrosis).",
+        "correct": true
+      },
+      {
+        "text": "La fagocitosis.",
+        "correct": false
+      },
+      {
+        "text": "El reciclaje de componentes.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "25",
+    "text": "La Necrosis es una muerte celular accidental causada por daño agudo, caracterizada por:",
+    "options": [
+      {
+        "text": "Condensación nuclear.",
+        "correct": false
+      },
+      {
+        "text": "Hinchazón, lisis celular y liberación del contenido al exterior, provocando inflamación.",
+        "correct": true
+      },
+      {
+        "text": "Formación de cuerpos apoptóticos.",
+        "correct": false
+      },
+      {
+        "text": "Activación de caspasas.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "26",
+    "text": "Las Caspasas son proteasas que se sintetizan como precursores inactivos (procaspasas). Su activación implica:",
+    "options": [
+      {
+        "text": "Fosforilación.",
+        "correct": false
+      },
+      {
+        "text": "Corte proteolítico y ensamblaje, iniciando una cascada de amplificación.",
+        "correct": true
+      },
+      {
+        "text": "Unión a GTP.",
+        "correct": false
+      },
+      {
+        "text": "Metilación.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "27",
+    "text": "Bcl2 y Bcl-XL son miembros de la familia Bcl2 que:",
+    "options": [
+      {
+        "text": "Promueven la liberación de citocromo c.",
+        "correct": false
+      },
+      {
+        "text": "Inhiben la apoptosis bloqueando la liberación de citocromo c (anti-apoptóticas).",
+        "correct": true
+      },
+      {
+        "text": "Son factores de transcripción.",
+        "correct": false
+      },
+      {
+        "text": "Activan caspasas.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "28",
+    "text": "Bax y Bak son miembros de la familia Bcl2 que:",
+    "options": [
+      {
+        "text": "Inhiben la apoptosis.",
+        "correct": false
+      },
+      {
+        "text": "Promueven la apoptosis formando canales en la membrana mitocondrial para liberar citocromo c (pro-apoptóticas).",
+        "correct": true
+      },
+      {
+        "text": "Reparan el ADN.",
+        "correct": false
+      },
+      {
+        "text": "Estabilizan los microtúbulos.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "29",
+    "text": "La liberación de Citocromo c al citosol activa la formación del Apoptosoma, que recluta y activa a:",
+    "options": [
+      {
+        "text": "La procaspasa-9.",
+        "correct": true
+      },
+      {
+        "text": "La ciclina B.",
+        "correct": false
+      },
+      {
+        "text": "La proteína p53.",
+        "correct": false
+      },
+      {
+        "text": "La actina.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "30",
+    "text": "La vía extrínseca de la apoptosis se activa por:",
+    "options": [
+      {
+        "text": "Daño en el ADN.",
+        "correct": false
+      },
+      {
+        "text": "La unión de un ligando de muerte (ej. Fas ligando) a un receptor de muerte en la superficie celular.",
+        "correct": true
+      },
+      {
+        "text": "Falta de nutrientes.",
+        "correct": false
+      },
+      {
+        "text": "Estrés del RE.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "31",
+    "text": "En ausencia de mitógenos, las células pueden retirarse del ciclo celular a un estado de reposo llamado:",
+    "options": [
+      {
+        "text": "Fase S.",
+        "correct": false
+      },
+      {
+        "text": "Fase G0.",
+        "correct": true
+      },
+      {
+        "text": "Mitosis.",
+        "correct": false
+      },
+      {
+        "text": "Apoptosis.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "32",
+    "text": "La proteína Retinoblastoma (Rb) inhibe la progresión del ciclo celular en G1 al unirse e inactivar a:",
+    "options": [
+      {
+        "text": "Las Cdk.",
+        "correct": false
+      },
+      {
+        "text": "Los factores de transcripción E2F (necesarios para la síntesis de fase S).",
+        "correct": true
+      },
+      {
+        "text": "La helicasa.",
+        "correct": false
+      },
+      {
+        "text": "Las ciclinas.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "33",
+    "text": "La Interfase comprende las fases:",
+    "options": [
+      {
+        "text": "Profase, Metafase, Anafase.",
+        "correct": false
+      },
+      {
+        "text": "G1, S, G2.",
+        "correct": true
+      },
+      {
+        "text": "Solo S.",
+        "correct": false
+      },
+      {
+        "text": "Mitosis y Citocinesis.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "34",
+    "text": "La duplicación del Centrosoma comienza en:",
+    "options": [
+      {
+        "text": "La Mitosis.",
+        "correct": false
+      },
+      {
+        "text": "La Fase G1/S, coordinada con la replicación del ADN.",
+        "correct": true
+      },
+      {
+        "text": "La Telofase.",
+        "correct": false
+      },
+      {
+        "text": "La fase G0.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "35",
+    "text": "El control de la proteólisis (degradación de proteínas) es crucial para:",
+    "options": [
+      {
+        "text": "Iniciar la transcripción.",
+        "correct": false
+      },
+      {
+        "text": "Hacer que las transiciones del ciclo celular sean irreversibles (ej. degradación de ciclinas).",
+        "correct": true
+      },
+      {
+        "text": "Reparar el ADN.",
+        "correct": false
+      },
+      {
+        "text": "Sintetizar ATP.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "36",
+    "text": "La quinasa Wee1 inhibe la actividad Cdk fosforilando un sitio clave. ¿Qué enzima revierte esta inhibición?",
+    "options": [
+      {
+        "text": "Cdc25 fosfatasa.",
+        "correct": true
+      },
+      {
+        "text": "PKA.",
+        "correct": false
+      },
+      {
+        "text": "APC/C.",
+        "correct": false
+      },
+      {
+        "text": "Caspasa.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "37",
+    "text": "El punto de control G2/M asegura que:",
+    "options": [
+      {
+        "text": "El entorno sea favorable.",
+        "correct": false
+      },
+      {
+        "text": "Todo el ADN esté replicado y no dañado antes de entrar en mitosis.",
+        "correct": true
+      },
+      {
+        "text": "Los cromosomas estén alineados.",
+        "correct": false
+      },
+      {
+        "text": "La célula tenga el tamaño adecuado.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "38",
+    "text": "El punto de control de la Metafase (o del huso) impide la anafase si:",
+    "options": [
+      {
+        "text": "El ADN está dañado.",
+        "correct": false
+      },
+      {
+        "text": "Algún cromosoma no está correctamente unido al huso mitótico.",
+        "correct": true
+      },
+      {
+        "text": "Faltan nutrientes.",
+        "correct": false
+      },
+      {
+        "text": "La célula es pequeña.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "39",
+    "text": "El huso mitótico está formado por tres tipos de microtúbulos: Astrales, Cinetocóricos e:",
+    "options": [
+      {
+        "text": "Intermedios.",
+        "correct": false
+      },
+      {
+        "text": "Interpolares.",
+        "correct": true
+      },
+      {
+        "text": "De actina.",
+        "correct": false
+      },
+      {
+        "text": "De miosina.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "40",
+    "text": "El anillo contráctil divide el citoplasma mediante un mecanismo de:",
+    "options": [
+      {
+        "text": "Polimerización de tubulina.",
+        "correct": false
+      },
+      {
+        "text": "Deslizamiento de filamentos de actina y miosina II.",
+        "correct": true
+      },
+      {
+        "text": "Fusión de vesículas.",
+        "correct": false
+      },
+      {
+        "text": "Ósmosis.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "41",
+    "text": "Los microtúbulos astrales irradian desde el centrosoma hacia:",
+    "options": [
+      {
+        "text": "Los cromosomas.",
+        "correct": false
+      },
+      {
+        "text": "La corteza celular, ayudando a posicionar el huso.",
+        "correct": true
+      },
+      {
+        "text": "El otro centrosoma.",
+        "correct": false
+      },
+      {
+        "text": "El núcleo.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "42",
+    "text": "Los microtúbulos interpolares interactúan entre sí desde polos opuestos para:",
+    "options": [
+      {
+        "text": "Capturar cromosomas.",
+        "correct": false
+      },
+      {
+        "text": "Estabilizar el huso y empujar los polos (Anafase B).",
+        "correct": true
+      },
+      {
+        "text": "Degradar proteínas.",
+        "correct": false
+      },
+      {
+        "text": "Formar la envoltura nuclear.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "43",
+    "text": "La tensión generada por la unión bipolar de los microtúbulos a los cinetocoros es la señal que:",
+    "options": [
+      {
+        "text": "Detiene la anafase.",
+        "correct": false
+      },
+      {
+        "text": "Confirma la correcta alineación y permite el paso a la Anafase (silencia el checkpoint).",
+        "correct": true
+      },
+      {
+        "text": "Inicia la apoptosis.",
+        "correct": false
+      },
+      {
+        "text": "Degrada el ADN.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "44",
+    "text": "La Separasa es la proteasa que corta las cohesinas. Normalmente está inhibida por:",
+    "options": [
+      {
+        "text": "Cdk.",
+        "correct": false
+      },
+      {
+        "text": "Securina.",
+        "correct": true
+      },
+      {
+        "text": "Ciclina.",
+        "correct": false
+      },
+      {
+        "text": "p53.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "45",
+    "text": "El complejo APC/C marca a la Securina para su degradación, lo que permite:",
+    "options": [
+      {
+        "text": "La entrada en fase S.",
+        "correct": false
+      },
+      {
+        "text": "La activación de la Separasa y el inicio de la Anafase.",
+        "correct": true
+      },
+      {
+        "text": "La condensación de cromosomas.",
+        "correct": false
+      },
+      {
+        "text": "La replicación del ADN.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "46",
+    "text": "En la Anafase A:",
+    "options": [
+      {
+        "text": "Los polos se separan.",
+        "correct": false
+      },
+      {
+        "text": "Los cromosomas son arrastrados hacia los polos por el acortamiento de los microtúbulos del cinetocoro.",
+        "correct": true
+      },
+      {
+        "text": "La envoltura nuclear se rompe.",
+        "correct": false
+      },
+      {
+        "text": "Se forma el anillo contráctil.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "47",
+    "text": "En la Anafase B:",
+    "options": [
+      {
+        "text": "Los cromosomas se condensan.",
+        "correct": false
+      },
+      {
+        "text": "Los polos del huso se separan entre sí (elongación del huso).",
+        "correct": true
+      },
+      {
+        "text": "El ADN se replica.",
+        "correct": false
+      },
+      {
+        "text": "Las cohesinas se rompen.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "48",
+    "text": "¿Qué proteína relacionada con el citoesqueleto de actina NO es esencial para la formación del anillo contráctil?",
+    "options": [
+      {
+        "text": "Miosina II.",
+        "correct": false
+      },
+      {
+        "text": "Actina.",
+        "correct": false
+      },
+      {
+        "text": "Fragmina (proteína de corte de actina, no formadora de anillos).",
+        "correct": true
+      },
+      {
+        "text": "Formina.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "49",
+    "text": "La reformación de la envoltura nuclear en la Telofase se debe a:",
+    "options": [
+      {
+        "text": "La degradación de láminas.",
+        "correct": false
+      },
+      {
+        "text": "La desfosforilación de las proteínas de la lámina nuclear y los poros nucleares.",
+        "correct": true
+      },
+      {
+        "text": "La síntesis de nuevos lípidos.",
+        "correct": false
+      },
+      {
+        "text": "La acción de la separasa.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "50",
+    "text": "Durante la mitosis, orgánulos como las mitocondrias se:",
+    "options": [
+      {
+        "text": "Degradan.",
+        "correct": false
+      },
+      {
+        "text": "Reparten aleatoriamente entre las células hijas (si hay suficientes).",
+        "correct": true
+      },
+      {
+        "text": "Fusionan en una sola.",
+        "correct": false
+      },
+      {
+        "text": "Replican su ADN.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "51",
+    "text": "El Retículo Endoplasmático y el Golgi sufren _____ durante la mitosis para facilitar su reparto.",
+    "options": [
+      {
+        "text": "Expansión.",
+        "correct": false
+      },
+      {
+        "text": "Fragmentación (o reorganización).",
+        "correct": true
+      },
+      {
+        "text": "Desaparición total.",
+        "correct": false
+      },
+      {
+        "text": "Fusión nuclear.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "52",
+    "text": "La Miostatina es un ejemplo de señal extracelular que:",
+    "options": [
+      {
+        "text": "Estimula el crecimiento muscular.",
+        "correct": false
+      },
+      {
+        "text": "Inhibe el crecimiento y la proliferación de mioblastos (regulación negativa del tamaño).",
+        "correct": true
+      },
+      {
+        "text": "Promueve la apoptosis.",
+        "correct": false
+      },
+      {
+        "text": "Activa la telomerasa.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "53",
+    "text": "La iniciación de la replicación del ADN ocurre:",
+    "options": [
+      {
+        "text": "Continuamente.",
+        "correct": false
+      },
+      {
+        "text": "Una sola vez por ciclo celular.",
+        "correct": true
+      },
+      {
+        "text": "En fase M.",
+        "correct": false
+      },
+      {
+        "text": "En G2.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "54",
+    "text": "El complejo ORC (Origin Recognition Complex) se une a los orígenes de replicación y permanece allí:",
+    "options": [
+      {
+        "text": "Solo en fase S.",
+        "correct": false
+      },
+      {
+        "text": "Durante todo el ciclo celular.",
+        "correct": true
+      },
+      {
+        "text": "Solo en mitosis.",
+        "correct": false
+      },
+      {
+        "text": "Solo en G0.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "55",
+    "text": "En G1, la proteína Cdc6 ayuda a cargar las helicasas del ADN en el ORC, formando el:",
+    "options": [
+      {
+        "text": "Complejo pre-replicativo (pre-RC).",
+        "correct": true
+      },
+      {
+        "text": "Huso mitótico.",
+        "correct": false
+      },
+      {
+        "text": "Poro nuclear.",
+        "correct": false
+      },
+      {
+        "text": "Apoptosoma.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "56",
+    "text": "La activación de S-Cdk inicia la replicación y también:",
+    "options": [
+      {
+        "text": "Bloquea la re-replicación (fosforilando Cdc6 y ORC).",
+        "correct": true
+      },
+      {
+        "text": "Detiene el ciclo.",
+        "correct": false
+      },
+      {
+        "text": "Condensa los cromosomas.",
+        "correct": false
+      },
+      {
+        "text": "Degrada el ADN.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "57",
+    "text": "La fase M (Mitosis + Citocinesis) es típicamente:",
+    "options": [
+      {
+        "text": "La fase más larga del ciclo.",
+        "correct": false
+      },
+      {
+        "text": "La fase más corta del ciclo.",
+        "correct": true
+      },
+      {
+        "text": "Igual que G1.",
+        "correct": false
+      },
+      {
+        "text": "Ausente en células cancerosas.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "58",
+    "text": "La fase G1 es un intervalo de:",
+    "options": [
+      {
+        "text": "División.",
+        "correct": false
+      },
+      {
+        "text": "Crecimiento y monitorización del entorno antes de la replicación.",
+        "correct": true
+      },
+      {
+        "text": "Síntesis de ADN.",
+        "correct": false
+      },
+      {
+        "text": "Segregación de cromosomas.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "59",
+    "text": "La fase G2 permite:",
+    "options": [
+      {
+        "text": "La replicación del ADN.",
+        "correct": false
+      },
+      {
+        "text": "Verificar la replicación y crecer antes de la mitosis.",
+        "correct": true
+      },
+      {
+        "text": "La citocinesis.",
+        "correct": false
+      },
+      {
+        "text": "La entrada en G0.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "60",
+    "text": "Las Cdk son quinasas de Serina/Treonina. Su nivel de proteína es:",
+    "options": [
+      {
+        "text": "Cíclico.",
+        "correct": false
+      },
+      {
+        "text": "Constante a lo largo del ciclo.",
+        "correct": true
+      },
+      {
+        "text": "Nulo en G1.",
+        "correct": false
+      },
+      {
+        "text": "Indetectable.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "61",
+    "text": "Los niveles de Ciclinas son:",
+    "options": [
+      {
+        "text": "Constantes.",
+        "correct": false
+      },
+      {
+        "text": "Fluctuantes (cíclicos), sintetizándose y degradándose en cada ciclo.",
+        "correct": true
+      },
+      {
+        "text": "Independientes del ciclo.",
+        "correct": false
+      },
+      {
+        "text": "Siempre altos.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "62",
+    "text": "Las proteínas CKI (ej. p27, p21) funcionan uniéndose al complejo Cdk-Ciclina y:",
+    "options": [
+      {
+        "text": "Activándolo.",
+        "correct": false
+      },
+      {
+        "text": "Inhibiéndolo conformacionalmente.",
+        "correct": true
+      },
+      {
+        "text": "Degradándolo.",
+        "correct": false
+      },
+      {
+        "text": "Exportándolo al núcleo.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "63",
+    "text": "La Proteólisis regulada (ubiquitinación) es clave para:",
+    "options": [
+      {
+        "text": "Iniciar el ciclo.",
+        "correct": false
+      },
+      {
+        "text": "Las transiciones irreversibles del ciclo (ej. Metafase-Anafase).",
+        "correct": true
+      },
+      {
+        "text": "La síntesis de ADN.",
+        "correct": false
+      },
+      {
+        "text": "La transcripción.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "64",
+    "text": "La regulación transcripcional controla la síntesis de:",
+    "options": [
+      {
+        "text": "Cdk.",
+        "correct": false
+      },
+      {
+        "text": "Ciclinas (en momentos específicos).",
+        "correct": true
+      },
+      {
+        "text": "ATP.",
+        "correct": false
+      },
+      {
+        "text": "Agua.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "65",
+    "text": "El movimiento de los cromosomas en la prometafase ('congregación') hacia la placa metafásica es dirigido por:",
+    "options": [
+      {
+        "text": "La actina.",
+        "correct": false
+      },
+      {
+        "text": "Los microtúbulos del cinetocoro y proteínas motoras.",
+        "correct": true
+      },
+      {
+        "text": "Los filamentos intermedios.",
+        "correct": false
+      },
+      {
+        "text": "La membrana nuclear.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "66",
+    "text": "La Mecanotransducción implica que las células del entorno influyen en la división. Si los Mitógenos promueven la división celular (G1-S), ¿qué ocurriría si estas señales fueran retiradas de un cultivo celular antes de que la célula supere la Fase G1?",
+    "options": [
+      {
+        "text": "La célula entraría en la Fase S inmediatamente.",
+        "correct": false
+      },
+      {
+        "text": "La célula permanecería en G1 o entraría en G0.",
+        "correct": true
+      },
+      {
+        "text": "Se activaría la cascada de caspasas.",
+        "correct": false
+      },
+      {
+        "text": "El complejo APC/C degradaría las ciclinas.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "67",
+    "text": "La activación de los receptores de muerte (como el Receptor Fas) en la superficie celular desencadena la apoptosis al:",
+    "options": [
+      {
+        "text": "Bloquear el progreso de G1 a S.",
+        "correct": false
+      },
+      {
+        "text": "Activar la cascada de caspasas extrínseca.",
+        "correct": true
+      },
+      {
+        "text": "Activar directamente la síntesis de ciclinas.",
+        "correct": false
+      },
+      {
+        "text": "Inducir la desfosforilación de la envoltura nuclear.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "68",
+    "text": "Si el APC/C no se activara correctamente al final de la Fase M, ¿cuál sería la consecuencia molecular inmediata en la célula?",
+    "options": [
+      {
+        "text": "El ADN no se replicaría.",
+        "correct": false
+      },
+      {
+        "text": "Las cohesinas no se escindirían y la anafase no ocurriría.",
+        "correct": true
+      },
+      {
+        "text": "Las Cdk permanecerían inactivas.",
+        "correct": false
+      },
+      {
+        "text": "Las células terminalmente diferenciadas reingresarían al ciclo.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "69",
+    "text": "La coreografía molecular de la Mitosis requiere que el huso mitótico se ensamble en el citosol tras el desensamblaje de la envoltura nuclear, pero son los propios cromosomas duplicados los que ayudan a:",
+    "options": [
+      {
+        "text": "Detener el ciclo en G1.",
+        "correct": false
+      },
+      {
+        "text": "Estabilizar y ensamblar el huso mitótico (nucleación local).",
+        "correct": true
+      },
+      {
+        "text": "Inactivar el complejo S-Cdk.",
+        "correct": false
+      },
+      {
+        "text": "Degradar las proteínas por el Proteasoma.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "70",
+    "text": "¿Cuál es el estado celular más susceptible a la inducción de la apoptosis, dado que el equilibrio entre factores de supervivencia, mitógenos y factores de crecimiento regula si la célula debe vivir, dividirse o morir?",
+    "options": [
+      {
+        "text": "Células que carecen de señales de supervivencia.",
+        "correct": true
+      },
+      {
+        "text": "Células en estado de reposo G0 permanente.",
+        "correct": false
+      },
+      {
+        "text": "Células que han completado la Fase S y tienen ADN replicado.",
+        "correct": false
+      },
+      {
+        "text": "Células con una alta concentración de ciclinas M.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "71",
+    "text": "Un evento ultraestructural de la célula que indica que está saliendo de la Fase M (Mitosis) es la aparición de:",
+    "options": [
+      {
+        "text": "La formación de la placa metafásica.",
+        "correct": false
+      },
+      {
+        "text": "La condensación de los cromosomas.",
+        "correct": false
+      },
+      {
+        "text": "El surco de segmentación (o cleavage furrow).",
+        "correct": true
+      },
+      {
+        "text": "La escisión de las cohesinas.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "72",
+    "text": "La acción de los factores de crecimiento, al aumentar la síntesis de proteínas, contrarresta la acción molecular de las hormonas o señales que:",
+    "options": [
+      {
+        "text": "Promueven la apoptosis (Bax/Bak).",
+        "correct": false
+      },
+      {
+        "text": "Disminuyen la velocidad de degradación.",
+        "correct": false
+      },
+      {
+        "text": "Inhiben la síntesis de macromoléculas (antagonistas del crecimiento).",
+        "correct": true
+      },
+      {
+        "text": "Activación cíclica de las Cdk.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "73",
+    "text": "El complejo M-Cdk tiene una función clave en la Metafase. Su rol incluye preparar los cromosomas duplicados para la segregación e inducir:",
+    "options": [
+      {
+        "text": "La escisión de las cohesinas.",
+        "correct": false
+      },
+      {
+        "text": "El ensamblado del huso mitótico.",
+        "correct": true
+      },
+      {
+        "text": "La degradación de las proteínas por p53.",
+        "correct": false
+      },
+      {
+        "text": "La replicación del ADN.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "74",
+    "text": "¿Qué requisito molecular, si se detecta como incorrecto, detendría el ciclo en G2, evitando que la célula pase a la Fase M?",
+    "options": [
+      {
+        "text": "Daño en el ADN (Fase G1).",
+        "correct": false
+      },
+      {
+        "text": "Duplicación incompleta del centrosoma (Fase M).",
+        "correct": false
+      },
+      {
+        "text": "Replicación incompleta del ADN o daño en el ADN.",
+        "correct": true
+      },
+      {
+        "text": "Un cinetocoro libre (Fase M).",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "75",
+    "text": "La Necrosis, en contraste con la Apoptosis, se caracteriza por desencadenar una respuesta:",
+    "options": [
+      {
+        "text": "De crecimiento celular.",
+        "correct": false
+      },
+      {
+        "text": "Inflamatoria.",
+        "correct": true
+      },
+      {
+        "text": "De inhibición de Cdk.",
+        "correct": false
+      },
+      {
+        "text": "De activación de caspasas.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "76",
+    "text": "Las concentraciones de Cdk son estables a lo largo del ciclo, pero su activación depende de las Ciclinas. Esta regulación garantiza que:",
+    "options": [
+      {
+        "text": "La APC/C se mantenga inactiva.",
+        "correct": false
+      },
+      {
+        "text": "Las enzimas de control del ciclo sean activadas y desactivadas cíclicamente.",
+        "correct": true
+      },
+      {
+        "text": "La proteína p27 se una permanentemente.",
+        "correct": false
+      },
+      {
+        "text": "La replicación se bloquee en G1.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "77",
+    "text": "¿Cuál es la consecuencia de la fosforilación de los complejos Condensinas por M-Cdk?",
+    "options": [
+      {
+        "text": "Se inicia la síntesis de ciclinas.",
+        "correct": false
+      },
+      {
+        "text": "Se desencadena la condensación de los cromosomas.",
+        "correct": true
+      },
+      {
+        "text": "Se desensambla el huso mitótico.",
+        "correct": false
+      },
+      {
+        "text": "Se libera el Citocromo C.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "78",
+    "text": "La Citoquinesis es un proceso de reparto de orgánulos. ¿Qué orgánulo es el único que se menciona que se duplica antes de la Citoquinesis para ser repartido?",
+    "options": [
+      {
+        "text": "Retículo endoplasmático (fragmentos).",
+        "correct": false
+      },
+      {
+        "text": "Aparato de Golgi (fragmentos).",
+        "correct": false
+      },
+      {
+        "text": "Ribosomas (reparto aleatorio).",
+        "correct": false
+      },
+      {
+        "text": "Mitocondrias (y cloroplastos).",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": "79",
+    "text": "En el contexto de la regulación molecular, las proteínas de la familia Bcl2 están en la interfaz crítica entre la señalización de supervivencia (factores de supervivencia) y la:",
+    "options": [
+      {
+        "text": "Inestabilidad dinámica de los microtúbulos.",
+        "correct": false
+      },
+      {
+        "text": "La inducción de la apoptosis (vía intrínseca).",
+        "correct": true
+      },
+      {
+        "text": "La división celular mediada por mitógenos.",
+        "correct": false
+      },
+      {
+        "text": "La inactivación de p53.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "80",
+    "text": "Si una célula muscular ya está terminalmente diferenciada (en G0 permanente), ¿qué evento molecular hace que la célula sea refractaria a los Mitógenos?",
+    "options": [
+      {
+        "text": "La escisión de las cohesinas.",
+        "correct": false
+      },
+      {
+        "text": "La inactivación irreversible de los genes de ciclinas y Cdk.",
+        "correct": true
+      },
+      {
+        "text": "La activación transitoria de p53.",
+        "correct": false
+      },
+      {
+        "text": "El uso del APC/C para degradar ciclinas",
+        "correct": false
+      }
+    ]
+  }
+];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function renderQuiz() {
+            const quizContainer = document.getElementById('quiz');
+            quizContainer.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const questionBlock = document.createElement('div');
+                questionBlock.className = 'question-block';
+
+                const title = document.createElement('div');
+                title.className = 'question-title';
+                title.innerText = `${q.id}. ${q.text}`;
+                questionBlock.appendChild(title);
+
+                // Clonar opciones para no modificar el orden original
+                let currentOptions = [...q.options];
+                shuffleArray(currentOptions);
+
+                const optionsList = document.createElement('ul');
+                optionsList.className = 'options-list';
+
+                currentOptions.forEach(opt => {
+                    const li = document.createElement('li');
+                    li.className = 'option-item';
+                    
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = opt.text;
+                    
+                    btn.onclick = function() {
+                        // Deshabilitar todos los botones de esta pregunta
+                        const allBtns = optionsList.querySelectorAll('.option-btn');
+                        allBtns.forEach(b => b.classList.add('disabled'));
+
+                        if (opt.correct) {
+                            btn.classList.add('correct');
+                        } else {
+                            btn.classList.add('incorrect');
+                            // Resaltar la correcta
+                            allBtns.forEach(b => {
+                                // Buscar el botón con la respuesta correcta
+                                const originalOpt = q.options.find(o => o.correct);
+                                if (b.innerText === originalOpt.text) {
+                                    b.classList.add('correct');
+                                }
+                            });
+                        }
+                    };
+
+                    li.appendChild(btn);
+                    optionsList.appendChild(li);
+                });
+
+                questionBlock.appendChild(optionsList);
+                quizContainer.appendChild(questionBlock);
+            });
+        }
+
+        // Renderizar al cargar
+        renderQuiz();
+    </script>
+<div style="text-align: center; margin-top: 40px; padding: 20px; background: #eee; border-radius: 8px;">
+    <button id="btn-finish" style="background: #2c3e50; color: white; border: none; padding: 15px 30px; font-size: 1.2em; border-radius: 6px; cursor: pointer; font-weight: bold;">
+        🏁 Finalizar y Guardar Nota
+    </button>
+</div>
+
+<script>
+    // Lógica para capturar el ID desde la URL (viene del index.html)
+    const urlParams = new URLSearchParams(window.location.search);
+    const testID = urlParams.get('id'); // Ej: 'bio-1'
+
+    document.getElementById('btn-finish').onclick = function() {
+        if (!testID) {
+            alert("⚠️ Nota: Abre este test desde el 'index.html' para que se guarde tu progreso.");
+        }
+
+        const allBlocks = document.querySelectorAll('.question-block');
+        let totalQuestions = allBlocks.length;
+        let correctas = 0;
+
+        allBlocks.forEach(block => {
+            // Buscamos si hay algún botón con clase 'incorrect' (usuario falló)
+            const hasIncorrect = block.querySelector('button.incorrect');
+            // Buscamos si hay algún botón con clase 'correct' (usuario acertó o se reveló)
+            const hasCorrect = block.querySelector('button.correct');
+            
+            // Lógica: Si hay un verde Y NO hay un rojo, el usuario acertó a la primera.
+            // Si hay un rojo, falló. Si no hay nada, no contestó.
+            if (hasCorrect && !hasIncorrect) {
+                correctas++;
+            }
+        });
+
+        const notaFinal = Math.round((correctas / totalQuestions) * 100);
+        
+        // Mensaje de resultado
+        alert(`📊 Resultado:\n\nHas acertado ${correctas} de ${totalQuestions}.\nTu nota es: ${notaFinal}%`);
+
+        if (testID) {
+            // 1. Guardar Intento
+            let intentos = parseInt(localStorage.getItem(`intentos_${testID}`) || 0);
+            localStorage.setItem(`intentos_${testID}`, intentos + 1);
+
+            // 2. Guardar Mejor Nota (solo si es mayor a la anterior)
+            let notaAnterior = localStorage.getItem(`nota_${testID}`);
+            if (!notaAnterior || notaFinal > parseInt(notaAnterior)) {
+                localStorage.setItem(`nota_${testID}`, notaFinal);
+            }
+
+            // 3. Volver al menú
+            if(confirm("¿Quieres volver al menú principal?")) {
+                window.location.href = 'index.html';
+            }
+        }
+    };
+</script>
+</body>
+</html>

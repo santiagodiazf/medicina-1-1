@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario: Arquitectura Nuclear y Transporte (Bloque IV)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .quiz-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .question-block {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .question-title {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .options-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .option-item {
+            margin-bottom: 10px;
+        }
+        .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 12px 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95em;
+            color: #444;
+        }
+        .option-btn:hover {
+            background-color: #f0f0f0;
+            border-color: #bbb;
+        }
+        
+        /* Estilos de corrección */
+        .correct {
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724 !important;
+            position: relative;
+        }
+        .correct::after {
+            content: " ✓ Correcto";
+            font-weight: bold;
+            float: right;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+            color: #721c24 !important;
+            position: relative;
+        }
+        .incorrect::after {
+            content: " ✗ Incorrecto";
+            font-weight: bold;
+            float: right;
+        }
+
+        .disabled {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Test Bloque IV: Arquitectura Nuclear</h1>
+    <div class="quiz-container" id="quiz">
+        </div>
+
+    <script>
+        const questions = [
+  {
+    "id": "1",
+    "text": "La Lámina Nuclear, fundamental para el soporte estructural de la envoltura nuclear, está compuesta por una malla de filamentos. Estos filamentos se encuentran ubicados específicamente en:",
+    "options": [
+      {
+        "text": "La cara externa de la membrana nuclear externa, en contacto con el retículo endoplasmático.",
+        "correct": false
+      },
+      {
+        "text": "La cara interna de la membrana nuclear interna (MI), recubriendo el nucleoplasma.",
+        "correct": true
+      },
+      {
+        "text": "El lumen perinuclear, sirviendo de anclaje para los Poros Nucleares.",
+        "correct": false
+      },
+      {
+        "text": "La periferia del Nucleolo, regulando la condensación de la cromatina ribosómica.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "text": "¿Cuál es el número aproximado de proteínas distintas que componen el Complejo del Poro Nuclear (NPC), y cuál es su característica esencial en términos de copias?",
+    "options": [
+      {
+        "text": "Alrededor de 15 proteínas distintas, presentes usualmente en una única copia simétrica.",
+        "correct": false
+      },
+      {
+        "text": "Alrededor de 30 proteínas distintas, cada una presente en varias copias dentro del complejo.",
+        "correct": true
+      },
+      {
+        "text": "Más de 50 proteínas distintas, organizadas en octámeros de subunidades.",
+        "correct": false
+      },
+      {
+        "text": "Alrededor de 20 proteínas distintas, formando un anillo helicoidal.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "text": "El transporte de proteínas sintetizadas en el citosol y destinadas al interior del núcleo (nucleoplasma) se clasifica como:",
+    "options": [
+      {
+        "text": "Transporte 3: Requiere un paso intermedio a través del retículo endoplasmático para su inserción.",
+        "correct": false
+      },
+      {
+        "text": "Transporte 2: Utiliza canales iónicos específicos regulados por el potencial de membrana.",
+        "correct": false
+      },
+      {
+        "text": "Transporte 1: Ocurre directamente desde el citosol a través del poro nuclear, mediado por importinas.",
+        "correct": true
+      },
+      {
+        "text": "Transporte 4: Implica un mecanismo de endocitosis inversa a nivel de la envoltura nuclear.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "text": "El factor clave que media el transporte de proteínas desde el citosol hacia el nucleoplasma, reconociendo secuencias señalizadoras específicas, es:",
+    "options": [
+      {
+        "text": "La proteína Ran, que hidroliza GTP para proporcionar la energía direccional.",
+        "correct": false
+      },
+      {
+        "text": "Las Proteínas de Unión a Ran (RBP).",
+        "correct": false
+      },
+      {
+        "text": "Las Importinas, que actúan como receptores de transporte nuclear.",
+        "correct": true
+      },
+      {
+        "text": "La p80-coilina, que facilita el ensamblaje de la maquinaria de ayuste.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "5",
+    "text": "Si una proteína de la membrana nuclear interna (MI) debe ser transportada, su vía de localización es:",
+    "options": [
+      {
+        "text": "Directamente desde el citosol al nucleoplasma (Transporte 1).",
+        "correct": false
+      },
+      {
+        "text": "A través del complejo del poro nuclear, sin la mediación del RE.",
+        "correct": false
+      },
+      {
+        "text": "Vía el Retículo Endoplasmático (Transporte 3), seguido de inserción lateral.",
+        "correct": true
+      },
+      {
+        "text": "Mediante un mecanismo de anclaje dirigido por la Lámina Nuclear.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "6",
+    "text": "¿Qué característica molecular esencial suelen mantener las proteínas nucleares una vez que han sido localizadas dentro del núcleo?",
+    "options": [
+      {
+        "text": "Conservan la capacidad de oligomerizarse rápidamente.",
+        "correct": false
+      },
+      {
+        "text": "Suelen conservar la secuencia señalizadora que dirige su localización.",
+        "correct": true
+      },
+      {
+        "text": "Muestran una rápida degradación por el Clastosoma.",
+        "correct": false
+      },
+      {
+        "text": "Están sujetas únicamente a modificaciones de SUMOilación.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "7",
+    "text": "El conjunto de estructuras y regiones diferenciadas dentro del núcleo interfásico que carecen de membrana se denomina genéricamente:",
+    "options": [
+      {
+        "text": "Cuerpos P (citoplasmáticos).",
+        "correct": false
+      },
+      {
+        "text": "Cuerpos Nucleares (Nuclear Bodies).",
+        "correct": true
+      },
+      {
+        "text": "Láminas Nucleares.",
+        "correct": false
+      },
+      {
+        "text": "Poros Nucleares.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "8",
+    "text": "En el contexto de la regulación del transporte nuclear, la proteína Ran, al hidrolizar GTP a GDP, permite esencialmente:",
+    "options": [
+      {
+        "text": "La apertura física del poro nuclear.",
+        "correct": false
+      },
+      {
+        "text": "La fosforilación de la coilina.",
+        "correct": false
+      },
+      {
+        "text": "La direccionalidad del transporte al crear un gradiente de concentración de formas Ran-GTP/GDP.",
+        "correct": true
+      },
+      {
+        "text": "El anclaje de la cromatina a la lámina.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "9",
+    "text": "La Envoltura Nuclear es una estructura continua con:",
+    "options": [
+      {
+        "text": "El Aparato de Golgi.",
+        "correct": false
+      },
+      {
+        "text": "La membrana plasmática.",
+        "correct": false
+      },
+      {
+        "text": "El Retículo Endoplasmático.",
+        "correct": true
+      },
+      {
+        "text": "Las mitocondrias.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "10",
+    "text": "La Lámina Nuclear proporciona soporte estructural primario a la Envoltura Nuclear, pero además interactúa con el contenido nuclear. Esta estructura está formada por filamentos proteicos que recubren la cara interna de:",
+    "options": [
+      {
+        "text": "La membrana nuclear interna (MI).",
+        "correct": true
+      },
+      {
+        "text": "La membrana nuclear externa.",
+        "correct": false
+      },
+      {
+        "text": "El poro nuclear.",
+        "correct": false
+      },
+      {
+        "text": "El retículo endoplasmático rugoso.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "11",
+    "text": "Los Cuerpos de Cajal (CBs) son conocidos por ser condensados moleculares cuya función principal se centra en:",
+    "options": [
+      {
+        "text": "La degradación de proteínas ubiquitinizadas.",
+        "correct": false
+      },
+      {
+        "text": "La biogénesis y maduración de snRNPs (Small Nuclear Ribonucleoproteins).",
+        "correct": true
+      },
+      {
+        "text": "La síntesis de ADN polimerasa.",
+        "correct": false
+      },
+      {
+        "text": "La exportación directa de ribosomas al citoplasma.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "12",
+    "text": "La proteína estructural clave, o proteína de andamiaje esencial, que organiza la estructura del Cuerpo de Cajal es:",
+    "options": [
+      {
+        "text": "La coilina (p80-coilin).",
+        "correct": true
+      },
+      {
+        "text": "La actina.",
+        "correct": false
+      },
+      {
+        "text": "La tubulina.",
+        "correct": false
+      },
+      {
+        "text": "La importina beta.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "13",
+    "text": "La p80-coilina no es una estructura estática, sino que su función y el ensamblaje/desensamblaje del CB están sincronizados con el ciclo celular. ¿Qué tipos de modificaciones postraduccionales actúan como \"interruptores moleculares\" para controlar estas dinámicas?",
+    "options": [
+      {
+        "text": "Glicosilación y Acetilación.",
+        "correct": false
+      },
+      {
+        "text": "Fosforilación y Metilación (específicamente de argininas).",
+        "correct": true
+      },
+      {
+        "text": "Proteólisis irreversible.",
+        "correct": false
+      },
+      {
+        "text": "Unión covalente a lípidos.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "14",
+    "text": "La Atrofia Muscular Espinal (AME) está ligada inequívocamente a la integridad del Cuerpo de Cajal. A nivel molecular, ¿cuál es la interacción proteica crucial que, al fallar, provoca la pérdida de los CBs, un sello celular distintivo de la AME?",
+    "options": [
+      {
+        "text": "La interacción entre p80-coilina y la proteína SMN (Survival of Motor Neuron).",
+        "correct": true
+      },
+      {
+        "text": "La interacción entre RanGTP y la Importina beta.",
+        "correct": false
+      },
+      {
+        "text": "La unión de la Lámina A con la cromatina.",
+        "correct": false
+      },
+      {
+        "text": "La dimerización de los receptores de hormonas esteroideas.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "15",
+    "text": "¿Qué componente molecular vital para la maquinaria de splicing es modificado y madurado dentro de los Cuerpos de Cajal, preparándolo para su función en el procesamiento del pre-ARNm?",
+    "options": [
+      {
+        "text": "Los ribosomas 80S.",
+        "correct": false
+      },
+      {
+        "text": "Las histonas H1.",
+        "correct": false
+      },
+      {
+        "text": "Las snRNPs (Ribonucleoproteínas nucleares pequeñas).",
+        "correct": true
+      },
+      {
+        "text": "Los factores de transcripción basales TFIIH.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "16",
+    "text": "Un paciente con una infección viral por Adenovirus presenta una reorganización de estructuras nucleares. El efecto específico del Adenovirus en los Cuerpos de Cajal (CB) es:",
+    "options": [
+      {
+        "text": "Su fusión en un único cuerpo gigante.",
+        "correct": false
+      },
+      {
+        "text": "La fragmentación y re-localización de sus componentes, interrumpiendo su función normal.",
+        "correct": true
+      },
+      {
+        "text": "Un aumento significativo en su número y tamaño para combatir el virus.",
+        "correct": false
+      },
+      {
+        "text": "Su transformación en Clastosomas.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "17",
+    "text": "En el caso del Adenovirus, la proteína viral L4-22K desempeña un papel crucial. ¿Cuál es el mecanismo de acción molecular de L4-22K para favorecer la replicación viral?",
+    "options": [
+      {
+        "text": "Se une a la coilina e inhibe la formación de CBs funcionales, favoreciendo la exportación de ARNm viral tardío.",
+        "correct": true
+      },
+      {
+        "text": "Degrada directamente los poros nucleares.",
+        "correct": false
+      },
+      {
+        "text": "Actúa como una polimerasa viral independiente.",
+        "correct": false
+      },
+      {
+        "text": "Repara el ADN de la célula huésped.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "18",
+    "text": "La depleción de la p80-coilina en una célula infectada por Adenovirus tiene un impacto directo en el rendimiento viral, debido a que:",
+    "options": [
+      {
+        "text": "Aumenta la producción viral al liberar recursos.",
+        "correct": false
+      },
+      {
+        "text": "No tiene efecto alguno, ya que el virus es independiente del núcleo.",
+        "correct": false
+      },
+      {
+        "text": "Disminuye significativamente la producción de viriones infecciosos, demostrando la necesidad viral de manipular la coilina.",
+        "correct": true
+      },
+      {
+        "text": "Provoca la apoptosis inmediata de la célula huésped.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "19",
+    "text": "El Virus Diminuto de Ratón (MVM) utiliza una estrategia diferente a la del Adenovirus o Zika. ¿Cuál es la estrategia del MVM relacionada con los Cuerpos de Cajal?",
+    "options": [
+      {
+        "text": "Los degrada completamente.",
+        "correct": false
+      },
+      {
+        "text": "Su replicación ocurre en asociación física directa con los Cuerpos de Cajal, utilizándolos como plataforma.",
+        "correct": true
+      },
+      {
+        "text": "Los ignora por completo.",
+        "correct": false
+      },
+      {
+        "text": "Los expulsa al citoplasma.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "20",
+    "text": "¿Qué virus provoca la fragmentación de los Cuerpos de Cajal (CBs), resultando en múltiples cuerpos más pequeños y numerosos, dispersando sus componentes?",
+    "options": [
+      {
+        "text": "El Virus del Zika.",
+        "correct": true
+      },
+      {
+        "text": "El Virus de la Gripe.",
+        "correct": false
+      },
+      {
+        "text": "El Virus del Mosaico del Tabaco.",
+        "correct": false
+      },
+      {
+        "text": "El Bacteriófago T4.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "21",
+    "text": "La función principal de los Cuerpos de Cajal, la biogénesis de snRNPs, los diferencia fundamentalmente de las Manchas Nucleares (Nuclear Speckles), ya que estas últimas son principalmente:",
+    "options": [
+      {
+        "text": "Sitios de degradación de proteínas.",
+        "correct": false
+      },
+      {
+        "text": "Sitios de almacenamiento y suministro de factores de splicing maduros.",
+        "correct": true
+      },
+      {
+        "text": "Sitios de traducción de proteínas.",
+        "correct": false
+      },
+      {
+        "text": "Sitios de replicación del ADN.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "22",
+    "text": "La regulación de la coilina por SUMOilación es un ejemplo de cómo los interruptores moleculares controlan el CB. La SUMOilación (unión de una proteína pequeña similar a la ubiquitina) regula específicamente:",
+    "options": [
+      {
+        "text": "La degradación proteasomal inmediata.",
+        "correct": false
+      },
+      {
+        "text": "La afinidad de la coilina por otros componentes y su tiempo de residencia en el CB.",
+        "correct": true
+      },
+      {
+        "text": "La exportación nuclear de la coilina.",
+        "correct": false
+      },
+      {
+        "text": "La unión al ADN genómico.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "23",
+    "text": "Santiago Ramón y Cajal, en 1903, describió por primera vez estas estructuras esféricas, pequeñas y generalmente únicas, refiriéndose a ellas como:",
+    "options": [
+      {
+        "text": "Cuerpos accesorios del nucleolo.",
+        "correct": true
+      },
+      {
+        "text": "Mitocondrias.",
+        "correct": false
+      },
+      {
+        "text": "Ribosomas.",
+        "correct": false
+      },
+      {
+        "text": "Lisosomas.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "24",
+    "text": "Si se inhibe la interacción entre SMN y coilina en células neuronales, el resultado ultraestructural esperado, asociado a la AME, es:",
+    "options": [
+      {
+        "text": "La formación de Cuerpos de Cajal gigantes.",
+        "correct": false
+      },
+      {
+        "text": "La pérdida o desaparición de los Cuerpos de Cajal.",
+        "correct": true
+      },
+      {
+        "text": "La duplicación del número de Cuerpos de Cajal.",
+        "correct": false
+      },
+      {
+        "text": "La fusión de los Cuerpos de Cajal con el Nucleolo.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "25",
+    "text": "El secuestro de la coilina por la proteína viral L4-22K (Adenovirus) está diseñado para un solo propósito que impacta directamente en la expresión génica viral, que es:",
+    "options": [
+      {
+        "text": "Favorecer la transcripción y procesamiento de los genes virales tardíos.",
+        "correct": true
+      },
+      {
+        "text": "Inhibir la entrada del virus a la célula.",
+        "correct": false
+      },
+      {
+        "text": "Promover la respuesta inmune del huésped.",
+        "correct": false
+      },
+      {
+        "text": "Detener el ciclo celular en fase G1.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "26",
+    "text": "El Clastosoma es un cuerpo nuclear que se distingue por su formación exclusiva en condiciones patológicas o de estrés celular. Su principal estímulo de formación es:",
+    "options": [
+      {
+        "text": "La entrada en mitosis.",
+        "correct": false
+      },
+      {
+        "text": "Un alto nivel de actividad proteolítica nuclear o estrés proteotóxico.",
+        "correct": true
+      },
+      {
+        "text": "La síntesis masiva de lípidos.",
+        "correct": false
+      },
+      {
+        "text": "La carencia de oxígeno (hipoxia).",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "27",
+    "text": "¿Cuál es la principal función molecular del Clastosoma, que justifica su nombre derivado del griego \"klastos\" (roto)?",
+    "options": [
+      {
+        "text": "La síntesis de nuevas proteínas.",
+        "correct": false
+      },
+      {
+        "text": "La reparación del ADN roto.",
+        "correct": false
+      },
+      {
+        "text": "La degradación proteolítica de proteínas nucleares (componentes rotos o marcados para destrucción).",
+        "correct": true
+      },
+      {
+        "text": "La fusión de membranas rotas.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "28",
+    "text": "Desde el punto de vista ultraestructural, el Clastosoma presenta una morfología distintiva, caracterizada por:",
+    "options": [
+      {
+        "text": "Una forma de anillo o estructura anular.",
+        "correct": true
+      },
+      {
+        "text": "Una doble membrana lipídica.",
+        "correct": false
+      },
+      {
+        "text": "Estar lleno de ribosomas.",
+        "correct": false
+      },
+      {
+        "text": "Tener forma de varilla alargada.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "29",
+    "text": "La composición molecular clave del Clastosoma, indicando su función proteolítica, incluye la acumulación de:",
+    "options": [
+      {
+        "text": "ADN polimerasa y helicasa.",
+        "correct": false
+      },
+      {
+        "text": "Subunidades del proteasoma (19S y 20S) y ubiquitina.",
+        "correct": true
+      },
+      {
+        "text": "Lípidos de membrana.",
+        "correct": false
+      },
+      {
+        "text": "Factores de transcripción basales.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "30",
+    "text": "Si las condiciones de alto estrés proteolítico disminuyen, o si se inhiben específicamente los proteasomas nucleares, ¿cuál es el destino esperado del Clastosoma?",
+    "options": [
+      {
+        "text": "Se vuelve permanente e irreversible.",
+        "correct": false
+      },
+      {
+        "text": "Tiende a desaparecer o disolverse, ya que es una estructura transitoria dependiente de la actividad proteasomal.",
+        "correct": true
+      },
+      {
+        "text": "Se transforma en un Nucleolo.",
+        "correct": false
+      },
+      {
+        "text": "Se exporta al citoplasma.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "31",
+    "text": "Los Cuerpos de Escisión (Cleavage Bodies) son cruciales para un evento post-transcripcional específico. Su función principal es contener proteínas involucradas en:",
+    "options": [
+      {
+        "text": "La poliadenilación de los ARNm de histonas.",
+        "correct": true
+      },
+      {
+        "text": "La glucólisis.",
+        "correct": false
+      },
+      {
+        "text": "La traducción mitocondrial.",
+        "correct": false
+      },
+      {
+        "text": "La replicación del ADN telomérico.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "32",
+    "text": "¿Qué característica dinámica comparten los Cuerpos de Escisión y los Cuerpos de Cajal en el nucleoplasma?",
+    "options": [
+      {
+        "text": "A menudo se encuentran asociados físicamente o colocalizados.",
+        "correct": true
+      },
+      {
+        "text": "Nunca se encuentran en el mismo núcleo.",
+        "correct": false
+      },
+      {
+        "text": "Ambos son exportados al citoplasma durante la interfase.",
+        "correct": false
+      },
+      {
+        "text": "Ambos contienen ADN ribosómico.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "33",
+    "text": "Las Manchas Nucleares (Nuclear Speckles o IGC) son estructuras dinámicas no unidas a la membrana. ¿Qué componente no se encuentra en las Manchas Nucleares, lo que refuerza su función como depósito y no como sitio activo de producción?",
+    "options": [
+      {
+        "text": "Factores de splicing.",
+        "correct": false
+      },
+      {
+        "text": "ADN o sitios de transcripción activa (generalmente se localizan en la periferia de las manchas).",
+        "correct": true
+      },
+      {
+        "text": "ARN polimerasa II.",
+        "correct": false
+      },
+      {
+        "text": "Proteínas SR.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "34",
+    "text": "¿Cuál es el principal rol de las Manchas Nucleares en la regulación génica?",
+    "options": [
+      {
+        "text": "Actuar como barrera física para la difusión.",
+        "correct": false
+      },
+      {
+        "text": "Servir como reserva o 'buffer' de factores de splicing que son reclutados a los sitios de transcripción cercanos.",
+        "correct": true
+      },
+      {
+        "text": "Sintetizar la lámina nuclear.",
+        "correct": false
+      },
+      {
+        "text": "Degradar el ARNm defectuoso.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "35",
+    "text": "Aunque tanto los Cuerpos de Cajal como las Manchas Nucleares contienen factores de splicing (snRNPs), la diferencia fundamental en su función es:",
+    "options": [
+      {
+        "text": "Cajal = Biogénesis/Maduración; Manchas = Almacenamiento/Suministro.",
+        "correct": true
+      },
+      {
+        "text": "Cajal = Degradación; Manchas = Síntesis.",
+        "correct": false
+      },
+      {
+        "text": "Cajal = Citoplasma; Manchas = Núcleo.",
+        "correct": false
+      },
+      {
+        "text": "No hay diferencia, son lo mismo.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "36",
+    "text": "Los Paraspeckles son otro tipo de cuerpo nuclear listado. ¿Cuál es la ubicación de los Cuerpos P (P-Bodies) listados para contraste?",
+    "options": [
+      {
+        "text": "En el interior del Nucleolo.",
+        "correct": false
+      },
+      {
+        "text": "En el citoplasma (son sitios de degradación/almacenamiento de ARNm citosólico).",
+        "correct": true
+      },
+      {
+        "text": "Unidos a la membrana nuclear interna.",
+        "correct": false
+      },
+      {
+        "text": "En el espacio perinuclear.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "37",
+    "text": "La dinámica de los cuerpos nucleares (como Cajal y Speckles) sugiere que el nucleoplasma:",
+    "options": [
+      {
+        "text": "Es una sopa homogénea sin estructura.",
+        "correct": false
+      },
+      {
+        "text": "Es un entorno altamente organizado y compartimentalizado, aunque carezca de membranas internas.",
+        "correct": true
+      },
+      {
+        "text": "Es una estructura rígida e inmutable.",
+        "correct": false
+      },
+      {
+        "text": "Está vacío excepto por el ADN.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "38",
+    "text": "El término \"IGC\" (Interchromatin Granule Clusters) es un sinónimo estructural de:",
+    "options": [
+      {
+        "text": "Los Nucleolos.",
+        "correct": false
+      },
+      {
+        "text": "Las Manchas Nucleares (Nuclear Speckles).",
+        "correct": true
+      },
+      {
+        "text": "Los Cuerpos de Cajal.",
+        "correct": false
+      },
+      {
+        "text": "Los Clastosomas.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "39",
+    "text": "Las proteínas Geminas (Gemins) son componentes esenciales del complejo SMN. Su localización nuclear predominante es en:",
+    "options": [
+      {
+        "text": "Los Cuerpos de Cajal y los Gems (Gemini of Cajal Bodies).",
+        "correct": true
+      },
+      {
+        "text": "La Lámina Nuclear.",
+        "correct": false
+      },
+      {
+        "text": "El Poro Nuclear.",
+        "correct": false
+      },
+      {
+        "text": "La membrana externa mitocondrial.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "40",
+    "text": "Se ha demostrado que el Clastosoma contiene proteínas asociadas a otros cuerpos nucleares, específicamente:",
+    "options": [
+      {
+        "text": "Proteínas Importinas.",
+        "correct": false
+      },
+      {
+        "text": "La proteína SMN.",
+        "correct": false
+      },
+      {
+        "text": "La proteína coilina (p80) y componentes de Cuerpos de Cajal (sugiriendo su degradación).",
+        "correct": true
+      },
+      {
+        "text": "La proteína PML.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "41",
+    "text": "Si una célula es tratada con un inhibidor de la fosforilación de la coilina, el impacto directo se observaría en:",
+    "options": [
+      {
+        "text": "La estabilidad y el ensamblaje de los Cuerpos de Cajal, interrumpiendo la maduración de snRNPs.",
+        "correct": true
+      },
+      {
+        "text": "La integridad de la Lámina Nuclear, comprometiendo la forma del núcleo.",
+        "correct": false
+      },
+      {
+        "text": "La degradación de proteínas vía Clastosoma.",
+        "correct": false
+      },
+      {
+        "text": "La escisión y poliadenilación del ARNm.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "42",
+    "text": "Los Clastosomas se distinguen de las Manchas Nucleares (IGC) principalmente porque los Clastosomas contienen maquinaria de _____ y las Manchas Nucleares contienen maquinaria de _____.",
+    "options": [
+      {
+        "text": "Transcripción; Traducción.",
+        "correct": false
+      },
+      {
+        "text": "Poliadenilación; Biogénesis de snRNPs.",
+        "correct": false
+      },
+      {
+        "text": "Proteólisis (Proteasomas); Splicing (snRNPs).",
+        "correct": true
+      },
+      {
+        "text": "Transporte nuclear (Importinas); Síntesis ribosómica.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "43",
+    "text": "La interacción coilina-SMN es fundamental para la supervivencia neuronal (AME). Esta interacción garantiza que el Cuerpo de Cajal pueda cumplir su rol esencial en:",
+    "options": [
+      {
+        "text": "Proteger el ADN de la degradación.",
+        "correct": false
+      },
+      {
+        "text": "Asegurar el suministro constante y correcto de la maquinaria de ayuste (splicing).",
+        "correct": true
+      },
+      {
+        "text": "Regular la entrada de Importinas al núcleo.",
+        "correct": false
+      },
+      {
+        "text": "Detener la traducción en condiciones de estrés.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "44",
+    "text": "El término Cuerpos de escisión hace referencia a estructuras nucleares que actúan en la etapa final del procesamiento del pre-ARNm. Un defecto en estas estructuras impactaría directamente en:",
+    "options": [
+      {
+        "text": "La estructura anular de los Clastosomas.",
+        "correct": false
+      },
+      {
+        "text": "La exportación nuclear del ARNm maduro.",
+        "correct": false
+      },
+      {
+        "text": "La maduración de los ARNm de histonas (dependiente de escisión 3').",
+        "correct": true
+      },
+      {
+        "text": "La re-localización de las proteínas Ran.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "45",
+    "text": "¿Cuál de los siguientes procesos de modificación postraduccional no se menciona como regulador directo de la dinámica de ensamblaje/desensamblaje del Cuerpo de Cajal (CB)?",
+    "options": [
+      {
+        "text": "Metilación.",
+        "correct": false
+      },
+      {
+        "text": "Fosforilación.",
+        "correct": false
+      },
+      {
+        "text": "SUMOilación.",
+        "correct": false
+      },
+      {
+        "text": "Ubicuitinación (aunque ligada a proteólisis, no específicamente a la regulación del CB mencionado).",
+        "correct": true
+      }
+    ]
+  },
+  {
+    "id": "46",
+    "text": "La acumulación de proteasomas 19S y 20S, junto con ubiquitina conjugada, es el marcador molecular definitivo de un:",
+    "options": [
+      {
+        "text": "Cuerpo de Cajal.",
+        "correct": false
+      },
+      {
+        "text": "Núcleo interfasico.",
+        "correct": false
+      },
+      {
+        "text": "Clastosoma.",
+        "correct": true
+      },
+      {
+        "text": "Cuerpo de Escisión.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "47",
+    "text": "Si un fármaco inhibe la formación de cuerpos nucleares de anillo, y la microscopía revela una disminución en la degradación de proteínas ubiquitinizadas en el núcleo, el fármaco probablemente está actuando sobre:",
+    "options": [
+      {
+        "text": "Los Cuerpos P (citoplasmáticos).",
+        "correct": false
+      },
+      {
+        "text": "El Nucleolo.",
+        "correct": false
+      },
+      {
+        "text": "Los Clastosomas.",
+        "correct": true
+      },
+      {
+        "text": "Las Manchas Nucleares.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "48",
+    "text": "El transporte a través del Poro Nuclear mediado por Importinas es un ejemplo de cómo las proteínas conservan su . Si esta secuencia fuera escindida inmediatamente después de la síntesis, la proteína nuclear:",
+    "options": [
+      {
+        "text": "Sería degradada rápidamente por el Clastosoma.",
+        "correct": false
+      },
+      {
+        "text": "Se acumularía en el lumen del Retículo Endoplasmático.",
+        "correct": false
+      },
+      {
+        "text": "No podría localizarse correctamente en el interior del núcleo.",
+        "correct": true
+      },
+      {
+        "text": "Se fusionaría directamente con un Cuerpo de Cajal.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "49",
+    "text": "La proteína L4-22K del Adenovirus utiliza la coilina como \"salvoconducto\" para la exportación de su ARNm viral. Este mecanismo demuestra la capacidad de los virus para manipular específicamente la maquinaria nuclear del huésped, interrumpiendo esencialmente el tránsito normal de:",
+    "options": [
+      {
+        "text": "snRNPs maduros al citoplasma.",
+        "correct": false
+      },
+      {
+        "text": "Factores de splicing a las Manchas Nucleares.",
+        "correct": false
+      },
+      {
+        "text": "Componentes estructurales del Cuerpo de Cajal y su función normal.",
+        "correct": true
+      },
+      {
+        "text": "Proteasomas al Clastosoma.",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "id": "50",
+    "text": "¿Cuál de los siguientes cuerpos nucleares no es considerado un sitio de transcripción de ADN, sino una región de depósito o procesamiento de ARN y proteínas?",
+    "options": [
+      {
+        "text": "El Nucleolo.",
+        "correct": false
+      },
+      {
+        "text": "El Clastosoma.",
+        "correct": false
+      },
+      {
+        "text": "La Mancha Nuclear (Nuclear Speckle).",
+        "correct": true
+      },
+      {
+        "text": "El Compartimento perinuclear.",
+        "correct": false
+      }
+    ]
+  }
+];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function renderQuiz() {
+            const quizContainer = document.getElementById('quiz');
+            quizContainer.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const questionBlock = document.createElement('div');
+                questionBlock.className = 'question-block';
+
+                const title = document.createElement('div');
+                title.className = 'question-title';
+                title.innerText = `${q.id}. ${q.text}`;
+                questionBlock.appendChild(title);
+
+                // Clonar opciones para no modificar el orden original
+                let currentOptions = [...q.options];
+                shuffleArray(currentOptions);
+
+                const optionsList = document.createElement('ul');
+                optionsList.className = 'options-list';
+
+                currentOptions.forEach(opt => {
+                    const li = document.createElement('li');
+                    li.className = 'option-item';
+                    
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = opt.text;
+                    
+                    btn.onclick = function() {
+                        // Deshabilitar todos los botones de esta pregunta
+                        const allBtns = optionsList.querySelectorAll('.option-btn');
+                        allBtns.forEach(b => b.classList.add('disabled'));
+
+                        if (opt.correct) {
+                            btn.classList.add('correct');
+                        } else {
+                            btn.classList.add('incorrect');
+                            // Resaltar la correcta
+                            allBtns.forEach(b => {
+                                // Buscar el botón con la respuesta correcta
+                                const originalOpt = q.options.find(o => o.correct);
+                                if (b.innerText === originalOpt.text) {
+                                    b.classList.add('correct');
+                                }
+                            });
+                        }
+                    };
+
+                    li.appendChild(btn);
+                    optionsList.appendChild(li);
+                });
+
+                questionBlock.appendChild(optionsList);
+                quizContainer.appendChild(questionBlock);
+            });
+        }
+
+        // Renderizar al cargar
+        renderQuiz();
+    </script>
+<div style="text-align: center; margin-top: 40px; padding: 20px; background: #eee; border-radius: 8px;">
+    <button id="btn-finish" style="background: #2c3e50; color: white; border: none; padding: 15px 30px; font-size: 1.2em; border-radius: 6px; cursor: pointer; font-weight: bold;">
+        🏁 Finalizar y Guardar Nota
+    </button>
+</div>
+
+<script>
+    // Lógica para capturar el ID desde la URL (viene del index.html)
+    const urlParams = new URLSearchParams(window.location.search);
+    const testID = urlParams.get('id'); // Ej: 'bio-1'
+
+    document.getElementById('btn-finish').onclick = function() {
+        if (!testID) {
+            alert("⚠️ Nota: Abre este test desde el 'index.html' para que se guarde tu progreso.");
+        }
+
+        const allBlocks = document.querySelectorAll('.question-block');
+        let totalQuestions = allBlocks.length;
+        let correctas = 0;
+
+        allBlocks.forEach(block => {
+            // Buscamos si hay algún botón con clase 'incorrect' (usuario falló)
+            const hasIncorrect = block.querySelector('button.incorrect');
+            // Buscamos si hay algún botón con clase 'correct' (usuario acertó o se reveló)
+            const hasCorrect = block.querySelector('button.correct');
+            
+            // Lógica: Si hay un verde Y NO hay un rojo, el usuario acertó a la primera.
+            // Si hay un rojo, falló. Si no hay nada, no contestó.
+            if (hasCorrect && !hasIncorrect) {
+                correctas++;
+            }
+        });
+
+        const notaFinal = Math.round((correctas / totalQuestions) * 100);
+        
+        // Mensaje de resultado
+        alert(`📊 Resultado:\n\nHas acertado ${correctas} de ${totalQuestions}.\nTu nota es: ${notaFinal}%`);
+
+        if (testID) {
+            // 1. Guardar Intento
+            let intentos = parseInt(localStorage.getItem(`intentos_${testID}`) || 0);
+            localStorage.setItem(`intentos_${testID}`, intentos + 1);
+
+            // 2. Guardar Mejor Nota (solo si es mayor a la anterior)
+            let notaAnterior = localStorage.getItem(`nota_${testID}`);
+            if (!notaAnterior || notaFinal > parseInt(notaAnterior)) {
+                localStorage.setItem(`nota_${testID}`, notaFinal);
+            }
+
+            // 3. Volver al menú
+            if(confirm("¿Quieres volver al menú principal?")) {
+                window.location.href = 'index.html';
+            }
+        }
+    };
+</script>
+</body>
+</html>

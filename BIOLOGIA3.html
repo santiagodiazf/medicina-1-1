@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario: Diferenciación, Epigenética y Genómica (Bloque III)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .quiz-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .question-block {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .question-title {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .options-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .option-item {
+            margin-bottom: 10px;
+        }
+        .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 12px 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95em;
+            color: #444;
+        }
+        .option-btn:hover {
+            background-color: #f0f0f0;
+            border-color: #bbb;
+        }
+        
+        /* Estilos de corrección */
+        .correct {
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724 !important;
+            position: relative;
+        }
+        .correct::after {
+            content: " ✓ Correcto";
+            font-weight: bold;
+            float: right;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+            color: #721c24 !important;
+            position: relative;
+        }
+        .incorrect::after {
+            content: " ✗ Incorrecto";
+            font-weight: bold;
+            float: right;
+        }
+
+        .disabled {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Test Bloque III: Diferenciación, Epigenética y Genómica</h1>
+    <div class="quiz-container" id="quiz">
+        </div>
+
+    <script>
+        const questions = [
+            {
+                "text": "1. Una célula diferenciada típica, como un cardiomiocito, mantiene el mismo genoma que un hepatocito. La razón molecular de la diferencia funcional entre ambos radica en:",
+                "options": [
+                    { "text": "La adquisición de genomas ligeramente diferentes mediante la duplicación y divergencia génica", "correct": false },
+                    { "text": "La pérdida irreversible de aproximadamente la mitad de los genes no utilizados durante la diferenciación", "correct": false },
+                    { "text": "La variación en la composición del proteoma, siendo este menos representativo que el transcriptoma", "correct": false },
+                    { "text": "Cambios controlados en la expresión génica, ya que una célula diferenciada típica expresa alrededor de la mitad de los genes de su repertorio total", "correct": true }
+                ]
+            },
+            {
+                "text": "2. En el contexto del desarrollo de mamíferos, el estado de 'totipotencia' se aplica a las células que:",
+                "options": [
+                    { "text": "Pueden diferenciarse en células de cualquiera de las tres capas germinales (pluripotencia)", "correct": false },
+                    { "text": "Pueden diferenciarse en múltiples tipos celulares del mismo linaje (multipotencia)", "correct": false },
+                    { "text": "Solo pueden diferenciarse en un único tipo de célula (unipotencia)", "correct": false },
+                    { "text": "Tienen la capacidad de generar todas las células diferenciadas en un organismo, incluidos los tipos de células embrionarias y extraembrionarias, desde el cigoto hasta la etapa de mórula", "correct": true }
+                ]
+            },
+            {
+                "text": "3. Las células madre embrionarias (ESC) son el ejemplo molecular de 'pluripotencia'. Esto implica que:",
+                "options": [
+                    { "text": "Solo pueden generar células precursoras miogénicas", "correct": false },
+                    { "text": "Son capaces de producir tejidos extraembrionarios (totipotencia)", "correct": false },
+                    { "text": "Tienen la capacidad de diferenciarse en células de cualquiera de las tres capas germinales: endodermo, ectodermo y mesodermo", "correct": true },
+                    { "text": "Se activan únicamente por el complejo RISC para bloquear la traducción", "correct": false }
+                ]
+            },
+            {
+                "text": "4. El concepto de 'memoria celular' se basa en la herencia epigenética. Molecularmente, ¿qué mecanismos garantizan el mantenimiento de los patrones de expresión génica ya establecidos en una célula?",
+                "options": [
+                    { "text": "La replicación semiconservadora del ADN y la recombinación homóloga", "correct": false },
+                    { "text": "El silenciamiento de transposones por piRNA y la acción de la enzima Dicer", "correct": false },
+                    { "text": "La modificación del ADN (ejemplo, metilación) y la modificación de las histonas", "correct": true },
+                    { "text": "La acción de los lncRNAs como esponjas de microARNs", "correct": false }
+                ]
+            },
+            {
+                "text": "5. ¿Cuál es el mecanismo molecular que emplean los potenciadores para favorecer la transcripción de un gen en eucariontes?",
+                "options": [
+                    { "text": "Silencian el transposón mediante la metilación del ADN regulador", "correct": false },
+                    { "text": "Inhiben la unión del represor Lac al operón", "correct": false },
+                    { "text": "Reclutan histona acetiltransferasa, lo que favorece la acetilación de las histonas y atrae a la maquinaria de transcripción", "correct": true },
+                    { "text": "Dirigen complejos de proteínas a regiones específicas del ADN mediante su función de guía", "correct": false }
+                ]
+            },
+            {
+                "text": "6. El control de la expresión génica en eucariontes se basa en la regulación combinatoria. Esto significa que la expresión de un gen es determinada por:",
+                "options": [
+                    { "text": "La acción de la ARN polimerasa dependiente de ARN (como en el SARS-CoV-2)", "correct": false },
+                    { "text": "La activación o represión de un único factor de transcripción", "correct": false },
+                    { "text": "Grupos de reguladores de la transcripción que actúan de manera coordinada", "correct": true },
+                    { "text": "La integración de un retrovirus en el genoma huésped", "correct": false }
+                ]
+            },
+            {
+                "text": "7. Molecularmente, ¿qué evento clave debe ocurrir para que las proteínas implicadas en la expresión génica tengan acceso a secuencias de ADN previamente empaquetadas en cromatina?",
+                "options": [
+                    { "text": "La degradación de los factores generales de transcripción por el proteasoma", "correct": false },
+                    { "text": "La acción de ribozimas para catalizar el enlace peptídico", "correct": false },
+                    { "text": "La relajación de la cromatina a un estado más descondensado, promovido por modificaciones epigenéticas", "correct": true },
+                    { "text": "El corte y empalme (splicing) del pre-ARNm", "correct": false }
+                ]
+            },
+            {
+                "text": "8. La reprogramación celular permite convertir directamente un tipo celular en otro, como células hepáticas en neuronas. Este proceso se consigue molecularmente mediante la introducción de:",
+                "options": [
+                    { "text": "MicroARNs que se unen al complejo RISC", "correct": false },
+                    { "text": "ARN de interferencia para eliminar ARN 'extraño'", "correct": false },
+                    { "text": "Reguladores de la transcripción", "correct": true },
+                    { "text": "Editores primarios que corrigen errores de una sola letra", "correct": false }
+                ]
+            },
+            {
+                "text": "9. El operón lac en bacterias es un ejemplo de doble regulación. ¿Cuál es el requisito molecular para que el operón se active a su nivel máximo?",
+                "options": [
+                    { "text": "Presencia de glucosa y lactosa (Represor inactivo, Activador inactivo)", "correct": false },
+                    { "text": "Ausencia de lactosa (Represor activo)", "correct": false },
+                    { "text": "Ausencia de glucosa (Activador CAP unido) y presencia de lactosa (Represor Lac inactivo)", "correct": true },
+                    { "text": "La metilación de las secuencias reguladoras del operón", "correct": false }
+                ]
+            },
+            {
+                "text": "10. El control postranscripcional del ARN incluye la regulación de su traducción y estabilidad. ¿Cuál es la herramienta molecular que puede controlar la traducción al unirse a secuencias complementarias del ARNm?",
+                "options": [
+                    { "text": "Las histonas (control de la cromatina)", "correct": false },
+                    { "text": "Los factores de transcripción (control de la transcripción)", "correct": false },
+                    { "text": "ARN no codificantes reguladores (ncRNA)", "correct": true },
+                    { "text": "Las proteínas víricas codificadas por el SARS-CoV-2", "correct": false }
+                ]
+            },
+            {
+                "text": "11. El microARN (miRNA) maduro se ensambla en el complejo RISC. ¿Cuál es la función molecular de este complejo en el control de la expresión génica?",
+                "options": [
+                    { "text": "Replicar el genoma en la célula huésped (virus)", "correct": false },
+                    { "text": "Bloquear la traducción de un ARNm y, si el apareamiento es complementario, degradarlo mediante nucleasas del RISC", "correct": true },
+                    { "text": "Cortar el dsRNA largo en fragmentos de 21-23 nucleótidos (Dicer)", "correct": false },
+                    { "text": "Mantener la organización de los cromosomas actuando como andamio molecular", "correct": false }
+                ]
+            },
+            {
+                "text": "12. El RNA de interferencia (RNAi) se genera a partir de precursores de ARN bicatenario (dsRNA), a menudo de origen viral. ¿Qué enzima clave realiza el procesamiento de estos dsRNA largos en fragmentos más pequeños de doble cadena (siRNA)?",
+                "options": [
+                    { "text": "Histona acetiltransferasa", "correct": false },
+                    { "text": "Guanylil transferasa", "correct": false },
+                    { "text": "La enzima Dicer", "correct": true },
+                    { "text": "La ARN polimerasa dependiente de ARN", "correct": false }
+                ]
+            },
+            {
+                "text": "13. El lncRNA Xist es un ejemplo crucial de cómo los lncRNAs influyen en la regulación génica a través de:",
+                "options": [
+                    { "text": "El silenciamiento de transposones en células germinales (piRNA)", "correct": false },
+                    { "text": "La corrección de errores de una sola letra en el ADN (editores de bases)", "correct": false },
+                    { "text": "La impronta génica y la estructura nuclear (inactivación del cromosoma X)", "correct": true },
+                    { "text": "La reparación de roturas bicatenarias del ADN (recombinación homóloga)", "correct": false }
+                ]
+            },
+            {
+                "text": "14. Los lncRNAs pueden actuar como andamios moleculares. ¿Cuál es la implicación ultraestructural de esta función?",
+                "options": [
+                    { "text": "Dirigen complejos proteicos a regiones específicas del ADN", "correct": false },
+                    { "text": "Se unen a microARNs para secuestrarlos ('Esponjas')", "correct": false },
+                    { "text": "Unen múltiples proteínas (como las que modifican la cromatina) para organizar el espacio nuclear y la arquitectura genómica", "correct": true },
+                    { "text": "Retrotranscriben su ARN a ADN e integran el resultado en el genoma huésped", "correct": false }
+                ]
+            },
+            {
+                "text": "15. La evolución de genes con nuevas funciones, como la familia de genes de globina, se postula que es posible gracias a un mecanismo molecular que permite la expansión del genoma. ¿Cuál es este mecanismo?",
+                "options": [
+                    { "text": "Mutaciones puntiformes neutras", "correct": false },
+                    { "text": "Silenciamiento por el sistema CRISPR", "correct": false },
+                    { "text": "Duplicación y divergencia génica, a menudo mediada por entrecruzamiento desigual", "correct": true },
+                    { "text": "La regulación postranscripcional por piRNA", "correct": false }
+                ]
+            },
+            {
+                "text": "16. La variación genética en humanos, que condujo a la tolerancia a la lactosa en la edad adulta, es un ejemplo de mutación puntiforme que ocurre en:",
+                "options": [
+                    { "text": "La secuencia codificante de la enzima lactasa (exón)", "correct": false },
+                    { "text": "Los elementos genéticos móviles (transposones)", "correct": false },
+                    { "text": "El sistema CRISPR del microbioma intestinal", "correct": false },
+                    { "text": "El ADN regulador, lo que mantiene la expresión del gen de la lactasa", "correct": true }
+                ]
+            },
+            {
+                "text": "17. Molecularmente, el origen de la mayoría de las proteínas humanas se atribuye a un mecanismo evolutivo de manipulación de las unidades codificantes. ¿Cuál es este proceso?",
+                "options": [
+                    { "text": "Duplicaciones de genomas completos", "correct": false },
+                    { "text": "El control de la traducción por miRNA", "correct": false },
+                    { "text": "Reordenamiento y duplicación de exones", "correct": true },
+                    { "text": "La activación del operón lac en condiciones anaeróbicas", "correct": false }
+                ]
+            },
+            {
+                "text": "18. En el contexto de la regulación del genoma, el silenciamiento de transposones (elementos móviles del ADN) en células germinales es una función específica llevada a cabo por:",
+                "options": [
+                    { "text": "siRNA (silenciamiento génico)", "correct": false },
+                    { "text": "miRNA (regulación expresión)", "correct": false },
+                    { "text": "lncRNA (estructura nuclear)", "correct": false },
+                    { "text": "piRNA (Implícito por el contexto de ncRNA reguladores y genoma)", "correct": true }
+                ]
+            },
+            {
+                "text": "19. Los retrovirus, como el VIH-1, se caracterizan molecularmente por:",
+                "options": [
+                    { "text": "Utilizar un RNA polimerasa dependiente de ARN con alta actividad exonucleasa", "correct": false },
+                    { "text": "Presentar un pico de infectividad corto y baja presión selectiva", "correct": false },
+                    { "text": "La retrotranscripción de su genoma vírico y su posterior integración en el genoma huésped", "correct": true },
+                    { "text": "Ser un ejemplo de elemento genético móvil", "correct": false }
+                ]
+            },
+            {
+                "text": "20. El SARS-CoV-2 (Coronavirus, virus ARN) presenta una diversidad comparativamente baja respecto a otros virus ARN. Esta baja tasa de diversidad inicial es un detalle molecular atribuido a que su ARN polimerasa dependiente de ARN:",
+                "options": [
+                    { "text": "No requiere de la maquinaria de traducción del huésped", "correct": false },
+                    { "text": "Es inactivada por el represor Lac", "correct": false },
+                    { "text": "Posee actividad exonucleasa, permitiendo retirar los nucleótidos incorporados de forma errónea", "correct": true },
+                    { "text": "Es un retrovirus que se integra en el genoma del huésped", "correct": false }
+                ]
+            },
+            {
+                "text": "21. Los Obeliscos son entidades biológicas recientemente descritas que potencialmente codifican:",
+                "options": [
+                    { "text": "ARN de interferencia para la defensa viral", "correct": false },
+                    { "text": "Factores de transcripción que determinan la diferenciación celular", "correct": false },
+                    { "text": "Proteínas con un plegamiento correcto", "correct": false },
+                    { "text": "El locus CRISPR que se integra en el genoma bacteriano", "correct": true }
+                ]
+            },
+            {
+                "text": "22. El sistema CRISPR es fundamental para el avance de la terapia génica. ¿Cuál es su función molecular original en las bacterias?",
+                "options": [
+                    { "text": "Promover la acetilación de histonas para la expresión génica", "correct": false },
+                    { "text": "Inducir la pluripotencia", "correct": false },
+                    { "text": "Proporcionar a las bacterias inmunidad contra la infección viral", "correct": true },
+                    { "text": "Ser una guía molecular para la reparación de exones", "correct": false }
+                ]
+            },
+            {
+                "text": "23. Las herramientas avanzadas de CRISPR, como los editores de bases y los editores primarios, se están utilizando en ensayos clínicos (ej. anemia falciforme) porque permiten:",
+                "options": [
+                    { "text": "Duplicar genomas completos", "correct": false },
+                    { "text": "Realizar la retrotranscripción vírica", "correct": false },
+                    { "text": "Corregir errores de una sola letra en el ADN sin necesidad de cortar ambas hebras", "correct": true },
+                    { "text": "La conversión directa de células somáticas a neuronas", "correct": false }
+                ]
+            },
+            {
+                "text": "24. El estudio de la composición, variación y secuenciación del genoma humano se realiza mediante el uso de la:",
+                "options": [
+                    { "text": "Genética clásica", "correct": false },
+                    { "text": "Biología Celular y la Histología", "correct": false },
+                    { "text": "Genómica y la bioinformática", "correct": true },
+                    { "text": "Genética de poblaciones", "correct": false }
+                ]
+            },
+            {
+                "text": "25. Si una célula madre sanguínea (hematopoyética) tiene la capacidad de diferenciarse en múltiples tipos de células del linaje sanguíneo, pero no en células musculares o epiteliales, se clasifica como:",
+                "options": [
+                    { "text": "Totipotente", "correct": false },
+                    { "text": "Pluripotente", "correct": false },
+                    { "text": "Multipotente", "correct": true },
+                    { "text": "Unipotente", "correct": false }
+                ]
+            },
+            {
+                "text": "26. ¿Qué tipo de ARN no codificante (ncRNA) puede regular la traducción al actuar como 'Esponja', uniéndose a microARNs y evitando que estos silencien sus ARNm objetivo?",
+                "options": [
+                    { "text": "siRNA", "correct": false },
+                    { "text": "piRNA", "correct": false },
+                    { "text": "lncRNA", "correct": true },
+                    { "text": "ARNr", "correct": false }
+                ]
+            },
+            {
+                "text": "27. La Atrofia Muscular Espinal (SMA) se relaciona con fallos en el splicing (corte y empalme) del gen SMN2. Molecularmente, el proceso de splicing es crucial porque elimina:",
+                "options": [
+                    { "text": "Las regiones promotoras del ADN", "correct": false },
+                    { "text": "Los elementos genéticos móviles", "correct": false },
+                    { "text": "Las regiones no codificantes (intrones) de las transcripciones de ARN en el núcleo", "correct": true },
+                    { "text": "Los fragmentos de siRNA de doble cadena", "correct": false }
+                ]
+            },
+            {
+                "text": "28. En la evolución humana, la protección contra el paludismo se ha asociado a una mutación molecular que altera:",
+                "options": [
+                    { "text": "La retrotranscripción del ADN", "correct": false },
+                    { "text": "El número de exones en los genes de globina", "correct": false },
+                    { "text": "El ADN regulatorio, lo que resulta en la no expresión de un receptor necesario para la infección", "correct": true },
+                    { "text": "El sistema de reparación de apareamientos erróneos", "correct": false }
+                ]
+            },
+            {
+                "text": "29. La herencia epigenética permite la transmisión de la 'memoria celular'. Si un patrón de metilación del ADN se establece en una célula, ¿qué garantiza su mantenimiento en las células hijas tras la división?",
+                "options": [
+                    { "text": "La replicación de exones", "correct": false },
+                    { "text": "El reordenamiento de los cromosomas", "correct": false },
+                    { "text": "Mecanismos de retroalimentación positiva", "correct": true },
+                    { "text": "El silenciamiento exclusivo de los piRNA", "correct": false }
+                ]
+            },
+            {
+                "text": "30. ¿Qué se postula sobre el número de reguladores de la transcripción necesarios para controlar los aproximadamente 24.000 genes que dan lugar al ser humano?",
+                "options": [
+                    { "text": "Que se necesitan 24.000 reguladores (uno por gen)", "correct": false },
+                    { "text": "Que solo se necesita un activador y un represor (como en el operón lac)", "correct": false },
+                    { "text": "Que aproximadamente 1000 reguladores son suficientes", "correct": true },
+                    { "text": "Que el proteoma es mayor que el genoma", "correct": false }
+                ]
+            },
+            {
+                "text": "31. Los genes codificantes de ARN ribosómico (ARNr) son ejemplos de ARN de mantenimiento o constitutivos. ¿Qué característica molecular tienen?",
+                "options": [
+                    { "text": "Son los primeros en ser degradados por el complejo RISC", "correct": false },
+                    { "text": "Requieren la represión activa del operón Lac", "correct": false },
+                    { "text": "Están siempre activos en la mayoría de los estados celulares ya que son esenciales", "correct": true },
+                    { "text": "Solo se expresan si el represor Lac no está unido", "correct": false }
+                ]
+            },
+            {
+                "text": "32. ¿Cuál es el significado molecular de la genómica en el Grado de Medicina?",
+                "options": [
+                    { "text": "El estudio morfológico de los tejidos (Histología)", "correct": false },
+                    { "text": "El estudio de la accesibilidad génica y factores de transcripción", "correct": false },
+                    { "text": "El estudio de la composición, variación y secuenciación de los genomas, apoyándose en la bioinformática", "correct": true },
+                    { "text": "La regulación postranscripcional de las proteínas", "correct": false }
+                ]
+            },
+            {
+                "text": "33. Los retrovirus, como el VIH-1, sufren una gran presión por parte del sistema inmune y tienen un largo tiempo para evolucionar. Estos factores contribuyen a su alta tasa de mutación a través de:",
+                "options": [
+                    { "text": "Exclusivamente la duplicación y divergencia génica", "correct": false },
+                    { "text": "Mutaciones puntuales, inserciones o deleciones y recombinaciones", "correct": true },
+                    { "text": "La actividad exonucleasa de su ARN polimerasa", "correct": false },
+                    { "text": "La corrección de errores mediante editores de bases", "correct": false }
+                ]
+            },
+            {
+                "text": "34. ¿Qué concepto molecular se refiere al conjunto de proteínas expresadas por una célula?",
+                "options": [
+                    { "text": "Genoma", "correct": false },
+                    { "text": "Transcriptoma", "correct": false },
+                    { "text": "Proteoma", "correct": true },
+                    { "text": "Reguloma", "correct": false }
+                ]
+            },
+            {
+                "text": "35. Un factor de transcripción que actúa como guía molecular (lncRNA) facilita la regulación génica mediante:",
+                "options": [
+                    { "text": "La metilación directa de histonas", "correct": false },
+                    { "text": "La dirección de complejos de proteínas a regiones específicas del ADN, controlando su localización y función", "correct": true },
+                    { "text": "El silenciamiento de microARNs", "correct": false },
+                    { "text": "El corte de dsRNA largos en fragmentos de siRNA", "correct": false }
+                ]
+            },
+            {
+                "text": "36. Si se utiliza la terapia génica lentiviral para corregir la inmunodeficiencia rara ADA-SCID, la base de la curación radica en:",
+                "options": [
+                    { "text": "La inducción de la pluripotencia en células somáticas", "correct": false },
+                    { "text": "La activación del sistema de inmunidad CRISPR bacteriano", "correct": false },
+                    { "text": "La introducción de un gen funcional, facilitada por tecnologías como CRISPR, permitiendo un alto porcentaje de supervivencia y curación", "correct": true },
+                    { "text": "El silenciamiento de transposones mediante piRNA", "correct": false }
+                ]
+            },
+            {
+                "text": "37. ¿Cuál es la implicación molecular de que la RNA polimerasa dependiente de RNA utilizada por el SARS-CoV-2 tenga actividad exonucleasa?",
+                "options": [
+                    { "text": "Aumenta significativamente la diversidad del virus", "correct": false },
+                    { "text": "Promueve la integración del virus en el genoma huésped", "correct": false },
+                    { "text": "Permite retirar nucleótidos erróneos, limitando la tasa de mutación y la diversidad en el corto plazo", "correct": true },
+                    { "text": "Es esencial para la retrotranscripción del virus", "correct": false }
+                ]
+            },
+            {
+                "text": "38. La homeostasis de la célula depende de la correcta organización de los cromosomas dentro del núcleo. Este orden es fundamental para la correcta segregación de los genes y es asistido por:",
+                "options": [
+                    { "text": "El complejo represor Lac", "correct": false },
+                    { "text": "Los elementos genéticos móviles", "correct": false },
+                    { "text": "Los lncRNAs (ARN no codificantes largos)", "correct": true },
+                    { "text": "Los snRNPs (para el splicing)", "correct": false }
+                ]
+            },
+            {
+                "text": "39. El genoma humano se caracteriza por su composición y variación. ¿Qué proceso molecular contribuye a esta variación y está mediado por la recombinación homóloga y el entrecruzamiento desigual?",
+                "options": [
+                    { "text": "El silenciamiento por miRNA", "correct": false },
+                    { "text": "La conversión directa de células hepáticas a neuronas", "correct": false },
+                    { "text": "La generación de variación genética en la reproducción sexual", "correct": true },
+                    { "text": "La metilación del ADN regulador", "correct": false }
+                ]
+            },
+            {
+                "text": "40. El término 'unipotencia' se aplica a células que pueden:",
+                "options": [
+                    { "text": "Diferenciarse en las tres capas germinales", "correct": false },
+                    { "text": "Ser reprogramadas fácilmente con tres reguladores", "correct": false },
+                    { "text": "Diferenciarse en un solo tipo de célula, como las células satélite del músculo", "correct": true },
+                    { "text": "Generar tejidos extraembrionarios", "correct": false }
+                ]
+            },
+            {
+                "text": "41. ¿Qué tipo de mutación puntiforme tiene el potencial de alterar el control de la expresión génica sin cambiar la secuencia codificante de la proteína?",
+                "options": [
+                    { "text": "Mutación en un exón", "correct": false },
+                    { "text": "Duplicación de exones", "correct": false },
+                    { "text": "Mutación en el ADN regulador", "correct": true },
+                    { "text": "Silenciamiento por siRNA", "correct": false }
+                ]
+            },
+            {
+                "text": "42. La enzima Dicer corta dsRNA largos en siRNAs (21-23 nucleótidos). Estos siRNAs se ensamblan con el complejo RISC. ¿Cuál es la acción de este conjunto?",
+                "options": [
+                    { "text": "Activar la histona acetiltransferasa", "correct": false },
+                    { "text": "Promover la retrotranscripción vírica", "correct": false },
+                    { "text": "Eliminar moléculas de ARN 'extraño' (interferencia)", "correct": true },
+                    { "text": "Reprimir el operón lac", "correct": false }
+                ]
+            },
+            {
+                "text": "43. ¿Cuál es la principal diferencia molecular entre un miRNA (microARN) y un siRNA (ARN de interferencia)?",
+                "options": [
+                    { "text": "El miRNA es bicatenario y el siRNA es monocatenario", "correct": false },
+                    { "text": "El miRNA es exclusivamente viral y el siRNA es celular", "correct": false },
+                    { "text": "El siRNA se genera a partir de precursores dsRNA largos y el miRNA se genera a partir de ARN que se auto-complementa o precursores específicos", "correct": true },
+                    { "text": "El miRNA se une al ARNm y el siRNA al ADN", "correct": false }
+                ]
+            },
+            {
+                "text": "44. Un médico especialista en oncología sospecha que un cáncer está relacionado con la alteración del entorno nuclear. ¿Qué ncRNA conocido por su rol en la arquitectura nuclear, como andamio molecular, podría estar implicado en la patogénesis?",
+                "options": [
+                    { "text": "miRNA", "correct": false },
+                    { "text": "siRNA", "correct": false },
+                    { "text": "lncRNA", "correct": true },
+                    { "text": "ARNt", "correct": false }
+                ]
+            },
+            {
+                "text": "45. La retroalimentación positiva es un mecanismo molecular que contribuye a:",
+                "options": [
+                    { "text": "La replicación de los virus de ARN", "correct": false },
+                    { "text": "El entrecruzamiento desigual", "correct": false },
+                    { "text": "La memoria celular y la estabilidad de los patrones de expresión génica", "correct": true },
+                    { "text": "La corrección de errores por editores primarios", "correct": false }
+                ]
+            },
+            {
+                "text": "46. La conversión directa de células hepáticas en neuronas con el uso de tres reguladores de la transcripción demuestra que el compromiso celular es:",
+                "options": [
+                    { "text": "Irreversible y fijo", "correct": false },
+                    { "text": "Dependiente de la acción del operón Lac", "correct": false },
+                    { "text": "Reversible bajo condiciones controladas de reprogramación", "correct": true },
+                    { "text": "Determinado únicamente por la metilación del ADN", "correct": false }
+                ]
+            },
+            {
+                "text": "47. El CRISPR locus en bacterias se caracteriza por secuencias de repeticiones palindrómicas cortas agrupadas y regularmente espaciadas que separan:",
+                "options": [
+                    { "text": "Exones duplicados", "correct": false },
+                    { "text": "Factores de transcripción", "correct": false },
+                    { "text": "Fragmentos de ADN viral", "correct": true },
+                    { "text": "Secuencias de lncRNA", "correct": false }
+                ]
+            },
+            {
+                "text": "48. En la doble regulación del operón Lac, si no hay lactosa en el medio, ¿qué ocurre molecularmente?",
+                "options": [
+                    { "text": "El activador CAP se une para promover la transcripción", "correct": false },
+                    { "text": "La ARN polimerasa dependiente de ARN inicia la replicación", "correct": false },
+                    { "text": "El represor Lac se une al operón, bloqueando la transcripción", "correct": true },
+                    { "text": "La histona acetiltransferasa relaja la cromatina", "correct": false }
+                ]
+            },
+            {
+                "text": "49. El Transcriptoma se define como:",
+                "options": [
+                    { "text": "El conjunto total de proteínas expresadas por una célula en un momento dado", "correct": false },
+                    { "text": "La secuencia completa de ADN de un organismo", "correct": false },
+                    { "text": "El conjunto de moléculas de ARN (incluyendo ARNm y ncRNA) transcritas por una célula", "correct": true },
+                    { "text": "La variación en la composición del genoma humano", "correct": false }
+                ]
+            },
+            {
+                "text": "50. La duplicación de genomas completos es un mecanismo de generación de variación genética que resulta en:",
+                "options": [
+                    { "text": "Mutaciones puntiformes", "correct": false },
+                    { "text": "Una redundancia en la información genética y una oportunidad para la divergencia génica", "correct": true },
+                    { "text": "La eliminación de ARNm 'extraño'", "correct": false },
+                    { "text": "La unipotencia de las células precursoras", "correct": false }
+                ]
+            }
+        ];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function renderQuiz() {
+            const quizContainer = document.getElementById('quiz');
+            quizContainer.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const questionBlock = document.createElement('div');
+                questionBlock.className = 'question-block';
+
+                const title = document.createElement('div');
+                title.className = 'question-title';
+                title.innerText = q.text;
+                questionBlock.appendChild(title);
+
+                // Clonar opciones para no modificar el orden original
+                let currentOptions = [...q.options];
+                shuffleArray(currentOptions);
+
+                const optionsList = document.createElement('ul');
+                optionsList.className = 'options-list';
+
+                currentOptions.forEach(opt => {
+                    const li = document.createElement('li');
+                    li.className = 'option-item';
+                    
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = opt.text;
+                    
+                    btn.onclick = function() {
+                        // Deshabilitar todos los botones de esta pregunta
+                        const allBtns = optionsList.querySelectorAll('.option-btn');
+                        allBtns.forEach(b => b.classList.add('disabled'));
+
+                        if (opt.correct) {
+                            btn.classList.add('correct');
+                        } else {
+                            btn.classList.add('incorrect');
+                            // Resaltar la correcta
+                            allBtns.forEach(b => {
+                                // Buscar el botón con la respuesta correcta
+                                const originalOpt = q.options.find(o => o.correct);
+                                if (b.innerText === originalOpt.text) {
+                                    b.classList.add('correct');
+                                }
+                            });
+                        }
+                    };
+
+                    li.appendChild(btn);
+                    optionsList.appendChild(li);
+                });
+
+                questionBlock.appendChild(optionsList);
+                quizContainer.appendChild(questionBlock);
+            });
+        }
+
+        // Renderizar al cargar
+        renderQuiz();
+    </script>
+<div style="text-align: center; margin-top: 40px; padding: 20px; background: #eee; border-radius: 8px;">
+    <button id="btn-finish" style="background: #2c3e50; color: white; border: none; padding: 15px 30px; font-size: 1.2em; border-radius: 6px; cursor: pointer; font-weight: bold;">
+        🏁 Finalizar y Guardar Nota
+    </button>
+</div>
+
+<script>
+    // Lógica para capturar el ID desde la URL (viene del index.html)
+    const urlParams = new URLSearchParams(window.location.search);
+    const testID = urlParams.get('id'); // Ej: 'bio-1'
+
+    document.getElementById('btn-finish').onclick = function() {
+        if (!testID) {
+            alert("⚠️ Nota: Abre este test desde el 'index.html' para que se guarde tu progreso.");
+        }
+
+        const allBlocks = document.querySelectorAll('.question-block');
+        let totalQuestions = allBlocks.length;
+        let correctas = 0;
+
+        allBlocks.forEach(block => {
+            // Buscamos si hay algún botón con clase 'incorrect' (usuario falló)
+            const hasIncorrect = block.querySelector('button.incorrect');
+            // Buscamos si hay algún botón con clase 'correct' (usuario acertó o se reveló)
+            const hasCorrect = block.querySelector('button.correct');
+            
+            // Lógica: Si hay un verde Y NO hay un rojo, el usuario acertó a la primera.
+            // Si hay un rojo, falló. Si no hay nada, no contestó.
+            if (hasCorrect && !hasIncorrect) {
+                correctas++;
+            }
+        });
+
+        const notaFinal = Math.round((correctas / totalQuestions) * 100);
+        
+        // Mensaje de resultado
+        alert(`📊 Resultado:\n\nHas acertado ${correctas} de ${totalQuestions}.\nTu nota es: ${notaFinal}%`);
+
+        if (testID) {
+            // 1. Guardar Intento
+            let intentos = parseInt(localStorage.getItem(`intentos_${testID}`) || 0);
+            localStorage.setItem(`intentos_${testID}`, intentos + 1);
+
+            // 2. Guardar Mejor Nota (solo si es mayor a la anterior)
+            let notaAnterior = localStorage.getItem(`nota_${testID}`);
+            if (!notaAnterior || notaFinal > parseInt(notaAnterior)) {
+                localStorage.setItem(`nota_${testID}`, notaFinal);
+            }
+
+            // 3. Volver al menú
+            if(confirm("¿Quieres volver al menú principal?")) {
+                window.location.href = 'index.html';
+            }
+        }
+    };
+</script>
+</body>
+</html>

@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Ciclo Celular (Tema 3, Q56-110)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 20px;
+        }
+        .quiz-container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #4a90e2;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .score-display {
+            background-color: #e6f7ff;
+            border: 1px solid #91d5ff;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1em;
+            margin-bottom: 25px;
+        }
+        .question-card {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+        .question-title {
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        .answer-option {
+            margin: 10px 0;
+            padding: 12px;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .answer-option:hover:not(.disabled) {
+            background-color: #f0f0f0;
+        }
+        .answer-option.correct {
+            background-color: #e6ffe6;
+            border-color: #52c41a;
+            color: #1a7e28;
+            font-weight: bold;
+        }
+        .answer-option.incorrect {
+            background-color: #fff1f0;
+            border-color: #ff4d4f;
+            color: #a8071a;
+        }
+        .rationale {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            font-style: italic;
+            font-size: 0.9em;
+            border-left: 4px solid;
+        }
+        .rationale.correct {
+            border-left-color: #52c41a;
+            background-color: #f6ffed;
+        }
+        .rationale.incorrect {
+            border-left-color: #ff4d4f;
+            background-color: #fff1f0;
+        }
+        .disabled {
+            cursor: default;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h1>Cuestionario: Ciclo Celular (Tema 3, Q56-110)</h1>
+    <p class="score-display">Puntuación: <span id="current-score">0</span> / <span id="total-questions">55</span></p>
+
+    <div id="quiz-content">
+        </div>
+
+    <div id="quiz-results" class="hidden question-card">
+        <h2>🎉 Cuestionario Completado 🎉</h2>
+        <p>Tu puntuación final es: <span id="final-score"></span> / 55</p>
+        <button onclick="location.reload()">Reiniciar Cuestionario</button>
+    </div>
+
+</div>
+
+<script>
+    // JSON de las 55 preguntas del Tema 3 (Q56-110)
+    const quizData = [
+    {
+        "questionNumber": 56,
+        "question": "La proteína Mdm2 regula:",
+        "answerOptions": [
+            { "text": "Activación de CDK4", "isCorrect": false, "rationale": "CDK4 es activada por Ciclina D." },
+            { "text": "Activación de Bax", "isCorrect": false, "rationale": "Bax es activada por proteínas BH3-only." },
+            { "text": "Activación de Rb", "isCorrect": false, "rationale": "Rb es activado por Ciclina D/CDK4." },
+            { "text": "Degradación de p53", "isCorrect": true, "rationale": "Mdm2 es una ligasa de ubiquitina que se une a p53 y la etiqueta para su destrucción por el proteasoma, manteniendo los niveles basales de p53 bajos en células no estresadas." }
+        ]
+    },
+    {
+        "questionNumber": 57,
+        "question": "El apoptosoma está compuesto por:",
+        "answerOptions": [
+            { "text": "Bax + Bcl2", "isCorrect": false, "rationale": "Bax y Bcl-2 son reguladores de la permeabilización mitocondrial (MOMP)." },
+            { "text": "Fas + FADD", "isCorrect": false, "rationale": "Fas y FADD forman el DISC (complejo de señalización de inducción de muerte) en la vía extrínseca." },
+            { "text": "Caspasa 3 + caspasa 7", "isCorrect": false, "rationale": "Estas son caspasas efectoras." },
+            { "text": "Citocromo c + Apaf-1 + procaspasa-9", "isCorrect": true, "rationale": "El apoptosoma es el complejo multiproteico que se forma tras la liberación del citocromo c, y su ensamblaje cataliza la activación de la Caspasa iniciadora 9." }
+        ]
+    },
+    {
+        "questionNumber": 58,
+        "question": "La liberación de Smac/DIABLO provoca:",
+        "answerOptions": [
+            { "text": "Activación de CDK1", "isCorrect": false, "rationale": "CDK1 es activada por Ciclina B/Cdc25." },
+            { "text": "Detención en G1", "isCorrect": false, "rationale": "La detención en G1 es por p53/p21." },
+            { "text": "Reparación de ADN", "isCorrect": false, "rationale": "La reparación de ADN es mediada por NER/BER/HR." },
+            { "text": "Activación de caspasas inhibiendo IAPs", "isCorrect": true, "rationale": "Smac/DIABLO (Second Mitochondria-derived Activator of Caspases) se une a las proteínas IAPs (Inhibitor of Apoptosis Proteins) y las secuestra, permitiendo que las caspasas iniciadoras (Caspasa 9) actúen sin ser bloqueadas." }
+        ]
+    },
+    {
+        "questionNumber": 59,
+        "question": "La necroptosis se activa cuando:",
+        "answerOptions": [
+            { "text": "Las caspasas están plenamente activas", "isCorrect": false, "rationale": "La necroptosis es una muerte independiente de caspasas." },
+            { "text": "Hay ciclina E baja", "isCorrect": false, "rationale": "Ciclina E es un regulador del ciclo." },
+            { "text": "Hay exceso de p53", "isCorrect": false, "rationale": "El exceso de p53 induce apoptosis o arresto." },
+            { "text": "La vía TNF activa RIPK3 y MLKL", "isCorrect": true, "rationale": "La necroptosis es una forma de muerte programada inflamatoria que se activa cuando la vía extrínseca de apoptosis es bloqueada (ej. Caspasa 8 inactiva), lo que permite la formación del necrosoma (RIPK1/3) y la activación de MLKL." }
+        ]
+    },
+    {
+        "questionNumber": 60,
+        "question": "Caspasa 8 pertenece a la vía:",
+        "answerOptions": [
+            { "text": "Intrínseca", "isCorrect": false, "rationale": "La vía intrínseca utiliza la Caspasa 9." },
+            { "text": "Mitótica", "isCorrect": false, "rationale": "La Caspasa 8 es de la apoptosis." },
+            { "text": "Autofágica", "isCorrect": false, "rationale": "La autofagia es la degradación de orgánulos (no directamente Caspasa 8)." },
+            { "text": "Extrínseca", "isCorrect": true, "rationale": "La Caspasa 8 es la caspasa iniciadora de la vía extrínseca (receptores de muerte), que se activa tras la formación del DISC." }
+        ]
+    },
+    {
+        "questionNumber": 61,
+        "question": "La autofagia se activa típicamente cuando:",
+        "answerOptions": [
+            { "text": "Hay abundancia de nutrientes", "isCorrect": false, "rationale": "La abundancia de nutrientes activa TOR, que inhibe la autofagia." },
+            { "text": "p53 está inactivado", "isCorrect": false, "rationale": "p53 activo puede inducir autofagia." },
+            { "text": "Se activa ciclina B", "isCorrect": false, "rationale": "La Ciclina B está activa en Mitosis." },
+            { "text": "Hay estrés o baja disponibilidad nutricional", "isCorrect": true, "rationale": "La autofagia (autoconsumo) es un proceso de supervivencia que se activa bajo condiciones de estrés (ej. inanición, hipoxia) para degradar orgánulos y proteínas dañadas y reciclar componentes esenciales." }
+        ]
+    },
+    {
+        "questionNumber": 62,
+        "question": "La autofagia permite:",
+        "answerOptions": [
+            { "text": "Muerte celular siempre", "isCorrect": false, "rationale": "La autofagia masiva lleva a la muerte, pero su función principal es la supervivencia." },
+            { "text": "Aumento de mutaciones", "isCorrect": false, "rationale": "El aumento de mutaciones es por daño en ADN." },
+            { "text": "Desaparición de ATP nuclear", "isCorrect": false, "rationale": "El ATP es citosólico/mitocondrial." },
+            { "text": "Reciclaje de componentes y supervivencia", "isCorrect": true, "rationale": "La autofagia es un mecanismo de control de calidad y reciclaje de componentes celulares, esencial para mantener la homeostasis y la viabilidad de la célula bajo estrés." }
+        ]
+    },
+    {
+        "questionNumber": 63,
+        "question": "p53 induce apoptosis cuando:",
+        "answerOptions": [
+            { "text": "La célula quiere proliferar", "isCorrect": false, "rationale": "La proliferación es antagonista de la apoptosis." },
+            { "text": "Hay exceso de ciclina D", "isCorrect": false, "rationale": "La Ciclina D promueve la proliferación." },
+            { "text": "Rb está sin fosforilar", "isCorrect": false, "rationale": "Rb sin fosforilar detiene el ciclo en G1." },
+            { "text": "El daño es irreparable", "isCorrect": true, "rationale": "Si el daño en el ADN es extenso y no puede ser reparado tras el arresto en G1/G2 (mediado por p21), el p53 activado induce la transcripción de proteínas pro-apoptóticas (ej. PUMA, Bax), activando la vía intrínseca de muerte." }
+        ]
+    },
+    {
+        "questionNumber": 64,
+        "question": "La señal de Fas pertenece a la familia:",
+        "answerOptions": [
+            { "text": "Receptores RTK", "isCorrect": false, "rationale": "Los RTK son activados por factores de crecimiento." },
+            { "text": "GPCR", "isCorrect": false, "rationale": "GPCR acopla a proteína G." },
+            { "text": "Esteroides", "isCorrect": false, "rationale": "Los esteroides activan receptores nucleares." },
+            { "text": "Receptores de muerte TNF", "isCorrect": true, "rationale": "Fas (CD95) es un receptor de muerte transmembrana que pertenece a la superfamilia de receptores de TNF (Factor de Necrosis Tumoral) y activa la vía extrínseca de apoptosis." }
+        ]
+    },
+    {
+        "questionNumber": 65,
+        "question": "La activación de caspasa 9 requiere:",
+        "answerOptions": [
+            { "text": "Ras", "isCorrect": false, "rationale": "Ras es una GTPasa." },
+            { "text": "ATM", "isCorrect": false, "rationale": "ATM es una quinasa de daño en ADN." },
+            { "text": "CDK2", "isCorrect": false, "rationale": "CDK2 es una quinasa del ciclo celular." },
+            { "text": "Apaf-1", "isCorrect": true, "rationale": "La Caspasa 9 (procaspasa) es reclutada por la proteína adaptadora Apaf-1 (Factor Activador de Proteasa Apoptótica-1) en presencia de citocromo c y dATP, formando el apoptosoma y activando la Caspasa 9." }
+        ]
+    },
+    {
+        "questionNumber": 66,
+        "question": "El complejo ciclina A/CDK1 participa en:",
+        "answerOptions": [
+            { "text": "Salida de G0", "isCorrect": false, "rationale": "La salida de G0 es activada por Ciclina D/CDK4." },
+            { "text": "Muerte celular", "isCorrect": false, "rationale": "La muerte celular es regulada por Caspasas." },
+            { "text": "Citocinesis", "isCorrect": false, "rationale": "La Citocinesis es impulsada por el anillo de Actina-Miosina." },
+            { "text": "Entrada en mitosis", "isCorrect": true, "rationale": "La Ciclina A se une a CDK1 durante G2 y ayuda a activar el MPF (CDK1) y a modular su actividad antes de que Ciclina B tome el control total en la entrada a la Fase M." }
+        ]
+    },
+    {
+        "questionNumber": 67,
+        "question": "Las topoisomerasas son esenciales en fase:",
+        "answerOptions": [
+            { "text": "M", "isCorrect": false, "rationale": "Las Topoisomerasas tienen su función principal en S (replicación)." },
+            { "text": "G0", "isCorrect": false, "rationale": "G0 es quiescencia." },
+            { "text": "Citocinesis", "isCorrect": false, "rationale": "La Citocinesis es la división citoplasmática." },
+            { "text": "S", "isCorrect": true, "rationale": "Durante la replicación (Fase S), la doble hélice debe separarse. Las Topoisomerasas alivian la tensión torsional (superenrollamiento) que se genera por delante de la horquilla de replicación, evitando que el ADN se rompa o se bloquee la helicasa." }
+        ]
+    },
+    {
+        "questionNumber": 68,
+        "question": "La proteína Aurora B regula:",
+        "answerOptions": [
+            { "text": "Adhesión celular", "isCorrect": false, "rationale": "La Adhesión celular es regulada por Integrinas/Cadherinas." },
+            { "text": "Apoptosis por TNF", "isCorrect": false, "rationale": "La Apoptosis por TNF es extrínseca." },
+            { "text": "Replicación mitocondrial", "isCorrect": false, "rationale": "La Replicación mitocondrial es autónoma." },
+            { "text": "Corrección de uniones incorrectas microtúbulo–cinetocoro", "isCorrect": true, "rationale": "Aurora B es una quinasa esencial del Checkpoint del Huso. Fosforila proteínas en el cinetocoro para reducir la afinidad de unión, permitiendo que las uniones incorrectas (no tensas) se corrijan (desunión y reintento de unión)." }
+        ]
+    },
+    {
+        "questionNumber": 69,
+        "question": "El complejo CDK1/ciclina B se inactiva por:",
+        "answerOptions": [
+            { "text": "Wee1", "isCorrect": false, "rationale": "Wee1 inhibe CDK1, pero no lo inactiva permanentemente." },
+            { "text": "Ras", "isCorrect": false, "rationale": "Ras es una GTPasa." },
+            { "text": "Cdc25", "isCorrect": false, "rationale": "Cdc25 activa CDK1." },
+            { "text": "APC/C mediando su degradación", "isCorrect": true, "rationale": "Para salir de la Mitosis (Telofase), el complejo APC/C (Cdh1) etiqueta a la Ciclina B para su degradación por el proteasoma, lo que inactiva la quinasa CDK1 y permite la desfosforilación generalizada y el reensamblaje nuclear." }
+        ]
+    },
+    {
+        "questionNumber": 70,
+        "question": "Cuando la célula detecta ADN no replicado:",
+        "answerOptions": [
+            { "text": "Entra en M", "isCorrect": false, "rationale": "La entrada en M con ADN no replicado es un fallo de checkpoint." },
+            { "text": "Activa caspasa 8", "isCorrect": false, "rationale": "La Caspasa 8 es de la vía extrínseca." },
+            { "text": "Desfosforila Rb", "isCorrect": false, "rationale": "La desfosforilación de Rb ocurre al final de Mitosis." },
+            { "text": "Activa ATR y bloquea Cdc25", "isCorrect": true, "rationale": "La replicación incompleta activa la quinasa ATR, que a su vez activa a CHK1. CHK1 fosforila e inactiva a Cdc25, impidiendo que esta active el CDK1, lo que detiene la célula en G2 (Checkpoint G2/M)." }
+        ]
+    },
+    {
+        "questionNumber": 71,
+        "question": "La parada del ciclo inducida por p21 ocurre porque:",
+        "answerOptions": [
+            { "text": "p21 fosforila CDK", "isCorrect": false, "rationale": "p21 es un inhibidor proteico, no una quinasa." },
+            { "text": "p21 genera ROS", "isCorrect": false, "rationale": "p21 no genera ROS." },
+            { "text": "p21 es una caspasa", "isCorrect": false, "rationale": "p21 es un CKI." },
+            { "text": "p21 bloquea CDKs impidiendo avanzar", "isCorrect": true, "rationale": "p21 es un Inhibidor de Quinasas Dependientes de Ciclina (CKI) que se une a los complejos Ciclina/CDK (ej. Ciclina E/CDK2), inhibiendo su actividad catalítica y forzando el arresto del ciclo celular, principalmente en G1." }
+        ]
+    },
+    {
+        "questionNumber": 72,
+        "question": "El fallo del checkpoint del huso produce típicamente:",
+        "answerOptions": [
+            { "text": "Necrosis", "isCorrect": false, "rationale": "La Necrosis es una muerte descontrolada." },
+            { "text": "Paro en G0", "isCorrect": false, "rationale": "El paro en G0 es por falta de mitógenos." },
+            { "text": "Diferenciación celular", "isCorrect": false, "rationale": "La diferenciación es la especialización." },
+            { "text": "Aneuploidías", "isCorrect": true, "rationale": "La falla del Checkpoint del Huso (SAC) permite que la célula avance a Anafase antes de que todos los cromosomas estén correctamente unidos o alineados, lo que provoca la segregación incorrecta y un número anormal de cromosomas (Aneuploidía) en las células hijas." }
+        ]
+    },
+    {
+        "questionNumber": 73,
+        "question": "La proteína survivina inhibe:",
+        "answerOptions": [
+            { "text": "Ciclina B", "isCorrect": false, "rationale": "La Ciclina B es degradada por APC/C." },
+            { "text": "Cdc25", "isCorrect": false, "rationale": "Cdc25 es una fosfatasa activadora." },
+            { "text": "p53", "isCorrect": false, "rationale": "p53 es regulada por Mdm2." },
+            { "text": "Caspasas", "isCorrect": true, "rationale": "Survivina es una IAP (Inhibitor of Apoptosis Protein) que se une a las Caspasas (ej. Caspasa 9 y 3) para inhibir su actividad y suprime la apoptosis. También tiene un papel clave en la mitosis." }
+        ]
+    },
+    {
+        "questionNumber": 74,
+        "question": "El punto G2/M se basa en controlar principalmente:",
+        "answerOptions": [
+            { "text": "Daño en ADN", "isCorrect": false, "rationale": "El daño en ADN se revisa en G1 y G2." },
+            { "text": "Disponibilidad de nutrientes", "isCorrect": false, "rationale": "La disponibilidad de nutrientes se revisa en G1 (punto R)." },
+            { "text": "Proliferación", "isCorrect": false, "rationale": "La Proliferación es el objetivo del ciclo." },
+            { "text": "Replicación del ADN completada", "isCorrect": true, "rationale": "El Checkpoint G2/M asegura que toda la cromatina haya sido replicada con éxito durante la Fase S antes de que la célula active el MPF y entre en la fase de división." }
+        ]
+    },
+    {
+        "questionNumber": 75,
+        "question": "La fase con mayor vigilancia de daño en ADN es:",
+        "answerOptions": [
+            { "text": "G1", "isCorrect": false, "rationale": "La vigilancia de daño en G1 es esencial, pero no la de mayor vigilancia." },
+            { "text": "S", "isCorrect": false, "rationale": "La vigilancia de daño en S es esencial." },
+            { "text": "M", "isCorrect": false, "rationale": "La vigilancia en M es principalmente del huso." },
+            { "text": "G2", "isCorrect": true, "rationale": "El Checkpoint G2/M es el último punto antes de la división, por lo que actúa como un control de calidad final para asegurar que todo el ADN replicado y cualquier daño previo esté completamente reparado antes de la Mitosis, cuando el ADN es más vulnerable." }
+        ]
+    },
+    {
+        "questionNumber": 76,
+        "question": "Una mutación que vuelva a CDK2 independiente de ciclina provocaría:",
+        "answerOptions": [
+            { "text": "Bloqueo en G1", "isCorrect": false, "rationale": "El bloqueo en G1 es por Rb/p21." },
+            { "text": "Paro en G2", "isCorrect": false, "rationale": "El paro en G2 es por daño en ADN." },
+            { "text": "Activación de apoptosis", "isCorrect": false, "rationale": "La apoptosis es regulada por Caspasas/Bcl-2." },
+            { "text": "Entrada descontrolada en S", "isCorrect": true, "rationale": "CDK2 es la quinasa clave para la transición G1/S. Si se activa sin su regulador (Ciclina E o A), la célula entraría en Fase S sin control, incluso sin señales de crecimiento, lo que es una característica del cáncer." }
+        ]
+    },
+    {
+        "questionNumber": 77,
+        "question": "La hiperactividad de Cdc25 llevaría a:",
+        "answerOptions": [
+            { "text": "Inhibición permanente de CDKs", "isCorrect": false, "rationale": "Cdc25 activa CDKs." },
+            { "text": "Paro en G0", "isCorrect": false, "rationale": "El paro en G0 es quiescencia." },
+            { "text": "Activación de necrosis", "isCorrect": false, "rationale": "La Necrosis es una muerte descontrolada." },
+            { "text": "Activación prematura de CDK1 y entrada en mitosis sin control", "isCorrect": true, "rationale": "Cdc25 es la fosfatasa activadora de CDK1. Si es hiperactiva, eliminaría prematuramente la fosforilación inhibidora (Wee1), forzando a la célula a entrar en Mitosis antes de que haya completado la Fase G2 o reparado el ADN, lo que puede causar inestabilidad genómica." }
+        ]
+    },
+    {
+        "questionNumber": 78,
+        "question": "Una célula con pérdida completa de Rb:",
+        "answerOptions": [
+            { "text": "No puede entrar en ciclo", "isCorrect": false, "rationale": "Rb es un represor; su pérdida elimina el freno." },
+            { "text": "Queda en G0 indefinidamente", "isCorrect": false, "rationale": "G0 es mantenido por Rb." },
+            { "text": "No puede replicar ADN", "isCorrect": false, "rationale": "Rb inhibe la replicación (al bloquear E2F)." },
+            { "text": "Entra en ciclo incluso sin señales mitogénicas", "isCorrect": true, "rationale": "Rb es el represor clave del punto R. Si se pierde su función, E2F queda constantemente libre y activo, lo que promueve la transcripción de Ciclina E y el avance G1/S sin necesidad de factores de crecimiento externos (característica de la proliferación tumoral)." }
+        ]
+    },
+    {
+        "questionNumber": 79,
+        "question": "La inhibición de Wee1 en G2 provoca:",
+        "answerOptions": [
+            { "text": "Retraso mitótico", "isCorrect": false, "rationale": "Wee1 causa retraso (inhibición)." },
+            { "text": "Activación de p53", "isCorrect": false, "rationale": "p53 se activa por daño en ADN." },
+            { "text": "Activación de Fas", "isCorrect": false, "rationale": "Fas activa la vía extrínseca." },
+            { "text": "Entrada prematura en mitosis", "isCorrect": true, "rationale": "Wee1 es la quinasa inhibidora de CDK1 en G2. Su inhibición elimina el freno de CDK1, causando una activación prematura y la entrada en la Fase M antes de que el ADN esté listo." }
+        ]
+    },
+    {
+        "questionNumber": 80,
+        "question": "Una célula con p53 mutado (no funcional) mostrará:",
+        "answerOptions": [
+            { "text": "Sensibilidad extrema a daño en ADN", "isCorrect": false, "rationale": "La célula es insensible al daño (pierde su guardián)." },
+            { "text": "Paro permanente en S", "isCorrect": false, "rationale": "p53 actúa en G1/G2, no en S directamente." },
+            { "text": "Ausencia de replicación", "isCorrect": false, "rationale": "La replicación es un proceso normal de la célula." },
+            { "text": "Fallo en detener ciclo ante daño -> aumento de mutaciones", "isCorrect": true, "rationale": "Si p53 es no funcional, la célula pierde el mecanismo principal de detención del ciclo y apoptosis en respuesta al daño genómico. Como resultado, las células dañadas se dividen (inestabilidad genómica), lo que contribuye al desarrollo del cáncer." }
+        ]
+    },
+    {
+        "questionNumber": 81,
+        "question": "La activación sostenida de ciclina E/CDK2 genera:",
+        "answerOptions": [
+            { "text": "Entrada en G0", "isCorrect": false, "rationale": "Ciclina E/CDK2 promueve la entrada en S." },
+            { "text": "Inhibición de ciclina D", "isCorrect": false, "rationale": "Ciclina D es activada por mitógenos." },
+            { "text": "Activación de caspasa 8", "isCorrect": false, "rationale": "La Caspasa 8 es de la vía extrínseca." },
+            { "text": "Inestabilidad genómica por replicación inapropiada", "isCorrect": true, "rationale": "La actividad de Ciclina E/CDK2 debe ser estrictamente regulada y desactivada después de la Fase S. Si se mantiene activa, puede promover el re-encendido de los orígenes de replicación ya utilizados (re-licenciamiento), causando una replicación incompleta y descontrolada del ADN." }
+        ]
+    },
+    {
+        "questionNumber": 82,
+        "question": "Si el complejo APC/C-Cdc20 no se activa:",
+        "answerOptions": [
+            { "text": "La célula termina mitosis rápidamente", "isCorrect": false, "rationale": "La célula se detiene en Metafase." },
+            { "text": "Se destruyen microtúbulos", "isCorrect": false, "rationale": "La destrucción de microtúbulos es por catástrofe." },
+            { "text": "p53 se degrada", "isCorrect": false, "rationale": "p53 es degradado por Mdm2." },
+            { "text": "No se destruye la securina -> no hay anafase", "isCorrect": true, "rationale": "El APC/C-Cdc20 es responsable de degradar la securina. Si no se activa, la securina permanece unida a la separasa, impidiendo la separación de las cromátidas y bloqueando el ciclo en Metafase." }
+        ]
+    },
+    {
+        "questionNumber": 83,
+        "question": "Una célula con defectos en cohesina mostrará:",
+        "answerOptions": [
+            { "text": "Activación permanente de Rb", "isCorrect": false, "rationale": "Rb regula G1." },
+            { "text": "Bloqueo en G1", "isCorrect": false, "rationale": "El bloqueo en G1 es por Rb/p21." },
+            { "text": "Activación de Bax", "isCorrect": false, "rationale": "La activación de Bax es de la apoptosis." },
+            { "text": "Separación prematura de cromátidas", "isCorrect": true, "rationale": "La cohesina es el pegamento que mantiene unidas a las cromátidas hermanas después de la replicación. Los defectos en este complejo causan una separación prematura de las cromátidas durante la Profase/Metafase, lo que conduce a aneuploidía." }
+        ]
+    },
+    {
+        "questionNumber": 84,
+        "question": "CHK1 y CHK2 detienen el ciclo principalmente mediante:",
+        "answerOptions": [
+            { "text": "Degradación de p21", "isCorrect": false, "rationale": "La degradación de p21 promueve el ciclo." },
+            { "text": "Activación de Ras", "isCorrect": false, "rationale": "Ras es una GTPasa." },
+            { "text": "Fosforilación de ciclina D", "isCorrect": false, "rationale": "La Ciclina D es regulada por mitógenos." },
+            { "text": "Inhibición de Cdc25", "isCorrect": true, "rationale": "CHK1 (activado por ATR) y CHK2 (activado por ATM) fosforilan e inactivan a la fosfatasa Cdc25, impidiendo que esta active los CDK (CDK2 en S/G2 y CDK1 en G2/M), lo que provoca el arresto del ciclo celular en respuesta al daño en el ADN." }
+        ]
+    },
+    {
+        "questionNumber": 85,
+        "question": "Si bloqueas completamente la ubiquitinación de ciclina B:",
+        "answerOptions": [
+            { "text": "La célula sale de mitosis", "isCorrect": false, "rationale": "La salida de mitosis requiere la degradación de Ciclina B." },
+            { "text": "Entra en G0", "isCorrect": false, "rationale": "La entrada en G0 es quiescencia." },
+            { "text": "Se activa p53", "isCorrect": false, "rationale": "p53 se activa por daño en ADN." },
+            { "text": "La célula queda atrapada en mitosis", "isCorrect": true, "rationale": "La ubiquitinación de Ciclina B por APC/C y su posterior degradación es el paso de 'apagado' esencial para salir de la Mitosis (Telofase). Si este proceso se bloquea, el CDK1 permanece activo y la célula queda atrapada en un estado mitótico." }
+        ]
+    },
+    {
+        "questionNumber": 86,
+        "question": "La aneuploidía aparece cuando falla:",
+        "answerOptions": [
+            { "text": "El checkpoint G1", "isCorrect": false, "rationale": "El Checkpoint G1 regula la entrada en S." },
+            { "text": "La replicación", "isCorrect": false, "rationale": "La falla en la replicación causa estrés replicativo." },
+            { "text": "La autofagia", "isCorrect": false, "rationale": "La autofagia es el reciclaje de orgánulos." },
+            { "text": "El checkpoint del huso mitótico", "isCorrect": true, "rationale": "La falla del SAC permite una segregación cromosómica incorrecta (mala unión de cinetocoros), lo que resulta en un número anormal de cromosomas (Aneuploidía) en las células hijas." }
+        ]
+    },
+    {
+        "questionNumber": 87,
+        "question": "Si una célula no puede fosforilar Rb:",
+        "answerOptions": [
+            { "text": "Entra en mitosis sin control", "isCorrect": false, "rationale": "La no fosforilación mantiene el freno del ciclo." },
+            { "text": "Aumenta ciclina B", "isCorrect": false, "rationale": "La Ciclina B es para la Mitosis." },
+            { "text": "Activa Bax", "isCorrect": false, "rationale": "La activación de Bax es de la apoptosis." },
+            { "text": "E2F queda reprimido -> no hay entrada en S", "isCorrect": true, "rationale": "La fosforilación de Rb es necesaria para liberar E2F. Si Rb no puede ser fosforilada por Ciclina D/CDK4-6, Rb permanece unida a E2F, y la célula queda bloqueada permanentemente antes de la Fase S." }
+        ]
+    },
+    {
+        "questionNumber": 88,
+        "question": "La pérdida de p21 afecta principalmente a:",
+        "answerOptions": [
+            { "text": "G2/M", "isCorrect": false, "rationale": "p21 inhibe CDK1 en G2, pero su función más crítica es en G1." },
+            { "text": "Anafase", "isCorrect": false, "rationale": "La Anafase es regulada por APC/C y securina/separasa." },
+            { "text": "Citocinesis", "isCorrect": false, "rationale": "La Citocinesis es impulsada por el anillo de Actina-Miosina." },
+            { "text": "G1/S", "isCorrect": true, "rationale": "p21 es el principal efector de p53. Su pérdida impide el arresto del ciclo celular en G1 en respuesta al daño en el ADN, lo que permite que las células dañadas avancen a la replicación (Fase S)." }
+        ]
+    },
+    {
+        "questionNumber": 89,
+        "question": "Durante apoptosis, la fragmentación del ADN es causada por:",
+        "answerOptions": [
+            { "text": "Ciclina A", "isCorrect": false, "rationale": "La Ciclina A regula la Fase S." },
+            { "text": "Mdm2", "isCorrect": false, "rationale": "Mdm2 degrada p53." },
+            { "text": "TORC1", "isCorrect": false, "rationale": "TORC1 regula el crecimiento." },
+            { "text": "CAD (caspase-activated DNase)", "isCorrect": true, "rationale": "La Caspasa 3 activa la enzima Caspasa-Activated DNase (CAD) al clivar su inhibidor (ICAD). La CAD activada entra al núcleo y cliva el ADN en fragmentos de $\\approx 180$ pares de bases (patrón de escalera)." }
+        ]
+    },
+    {
+        "questionNumber": 90,
+        "question": "La liberación de citocromo c requiere:",
+        "answerOptions": [
+            { "text": "Activación de Cdk2", "isCorrect": false, "rationale": "CDK2 es del ciclo celular." },
+            { "text": "Fosforilación de histonas", "isCorrect": false, "rationale": "La fosforilación de histonas es nuclear." },
+            { "text": "Aumento de Ca²⁺ citosólico por IP3", "isCorrect": false, "rationale": "El Ca²⁺ puede ser un cofactor, pero no el factor directo." },
+            { "text": "Pérdida de potencial mitocondrial", "isCorrect": true, "rationale": "La liberación de citocromo c ocurre cuando las proteínas Bax/Bak forman poros en la membrana mitocondrial externa, lo que a menudo está precedido por una pérdida del potencial de membrana mitocondrial." }
+        ]
+    },
+    {
+        "questionNumber": 91,
+        "question": "La proteína Bcl-2 inhibe apoptosis porque:",
+        "answerOptions": [
+            { "text": "Activa caspasa 9", "isCorrect": false, "rationale": "La Caspasa 9 es activada por Apaf-1." },
+            { "text": "Fosforila a CAD", "isCorrect": false, "rationale": "CAD es fosforilada por Caspasa 3." },
+            { "text": "Activa Bax", "isCorrect": false, "rationale": "Bcl-2 inhibe Bax." },
+            { "text": "Cierra poros mitocondriales y evita liberación de citocromo c", "isCorrect": true, "rationale": "Bcl-2 es una proteína anti-apoptótica que inhibe directamente a las proteínas pro-apoptóticas Bax y Bak, previniendo la formación del poro mitocondrial y la subsiguiente liberación de citocromo c." }
+        ]
+    },
+    {
+        "questionNumber": 92,
+        "question": "Una célula con Bax/Bak no funcional será:",
+        "answerOptions": [
+            { "text": "Hipersensible a apoptosis", "isCorrect": false, "rationale": "Bax/Bak son pro-apoptóticos; su pérdida reduce la apoptosis." },
+            { "text": "Incapaz de dividirse", "isCorrect": false, "rationale": "Bax/Bak son de la apoptosis, no del ciclo." },
+            { "text": "Incapaz de entrar en mitosis", "isCorrect": false, "rationale": "La Mitosis es regulada por Ciclina B/CDK1." },
+            { "text": "Resistente a apoptosis intrínseca", "isCorrect": true, "rationale": "Bax y Bak son los efectores que ejecutan la permeabilización mitocondrial. Su pérdida de función impediría la liberación de citocromo c, haciendo que la célula sea resistente a la muerte celular por la vía intrínseca." }
+        ]
+    },
+    {
+        "questionNumber": 93,
+        "question": "Si inhibes APAF-1:",
+        "answerOptions": [
+            { "text": "Se bloquea la vía extrínseca", "isCorrect": false, "rationale": "La vía extrínseca es bloqueada por IAPs o Caspasa 8 FLIP." },
+            { "text": "No se forman microtúbulos", "isCorrect": false, "rationale": "Los microtúbulos son de tubulina." },
+            { "text": "Ciclina B no se degrada", "isCorrect": false, "rationale": "La Ciclina B es degradada por APC/C." },
+            { "text": "Se bloquea la vía intrínseca de apoptosis", "isCorrect": true, "rationale": "APAF-1 es el componente clave que ensambla el apoptosoma tras la liberación de citocromo c. Sin APAF-1, la Caspasa 9 no se activa, deteniendo la vía intrínseca de apoptosis." }
+        ]
+    },
+    {
+        "questionNumber": 94,
+        "question": "Una célula con exceso de Myc pero sin p53 desarrollará:",
+        "answerOptions": [
+            { "text": "Paro en G1", "isCorrect": false, "rationale": "Myc promueve la proliferación; p53 está inactivo." },
+            { "text": "Diferenciación prematura", "isCorrect": false, "rationale": "Myc es pro-proliferación." },
+            { "text": "Muerte inmediata", "isCorrect": false, "rationale": "El exceso de Myc induce apoptosis, pero p53 es clave en esta respuesta." },
+            { "text": "Crisis mitótica severa por hiperproliferación", "isCorrect": true, "rationale": "Myc es un potente oncogén (pro-proliferación). Si se sobreexpresa sin el control de p53 (que normalmente induciría apoptosis o arresto), el resultado es una hiperproliferación descontrolada con acumulación de daño genómico, lo que lleva a la inestabilidad genómica característica de la oncogénesis avanzada." }
+        ]
+    },
+    {
+        "questionNumber": 95,
+        "question": "La transición G2/M depende estrictamente de:",
+        "answerOptions": [
+            { "text": "Caspasas", "isCorrect": false, "rationale": "Las caspasas son de la apoptosis." },
+            { "text": "Ras", "isCorrect": false, "rationale": "Ras activa MAPK." },
+            { "text": "Activación de integrinas", "isCorrect": false, "rationale": "Las integrinas regulan la adhesión." },
+            { "text": "Activación de CDK1 + retirada de inhibición por Wee1", "isCorrect": true, "rationale": "Para entrar en Mitosis, CDK1 debe estar activado por Ciclina B (MPF) y, crucialmente, la fosfatasa Cdc25 debe eliminar las fosforilaciones inhibidoras impuestas por la quinasa Wee1." }
+        ]
+    },
+    {
+        "questionNumber": 96,
+        "question": "Si el huso mitótico está formado pero un cinetocoro no está unido:",
+        "answerOptions": [
+            { "text": "La célula entra en anafase", "isCorrect": false, "rationale": "La entrada en Anafase es bloqueada por el SAC." },
+            { "text": "Se degrada ciclina B", "isCorrect": false, "rationale": "La Ciclina B se degrada en Anafase." },
+            { "text": "Se activa CDK1", "isCorrect": false, "rationale": "CDK1 ya está activo en Metafase." },
+            { "text": "Se mantiene la inhibición del APC/C", "isCorrect": true, "rationale": "El cinetocoro no unido activa el Checkpoint del Huso (SAC), que genera una señal inhibitoria (complejo Mad2/BubR1) que bloquea el APC/C-Cdc20, impidiendo la degradación de securina y el avance a Anafase." }
+        ]
+    },
+    {
+        "questionNumber": 97,
+        "question": "La proteína PUMA (de la familia Bcl-2):",
+        "answerOptions": [
+            { "text": "Activa supervivencia", "isCorrect": false, "rationale": "PUMA es pro-apoptótica." },
+            { "text": "Destruye caspasas", "isCorrect": false, "rationale": "PUMA no destruye caspasas." },
+            { "text": "Inhibe Bax", "isCorrect": false, "rationale": "PUMA activa Bax." },
+            { "text": "Facilita apoptosis en respuesta a p53", "isCorrect": true, "rationale": "PUMA (p53 Up-regulated Modulator of Apoptosis) es una proteína BH3-only que se transcribe en respuesta a p53 y activa directamente a Bax y Bak, iniciando la vía mitocondrial de apoptosis." }
+        ]
+    },
+    {
+        "questionNumber": 98,
+        "question": "La fosforilación de CDK1 en Tyr15 por Wee1 causa:",
+        "answerOptions": [
+            { "text": "Activación", "isCorrect": false, "rationale": "La fosforilación en Tyr15 es inhibidora." },
+            { "text": "Autofagia", "isCorrect": false, "rationale": "La Autofagia es el reciclaje de orgánulos." },
+            { "text": "Activación de Bax", "isCorrect": false, "rationale": "Bax es de la apoptosis." },
+            { "text": "Inhibición", "isCorrect": true, "rationale": "La quinasa Wee1 fosforila la Tirosina 15 (Tyr15) del CDK1, lo que bloquea el sitio activo y suprime su actividad, manteniendo el arresto en G2." }
+        ]
+    },
+    {
+        "questionNumber": 99,
+        "question": "La exposición de fosfatidilserina al exterior depende de:",
+        "answerOptions": [
+            { "text": "CDK1", "isCorrect": false, "rationale": "CDK1 regula la Mitosis." },
+            { "text": "TOR", "isCorrect": false, "rationale": "TOR regula el crecimiento." },
+            { "text": "Ras", "isCorrect": false, "rationale": "Ras es una GTPasa." },
+            { "text": "Caspasas que activan scramblasas", "isCorrect": true, "rationale": "Durante la apoptosis, las Caspasas activan las Escramblasas (que mezclan lípidos entre monocapas) e inactivan las Flipasas (que devuelven la fosfatidilserina al interior), lo que resulta en la exposición de la fosfatidilserina en la membrana externa." }
+        ]
+    },
+    {
+        "questionNumber": 100,
+        "question": "Una célula con telómeros extremadamente cortos activará:",
+        "answerOptions": [
+            { "text": "Ras -> diferenciación", "isCorrect": false, "rationale": "Ras es pro-proliferación." },
+            { "text": "Caspasa 8 inmediatamente", "isCorrect": false, "rationale": "La Caspasa 8 es de la vía extrínseca." },
+            { "text": "CDK2", "isCorrect": false, "rationale": "CDK2 promueve la Fase S." },
+            { "text": "p53 -> senescencia o apoptosis", "isCorrect": true, "rationale": "Los telómeros muy cortos son percibidos como roturas de doble cadena (daño en el ADN), lo que activa la quinasa ATM y, consecuentemente, p53, forzando a la célula a la senescencia (arresto permanente) o a la apoptosis." }
+        ]
+    },
+    {
+        "questionNumber": 101,
+        "question": "La activación de caspasa 9 ocurre cuando:",
+        "answerOptions": [
+            { "text": "Se une a Fas", "isCorrect": false, "rationale": "Fas activa la Caspasa 8." },
+            { "text": "Se degrada ciclina A", "isCorrect": false, "rationale": "La degradación de Ciclina A es por APC/C." },
+            { "text": "Se activa p16", "isCorrect": false, "rationale": "p16 inhibe CDK4/6." },
+            { "text": "Se forma el apoptosoma", "isCorrect": true, "rationale": "La Caspasa 9 (iniciadora de la vía intrínseca) es activada al ser reclutada y dimerizada en el complejo proteico conocido como Apoptosoma (formado por Apaf-1 y Citocromo c)." }
+        ]
+    },
+    {
+        "questionNumber": 102,
+        "question": "La activación de caspasa 8 se bloquea si:",
+        "answerOptions": [
+            { "text": "No hay citocromo c", "isCorrect": false, "rationale": "El Citocromo c es de la vía intrínseca." },
+            { "text": "No funciona Rb", "isCorrect": false, "rationale": "Rb es un represor del ciclo." },
+            { "text": "Hay ciclina B baja", "isCorrect": false, "rationale": "La Ciclina B es de la Mitosis." },
+            { "text": "No funciona FADD", "isCorrect": true, "rationale": "FADD (Fas-Associated Death Domain) es la proteína adaptadora esencial que se une al receptor de muerte (ej. Fas) y recluta la procaspasa-8 para formar el DISC y activarla. Sin FADD, la vía extrínseca no se inicia." }
+        ]
+    },
+    {
+        "questionNumber": 103,
+        "question": "El “mitotic slippage” ocurre cuando:",
+        "answerOptions": [
+            { "text": "La célula completa mitosis correctamente", "isCorrect": false, "rationale": "El Mitotic Slippage es un fallo en el arresto mitótico." },
+            { "text": "Se activa Bax", "isCorrect": false, "rationale": "La activación de Bax es de la apoptosis." },
+            { "text": "Cdk1 no se puede activar", "isCorrect": false, "rationale": "Si CDK1 no se activa, no entra en Mitosis." },
+            { "text": "La célula escapa del arresto mitótico sin separar cromátidas", "isCorrect": true, "rationale": "El Mitotic Slippage ocurre cuando una célula es detenida artificialmente en la Mitosis (ej. por fármacos), pero el CDK1/Ciclina B se inactiva gradualmente sin la acción del APC/C, lo que hace que la célula salga de la Mitosis sin haber segregado los cromosomas (formando un núcleo tetraploide)." }
+        ]
+    },
+    {
+        "questionNumber": 104,
+        "question": "Una célula con Aurora B inactivada tendrá:",
+        "answerOptions": [
+            { "text": "Buena corrección de uniones cinetocoro–MT", "isCorrect": false, "rationale": "Aurora B es esencial para la corrección." },
+            { "text": "Paro en G1", "isCorrect": false, "rationale": "El paro en G1 es por Rb/p21." },
+            { "text": "Activación de apoptosis inmediata", "isCorrect": false, "rationale": "La apoptosis es regulada por Caspasas." },
+            { "text": "Errores crónicos en segregación cromosómica", "isCorrect": true, "rationale": "La quinasa Aurora B es esencial para el Checkpoint del Huso y el mecanismo de corrección de la tensión. Su inactivación impide que las uniones incorrectas (ej. monopolares o merotélicas) se corrijan, lo que lleva a la no disyunción y a la aneuploidía." }
+        ]
+    },
+    {
+        "questionNumber": 105,
+        "question": "Si en G2 la célula activa excesivamente Cdk1 de forma prematura:",
+        "answerOptions": [
+            { "text": "Se replica mejor el ADN", "isCorrect": false, "rationale": "La replicación ya terminó en S." },
+            { "text": "Activa Wnt", "isCorrect": false, "rationale": "Wnt es una vía de desarrollo." },
+            { "text": "Detiene el ciclo en G0", "isCorrect": false, "rationale": "La activación de CDK1 es pro-mitótico." },
+            { "text": "Entra en mitosis con ADN dañado/replicación incompleta", "isCorrect": true, "rationale": "La activación prematura de CDK1 anularía el Checkpoint G2/M, forzando la entrada en la Fase M antes de que el ADN haya completado la replicación o antes de que el daño existente haya sido reparado, lo que resulta en inestabilidad genómica." }
+        ]
+    },
+    {
+        "questionNumber": 106,
+        "question": "La inactivación de APC/C en telofase impedirá:",
+        "answerOptions": [
+            { "text": "Formación del anillo contráctil", "isCorrect": false, "rationale": "La Citocinesis es regulada por RhoA." },
+            { "text": "Activación de CDK2", "isCorrect": false, "rationale": "CDK2 es de G1/S." },
+            { "text": "Replicación del ADN", "isCorrect": false, "rationale": "La replicación ocurre en S." },
+            { "text": "Salida correcta de mitosis", "isCorrect": true, "rationale": "La degradación de Ciclina B por APC/C es esencial para reducir la actividad de CDK1. Si APC/C está inactivo, Ciclina B persiste, el CDK1 se mantiene activo, y la célula no puede desfosforilar los sustratos mitóticos, impidiendo la formación de la envoltura nuclear y la salida de Mitosis." }
+        ]
+    },
+    {
+        "questionNumber": 107,
+        "question": "En ausencia de caspasa 3:",
+        "answerOptions": [
+            { "text": "La célula siempre vive", "isCorrect": false, "rationale": "Otras caspasas pueden compensar parcialmente o la célula podría morir por necrosis." },
+            { "text": "Solo funciona Fas", "isCorrect": false, "rationale": "Fas es de la vía extrínseca." },
+            { "text": "No se activa p53", "isCorrect": false, "rationale": "p53 se activa por daño en ADN." },
+            { "text": "La apoptosis intrínseca no llega a ejecutarse completamente", "isCorrect": true, "rationale": "La Caspasa 3 es una de las principales caspasas efectoras. Su ausencia o inactivación impide el clivaje de proteínas críticas (ej. ICAD) y la fragmentación del ADN, deteniendo la fase de ejecución de la apoptosis." }
+        ]
+    },
+    {
+        "questionNumber": 108,
+        "question": "Durante necroptosis, MLKL fosforilado provoca:",
+        "answerOptions": [
+            { "text": "Entrada nuclear de p53", "isCorrect": false, "rationale": "p53 entra al núcleo por daño en ADN." },
+            { "text": "Activación de Bax", "isCorrect": false, "rationale": "La activación de Bax es de la apoptosis." },
+            { "text": "Degradación de cohesina", "isCorrect": false, "rationale": "La degradación de cohesina es por Separasa." },
+            { "text": "Rotura de membrana plasmática", "isCorrect": true, "rationale": "MLKL (Mixed Lineage Kinase-Like) es el ejecutor de la necroptosis. Una vez fosforilado por RIPK3, se oligomeriza y se transloca a la membrana plasmática, donde forma poros que conducen a la lisis celular y la liberación del contenido celular (necrosis)." }
+        ]
+    },
+    {
+        "questionNumber": 109,
+        "question": "Si una célula bloquea CHK1 pero hay daño en ADN:",
+        "answerOptions": [
+            { "text": "Se activa p16", "isCorrect": false, "rationale": "p16 inhibe CDK4/6." },
+            { "text": "Se activa Bax inmediatamente", "isCorrect": false, "rationale": "Bax es de la apoptosis." },
+            { "text": "Activa Fas", "isCorrect": false, "rationale": "Fas activa la vía extrínseca." },
+            { "text": "Continúa replicando y entrando en mitosis con daño", "isCorrect": true, "rationale": "CHK1 es esencial para la detención del ciclo en Fase S y G2 en respuesta al daño (vía ATR). Su bloqueo funcional anularía el Checkpoint G2/M, permitiendo que la célula avance y se divida con un genoma inestable o dañado." }
+        ]
+    },
+    {
+        "questionNumber": 110,
+        "question": "Una célula tumoral con pérdida de p21 será resistente a:",
+        "answerOptions": [
+            { "text": "Señales mitogénicas", "isCorrect": false, "rationale": "Las células cancerosas son hipersensibles a mitógenos." },
+            { "text": "Senescencia", "isCorrect": false, "rationale": "La pérdida de p21 puede prevenir la senescencia." },
+            { "text": "Replicación", "isCorrect": false, "rationale": "La célula replica normalmente." },
+            { "text": "Arresto en G1 por daño", "isCorrect": true, "rationale": "p21 es el principal mediador del arresto en G1 (vía p53) en respuesta al daño en el ADN. Su pérdida funcional elimina la capacidad de la célula para detenerse y reparar el daño, lo que aumenta la resistencia del tumor a la quimioterapia (que causa daño en el ADN)." }
+        ]
+    }
+    ];
+
+    let score = 0;
+    const totalQuestions = quizData.length;
+    const quizContent = document.getElementById('quiz-content');
+    const scoreDisplay = document.getElementById('current-score');
+    const totalQuestionsDisplay = document.getElementById('total-questions');
+    const finalScoreDisplay = document.getElementById('final-score');
+
+    totalQuestionsDisplay.textContent = totalQuestions;
+
+    // Función para renderizar el cuestionario
+    function renderQuiz() {
+        quizData.forEach(q => {
+            const questionCard = document.createElement('div');
+            questionCard.className = 'question-card';
+            // Usamos un ID único y basado en el número de pregunta original
+            questionCard.id = `q-${q.questionNumber}`;
+
+            // Título de la pregunta
+            const title = document.createElement('div');
+            title.className = 'question-title';
+            title.innerHTML = `Pregunta ${q.questionNumber}: ${q.question}`;
+            questionCard.appendChild(title);
+
+            // Opciones de respuesta
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'options-container';
+
+            q.answerOptions.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'answer-option';
+                optionDiv.textContent = option.text;
+                // El índice del array (0-54) y el índice de la opción
+                optionDiv.setAttribute('data-q-index', q.questionNumber - 56); 
+                optionDiv.setAttribute('data-option-index', index); 
+                optionDiv.onclick = handleAnswerClick;
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            questionCard.appendChild(optionsContainer);
+            quizContent.appendChild(questionCard);
+        });
+    }
+
+    // Función para manejar el clic en la respuesta
+    function handleAnswerClick(event) {
+        const selectedOption = event.target;
+        
+        // Evitar doble clic
+        if (selectedOption.classList.contains('disabled')) {
+            return;
+        }
+
+        // El qIndexInArray debe ser el índice de la pregunta en el array quizData
+        const qIndexInArray = parseInt(selectedOption.getAttribute('data-q-index'));
+        const optionIndex = parseInt(selectedOption.getAttribute('data-option-index'));
+        
+        const questionData = quizData[qIndexInArray]; 
+        const isCorrect = questionData.answerOptions[optionIndex].isCorrect;
+        const rationaleText = questionData.answerOptions[optionIndex].rationale;
+        const optionsContainer = selectedOption.parentElement;
+
+        // 1. Desactivar clics en todas las opciones de esta pregunta
+        Array.from(optionsContainer.children).forEach(option => {
+            option.classList.add('disabled');
+            option.onclick = null; 
+        });
+
+        // 2. Marcar la respuesta seleccionada como correcta/incorrecta
+        if (isCorrect) {
+            selectedOption.classList.add('correct');
+            score++;
+        } else {
+            selectedOption.classList.add('incorrect');
+            
+            // 3. Resaltar la respuesta correcta si la selección fue incorrecta
+            optionsContainer.childNodes.forEach(option => {
+                const optIdx = parseInt(option.getAttribute('data-option-index'));
+                if (questionData.answerOptions[optIdx].isCorrect) {
+                    option.classList.add('correct');
+                }
+            });
+        }
+        
+        // 4. Mostrar la explicación
+        const rationaleDiv = document.createElement('div');
+        rationaleDiv.className = `rationale ${isCorrect ? 'correct' : 'incorrect'}`;
+        rationaleDiv.textContent = `Explicación: ${rationaleText}`;
+        optionsContainer.after(rationaleDiv);
+
+        // 5. Actualizar puntuación
+        scoreDisplay.textContent = score;
+
+        // 6. Verificar si el quiz ha terminado
+        checkQuizCompletion();
+    }
+
+    // Función para verificar si todas las preguntas han sido respondidas
+    function checkQuizCompletion() {
+        const answeredCount = Array.from(document.querySelectorAll('.question-card')).filter(card => {
+            // Un card se considera respondido si tiene al menos una opción con la clase 'disabled' 
+            return card.querySelector('.options-container .disabled');
+        }).length;
+
+        if (answeredCount === totalQuestions) {
+            document.getElementById('quiz-content').classList.add('hidden');
+            document.querySelector('.score-display').classList.add('hidden');
+            finalScoreDisplay.textContent = score;
+            document.getElementById('quiz-results').classList.remove('hidden');
+        }
+    }
+
+    // Inicializar el quiz
+    document.addEventListener('DOMContentLoaded', renderQuiz);
+</script>
+
+</body>
+</html>
