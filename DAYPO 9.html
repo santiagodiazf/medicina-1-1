@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Bioquímica Bloque IX - Alvaro Condon</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .quiz-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .question-block {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background-color: #fff;
+        }
+        .question-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #34495e;
+        }
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-btn {
+            padding: 12px 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95em;
+        }
+        .option-btn:hover:not(.disabled) {
+            background-color: #e2e6ea;
+        }
+        
+        /* Estilos de corrección */
+        .option-btn.correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+            font-weight: bold;
+        }
+        .option-btn.incorrect {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .option-btn.disabled {
+            cursor: default;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        
+        .reload-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .reload-btn:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Bioquímica BLOQUE IX: Alvaro Condon</h1>
+    <div class="quiz-container" id="quiz-container">
+        </div>
+    <button class="reload-btn" onclick="location.reload()">Reiniciar Test (Barajar Opciones)</button>
+
+<script>
+    // Base de datos de preguntas extraída y corregida
+    const questions = [
+        {
+            text: "1. En la síntesis de nucleótidos de purina, son precursores:",
+            options: [
+                { text: "El ácido aspártico.", correct: false },
+                { text: "La glutamina.", correct: false },
+                { text: "La coenzima THB.", correct: false },
+                { text: "Ácido aspártico y Glutamina (A y B son correctas).", correct: true },
+                { text: "Todas son ciertas.", correct: false }
+            ]
+        },
+        {
+            text: "2. El producto final del catabolismo de los nucleótidos de purina es:",
+            options: [
+                { text: "Acetil-CoA.", correct: false },
+                { text: "Ácido úrico.", correct: true },
+                { text: "Ácido pirúvico.", correct: false },
+                { text: "Ácido oxálico.", correct: false },
+                { text: "Ácido púrico.", correct: false }
+            ]
+        },
+        {
+            text: "3. En la síntesis de nucleótidos de pirimidina, son precursores:",
+            options: [
+                { text: "Aspartato.", correct: false },
+                { text: "Bicarbonato.", correct: false },
+                { text: "Glutamina.", correct: false },
+                { text: "Todas son ciertas (Aspartato, Bicarbonato y Glutamina).", correct: true },
+                { text: "Sólo son ciertas Aspartato y Glutamina.", correct: false }
+            ]
+        },
+        {
+            text: "4. El fosfato de carbamilo interviene en la síntesis de:",
+            options: [
+                { text: "Ácido úrico.", correct: false },
+                { text: "Nucleótidos de pirimidina.", correct: true },
+                { text: "Nucleótidos de purina.", correct: false },
+                { text: "Creatina.", correct: false },
+                { text: "Ninguna es cierta.", correct: false }
+            ]
+        },
+        {
+            text: "5. El intermediario en la síntesis de los nucleótidos púricos es:",
+            options: [
+                { text: "AMP.", correct: false },
+                { text: "IMP.", correct: true },
+                { text: "OMP.", correct: false },
+                { text: "CMP.", correct: false },
+                { text: "GMP.", correct: false }
+            ]
+        },
+        {
+            text: "6. En el IMP, el carbono 6 de su base nitrogenada procede:",
+            options: [
+                { text: "De la glicina.", correct: false },
+                { text: "Del ácido aspártico.", correct: false },
+                { text: "Del dióxido de carbono.", correct: true },
+                { text: "Ninguna es cierta.", correct: false },
+                { text: "De la glicina y el ácido aspártico.", correct: false }
+            ]
+        },
+        {
+            text: "7. El intermediario en la síntesis de los nucleótidos de pirimidina es:",
+            options: [
+                { text: "AMP.", correct: false },
+                { text: "IMP.", correct: false },
+                { text: "OMP.", correct: true },
+                { text: "CMP.", correct: false },
+                { text: "GMP.", correct: false }
+            ]
+        },
+        {
+            text: "8. El producto final del catabolismo de los nucleótidos pririmidínicos es:",
+            options: [
+                { text: "Ácido úrico.", correct: false },
+                { text: "Beta-alanina.", correct: true },
+                { text: "Timina.", correct: false },
+                { text: "Uracilo.", correct: false },
+                { text: "Todas son ciertas.", correct: false }
+            ]
+        },
+        {
+            text: "9. El adenilsuccinato se forma en la reacción entre el ácido aspártico y:",
+            options: [
+                { text: "AMP.", correct: false },
+                { text: "TMP.", correct: false },
+                { text: "GMP.", correct: false },
+                { text: "XMP.", correct: false },
+                { text: "IMP.", correct: true }
+            ]
+        },
+        {
+            text: "10. La decarboxilación del orotidin-5´-fosfato (OMP) da lugar a:",
+            options: [
+                { text: "IMP.", correct: false },
+                { text: "CMP.", correct: false },
+                { text: "TMP.", correct: false },
+                { text: "UMP.", correct: true },
+                { text: "Ninguna es cierta.", correct: false }
+            ]
+        },
+        {
+            text: "11. ¿Cuál es el precursor inmediato del ácido úrico?",
+            options: [
+                { text: "Hipoxantina.", correct: false },
+                { text: "Inosina.", correct: false },
+                { text: "Xantina (Cantina).", correct: true },
+                { text: "Guanina.", correct: false },
+                { text: "Todas son falsas.", correct: false }
+            ]
+        },
+        {
+            text: "12. ¿Cuál de las siguientes sustancias es necesaria para que el dUMP se transforme en dTMP?",
+            options: [
+                { text: "ATP.", correct: false },
+                { text: "N5-N10 metilen THF.", correct: true },
+                { text: "FMN.", correct: false },
+                { text: "NADH.", correct: false },
+                { text: "Fosfato de piridoxal.", correct: false }
+            ]
+        },
+        {
+            text: "13. La siguiente vía metabólica se refiere a: (Pregunta de imagen - Se asume vía de recuperación)",
+            options: [
+                { text: "Síntesis de novo de nucleótidos de purina.", correct: false },
+                { text: "Síntesis de novo de nucleótidos de pirimidina.", correct: false },
+                { text: "Vía de recuperación para sintetizar nucleótidos de purina.", correct: true },
+                { text: "Vía de recuperación para sintetizar nucleótidos de pirimidina.", correct: false },
+                { text: "Inicio de la degradación de nucleótidos de purina hasta ácido úrico.", correct: false }
+            ]
+        },
+        {
+            text: "14. Respecto a los nucleótidos de purina, ¿cuál de las respuestas es INCORRECTA?:",
+            options: [
+                { text: "Se requiere N-formil-THF para su síntesis.", correct: false },
+                { text: "Se requiere Asp, Gln y Gli para su síntesis.", correct: false },
+                { text: "El PRPP se incorpora una vez sintetizada la base nitrogenada.", correct: true },
+                { text: "En la síntesis ex novo el primer nucleótido sintetizado es el IMP.", correct: false },
+                { text: "El ácido úrico es el producto de la degradación.", correct: false }
+            ]
+        },
+        {
+            text: "15. En la biosíntesis de nucleótidos púricos, en primer lugar se formará:",
+            options: [
+                { text: "El anillo bencénico.", correct: false },
+                { text: "El anillo de imidazol.", correct: false },
+                { text: "El anillo indol.", correct: false },
+                { text: "El 5 fosforribosil-1 pirofosfato (PRPP).", correct: true },
+                { text: "La incorporación del aspartato.", correct: false }
+            ]
+        },
+        {
+            text: "16. El nucleótido intermedio en la síntesis de pirimidinas es el:",
+            options: [
+                { text: "AMP.", correct: false },
+                { text: "GMP.", correct: false },
+                { text: "CTP.", correct: false },
+                { text: "IMP.", correct: false },
+                { text: "OMP.", correct: true }
+            ]
+        },
+        {
+            text: "17. En la síntesis de DNA:",
+            options: [
+                { text: "Se necesitan deoxinucleótidos monofosfato para elongar la cadena.", correct: false },
+                { text: "No es necesario que haya un ácido nucleico que actúe como cebador.", correct: false },
+                { text: "El sentido de la elongación de la cadena es 3’→ 5’.", correct: false },
+                { text: "En eucariotas intervienen 3 RNA polimerasas en el proceso de inicio.", correct: false },
+                { text: "Las DNA polimerasas tienen actividad exonucleasa 3’→ 5’.", correct: true }
+            ]
+        },
+        {
+            text: "18. En la vía de las pentosas fosfato, las deshidrogenasas requieren:",
+            options: [
+                { text: "NAD+.", correct: false },
+                { text: "NADP+.", correct: true },
+                { text: "FAD.", correct: false },
+                { text: "FMN.", correct: false },
+                { text: "TPP.", correct: false }
+            ]
+        },
+        {
+            text: "19. En la vía de las pentosas fosfato:",
+            options: [
+                { text: "Se forma Acetil-CoA para la lipogénesis.", correct: false },
+                { text: "Se forma NADPH para la lipogénesis.", correct: true },
+                { text: "Se forma NADH para la cadena respiratoria.", correct: false },
+                { text: "Se oxida el NADH.", correct: false },
+                { text: "Se forma ATP para la glucogénesis.", correct: false }
+            ]
+        },
+        {
+            text: "20. Identifica qué afirmación es correcta. La ruta de las pentosas fosfato (HMP):",
+            options: [
+                { text: "Tiene entre sus funciones la provisión de NADH.", correct: false },
+                { text: "No afecta al balance de ATP.", correct: false },
+                { text: "Tiene localización mitocondrial y citosólica.", correct: false },
+                { text: "Produce CO2 a partir de glucosa-6P.", correct: true }
+            ]
+        },
+        {
+            text: "21. Identifica qué afirmación es correcta sobre el glutatión:",
+            options: [
+                { text: "El glutatión en su forma disulfido (GSSG) es el principal péptido antioxidante celular.", correct: false },
+                { text: "La actividad glutatión reductasa regenera los niveles de glutatión como GSH.", correct: true },
+                { text: "Un cociente GSH/GSSG bajo es indicativo de bajos niveles de estrés oxidativo.", correct: false },
+                { text: "El GSH es relevante en el mantenimiento del grupo tiol de la cisteína en su forma oxidada.", correct: false }
+            ]
+        },
+        {
+            text: "22. La siguiente vía metabólica se refiere a: (Duplicada / Imagen)",
+            options: [
+                { text: "Síntesis de novo de nucleótidos de pirimidina.", correct: false },
+                { text: "Síntesis de novo de nucleótidos de purina.", correct: false },
+                { text: "Vía de recuperación para síntesis de nucleótidos de purina.", correct: true },
+                { text: "Vía de recuperación para síntesis de nucleótidos de pirimidina.", correct: false },
+                { text: "Inicio de la degradación de nucleótidos de purina hasta ácido úrico.", correct: false }
+            ]
+        },
+        {
+            text: "23. El fosfato de carbamilo interviene en la síntesis de:",
+            options: [
+                { text: "Ácido úrico.", correct: false },
+                { text: "Nucleótidos de pirimidina.", correct: true },
+                { text: "Nucleótidos de purina.", correct: false },
+                { text: "Creatinina.", correct: false },
+                { text: "Ninguna es cierta.", correct: false }
+            ]
+        }
+    ];
+
+    // Función para barajar un array (Algoritmo Fisher-Yates)
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    // Renderizar el cuestionario
+    function renderQuiz() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = ''; // Limpiar contenido previo
+
+        questions.forEach((q, index) => {
+            // Crear el bloque de la pregunta
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'question-block';
+
+            // Título de la pregunta
+            const title = document.createElement('div');
+            title.className = 'question-title';
+            title.textContent = q.text;
+            questionBlock.appendChild(title);
+
+            // Contenedor de opciones
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options-grid';
+
+            // Clonar y barajar opciones para no afectar el array original en futuras recargas (aunque aquí recargamos la página entera, es buena práctica)
+            let shuffledOptions = shuffle([...q.options]);
+
+            shuffledOptions.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt.text;
+                
+                // Evento de corrección
+                btn.onclick = () => {
+                    checkAnswer(btn, opt.correct, optionsDiv);
+                };
+                
+                optionsDiv.appendChild(btn);
+            });
+
+            questionBlock.appendChild(optionsDiv);
+            container.appendChild(questionBlock);
+        });
+    }
+
+    // Lógica de corrección
+    function checkAnswer(clickedBtn, isCorrect, parentDiv) {
+        // Deshabilitar todos los botones de esta pregunta
+        const allButtons = parentDiv.querySelectorAll('.option-btn');
+        allButtons.forEach(btn => btn.classList.add('disabled'));
+
+        // Marcar el botón pulsado
+        if (isCorrect) {
+            clickedBtn.classList.add('correct');
+        } else {
+            clickedBtn.classList.add('incorrect');
+            // Buscar y marcar la correcta para que el usuario sepa cuál era
+            // Nota: Como hemos barajado y no tenemos referencia directa fácil, 
+            // iteramos buscando el texto en el array original o simplemente 
+            // no lo mostramos. En este diseño, vamos a intentar mostrar la correcta.
+            // Para eso, necesitamos saber cuál era la correcta de las opciones renderizadas.
+            
+            // Truco: podemos asignar un data-attribute al renderizar
+        }
+    }
+    
+    // Mejorando la función de renderizado para incluir el dato de corrección en el DOM
+    // Reescribimos la parte del bucle de opciones arriba:
+    
+    /* La función checkAnswer anterior no marcaba la correcta si fallabas. 
+    Vamos a reescribir ambas funciones para que funcionen perfectamente juntas.
+    */
+
+    function renderQuizFinal() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = ''; 
+
+        questions.forEach((q, index) => {
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'question-block';
+
+            const title = document.createElement('div');
+            title.className = 'question-title';
+            title.textContent = q.text;
+            questionBlock.appendChild(title);
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options-grid';
+
+            let shuffledOptions = shuffle([...q.options]);
+
+            shuffledOptions.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt.text;
+                // Guardamos si es correcta en el elemento DOM
+                btn.dataset.correct = opt.correct; 
+
+                btn.onclick = () => {
+                    handleSelection(btn, optionsDiv);
+                };
+                optionsDiv.appendChild(btn);
+            });
+
+            questionBlock.appendChild(optionsDiv);
+            container.appendChild(questionBlock);
+        });
+    }
+
+    function handleSelection(clickedBtn, container) {
+        const allButtons = container.querySelectorAll('.option-btn');
+        const isCorrect = clickedBtn.dataset.correct === "true";
+
+        allButtons.forEach(btn => {
+            btn.classList.add('disabled'); // Deshabilitar clic
+            if (btn.dataset.correct === "true") {
+                btn.classList.add('correct'); // Siempre iluminar la correcta en verde
+            }
+        });
+
+        if (!isCorrect) {
+            clickedBtn.classList.add('incorrect'); // Si fallaste, pon tu elección en rojo
+        }
+    }
+
+    // Iniciar
+    renderQuizFinal();
+
+</script>
+
+</body>
+</html>

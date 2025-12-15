@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Prácticas de Bioquímica - Álvaro Condón</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #0056b3;
+            text-align: center;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+        }
+        .question-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .question-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+        .options-list {
+            list-style: none;
+            padding: 0;
+        }
+        .option-item {
+            margin-bottom: 10px;
+        }
+        .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 1em;
+        }
+        .option-btn:hover:not(.disabled) {
+            background-color: #e2e6ea;
+        }
+        .option-btn.correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .option-btn.incorrect {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .option-btn.disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+        #controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        button#reset {
+            padding: 10px 20px;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        button#reset:hover {
+            background-color: #004494;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Test Prácticas BQ - Álvaro Condón</h1>
+    
+    <div id="controls">
+        <button id="reset" onclick="renderQuiz()">Reiniciar Test (Barajar Respuestas)</button>
+    </div>
+
+    <div id="quiz-area"></div>
+
+<script>
+    // Base de datos de preguntas extraída y corregida
+    const questions = [
+        {
+            text: "1. El suero fisiológico es una solución:",
+            options: [
+                { text: "Isotónica con el plasma", correct: true },
+                { text: "0,32 M (32 mmoles/L) (Falso, es 0.154M)", correct: false },
+                { text: "9,5g/L de ClK (Falso, es NaCl)", correct: false },
+                { text: "0,16 osmolar respecto al medio interno (Falso, es aprox 0.308 Osm)", correct: false },
+                { text: "Que lisaría hematíes en suspensión", correct: false }
+            ]
+        },
+        {
+            text: "2. Respecto al método Lowry, el Folin-Ciocalteu tiene un pico de absorción a:",
+            options: [
+                { text: "750 nm", correct: true },
+                { text: "280 nm", correct: false },
+                { text: "260 nm", correct: false },
+                { text: "340 nm", correct: false },
+                { text: "650 nm", correct: false }
+            ]
+        },
+        {
+            text: "3. El β-mercaptoetanol en la técnica western blotting permite:",
+            options: [
+                { text: "Romper puente disulfuro en dichas proteínas", correct: true },
+                { text: "Cargar negativamente las proteínas a separar (Esto lo hace el SDS)", correct: false },
+                { text: "Bloquear la membrana de transferencia evitando reacciones inespecíficas en la misma", correct: false },
+                { text: "Facilitar la unión de Ac específicos a la proteína buscada", correct: false },
+                { text: "Permitir el revelado de la banda a estudiar mediante quimioluminiscencia", correct: false }
+            ]
+        },
+        {
+            text: "4. Una centrifugación isopícnica separa las partículas en función de su:",
+            options: [
+                { text: "Densidad", correct: true },
+                { text: "Forma", correct: false },
+                { text: "Coeficiente de sedimentación", correct: false },
+                { text: "Masa", correct: false },
+                { text: "Tamaño", correct: false }
+            ]
+        },
+        {
+            text: "5. Una disolución que contiene 2 mEq-g/ml de ClNa, tiene en litro:",
+            options: [
+                { text: "todas son ciertas", correct: true },
+                { text: "2 mol de ClNa", correct: false },
+                { text: "2 Eq-g de ClNa", correct: false },
+                { text: "2000 mmol de ClNa", correct: false },
+                { text: "2 N de Cl Na", correct: false }
+            ]
+        },
+        {
+            text: "6. ¿Qué cantidad de agua hay que añadir para que una solución de acetato sódico y glucosa presente una osmolalidad de 0,45 y contenga 0,2 moles de sal y 0,5 moles de glucosa?",
+            options: [
+                { text: "2 kg de agua", correct: true },
+                { text: "1kg de agua", correct: false },
+                { text: "1l de agua", correct: false },
+                { text: "2 L de agua", correct: false },
+                { text: "2 moles de agua", correct: false }
+            ]
+        },
+        {
+            text: "9. No es cierto que en la técnica western blotting:",
+            options: [
+                { text: "Las proteínas deben estar cargadas positivamente para ser arrastradas a través del gel (Falso, el SDS las carga negativamente)", correct: true },
+                { text: "La SDS-PAGE es un tipo de electroforesis requerida para separar previamente proteínas", correct: false },
+                { text: "Se obtengan bandas de separación en función del peso molecular de las proteínas", correct: false },
+                { text: "Las bandas proteicas tengan que ser transferidas desde el gel a una membrana", correct: false },
+                { text: "Permitirá identificar proteínas mediante su hibridación con un anticuerpo específico", correct: false }
+            ]
+        },
+        {
+            text: "10. Respecto al método de Lowry, señala la respuesta incorrecta:",
+            options: [
+                { text: "Las dos partes del método necesitan un medio ácido para producirse, que proporciona el Reactivo de Lowry (Falso, es medio básico/alcalino)", correct: true },
+                { text: "Es un método espectrofotométrico de valoración cuantitativo de las proteínas", correct: false },
+                { text: "La estructura tridimensional de la proteína se despliega para dejar expuestos resíduos fenólicos de tirosina", correct: false },
+                { text: "En contacto con los resíduos fenólicos el reactivo de Folin-Ciocalteu se reduce pasando de amarillo a azul (pico de absorción a 750 nm)", correct: false },
+                { text: "Se requiere Cu2+ que al unirse al nitrógeno amido del enlace peptídico despliega la proteína", correct: false }
+            ]
+        },
+        {
+            text: "11. De las siguientes respuestas señala lo que equivale una concentración 0.2 M H2SO4:",
+            options: [
+                { text: "0.4 N (H2SO4 tiene 2 H+, N = M * 2)", correct: true },
+                { text: "0’1 mol/litro", correct: false },
+                { text: "0’1 N", correct: false },
+                { text: "0.2 eq.g/litro", correct: false },
+                { text: "0.2 N", correct: false }
+            ]
+        },
+        {
+            text: "12. La normalidad de una solución 0,5M de H2SO4 es:",
+            options: [
+                { text: "1 Normal", correct: true },
+                { text: "2 Normal", correct: false },
+                { text: "0,5 Normal", correct: false },
+                { text: "Depende del pH", correct: false },
+                { text: "Ninguna es cierta", correct: false }
+            ]
+        },
+        {
+            text: "14. Calcule la molaridad y la normalidad de una disolución en la que ha disuelto 80 g de NaOH (pm 40) en agua y el volumen final es de 500 ml:",
+            options: [
+                { text: "4 M y 4 N", correct: true },
+                { text: "2 M y 2 N", correct: false },
+                { text: "2 M y 4 N", correct: false },
+                { text: "1 M y 2 N", correct: false },
+                { text: "4 M y 2 N", correct: false }
+            ]
+        },
+        {
+            text: "15. Al disolver un soluto en agua pura la presión de vapor de la disolución:",
+            options: [
+                { text: "Disminuye respecto a la del agua (Descenso crioscópico / Ley de Raoult)", correct: true },
+                { text: "Aumenta respecto a la del agua", correct: false },
+                { text: "No se afecta respecto a la del agua", correct: false },
+                { text: "Es independiente de la concentración de soluto", correct: false },
+                { text: "Depende de la naturaleza del soluto (Propiedad coligativa, depende del número de partículas)", correct: false }
+            ]
+        },
+        {
+            text: "16. Respecto al plasma, el suero fisiológico (ClNa 9,5g/L, 0,16M) es isotónico por lo que:",
+            options: [
+                { text: "Presentan igual concentración osmolar, 0,32osM (aprox)", correct: true },
+                { text: "Presentan igual concentración molar, 0,16M", correct: false },
+                { text: "Presentan igual concentración osmolar, 0,16osM", correct: false },
+                { text: "Lisaría a los hematíes contenidos en suspensión", correct: false },
+                { text: "Los iones Cl- y Na+ atravesarían la membrana del hematíe", correct: false }
+            ]
+        },
+        {
+            text: "17. La degradación de Edman se emplea:",
+            options: [
+                { text: "B, C y D son ciertas", correct: true },
+                { text: "En el análisis de la estructura secundaria de las proteínas", correct: false },
+                { text: "En el análisis de la secuencia de aminoácidos", correct: false },
+                { text: "Separa secuencialmente el extremo amino terminal", correct: false },
+                { text: "Se puede llevar a cabo varias veces con el mismo péptido", correct: false }
+            ]
+        },
+        {
+            text: "18. Una solución 0,3 M de un soluto no electrolítico que difunde a través de la membrana del hematíe es:",
+            options: [
+                { text: "Hipotónica con el hematíe (Porque el soluto entra y arrastra agua)", correct: true },
+                { text: "Hipertónica respecto el hematíe", correct: false },
+                { text: "Una modalidad del suero fisiológico", correct: false },
+                { text: "Isotónica con el hematíe (Isosmótica pero no isotónica)", correct: false }
+            ]
+        },
+        {
+            text: "19. Una solución de HCl tiene una concentración de 3.26 x 10-2 M ¿Cuál es el pH de esta solución?",
+            options: [
+                { text: "1,49", correct: true },
+                { text: "12,5", correct: false },
+                { text: "2", correct: false },
+                { text: "3,3", correct: false }
+            ]
+        },
+        {
+            text: "18 (bis). El SDS en la técnica de western blotting permite:",
+            options: [
+                { text: "Cargar negativamente las proteínas a separar", correct: true },
+                { text: "Romper puentes disulfuro en dichas proteínas", correct: false },
+                { text: "Bloquea la membrana de transferencia evitando reacciones inespecíficas en la misma", correct: false },
+                { text: "Facilitar la union de Ac específicos a la proteína buscada", correct: false },
+                { text: "Permitir el revelado de la banda a estudiar en la quimioluminiscencia", correct: false }
+            ]
+        },
+        {
+            text: "19 (bis). En un aislamiento de ácidos nucleicos, señale el compuesto que se usa para su precipitación y su posterior separación:",
+            options: [
+                { text: "Etanol absoluto", correct: true },
+                { text: "Dodecilsulfato sódico SDS", correct: false },
+                { text: "Cloroformo", correct: false },
+                { text: "Alcohol isoamílico", correct: false },
+                { text: "Fenol tamponado", correct: false }
+            ]
+        },
+        {
+            text: "20. Respecto al método de Lowry, señala la respuesta correcta:",
+            options: [
+                { text: "La intensidad del color azul obtenido es proporcional a la concentración de proteínas según la ley de Lambert-Beer", correct: true },
+                { text: "Es un método espectrofotométrico de valoración cuantitativa de ácidos nucleicos (Falso, es proteínas)", correct: false },
+                { text: "En contacto con el Cu2, el reactivo de Folin-Ciocalteau se oxida pasando de amarillo a azul (Falso, se reduce)", correct: false },
+                { text: "Las reacciones que ocurren en el método necesitan un medio ácido para producirse (Falso, básico)", correct: false },
+                { text: "Se requiere Fe3+ que al unirse al nitrógeno amido del enlace peptídico despliega la proteína (Falso, es Cu2+)", correct: false }
+            ]
+        },
+        {
+            text: "21. Para el aislamiento de ácidos nucleicos, señale qué producto es usado para solubilizar las membranas y para desnaturalizar proteínas:",
+            options: [
+                { text: "Dodecilsulfato sódico (SDS)", correct: true },
+                { text: "Cloroformo", correct: false },
+                { text: "Fenol tamponado", correct: false },
+                { text: "Etanol absoluto a -30ºC", correct: false },
+                { text: "Alcohol isoamílico", correct: false }
+            ]
+        },
+        {
+            text: "22. En la técnica de western blotting qué no es correcto:",
+            options: [
+                { text: "Bloquea la membrana con SDS para evitar reacciones inespecíficas (Falso, se bloquea con leche o BSA)", correct: true },
+                { text: "Separa previamente proteínas mediante electroforesis SDS-PAGE", correct: false },
+                { text: "Transfiere dichas proteínas a una membrana", correct: false },
+                { text: "Se hibrida con anticuerpos primarios que se fijan específicamente a la proteína buscada", correct: false },
+                { text: "Se hibrida con anticuerpos secundarios que mediante quimioluminiscencia evidencian la proteína a estudiar", correct: false }
+            ]
+        }
+    ];
+
+    function shuffle(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex != 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
+
+    function renderQuiz() {
+        const quizArea = document.getElementById('quiz-area');
+        quizArea.innerHTML = ""; // Limpiar
+
+        questions.forEach((q, index) => {
+            // Crear contenedor de pregunta
+            const qContainer = document.createElement('div');
+            qContainer.className = 'question-container';
+
+            // Título de la pregunta
+            const qTitle = document.createElement('div');
+            qTitle.className = 'question-title';
+            qTitle.textContent = q.text;
+            qContainer.appendChild(qTitle);
+
+            // Lista de opciones
+            const optList = document.createElement('ul');
+            optList.className = 'options-list';
+
+            // Barajar opciones (clonamos para no alterar el original)
+            const shuffledOptions = shuffle([...q.options]);
+
+            shuffledOptions.forEach(opt => {
+                const li = document.createElement('li');
+                li.className = 'option-item';
+                
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt.text;
+                
+                // Evento click
+                btn.onclick = () => checkAnswer(btn, opt.correct, optList);
+
+                li.appendChild(btn);
+                optList.appendChild(li);
+            });
+
+            qContainer.appendChild(optList);
+            quizArea.appendChild(qContainer);
+        });
+    }
+
+    function checkAnswer(btn, isCorrect, list) {
+        // Deshabilitar todos los botones de esta pregunta
+        const buttons = list.querySelectorAll('.option-btn');
+        buttons.forEach(b => {
+            b.classList.add('disabled');
+            b.onclick = null;
+        });
+
+        // Marcar el seleccionado
+        if (isCorrect) {
+            btn.classList.add('correct');
+        } else {
+            btn.classList.add('incorrect');
+        }
+    }
+
+    // Renderizar al inicio
+    renderQuiz();
+
+</script>
+
+</body>
+</html>

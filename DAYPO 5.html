@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Bloque V: Bioquímica UCA - Álvaro Condón</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 15px;
+        }
+        .question-card {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .question-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-btn {
+            padding: 12px;
+            text-align: left;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1em;
+        }
+        .option-btn:hover:not(.disabled) {
+            background-color: #e2e6ea;
+        }
+        
+        /* Estilos de corrección */
+        .option-btn.correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .option-btn.incorrect {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .option-btn.disabled {
+            cursor: default;
+            opacity: 0.9;
+        }
+
+        .reset-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+        .reset-btn:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Bloque V Bioquímica - Álvaro Condón</h1>
+    <div id="quiz-container">
+        </div>
+    <button class="reset-btn" onclick="location.reload()">Reiniciar Test (Barajar Opciones)</button>
+
+<script>
+    // Base de datos de preguntas extraídas y corregidas
+    const questions = [
+        {
+            text: "Uno de estos compuestos no es de alto contenido en energía de hidrólisis:",
+            options: [
+                { text: "Fosfoenolpiruvato", correct: false },
+                { text: "Acetoacetato", correct: true },
+                { text: "Succinil-CoA", correct: false },
+                { text: "S-adenosilmetionina", correct: false },
+                { text: "1,3-bifosfoglicerato", correct: false }
+            ]
+        },
+        {
+            text: "Señala el orden correcto del flujo de electrones procedente del NADH:",
+            options: [
+                { text: "NADH → Complejo I → ubiquinona → complejo III → citocromo c → complejo IV → O2", correct: true },
+                { text: "NADH → Complejo I → citocromo c → complejo III → ubiquinona → complejo IV → O2", correct: false },
+                { text: "NADH → complejo I → ubiquinona → complejo II → citocromo c → complejo IV → O2", correct: false },
+                { text: "NADH → complejo II → ubiquinona → complejo III → citocromo c → complejo IV → O2", correct: false },
+                { text: "NADH → complejo I → ubiquinona → citocromo c → complejo III → complejo IV → O2", correct: false }
+            ]
+        },
+        {
+            text: "Sobre los componentes de la cadena de transporte de electrones, es incorrecto que:",
+            options: [
+                { text: "El complejo II bombea 2H+ desde la matriz hasta el espacio intermembrana al pasar por él los electrones del FADH2", correct: true },
+                { text: "La ubiquinona es una benzoquinona lipofílica que transporta electrones difundiendo por la membrana interna mitocondrial", correct: false },
+                { text: "El citocromo c es una hemoproteína que transporta electrones de uno en uno desde el complejo III al IV", correct: false },
+                { text: "El complejo I o NADH deshidrogenasa transporta los electrones del NADH hasta la ubiquinona, bombeando 4H+", correct: false }
+            ]
+        },
+        {
+            text: "Sobre los inhibidores de la cadena de transporte electrónico indica la respuesta correcta:",
+            options: [
+                { text: "La oligomicina inhibe la ATPasa (Complejo V)", correct: true },
+                { text: "La rotenona inhibe el complejo IV", correct: false },
+                { text: "La rotenona es inhibidor del complejo II", correct: false },
+                { text: "El cianuro inhibe el complejo I", correct: false },
+                { text: "El óxido nítrico es inhibidor del complejo I", correct: false }
+            ]
+        },
+        {
+            text: "Indique cuál de los siguientes compuestos al hidrolizarse libera la menor cantidad de energía (no es de alta energía):",
+            options: [
+                { text: "AMP", correct: true },
+                { text: "ATP", correct: false },
+                { text: "ADP", correct: false },
+                { text: "Fosofenolpiruvato", correct: false },
+                { text: "Fosfocreatina", correct: false }
+            ]
+        },
+        {
+            text: "La citrato sintasa cataliza la reacción:",
+            options: [
+                { text: "Condensación de oxalacetato y acetil-CoA", correct: false },
+                { text: "Formación de citrato", correct: false },
+                { text: "A y B son ciertas", correct: true },
+                { text: "Formación de isocitrato", correct: false },
+                { text: "Todas son ciertas", correct: false }
+            ]
+        },
+        {
+            text: "Señale cual de los siguientes componentes de la cadena respiratoria mitocondrial contribuye más a la creación del gradiente de protones (H+):",
+            options: [
+                { text: "El complejo I (Bombea 4H+)", correct: true },
+                { text: "La ubiquinona", correct: false },
+                { text: "El complejo II", correct: false },
+                { text: "El complejo III (Bombea 4H+, pero en contexto de pregunta suele ser I o igual)", correct: false },
+                { text: "Todos contribuyen por igual", correct: false }
+            ]
+        },
+        {
+            text: "El estado metabólico en el que se da la máxima velocidad de respiración mitocondrial en condiciones fisiológicas se denomina:",
+            options: [
+                { text: "Estado 3 Respiratorio", correct: true },
+                { text: "Respiración Máxima", correct: false },
+                { text: "Control Respiratorio máximo", correct: false },
+                { text: "Pico Respiratorio", correct: false },
+                { text: "Estado 4 Respiratorio", correct: false }
+            ]
+        },
+        {
+            text: "En un experimento de oximetría con mitocondrias aisladas, señala la situación en la que se consumiría oxígeno si se añade:",
+            options: [
+                { text: "Malato como sustrato, oligomicina y un desacoplante", correct: true },
+                { text: "Malato como sustrato, rotenona y ADP", correct: false },
+                { text: "Succinato como sustrato, rotenona y ADP", correct: false },
+                { text: "Malato como sustrato, antimicina y ADP", correct: false },
+                { text: "En B y D se consume oxígeno (Nota: En B Succinato entra en C-II saltando C-I inhibido por Rotenona. D también consume por desacople)", correct: false }
+            ]
+        },
+        {
+            text: "El óxido nítrico (NO) actúa sobre la respiración mitocondrial:",
+            options: [
+                { text: "Compite con el oxígeno por el lugar de fijación en la citocromo oxidasa (Complejo IV)", correct: true },
+                { text: "Inhibiéndola (Parcialmente correcto, por mecanismo C)", correct: false },
+                { text: "Activándola", correct: false },
+                { text: "Compite con el oxígeno a nivel del complejo I", correct: false },
+                { text: "A y C son ciertas", correct: false }
+            ]
+        },
+        {
+            text: "En el metabolismo intermediario:",
+            options: [
+                { text: "Todas son ciertas", correct: true },
+                { text: "Las reacciones de nivel 2 conducen a la formación de piruvato y acetil-CoA", correct: false },
+                { text: "El ciclo de Krebs constituye la principal ruta de nivel 3 en los organismos aerobios", correct: false },
+                { text: "El ATP se obtiene a partir de la fosforilación oxidativa/fosforilación acoplada a sustrato", correct: false },
+                { text: "Todas son falsas", correct: false }
+            ]
+        },
+        {
+            text: "En función de su complejidad, la molécula de piruvato puede ser clasificada como:",
+            options: [
+                { text: "Un intermediario metabólico", correct: true },
+                { text: "Un precursor", correct: false },
+                { text: "Una unidad estructural", correct: false },
+                { text: "Una macromolécula", correct: false },
+                { text: "Una supramolécula", correct: false }
+            ]
+        },
+        {
+            text: "Durante el transporte de hidrógeno se forman radicales en el paso intermedio en:",
+            options: [
+                { text: "CoQ10 (Ubiquinona -> Semiquinona)", correct: true },
+                { text: "Vit. C", correct: false },
+                { text: "FMN", correct: false },
+                { text: "FAD", correct: false },
+                { text: "Todas son ciertos", correct: false }
+            ]
+        },
+        {
+            text: "Respecto a la cadena de transporte de electrones y a la fosforilación oxidativa, señale la respuesta incorrecta:",
+            options: [
+                { text: "Exclusivamente para la síntesis de una molécula de ATP se necesitan 3H+ (Se necesitan 3 para síntesis + 1 para transporte = 4)", correct: true },
+                { text: "Los complejos III y IV están conectados por el citocromo c (Aquí dice ubiquinona, que conecta I/II con III)", correct: false },
+                { text: "El paso de los electrones del NADH hasta el oxígeno, produce un bombeo de 10H+", correct: false },
+                { text: "El complejo II no actúa como bomba de H+", correct: false },
+                { text: "El paso de los electrones del FADH2 produce un bombeo de 6H+", correct: false }
+            ]
+        },
+        {
+            text: "Respecto a la estructura de la ATPsintasa, señale la respuesta correcta:",
+            options: [
+                { text: "Las subunidades beta son las subunidades catalíticas", correct: true },
+                { text: "Las subunidades alfa son las subunidades catalíticas", correct: false },
+                { text: "La subunidad beta está unida a una subunidad alfa de F1 y participa en el acoplamiento", correct: false },
+                { text: "El factor F0 y F1 están unidos por el interior por el tallo beta-alfa", correct: false }
+            ]
+        },
+        {
+            text: "Uno de estos compuestos no es de alta E de hidrólisis (Repetida):",
+            options: [
+                { text: "Acetoacetato (o 2-fosfoglicerato en otras versiones)", correct: true },
+                { text: "S-adenosilmetionina", correct: false },
+                { text: "Palmitil-Coa", correct: false },
+                { text: "Fosfoenopiruvato", correct: false },
+                { text: "1,3-bifosfoglicerato", correct: false }
+            ]
+        },
+        {
+            text: "Cuál de las siguientes afirmaciones es falsa respecto a la reacción de la alfa-cetoglutarato deshidrogenasa:",
+            options: [
+                { text: "Genera NADPH(H+) (Falso, genera NADH)", correct: true },
+                { text: "Requiere TPP, lipoamida y FAD", correct: false },
+                { text: "Se trata de un paso del ciclo de Krebs", correct: false },
+                { text: "La cataliza la alfa-cetoglutarato deshidrogenasa", correct: false },
+                { text: "El producto es succinil-CoA", correct: false }
+            ]
+        },
+        {
+            text: "¿Cuáles de los siguientes intermediarios metabólicos son productos catabólicos de los AA?",
+            options: [
+                { text: "Todas son ciertas", correct: true },
+                { text: "Piruvato", correct: false },
+                { text: "Fumarato", correct: false },
+                { text: "Oxalacetato", correct: false },
+                { text: "Alfa-cetoglutarato", correct: false }
+            ]
+        },
+        {
+            text: "En el metabolismo oxidativo:",
+            options: [
+                { text: "El piruvato se oxida a acetil-CoA", correct: true },
+                { text: "El piruvato se transforma en lactato", correct: false },
+                { text: "Todo el acetil-CoA procede de la glucólisis", correct: false },
+                { text: "El destino único del acetil-CoA es el ciclo de Krebs", correct: false },
+                { text: "Las fermentaciones constituyen el paso final", correct: false }
+            ]
+        },
+        {
+            text: "Respecto a la decarboxilación oxidativa del piruvato, ¿cuál de las siguientes afirmaciones es FALSA?",
+            options: [
+                { text: "Su rendimiento energético es de 4 ATP (Es 1 NADH)", correct: true },
+                { text: "El primer coenzima de la reacción es el TPP", correct: false },
+                { text: "Tiene lugar en la mitocondria", correct: false },
+                { text: "El proceso es catalizado por un complejo multienzimático", correct: false },
+                { text: "Son falsas A y B", correct: false }
+            ]
+        },
+        {
+            text: "¿Cuál es la finalidad de la lanzadera de alfa-glicerofosfato?",
+            options: [
+                { text: "A y D son ciertas (Oxidar NADH citosólico)", correct: true },
+                { text: "Oxidar al NADH formado en la glucólisis", correct: false },
+                { text: "Reducir al fosfato dihidroxiacetona", correct: false },
+                { text: "Frenar la glucólisis", correct: false },
+                { text: "Mantener las concentraciones citosólicas de NADH", correct: false }
+            ]
+        },
+        {
+            text: "Indique qué metabolito lleva un fosfato con alto contenido energético:",
+            options: [
+                { text: "1,3- bifosfoglicerato", correct: true },
+                { text: "Glucosa 6 fosfato", correct: false },
+                { text: "Gliceraldehído 3 fosfato", correct: false },
+                { text: "2-fosfoglicerato", correct: false },
+                { text: "Glicerofosfato", correct: false }
+            ]
+        },
+        {
+            text: "¿Por qué se forma lactato en la glucólisis anaerobia?",
+            options: [
+                { text: "Son ciertas B y C", correct: true },
+                { text: "Para oxidar al piruvato", correct: false },
+                { text: "Para regenerar al NAD+ e impedir el bloqueo de la glucólisis", correct: false },
+                { text: "Para oxidar el NADH producido en la oxidación del gliceroaldehído 3 fosfato", correct: false },
+                { text: "Son cierta A y C", correct: false }
+            ]
+        },
+        {
+            text: "Desde el punto de vista termodinámico en una reacción química endotérmica:",
+            options: [
+                { text: "Hay que comunicarle calor", correct: true },
+                { text: "Se desprende calor", correct: false },
+                { text: "Se desprende energía libre", correct: false },
+                { text: "Hay que comunicar energía libre para que tenga lugar", correct: false },
+                { text: "Se ha alcanzado el equilibrio", correct: false }
+            ]
+        },
+        {
+            text: "Señala el grupo de coenzimas correcto que forman parte del Complejo Piruvato Deshidrogenasa:",
+            options: [
+                { text: "NAD+, FAD, CoA, Tiamina Pirofosfato y Lipoamida", correct: true },
+                { text: "NAD+, FMN, CoA, Tiamina Pirofosfato y Lipoamida", correct: false },
+                { text: "NADP+, FMN, CoA, Tiamina Pirofosfato y Lipoamida", correct: false },
+                { text: "NAD+, FAD, Acetil-CoA, Tiamina Pirofosfato y Lipoamida", correct: false },
+                { text: "NADP+, FAD, Acetil-CoA, Tiamina Pirofosfato y Lipoamida", correct: false }
+            ]
+        },
+        {
+            text: "Qué pasos del ciclo de Krebs regulan el ATP y el NADH:",
+            options: [
+                { text: "A y D son correctas (Isocitrato DH y a-Ceto DH)", correct: false },
+                { text: "Paso de Isocitrato a α-cetoglutarato", correct: false },
+                { text: "Paso de Succinato a Fumarato", correct: false },
+                { text: "Paso de Malato a Oxalacetato", correct: false },
+                { text: "Paso de Fumarato a Malato", correct: false },
+                { text: "Isocitrato a a-KG y a-KG a Succinil-CoA (Correcta según teoría)", correct: true }
+            ]
+        },
+        {
+            text: "Respecto al ciclo de Krebs, señala la respuesta incorrecta:",
+            options: [
+                { text: "Se obtienen 3 NADH y 1 FADH2 por Acetil CoA", correct: false },
+                { text: "Se dan dos decarboxilaciones oxidativas consecutivas", correct: false },
+                { text: "Las tres últimas reacciones son carboxilaciones sucesivas para formar de nuevo oxalacetato (Falso: son oxidación/hidratación/oxidación)", correct: true },
+                { text: "Se obtiene una molécula de GTP por fosforilación a nivel de sustrato", correct: false },
+                { text: "La primera reacción es la condensación de Acetil CoA con Oxalacetato", correct: false }
+            ]
+        },
+        {
+            text: "Señala la respuesta correcta (Inhibidores):",
+            options: [
+                { text: "La rotenona es inhibidor del complejo I", correct: false },
+                { text: "La rotenona inhibe el complejo IV", correct: false },
+                { text: "El cianuro inhibe el complejo III", correct: false },
+                { text: "El óxido nítrico es inhibidor del complejo I", correct: false },
+                { text: "La oligomicina inhibe el complejo V (Correcta)", correct: true }
+            ]
+        },
+        {
+            text: "En relación con experimentos de oximetría señala la respuesta correcta:",
+            options: [
+                { text: "Todas son ciertas", correct: true },
+                { text: "Se denomina estado 3 respiratorio a la máxima velocidad de consumo de oxígeno", correct: false },
+                { text: "La diferencia entre el estado 3 con L-Arginina y L-NAME se denomina Actividad Funcional de la mtNOS", correct: false },
+                { text: "La valinomicina actúa como desacoplante al formar un poro", correct: false },
+                { text: "Se define estado 4 al estado de reposo por falta de ADP", correct: false }
+            ]
+        },
+        {
+            text: "Respecto al rendimiento energético de la fosforilación oxidativa, es cierto que:",
+            options: [
+                { text: "Por cada par de electrones del NADH se forman y transportan 2,5 moléculas de ATP", correct: true },
+                { text: "Los electrones del NADH producen el bombeo de 6H+", correct: false },
+                { text: "El Complejo II bombea 4 H+", correct: false },
+                { text: "Para la síntesis y transporte de ATP se necesitan 3H+ (Son 4)", correct: false },
+                { text: "Ninguna de las respuestas es cierta", correct: false }
+            ]
+        },
+        {
+            text: "Respecto a la ATP sintasa, elige la afirmación incorrecta:",
+            options: [
+                { text: "Para la síntesis y transporte de una molécula de ATP se necesitan 3 H+ (Son 4)", correct: true },
+                { text: "Cataliza la reacción ADP + Pi → ATP", correct: false },
+                { text: "Está formada por dos unidades: F0 y F1", correct: false },
+                { text: "Es inhibida por la oligomicina", correct: false },
+                { text: "En la unidad F1, la subunidad β es la catalítica", correct: false }
+            ]
+        },
+        {
+            text: "Señala el orden correcto del flujo de electrones procedentes del NADH (Repetida/Variante):",
+            options: [
+                { text: "NADH → FMN → Ubiquinona → citocromo b → citocromo c1 → citocromo c → citocromo a3 → O2", correct: true },
+                { text: "NADH → Ubiquinona → citocromo c1 → FMN → citocromo b → citocromo a3 → O2", correct: false },
+                { text: "NADH → FMN → Ubiquinona → citocromo a3 → citocromo c1 → citocromo b → O2", correct: false },
+                { text: "NADH → FMN → citocromo b → Ubiquinona → citocromo c1 → citocromo a3 → O2", correct: false }
+            ]
+        },
+        {
+            text: "En un experimento de oximetría con mitocondrias aisladas, señala la situación en la que se consumiría oxígeno si se añade (Repetida):",
+            options: [
+                { text: "En B y D se consume oxígeno", correct: true },
+                { text: "Malato como sustrato, rotenona y ADP", correct: false },
+                { text: "Succinato como sustrato, rotenona y ADP", correct: false },
+                { text: "Malato como sustrato, antimicina y ADP", correct: false },
+                { text: "Malato como sustrato, oligomicina y un desacoplante", correct: false }
+            ]
+        },
+        {
+            text: "En el metabolismo intermediario (Repetida):",
+            options: [
+                { text: "Todas son ciertas", correct: true },
+                { text: "Las reacciones de nivel 2 conducen a la formación de piruvato y acetil-CoA", correct: false },
+                { text: "El ciclo de Krebs constituye la principal ruta de nivel 3", correct: false },
+                { text: "El ATP se obtiene a partir de la fosforilación oxidativa", correct: false }
+            ]
+        },
+        {
+            text: "Cuál de las siguientes afirmaciones es falsa respecto a esta reacción (Repetida - PDH):",
+            options: [
+                { text: "Es una descarboxilación oxidativa del ciclo de Krebs (Falso: es paso previo)", correct: true },
+                { text: "Requiere TPP, lipoamida y FAD", correct: false },
+                { text: "Genera NADH(H+)", correct: false },
+                { text: "La cataliza la piruvato deshidrogenasa", correct: false },
+                { text: "No requiere energía (Es exergónica)", correct: false }
+            ]
+        },
+        {
+            text: "Cuál de estas afirmaciones son falsas respecto del ciclo de Krebs:",
+            options: [
+                { text: "Hay una fosforilación acoplada a sustrato en el paso de fosfoenolpiruvato a piruvato generando ATP (Falso: Eso es glucolisis. En Krebs es SuccinilCoA a Succinato)", correct: true },
+                { text: "Es una ruta anfibólica", correct: false },
+                { text: "Genera equivalentes reductores FADH2 y NADH(H+)", correct: false },
+                { text: "Está regulado por los niveles de NAD+/NADH intramitocondriales", correct: false },
+                { text: "La principal ruta anaplerótica está catalizada por la piruvato carboxilasa", correct: false }
+            ]
+        },
+        {
+            text: "Cuál de estas afirmaciones es falsa (Fosforilación oxidativa):",
+            options: [
+                { text: "La síntesis de ATP requiere del desacoplamiento entre transporte de e- y bombeo de H+ (Falso: Requiere acoplamiento)", correct: true },
+                { text: "La velocidad de consumo de O2 mide la velocidad del transporte de e-", correct: false },
+                { text: "El control respiratorio significa que el transporte de e- está vinculado a la síntesis de ATP", correct: false },
+                { text: "La eficiencia respiratoria P/O mide las moléculas de Pi incorporados al ATP por O consumido", correct: false }
+            ]
+        },
+        {
+            text: "De los siguientes transportadores electrónicos cuál es el móvil:",
+            options: [
+                { text: "CoQ (Ubiquinona)", correct: true },
+                { text: "Grupos Fe-S de las proteínas", correct: false },
+                { text: "Citocromos b", correct: false },
+                { text: "FMN", correct: false },
+                { text: "Citocromos a1 y a2", correct: false }
+            ]
+        },
+        {
+            text: "Respecto al bombeo de protones desde la matriz mitocondrial hacia el espacio intermembrana qué es falso:",
+            options: [
+                { text: "Complejo V: bombeo de 4H+ (Falso: Complejo V deja ENTRAR protones, no bombea hacia intermembrana)", correct: true },
+                { text: "Complejo I: bombeo 4H+", correct: false },
+                { text: "Complejo II: no bombea H+", correct: false },
+                { text: "Complejo III: bombeo 4 H+", correct: false },
+                { text: "Complejo IV: bombeo de 2H+", correct: false }
+            ]
+        },
+        {
+            text: "Señala cuál de estas sustancias es producto de las reacciones de nivel 2 del catabolismo:",
+            options: [
+                { text: "Todas son ciertas (AcetilCoA y Piruvato son principales)", correct: true },
+                { text: "Acetil-CoA", correct: false },
+                { text: "Piruvato", correct: false },
+                { text: "Glicerol", correct: false },
+                { text: "Intermediarios metabólicos del ciclo de Krebs", correct: false }
+            ]
+        },
+        {
+            text: "Qué pasos del ciclo de Krebs regulan el ATP y el NADH (Repetida):",
+            options: [
+                { text: "A y D son correctas (Isocitrato y a-Ceto)", correct: false },
+                { text: "Isocitrato a alfa-cetoglutarato", correct: false },
+                { text: "Succinato a fumarato", correct: false },
+                { text: "Malato a oxalacetato", correct: false },
+                { text: "Regulación principal: Isocitrato DH y a-Cetoglutarato DH", correct: true }
+            ]
+        },
+        {
+            text: "Respecto a la ATP sintasa, elije la opción incorrecta (Repetida):",
+            options: [
+                { text: "Para la síntesis y transporte de una molécula de ATP se necesitan 3 ATP (Falso, se necesitan 4 H+)", correct: true },
+                { text: "Cataliza la reacción ADP + Pi --> ATP", correct: false },
+                { text: "Está formada por dos unidades: F0 y F1", correct: false },
+                { text: "Es inhibida por la oligomicina", correct: false },
+                { text: "En la unidad F1, la subunidad beta es catalítica", correct: false }
+            ]
+        },
+        {
+            text: "Cual de los siguientes compuestos no es de alta energía de hidrólisis:",
+            options: [
+                { text: "Carboxibiotina (Aunque activada, no se suele clasificar como 'rico en energía' en el sentido de ATP, PEP, etc. en listas básicas)", correct: true },
+                { text: "ATP", correct: false },
+                { text: "Acil-CoA", correct: false },
+                { text: "Fosfoenolpiruvato", correct: false },
+                { text: "Fosfocreatina", correct: false }
+            ]
+        },
+        {
+            text: "El piruvato de la glucolisis se transforma en acetil-CoA mediante una descarboxilación oxidativa catalizada por el complejo:",
+            options: [
+                { text: "Piruvato deshidrogenasa", correct: true },
+                { text: "Piruvato descarboxilasa", correct: false },
+                { text: "Piruvato carboxiquinasa", correct: false },
+                { text: "Piruvato carboxilasa", correct: false },
+                { text: "Acetil-CoA carboxilasa", correct: false }
+            ]
+        },
+        {
+            text: "Identifica qué afirmación es correcta en relación a la regulación del complejo piruvato deshidrogenasa:",
+            options: [
+                { text: "El acetil CoA, el NADH y el ATP son inhibidores alostéricos de la PDHasa", correct: true },
+                { text: "La insulina inhibe la actividad de la PDHasa (Falso, la activa)", correct: false },
+                { text: "Todas las afirmaciones anteriores son correctas", correct: false },
+                { text: "La PDH kinasa regula positivamente la actividad de la PDHasa (Falso, la fosforila e inactiva)", correct: false }
+            ]
+        },
+        {
+            text: "Ciclo de Krebs. Indica los sustratos que van a producir equivalentes de poder reductor (NADH/FADH2): (1) isocitrato, (2) alfa-cetoglutarato (3) malato y (4) succinil CoA (Succinato)",
+            options: [
+                { text: "Sólo los compuestos 1, 2 y 3 (Isocitrato, a-Ceto, Malato producen NADH. Succinato produce FADH2, no está en lista explícita de sustratos deshidrogenasa NAD dependientes, pero sí produce poder reductor. La respuesta típica es 1, 2 y 3 para NADH)", correct: true },
+                { text: "Sólo los compuestos 2 y 4", correct: false },
+                { text: "Sólo los compuestos 1 y 3", correct: false },
+                { text: "Sólo el compuesto 4", correct: false }
+            ]
+        },
+        {
+            text: "¿Cuál de las siguientes condiciones disminuye la oxidación del acetilCoA por el TCA (ciclo de Krebs)?",
+            options: [
+                { text: "Un cociente bajo NAD+/NADH (Mucho NADH inhibe)", correct: true },
+                { text: "Una alta disponibilidad de Ca+2 (Activa)", correct: false },
+                { text: "Un cociente elevado AcetilCoA/CoA (Sustrato)", correct: false },
+                { text: "Un cociente bajo ATP/ADP (Poco ATP activa)", correct: false }
+            ]
+        },
+        {
+            text: "Respecto a la reacción catalizada por la alfa-cetoglutarato deshidrogenasa, ¿que no es cierto?",
+            options: [
+                { text: "Es una ruta anaplerótica del ciclo de krebs (Falso, es parte central del ciclo)", correct: true },
+                { text: "Es una descarboxilación oxidativa", correct: false },
+                { text: "Requiere TPP, lipoamida y FAD", correct: false },
+                { text: "El producto es succinil-CoA", correct: false }
+            ]
+        },
+        {
+            text: "Respecto a esta gráfica de consumo de oxígeno mitocondrial, señale el único compuesto que puede explicar lo que ocurre en el estado 3 al añadirlo en el momento indicado por X (Inhibición brusca):",
+            options: [
+                { text: "Cianuro (Inhibe C-IV, para consumo O2)", correct: true },
+                { text: "Oligomicina", correct: false },
+                { text: "CO", correct: false },
+                { text: "Rotenona", correct: false }
+            ]
+        }
+    ];
+
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function renderQuiz() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = '';
+
+        questions.forEach((q, index) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+
+            const title = document.createElement('div');
+            title.className = 'question-title';
+            title.textContent = `${index + 1}. ${q.text}`;
+            card.appendChild(title);
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options-list';
+
+            // Clonar y barajar opciones
+            let options = [...q.options];
+            shuffle(options);
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt.text;
+                
+                btn.onclick = () => {
+                    checkAnswer(btn, opt.correct, optionsDiv);
+                };
+
+                optionsDiv.appendChild(btn);
+            });
+
+            card.appendChild(optionsDiv);
+            container.appendChild(card);
+        });
+    }
+
+    function checkAnswer(btn, isCorrect, parent) {
+        const buttons = parent.querySelectorAll('.option-btn');
+        buttons.forEach(b => {
+            b.classList.add('disabled');
+            b.onclick = null;
+        });
+
+        if (isCorrect) {
+            btn.classList.add('correct');
+        } else {
+            btn.classList.add('incorrect');
+            // Mostrar la correcta
+            /* // Opcional: Si quieres que muestre la correcta al fallar, descomenta esto:
+            buttons.forEach(b => {
+               // Lógica para encontrar la correcta en el DOM si se desea
+            });
+            */
+        }
+    }
+
+    // Iniciar
+    renderQuiz();
+
+</script>
+
+</body>
+</html>
