@@ -39,10 +39,10 @@
         /* Secciones */
         .section-title {
             font-size: 1.6em;
-            margin: 40px 0 20px 0;
+            margin: 50px 0 25px 0;
             padding-bottom: 10px;
             border-bottom: 2px solid #b0bec5;
-            color: var(--secondary);
+            color: var(--text);
             display: flex;
             align-items: center;
         }
@@ -60,6 +60,7 @@
         }
         .badge-gen { background-color: var(--primary); }
         .badge-bloque { background-color: var(--secondary); }
+        .badge-daypo { background-color: var(--accent); }
 
         /* Rejilla */
         .grid-container { 
@@ -90,6 +91,7 @@
         /* Estilos específicos */
         .card-gen { border-left-color: var(--primary); }
         .card-bloque { border-left-color: var(--secondary); }
+        .card-daypo { border-left-color: var(--accent); }
 
         .card-cat {
             font-size: 0.85em;
@@ -101,7 +103,7 @@
 
         .test-title { 
             font-weight: 700; 
-            font-size: 1.2em; 
+            font-size: 1.15em; 
             margin-bottom: 10px; 
             color: #37474f; 
             line-height: 1.3;
@@ -122,6 +124,7 @@
         
         .btn-gen { background-color: var(--primary); }
         .btn-bloque { background-color: var(--secondary); }
+        .btn-daypo { background-color: var(--accent); }
         
         .btn-start:hover { opacity: 0.9; }
 
@@ -131,12 +134,12 @@
 
     <header>
         <h1>Física Médica</h1>
-        <div class="subtitle">Simuladores y Exámenes por Bloques</div>
+        <div class="subtitle">Simuladores, Exámenes y Pruebas Temáticas</div>
     </header>
 
     <div class="section-title">
         Simuladores Generales
-        <span class="badge badge-gen">Repaso</span>
+        <span class="badge badge-gen">Repaso Global</span>
     </div>
     <div class="grid-container" id="container-gen"></div>
 
@@ -145,6 +148,12 @@
         <span class="badge badge-bloque">Profundización</span>
     </div>
     <div class="grid-container" id="container-bloques"></div>
+
+    <div class="section-title">
+        Pruebas Temáticas (Daypo)
+        <span class="badge badge-daypo">Específicos</span>
+    </div>
+    <div class="grid-container" id="container-daypo"></div>
 
     <script>
         // --- 1. SIMULADORES GENERALES ---
@@ -163,6 +172,17 @@
             { file: 'FISICA8.html', title: 'Bloque 6: Preguntas 501-600', cat: 'Secuencial' },
             { file: 'FISICA9.html', title: 'Bloque Final: 601-700 (A)', cat: 'Secuencial' },
             { file: 'FISICA10.html', title: 'Examen Final: 601-700 (B)', cat: 'Secuencial' }
+        ];
+
+        // --- 3. PRUEBAS TEMÁTICAS (NUEVO BLOQUE) ---
+        const seriesDaypo = [
+            { file: 'DAYPO FISICA1.html', title: 'Biomecánica y Elasticidad', cat: 'Temático' },
+            { file: 'DAYPO FISICA2.html', title: 'Fluidos FM', cat: 'Temático' },
+            { file: 'DAYPO FISICA3.html', title: 'Respiración', cat: 'Temático' },
+            { file: 'DAYPO FISICA4.html', title: 'Ondas y Ultrasonidos', cat: 'Temático' },
+            { file: 'DAYPO FISICA5.html', title: 'Termodinámica', cat: 'Temático' },
+            { file: 'DAYPO FISICA6.html', title: 'Bioelectricidad y RM', cat: 'Temático' },
+            { file: 'DAYPO FISICA7.html', title: 'Radiaciones', cat: 'Temático' }
         ];
 
         // --- FUNCIÓN RENDERIZADO ---
@@ -188,6 +208,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             renderSection(seriesGeneral, 'container-gen', 'card-gen', 'btn-gen');
             renderSection(seriesBloques, 'container-bloques', 'card-bloque', 'btn-bloque');
+            renderSection(seriesDaypo, 'container-daypo', 'card-daypo', 'btn-daypo');
         });
 
     </script>
