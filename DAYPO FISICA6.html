@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Bioelectricidad y RM - FM Shark Crew</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+        .question-block {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .question-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #2980b9;
+        }
+        .options-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .option-item {
+            margin: 8px 0;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+        .option-item:hover {
+            background-color: #e2e6ea;
+            border-color: #cbd3da;
+        }
+        .option-item input[type="radio"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+        .btn-finish {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #27ae60;
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background 0.3s;
+        }
+        .btn-finish:hover {
+            background-color: #219150;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Test Bioelectricidad y RM</h1>
+    <p class="subtitle">Orden de preguntas fijo. Opciones aleatorias.</p>
+    
+    <div id="quizContainer">Cargando preguntas...</div>
+    
+    <button class="btn-finish" onclick="window.scrollTo(0,0); location.reload();">Reiniciar Test (Reordenar Opciones)</button>
+</div>
+
+<script>
+    // Contenido crudo extraído de tu HTML
+    const rawData = `
+    <p>Según la distribución de los iones de Na+ a ambos lados de la membrana celular: Tienen tendencia a entrar debido al potencial de equilibrio. Tienen tendencia a salir debido al potencial de membrana. Tienen tendencia a salir debido al potencial de equilibrio. a y b.</p>
+    <p>Según la distribución de los iones de k+ a ambos lados de la membrana celular: Tienen tendencia a entrar debido al potencial de equilibrio. Tienen tendencia a salir debido al potencial de membrana. Tienen tendencia a salir debido al potencial de equilibrio. a y b.</p>
+    <p>La mayor velocidad de conducción que presentan las fibras mielínicas es debida: A la mayor longitud de estas fibras. A la existencia de un menor número de cargas susceptibles de ser transportadas. A la existencia de un mayor número de cargas susceptibles de ser transportadas. A una disminución de la resistencia intracelular.</p>
+    <p>En la cúspide del potencial de acción, el potencial de membrana vale +30mV, el potencial de equilibrio del sodio es de -60mV y el del potasio +97mV por lo que: El sodio se encuentra en equilibrio. El sodio tiende a entrar. El potasio tiende a entrar. El potasio está en equilibrio.</p>
+    <p>En los nervios mielínicos: Se consigue un avance más rápido del impulso nervioso. La carga susceptible de ser transportada para provocar el desplazamiento del impulso es mayor que si el nervio estuviese desnudo. Hay una transmisión continua del impulso a lo largo de las fibras nerviosas. Las tres anteriores.</p>
+    <p>La transmisión de la información de unos órganos a otros es un fenómeno de tipo: Eléctrico. Termodinámico. Eléctrico. Ondulatorio.</p>
+    <p>La transmisión del impulso nervioso tiene su base en la existencia de: Diferencia de concentraciones de iones a ambos lados de la membrana celular. Diferentes temperaturas a ambos lados de la membrana celular. Electrodos colocados sobre el organismo. Radionúclidos de vida media corta.</p>
+    <p>Si la variación de energía potencial que experimenta un ion al salir de la célula es positivo: El ion tiene tendencia a salir si el ion es positivo. El ion tiene tendencia a entrar si el ion es positivo. El ion tiene tendencia a salir si el ion es negativo. a y c.</p>
+    <p>Si la variación de la energía potencial que experimenta un ion al salir de la célula es negativa: El ion tiene tendencia a salir si el ion es positivo. El ion tiene tendencia a entrar si el ion es positivo. el ion tiene tendencia a salir si el ion es negativo. a y c.</p>
+    <p>En el estado de reposo existe una diferencia de potencial de unos 90mV entre el fluido intracelular y extracelular, estando: El exterior cargado negativamente respecto al interior. El interior cargado negativamente respecto al exterior. El interior cargado positivamente respecto al exterior. a y c.</p>
+    <p>Según la distribución de los iones sodio a ambos lados de la membrana celular: Presentan fuerte tendencia a entrar debido a la concentracón. Presentan fuerte tendencia a salir debido al potencial. Presentan fuerte tendencia a entrar debido al potencial. a y c.</p>
+    <p>Mediante el transporte activo: Se extrae K+ del interior y se introduce Na+. Se extrae Na+ y se introduce K+. Se extrae Cl- y se introduce K+. Se detecta la actividad eléctrica del cerebro.</p>
+    <p>El potencial de acción consiste en: La diferencia de potencial entre el líquido intracelular y extracelular cuando la célula esta en reposo. La tensión del tubo de rayos X, la cual controla el operador. El registro de la actividad eléctrica del corazón. Los cambios del potencial de membrana como consecuencia de un estímulo.</p>
+    <p>En las células excitables, cuando llega un estímulo: Aumenta la impermeabilidad de la membrana. El potencial de membrana permanece inalterable. Se producen variaciones en la permeabilidad de la membrana. Se contraen selectivamente las fibras musculares inervadas.</p>
+    <p>El mantenimiento de la diferencia de concentraciones entre el fluido extracelular y el intracelular es debido a: Difusión por diferencia de concentración. Difusión por gradiente eléctrico. Bombeo activo de sodio. Las tres anteriores.</p>
+    <p>La tendencia de los iones a entrar o salir de la célula viene dada por: El potencial de membrana. El potencial de equilibrio del ion. El momento magnético del ion. a y b.</p>
+    <p>La variación de la tensión que tiene lugar cuando se sobrepasan el potencial umbral se denominan: Potencial de equilibrio. Potencial de membrana. Impulso. Potencial de acción.</p>
+    <p>En el periodo refractario absoluto, se produce el impulso de acción con valor umbral: Superior al normal. Igual al normal. Inferior al normal. No se puede iniciar el impulso de acción.</p>
+    <p>En el periodo refractario relativo, se produce el impulso de acción con valor umbral: Superior al normal. Inferior al normal. Igual al normal. No se puede iniciar el impulso de acción.</p>
+    <p>Si el incremento de energía potencial que tiene lugar cuando sale un mol de ion negativo a través de una membrana es positivo se verifica que: El ion tendrá tendencia a salir de la misma. El sistema estará en equilibrio. El ion tendrá tendencia a entrar en la misma. El incremento de energía potencial no puede ser positivo.</p>
+    <p>El potencial generador desencadena impulsos potenciales de acción que son los que se propagan y transmiten la información que está: Modulada en amplitud. Los potenciales de acción no transmiten información. No existe modulación. Modulada en frecuencia.</p>
+    <p>La facilidad con la que se propaga el impulso nervioso depende de: La facilidad con que se mueven las cargas. La cantidad de cargas que hay que transportar. La modulación de impulsos. a y b.</p>
+    <p>Si un receptor tónico detecta un estímulo y este adquiere un valor estacionario, el potencial generador: Desaparece aunque el estímulo permanezca. No existe. También se hace estacionario. Se hace deslizante.</p>
+    <p>Si un receptor fásico detecta un estímulo y este adquiere un valor estacionario, el potencial generador: Desaparece aunque el estímulo permanezca. No existe. También se hace estacionario. Se hace deslizante.</p>
+    <p>A partir de un valor umbral del potencial de membrana, la permeabilidad de la membrana para el sodio: Se hace constante. Depende del propio potencial. Es independiente del propio potencial. Disminuye.</p>
+    <p>Cuando se aplica un estímulo a un receptor el potencial de membrana modifica su valor. La diferencia entre el potencial actual y el estacionario se denomina potencial: De acción. De equilibrio. Generador. Transitorio.</p>
+    <p>El potencial generador se diferencia del potencial de acción en que: No se propaga a lo largo de la fibra nerviosa. No transmite información. Su amplitud y la forma en la que crece depende del estímulo aplicado. Las tres anteriores.</p>
+    <p>La velocidad con la que se propaga un impulso nervioso depende de: La facilidad con que se mueven las cargas. La cantidad de cargas que hay que transportar. La modulación de impulsos. a y b.</p>
+    <p>Un aumento del diámetro del axón se traduce en el impulso nervioso en: Disminución de la velocidad. Aumento de la velocidad. El diámetro es independiente de la velocidad. Depende del número de células de Schwann.</p>
+    <p>La frecuencia de repetición de los pulsos depende del valor de: Potencial de acción. Potencial de membrana. Potencial de equilibrio. Potencial generador.</p>
+    <p>A la variación de la tensión que tiene lugar cuando se ha sobrepasado el valor umbral se denomina: Potencial de equilibrio. Impulso. Potencial de acción. Potencial de membrana.</p>
+    <p>Cuando la célula no recibe estímulo, las intensidades de corriente debidas a los iones sodio y potasio son: Mayores para el potasio. Mayores para el sodio. Iguales. Menores para el potasio.</p>
+    <p>Según la distribución de los iones Cloro a ambos lados de la membrana: Presentan tendencia a entrar debido al potencial de equilibrio. Presentan tendencia a salir debido al potencial de membrana. Presentan tendencia a entrar debido al potencial de membrana. a y b.</p>
+    <p>¿Cuándo se inicia la sístole ventricular?. Al final de la onda P. Al inicio de la onda P. Al final de la onda T. Al final de la onda R.</p>
+    <p>La contracción ventricular tiene lugar: En la onda P. Desde el inicio de QRS hasta el final de la onda T. Desde el inicio de la onda P hasta el final de QRS. En las ondas P y T.</p>
+    <p>La electromiografía es el proceso de registrar la actividad eléctrica del: Miocardio. Corazón. Cerebro. Músculo.</p>
+    <p>En la electrocardiografía, el potencial eléctrico que medimos en la superficie corporal es: Los pequeños dipolos del corazón. Los momentos bipolares del corazón. La proyección del vector dipolo eléctrico en una dirección determinada. Las corrientes de fuga.</p>
+    <p>El complejo QRS en un electrocardiograma se asocial con: El inicio de la contracción auricular. El final de la contracción ventricular. El inicio de la contracción ventricular. El final de la contracción auricular.</p>
+    <p>La onda P se asocia con: El inicio de la contracción auricular. El final de la contracción ventricular. El inicio de la contracción ventricular. El final de la contracción auricular.</p>
+    <p>La onda P se asocial con: Despolarización auricular. Repolarización auricular. Despolarización ventricular. Contracción ventricular.</p>
+    <p>El ritmo cerebral de atención se caracteriza por la existencia de ondas: Alfa. Beta. Theta. Delta.</p>
+    <p>Un electrocardiógrafo es fundamentalmente un: Galvanómetro. Ohmetro. Gaussiemetro. Célula fotoeléctrica.</p>
+    <p>En qué localización no se coloca un electrodo para a toma de datos en el examen electrocardiográfico: En el brazo derecho. En el brazo izquierdo. En el tobillo derecho. En el tobillo izquierdo.</p>
+    <p>En la derivación III del electrocardiograma se representa la diferencia de potencial de los electrodos situados en: Brazo derecho y brazo izquierdo. Brazo derecho y pierna izquierda. Brazo izquierdo y pierna izquierda. Brazo izquierdo y pierna derecha.</p>
+    <p>La velocidad estándar de inscripción del electrocardiograma es de: 5mm/s. 10mm/s. 25mm/s. 50mm/s.</p>
+    <p>En el electrocardiograma, la onda primaria positiva significa: La difusión del estímulo eléctrico desde el nódulo del seno auricular hasta la total excitación auricular. Una fase de reposo eléctrico. La difusión del estímulo eléctrico a toda la musculatura ventricular. La desexcitación de los ventrículos.</p>
+    <p>El ritmo cerebral alfa, típico de la relajación, se caracteriza por la aparición en especial en la región parietal y occipital de ondas de frecuencia de: 8, 12 Hz. 14, 30 Hz. 4, 7 Hz. Menos de 3,5 Hz.</p>
+    <p>La intensidad de las ondas del electroencefalograma se miden en: Voltios. Microvoltios. Milivoltios. Nanovoltios.</p>
+    <p>Para la obtención del electromiograma se utilizan preferentemente electrodos de: Superficies únicas. Superficies dobles. Aguja simple. Aguja coaxial.</p>
+    <p>Cuando se excita un músculo aparece entre otros fenómenos un aumento de la frecuencia de descarga de las unidades motoras que denominamos: Reclutación espacial. Reclutación temporal. Refuerzo periférico. Amplitud de la unidad motora.</p>
+    <p>La frecuencia de las ondas del electromiograma: Está en la gama de los infrasonidos. Está en la gama de los sonidos audibles. Está en la gama de los ultrasonidos. Está en la gama de los hipersonidos.</p>
+    <p>el objetivo principal del campo magnético estático B0de una instalación de RM es: producir una variación del campo magnético a lo largodel eje principal del paciente. que los spines de los núcleos de hidrogeno del pacientese orienten en relación al campo. generar un pulso de excitación. detectar una señal de excitación.</p>
+    <p>el objetivo principal del pulso de RF de una instalaciónde RM es: producir una variación del campo magnético a lo largodel eje principal del paciente. que los spines de los núcleos de hidrogeno del pacientese orienten en relación al campo. generar un pulso de excitación. detectar una señal de excitación.</p>
+    <p>el pulso de RF en una instalación de RM: hace que disminuya la magnetización longitudinal. hace que se establezca una nueva magnetizacióntransversal. hace que los núcleos realicen un movimiento deprecesion. a y b.</p>
+    <p>el objetivo de la bobina receptora de una instalación deRM es: producir una variación del campo magnético a lo largodel eje principal del paciente. que los spines de los núcleos de hidrogeno del pacientese orienten en relación con el campo. generar un pulso de excitación. detectar una señal de relajación.</p>
+    <p>la constante giromagnetica: depende del cociente entre carga y masa. depende del cociente entre masa y carga. es proporcional a la frecuencia de Larmor. a y c.</p>
+    <p>para que se puedan realizar estudios con RM losnucleidos deben de tener: numero par de protones. numero impar de electrones. numero impar de nucleones. numero par de nucleones.</p>
+    <p>con cual de estos nucleidos no se podrán realizarestudios de RM: 1 H. 16 O. 31 P. 23 Na.</p>
+    <p>para que los núcleos presenten fenómenos deresonancia magnética: el vector momento angular J será mayor que 0. el vector J será 0. el vector J será distinto a 0. a y c.</p>
+    <p>cuando un núcleo es colocado bajo la acción de uncampo magnético, el vector J: adopta determinadas orientaciones. adoptar orientaciones arbitrarias. realiza movimiento de precesion. a y c.</p>
+    <p>entre los tiempos de relajación spin led y spin-spin T1 yT2 se verifica que: T1 mayor que T2. T1=T2. T1 menor que T2. T1 menor que T2.</p>
+    <p>la mayor o menor facilidad que encuentran los núcleosen ceder su energía al medio es: relación longitudinal. relajación transversal. relajación sagital. relajación spin-spin.</p>
+    <p>la frecuencia de resonancia de los protones en uncampo magnético (frecuencia de Larmor) depende de: la molécula en la que se encuentren. la cantidad de protones de las moléculas vecinas. la intensidad del campo magnético. las cargas eléctricas de las moléculas adyacentes.</p>
+    <p>llamamos tiempo eco (TE) a: al tiempo de duración del pulso de RF. al intervalo entre la aplicación de dos pulsos de RF. a la diferencia entre T1 y T2 para cada tejido. al tiempo que tras la aplicación del pulso se capta laseñal emitida por los protones.</p>
+    <p>el tiempo de relajación longitudinal T1 se define como eltiempo necesario para que el momento magnéticorespecto al eje z alcance: el 100% inicial. el 63. el 50. el 27.</p>
+    <p>el tiempo de relajación transversal T2 se define como eltiempo necesario para que el momento magnéticorespecto al eje y alcance: el 100 inicial. el 63. el 50. el 37.</p>
+    <p>T2 depende fundamentalmente de: la perdida de coherencia que los protones poseíandurante la aplicación del pulso de radiofrecuencia. la disminución de la frecuencia de los protones al cesarel pulso de RF. la coherencia progresiva adquirida por los protones alcesar el pulso de RF. el aumento progresivo de la frecuencia al cesar el pulsode RF.</p>
+    <p>la bobina de una RM tiene por misión: emitir el pulso de RF. captar las señales de radiofrecuencia emitidas por lazona explorada. a y b simultáneamente. a y b sucesivamente.</p>
+    <p>es contraindicación para realizar una RM: portar marcapasos. tener alergia al yodo. ser menor de 18 años. haber sufrido numerosas exploraciones radiológicas.</p>
+    <p>el contraste fundamental utilizado en RM es: sulfato de bario. gadolinio DTPA. Oxido de hierro. Compuestos yodados.</p>
+    <p>los vasos suelen aparecer: fuertemente contrastados. con ausencia de señal. contrastados o con ausencia de señal según la zona. no aparecen por tener una densidad similar a las partesblandas.</p>
+    <p>la grasa aparece como: blanca en T1 y T2. blanca en T1 y gris en T2. gris en T1 y blanca en T2. negra en T1 y blanda en T2.</p>
+    <p>los huesos y calcificaciones como: blanco en T1 y T2. negro en T1 blanco en T2. blanco en T1 y negro en T2. blanco en T1 y gris en T2.</p>
+    <p>el agua y los líquidos orgánicos aparecen: blanco en T1 y negro en T2. negro gris oscuro en T1, blanco en T2. gris en T1 y T2. blanco en T1 y gris en T2.</p>
+    <p>no es una ventaja de la RM: la posibilidad del estudio en diversos planos. la no irradiación de rayos X. la buena representación de las partes blandas sobretodo del SNC y locomotor. la economía de sus instalaciones.</p>
+    <p>Según la distribución de los iones cloro a ambos lados de la membrana celular, estospresentan: Tendencia a entrar debido al potencial de equilibrio. Tendencia salir debido al potencial de membrana. La tendencia dependerá del equilibrio. La a y b.</p>
+    <p>El complejo QRS en un electrocardiograma, se asocia con: El final de la contracción ventricular. Repolarización auricular y despolarización ventricular. El inicio de la contracción auricular. El final de la contracción auricular.</p>
+    <p>En la fase de sueño REM: Hay un predominio de las ondas α. Hay un predominio de las ondas theta (0). Hay un predominio de las ondas delta. Hay un predominio de las ondas β.</p>
+    <p>Según la distribución de los iones potasio a ambos lados de la membrana celular: Tienen tendencia a entrar debido al potencial de equilibrio. Tienen tendencia a salir debido al potencial de membrana. Tienen tendencia a salir debido al potencial de equilibrio. La a y la b.</p>
+    <p>Si el incremento de energía potencial que tiene lugar cuando sale un mol de ión negativo a través de la membrana es positivo, se verificará: El incremento de energía potencial no puede ser positivo. El ión tendrá tendencia a salir de la misma. El ión tendrá tendencia a entrar en la misma. El sistema estará en equilibrio.</p>
+    <p>Si el incremento de energía potencial que tiene lugar cuando sale un mol de ión positivo a través de la membrana es positivo, se verificará: El sistema estará en equilibrio. El ión tendrá tendencia a entrar en la misma. El ión tendrá tendencia a salir de la misma. El incremento de energía potencial no puede ser positivo.</p>
+    <p>La constante giromagnética: Depende del cociente entre la carga y la masa. Depende del cociente entre la masa y la carga. Es inversamente proporcional a la frecuencia de Larmor. a y c.</p>
+    <p>La frecuencia de repetición de los pulsos depende de: Potencial de acción. Potencial de equilibrio. Potencial de membrana. Ninguna de las tres.</p>
+    <p>El potencial generador se diferencia del potencial de acción, en que: No se propaga a lo largo de la fibra nerviosa. Se trasmite información. Su amplitud y la forma en que crece es independiente del estímulo aplicado. Las tres anteriores.</p>
+    <p>La onda T en un electrocardiograma, se asocia con: El final de la contracción ventricular. La a y d. El inicio de la contracción auricular. Repolarización ventricular.</p>
+    <p>La frecuencia de Larmor depende de: La intensidad del campo magnético externo. Es contante. La constante giromagnética. a y c.</p>
+    <p>El pulso de RF en una instalación de RM: Hace que la magnetización transversal sea cero. Hace que disminuya la magnetización longitudinal. Hace que los núcleos realicen un movimiento de precesión. a y b.</p>
+    <p>Una disminución del diámetro del axón se traduce en el impulso nervioso en: Dependerá del número de células de Schwann. Un aumento de la velocidad. El diámetro es independiente de la velocidad. Ninguna de las tres.</p>
+    <p>Si el incremento de energía potencial que tiene lugar cuando sale un mol de ión negativoa través de la membrana es negativo, se verificará: El ión tendrá tendencia a salir de la misma. El incremento de energía potencial no puede ser negativo. El ión tendrá tendencia a entrar en la misma. El sistema estará en equilibrio.</p>
+    <p>La tendencia a entrar o salir de los iones en la célula, viene dada por: el potencial de equilibrio. El potencial de acción. El potencial de membrana. La a y c.</p>
+    <p>La frecuencia de repetición de los pulsos, depende del valor del: Potencial de acción. Potencial de equilibrio. Potencial de membrana. Ninguna de las tres.</p>
+    <p>Si el incremento de energía potencial que tiene lugar cuando sale un mol de ion negativo a través de la membrana es negativo, se verificará. El ion tendrá tendencia a entrar en la misma. El ion tendrá tendencia a salir de la misma. El incremento de energía potencial no puede ser positivo. El sistema estará en equilibrio.</p>
+    <p>Si el incremento de energía potencial que tiene lugar cuando sale un mol de ion negativo a través de la membrana es positivo, se verificará: El ion tendrá tendencia a entrar en la misma. El incremento de energía potencial no puede ser positivo. El sistema estará en equilibrio. El ion tendrá tendencia a salir de la misma.</p>
+    <p>¿Quién tiene los biceps más grandes de la clase?. Bartel. Bartel. a y b.</p>
+    <p>Para que los núcleos no presenten fenómenos de Resonancia Magnética: El vector momento magnético será distinto de cero. El vector momento angular será distinto de cero. El vector momento magnético será igual a cero. La a y b.</p>
+    `;
+
+    // Función para mezclar opciones (Fisher-Yates)
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function parseAndRender() {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(rawData, 'text/html');
+        const paragraphs = doc.querySelectorAll('p');
+        const container = document.getElementById('quizContainer');
+        container.innerHTML = '';
+
+        paragraphs.forEach((p, index) => {
+            const fullText = p.textContent.trim();
+            let questionText = "";
+            let answers = [];
+
+            // Lógica para separar pregunta de respuestas
+            // Intentamos buscar el primer separador fuerte ( interrogación '?' o dos puntos ':' )
+            let splitIndex = -1;
+            
+            // Prioridad a la interrogación
+            const qIndex = fullText.lastIndexOf('?');
+            // Prioridad a los dos puntos si están antes de la mitad del texto (para evitar coger ':' dentro de una respuesta)
+            const cIndex = fullText.indexOf(':');
+
+            if (qIndex !== -1) {
+                 // Dividir después de ?
+                 // A veces hay un punto después del ?
+                 splitIndex = qIndex + 1;
+                 if (fullText[splitIndex] === '.') splitIndex++;
+            } else if (cIndex !== -1 && cIndex < fullText.length * 0.7) {
+                 // Dividir después de :
+                 splitIndex = cIndex + 1;
+            } else {
+                 // Si no hay separador claro, usamos el primer punto
+                 splitIndex = fullText.indexOf('.') + 1;
+            }
+
+            questionText = fullText.substring(0, splitIndex).trim();
+            const answersText = fullText.substring(splitIndex).trim();
+            
+            // Dividir respuestas por puntos
+            // Filtramos entradas vacías
+            answers = answersText.split('.').map(a => a.trim()).filter(a => a.length > 0);
+
+            // Renderizar
+            const qBlock = document.createElement('div');
+            qBlock.className = 'question-block';
+
+            const qTitle = document.createElement('div');
+            qTitle.className = 'question-title';
+            qTitle.textContent = `${index + 1}. ${questionText}`;
+            qBlock.appendChild(qTitle);
+
+            const ul = document.createElement('ul');
+            ul.className = 'options-list';
+
+            // Mezclar respuestas
+            const shuffledAnswers = shuffleArray([...answers]);
+
+            shuffledAnswers.forEach((ans, i) => {
+                const li = document.createElement('li');
+                li.className = 'option-item';
+                
+                const label = document.createElement('label');
+                label.style.width = '100%';
+                label.style.cursor = 'pointer';
+                label.style.display = 'flex';
+                label.style.alignItems = 'center';
+
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = `q${index}`;
+                radio.value = ans;
+
+                label.appendChild(radio);
+                label.appendChild(document.createTextNode(ans));
+                li.appendChild(label);
+                ul.appendChild(li);
+            });
+
+            qBlock.appendChild(ul);
+            container.appendChild(qBlock);
+        });
+    }
+
+    // Ejecutar al cargar
+    window.onload = parseAndRender;
+</script>
+
+</body>
+</html>

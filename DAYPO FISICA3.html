@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Respiración - FM by Shark-Crew</title>
+    <style>
+        :root {
+            --primary-color: #00796b;
+            --secondary-color: #e0f2f1;
+            --correct-color: #d4edda;
+            --correct-text: #155724;
+            --incorrect-color: #f8d7da;
+            --incorrect-text: #721c24;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .question-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .option-item {
+            background-color: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .option-item:hover {
+            border-color: var(--primary-color);
+            background-color: var(--secondary-color);
+        }
+
+        /* Estilos de validación */
+        .answered .option-item {
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .option-item.correct {
+            background-color: var(--correct-color);
+            border-color: #c3e6cb;
+            color: var(--correct-text);
+        }
+
+        .option-item.incorrect {
+            background-color: var(--incorrect-color);
+            border-color: #f5c6cb;
+            color: var(--incorrect-text);
+        }
+
+        .option-item.correct::after {
+            content: "✓";
+            position: absolute;
+            right: 15px;
+            font-weight: bold;
+        }
+
+        .option-item.incorrect::after {
+            content: "✕";
+            position: absolute;
+            right: 15px;
+            font-weight: bold;
+        }
+
+        .reset-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background 0.3s;
+        }
+
+        .reset-btn:hover {
+            background-color: #004d40;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Test Respiración - FM</h1>
+        <div class="subtitle">Shark-Crew Edition</div>
+    </header>
+
+    <div id="quiz-container">
+        </div>
+
+    <button class="reset-btn" onclick="location.reload()">Reiniciar Test (Mezclar Opciones)</button>
+
+<script>
+    // Base de datos de preguntas.
+    // 'correct: 0' indica que la primera opción en el array 'answers' es la correcta.
+    // El script se encarga de mezclarlas visualmente.
+    const quizData = [
+        { q: "El volumen residual pulmonar se estima en:", answers: ["20%", "30%", "10%", "5%"], correct: 0 },
+        { q: "El ángulo de conjunción para un líquido que moja es:", answers: ["Menor de 90º", "Mayor de 90º", "Igual a 90º", "Igual al ángulo de contacto"], correct: 0 },
+        { q: "Según la ley de Laplace, cuando una burbuja crece, el radio aumenta y:", answers: ["La presión disminuye", "La tensión superficial disminuye", "La presión aumenta", "La tensión superficial aumenta"], correct: 0 },
+        { q: "¿Cuáles son los procesos involucrados en el intercambio gaseoso entre sangre y pulmones?", answers: ["Difusión y ventilación", "Pandeo y vaciado", "Densidad y velocidad", "Perfusión y ventilación"], correct: 0 }, // Depende del enfoque, usualmente Ventilación/Difusión o Ventilación/Perfusión. Se asume Ventilación/Difusión como proceso de intercambio membrana.
+        { q: "La unidad de la tensión superficial en el S.I., es:", answers: ["N/m", "Kg/s", "N.m/s", "N.m"], correct: 0 },
+        { q: "En la pared alveolar el O2 se difunde más rápidamente que el CO2 porque (según ley de Graham/masa, aunque fisiológicamente incorrecto):", answers: ["La masa del primero es menor que la del segundo", "Es más reactivo", "La masa del primero es mayor que la del segundo", "La solubilidad del Oxígeno en la sangre es mayor que la del dióxido de carbono"], correct: 0 },
+        { q: "Cuando disminuye la superficie de un líquido no surfactante, la tensión superficial:", answers: ["Permanece constante", "Se anula", "Disminuye", "Aumenta"], correct: 0 },
+        { q: "La presión parcial del oxígeno en el aire alveolar es:", answers: ["100 mm de Hg", "20 mm de Hg", "80 mm de Hg", "40 mm Hg"], correct: 0 },
+        { q: "En un pulmón normal, el 90% de su superficie corresponde a zonas con:", answers: ["La a) y b) (Buena perfusión y ventilación)", "Buena perfusión", "Buena ventilación", "Pobre ventilación"], correct: 0 },
+        { q: "El valor del cociente respiratorio es:", answers: ["Menor que 1 (aprox 0.8)", "1", "Mayor que 1", "0"], correct: 0 },
+        { q: "El Quimógrafo es un componente de:", answers: ["El espirómetro", "El fonendoscopio", "El esfigmomanómetro", "El estetoscopio"], correct: 0 },
+        { q: "En la pared alveolar el O2 difunde más rápido que el CO2 porque:", answers: ["Su masa es menor", "Es más rápido", "Es más reactivo", "Es más soluble en sangre que el CO2"], correct: 0 },
+        { q: "La presión alveolar es respecto a la atmosférica en la inspiración:", answers: ["3mm de Hg menor (negativa)", "3mm de Hg mayor", "Igual a la atmosférica", "Igual a la presión de CO2"], correct: 0 },
+        { q: "La compliancia del aparato respiratorio para el hombre en la zona de respiración normal es:", answers: ["0,1 l/cm agua", "0,01 l/cm agua", "0,01 l/mm de Hg", "0,1 mm de Hg"], correct: 0 },
+        { q: "Cuando disminuye la superficie de un líquido surfactante, la tensión superficial:", answers: ["Disminuye", "Aumenta", "Permanece constante", "Se anula"], correct: 0 },
+        { q: "El modelo burbuja y membrana elástica del alveolo con tensión superficial constante:", answers: ["Utiliza la ecuación de Laplace", "Explica la fase de llenado", "Explica la fase de vaciado", "La a y b"], correct: 0 },
+        { q: "En el modelo burbuja con el líquido surfactante disminuyendo la superficie:", answers: ["Las curvas V/P se desplazan hacia la derecha (o explica histéresis)", "Las curvas V/P se desplazan hacia la izquierda", "La tensión superficial es constante", "No se alteran las curvas V/P"], correct: 0 }, // Nota: La presencia de surfactante disminuye el trabajo (hacia izquierda/arriba) y causa histéresis. Se marca la más lógica en contexto.
+        { q: "Un método de diagnóstico de enfermedades del sistema respiratorio es la obtención del:", answers: ["Espirograma", "Electrocardiograma", "Balistocardiograma", "Termograma"], correct: 0 },
+        { q: "La embolia pulmonar, producirá una zona con:", answers: ["Pobre perfusión", "Pobre ventilación", "Buena perfusión", "Buena ventilación"], correct: 0 },
+        { q: "La perfusión es:", answers: ["Suministro de sangre a los capilares pulmonares", "Suministro de aire a la superficie alveolar", "Aumento de la presión pulmonar", "Expulsión de la sangre del corazón"], correct: 0 },
+        { q: "Se denomina capacidad funcional residual a:", answers: ["Volumen de aire retenido en los pulmones al final de cada espiración", "Volumen de aire expulsado por los pulmones en cada espiración", "Razón de O2 espirado y O2 inspirado", "Volumen de aire introducido en los pulmones en cada inspiración"], correct: 0 },
+        { q: "La proporcionalidad que existe entre la cantidad de O2 disuelta en la sangre y la presión parcial de O2 en la fase gaseosa se conoce como:", answers: ["Ley de Henry de la solubilidad de gases", "Ley de la difusión", "Ley de Dalton de las presiones parciales", "Perfusión"], correct: 0 },
+        { q: "Se entiende por índice de refracción de un medio al cociente entre la velocidad de la luz en:", answers: ["El vacío y dicho medio", "El agua y dicho medio", "El aire y el agua", "El aire y el cuerpo humano"], correct: 0 },
+        { q: "La tensión superficial:", answers: ["Da lugar a fuerzas paralelas a la superficie (tangenciales)", "Es una característica del líquido", "Da origen a fuerzas perpendiculares a la superficie", "a y c son ciertas"], correct: 0 },
+        { q: "La tensión superficial depende:", answers: ["a y b son ciertas (Líquido y Medio/Temp)", "Del líquido", "Del medio", "De la temperatura"], correct: 0 },
+        { q: "El cociente respiratorio relaciona:", answers: ["Volúmenes de O2 consumidos con volúmenes de CO2 eliminados (o viceversa Vco2/Vo2)", "Valor calórico del O2 consumido con el volumen de carbónico eliminado", "El volumen de O2 consumido con el valor calórico del CO2 excretado", "Los valores calóricos del O2 consumido con y del carbónico"], correct: 0 },
+        { q: "La perfusión es:", answers: ["Suministro de sangre a los capilares pulmonares", "Suministro de aire a la superficie alveolar", "Aumento de la presión pulmonar", "Expulsión de sangre del corazón"], correct: 0 },
+        { q: "Con un espirómetro no se podrá obtener:", answers: ["La capacidad funcional residual de los pulmones (requiere VR)", "El volumen inspirado por los pulmones", "El volumen espirado por los pulmones", "a y b"], correct: 0 },
+        { q: "La proporcionalidad que existe entre la cantidad de O2 disuelta en sangre y la presión parcial de O2 en la fase gaseosa se conoce como:", answers: ["Ley de Henry de la solubilidad de los gases", "Ley de la difusión", "Ley de Dalton de las presiones parciales", "Perfusión"], correct: 0 },
+        { q: "El proceso que consiste en suministrar sangre a los capilares se denomina:", answers: ["Perfusión", "Difusión", "Ventilación", "Estenosis"], correct: 0 },
+        { q: "La presión parcial del dióxido de carbono en el aire alveolar es de:", answers: ["40 mmHg", "20 mmHg", "80 mmHg", "100 mmHg"], correct: 0 },
+        { q: "En la ley de Jurin, una de las siguientes afirmaciones no es correcta:", answers: ["La altura en el capilar es inversamente proporcional a la tensión superficial (Falso, es directa)", "La altura es inversamente proporcional al radio", "La altura en el capilar es inversamente proporcional a la gravedad", "La altura en el capilar es inversamente proporcional a la densidad"], correct: 0 },
+        { q: "Respecto a la tensión interfacial se dice:", answers: ["La b y la c son ciertas (Si es positiva moja/humecta... depende del contexto de 'interfacial', asumimos S>0)", "Si es positiva, no hay humectación", "Si es positiva hay humectación", "Si es negativa, no hay humectación"], correct: 2 }, // Corrección: S>0 moja. Tensión interfacial es siempre positiva entre inmiscibles.
+        { q: "En una embolia pulmonar (obstrucción, por un coágulo, de un vaso sanguíneo que suministra sangre a una parte del pulmón), se produce:", answers: ["Disminución de la perfusión", "Aumento de la ventilación", "Aumento de la difusión", "Engrosamiento de la pared alveolar"], correct: 0 },
+        { q: "La causa por la que la característica presión y volumen del pulmón presenta un ciclo de histéresis es:", answers: ["La tensión superficial del líquido surfactante que baña a los alvéolos", "La ley de Hooke", "El teorema de Bernoulli", "El ángulo de contacto"], correct: 0 },
+        { q: "Los líquidos surfactantes son aquellos que:", answers: ["Varían su tensión superficial según el espacio que ocupen (área)", "Recubren el alveolo", "Su tensión superficial se anula", "Su tensión superficial permanece constante"], correct: 0 },
+        { q: "Se denomina razón de intercambio respiratorio o cociente R respiratorio a:", answers: ["Razón de CO2 que se expulsa y O2 que entra en los pulmones", "Razón de O2 que se expulsa y CO2 que entra en los pulmones", "Volumen retenido al final de cada respiración", "Volumen total de O2 inspirado"], correct: 0 },
+        { q: "La ventilación consiste en:", answers: ["Suministro de aire a la superficie alveolar (o renovación)", "Suministro de sangre a los capilares pulmonares", "Determinar el volumen de gas espirado", "La b y la c"], correct: 0 },
+        { q: "En una pulmonía el área involucrada tendrá:", answers: ["Mala ventilación (ocupación alveolar)", "Pobre perfusión", "Buena ventilación", "La a y la c"], correct: 0 },
+        { q: "Cuando aumenta la superficie de un liquido no surfactante la tensión superficial:", answers: ["Se mantiene constante", "Aumenta", "Disminuye", "Se anula"], correct: 0 },
+        { q: "Cuando aumenta la superficie de un liquido surfactante la tensión superficial:", answers: ["Aumenta (tiende a la del agua pura)", "Disminuye", "Permanece constante", "Se anula"], correct: 0 },
+        { q: "El cociente R o razón de intercambio es:", answers: ["La a y la c (CO2/O2 y <1)", "Razón entre CO2 expulsado y O2 introducido en los pulmones", "Razón entre O2 expulsado y CO2 introducido en los pulmones", "Generalmente inferior a 1"], correct: 0 },
+        { q: "El fenómeno de la capilaridad es una consecuencia de:", answers: ["La b y la c conjuntamente (Laplace y presión/geometría)", "La existencia de un ángulo de conjunción dependiente de la tensión interfacial", "El teorema de Laplace", "El teorema de Bernoulli"], correct: 2 }, // Laplace explica la diferencia de presión curva.
+        { q: "El proceso general de intercambio de O2 y CO2 entre los alvéolos y la sangre se rige por:", answers: ["La ley de las presiones parciales de Dalton (gradiente de presión)", "La ecuación de continuidad", "El teorema de Bernoulli", "La ley de Poiseuille"], correct: 0 },
+        { q: "Los líquidos surfactantes son aquellos que:", answers: ["Varían su tensión superficial según el espacio que ocupan", "Mojan a un sólido", "Su tensión superficial permanece constante", "Su tensión superficial se anula"], correct: 0 },
+        { q: "Cuando disminuye la superficie de un líquido no surfactante, la tensión superficial:", answers: ["Se mantiene constante", "Aumenta", "Disminuye", "Se anula"], correct: 0 },
+        { q: "Cuando la tensión interfacial es positiva:", answers: ["El líquido ejerce más fuerza que el sólido (tiende a minimizar superficie)", "El sólido ejerce más fuerza que el líquido", "Ambos ejercen la misma fuerza", "Ninguna es correcta"], correct: 0 },
+        { q: "¿Cuáles son los procesos involuntarios en el intercambio gaseoso entre sangre y pulmones?", answers: ["Difusión y perfusión (o Difusión y ventilación según opciones dadas antes, la ventilación puede ser voluntaria)", "Perfusión y ventilación", "Pandeo y vaciado", "Densidad y velocidad"], correct: 0 },
+        { q: "¿Qué dura más?", answers: ["La vida universitaria de Machuka", "Este test"], correct: 0 },
+        { q: "Tiene la doble nacionalidad:", answers: ["Bartelinho", "Mr bottle"], correct: 0 },
+        { q: "La mejor cerveza:", answers: ["Estrella Galicia", "Alhambra", "Cruzcampo"], correct: 0 }
+    ];
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function renderQuiz() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = '';
+
+        quizData.forEach((item, index) => {
+            // Creamos un array de opciones con sus índices originales para rastrear la correcta
+            // En nuestra data, la opción en índice 0 siempre es la correcta
+            let optionsWithIndex = item.answers.map((ans, i) => {
+                return { text: ans, originalIndex: i };
+            });
+
+            // Mezclamos las opciones
+            shuffleArray(optionsWithIndex);
+
+            // Crear Tarjeta de Pregunta
+            const card = document.createElement('div');
+            card.className = 'question-card';
+
+            const title = document.createElement('div');
+            title.className = 'question-title';
+            title.innerText = `${index + 1}. ${item.q}`;
+            card.appendChild(title);
+
+            const ul = document.createElement('ul');
+            ul.className = 'options-list';
+
+            optionsWithIndex.forEach(opt => {
+                const li = document.createElement('li');
+                li.className = 'option-item';
+                li.innerText = opt.text;
+
+                li.onclick = function() {
+                    // Evitar múltiples respuestas
+                    if (card.classList.contains('answered')) return;
+                    card.classList.add('answered');
+
+                    // Lógica de corrección
+                    if (opt.originalIndex === item.correct) {
+                        li.classList.add('correct');
+                    } else {
+                        li.classList.add('incorrect');
+                        // Buscar y marcar la correcta visualmente
+                        const allOptions = ul.querySelectorAll('.option-item');
+                        allOptions.forEach((element, idx) => {
+                            if (optionsWithIndex[idx].originalIndex === item.correct) {
+                                element.classList.add('correct');
+                            }
+                        });
+                    }
+                };
+
+                ul.appendChild(li);
+            });
+
+            card.appendChild(ul);
+            container.appendChild(card);
+        });
+    }
+
+    // Inicializar al cargar
+    window.onload = renderQuiz;
+
+</script>
+</body>
+</html>

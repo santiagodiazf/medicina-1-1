@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario Termodinámica - Orden Aleatorio de Respuestas</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; color: #333; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #2c3e50; }
+        .question-block { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+        .question-text { font-weight: bold; font-size: 1.1em; margin-bottom: 10px; color: #2980b9; }
+        .options-list { list-style-type: none; padding: 0; }
+        .option-item { margin: 5px 0; padding: 10px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
+        .option-item:hover { background-color: #e2e6ea; }
+        .option-item input { margin-right: 10px; }
+        .btn { display: block; width: 100%; padding: 15px; background-color: #27ae60; color: white; text-align: center; border: none; border-radius: 5px; font-size: 1.2em; cursor: pointer; margin-top: 20px; }
+        .btn:hover { background-color: #219150; }
+        .note { font-size: 0.9em; color: #777; text-align: center; margin-bottom: 20px; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Test de Termodinámica</h1>
+    <p class="note">Las preguntas siguen el orden original. Las opciones se ordenan aleatoriamente cada vez que recargas.</p>
+    
+    <form id="quizForm">
+        <div id="quizContainer">Cargando preguntas...</div>
+        <button type="button" class="btn" onclick="alert('Fin del repaso. Al recargar la página las opciones cambiarán de orden.')">Finalizar Repaso</button>
+    </form>
+</div>
+
+<script>
+    // Datos crudos extraídos de tu HTML original
+    const rawHtmlContent = `
+    <p>Las unidades de la entropía en el SI son: Kcal/ºC. J/ºC. Kj/h.m². J/K.</p>
+    <p>El calor se mide en: Watios. Julios. Caballos de vapor. Grados centígrados.</p>
+    <p>La ecuación de transmisión del calor entre dos medios, indica que el calor trasmitido es: Directamente proporcional a la resistencia térmica. Muy elevado. Inversamente proporcional a la diferencia de temperaturas. Inversamente proporcional a la resistencia térmica.</p>
+    <p>Los escalofríos pertenecen a la zona o nivel de regulacion: Vasomotora. Sudomotora. Voluntaria. Metabólica.</p>
+    <p>En cualquier proceso en que un sistema termodinámicamente aislado, cambia de un estado a otro: Su entropía aumenta. Su entalpia disminuye. Su entalpia aumenta. Su entropía disminuye.</p>
+    <p>En Termodinámica Clásica, un estado se caracteriza por las magnitudes: Presión(P), Volumen(V) y tiempo(t). Presión(P), Tiempo(t) y Temperatura(T). Presión(P), Potencia(W) y Temperatura(T). Presión(P), Volumen(V) y Temperatura(T).</p>
+    <p>La temperatura: La cualidad que permite determinar si dos sistemas están o no en equilibriotérmico. Es lo que sube o baja en un termómetro. Es lo que regula el sol. Se mide en calorías.</p>
+    <p>El ser vivo es un: Sistema termodinámico Ordenado. Sistema termodinámico Estable. Sistema termodinámico Sano. Sistema termodinámico Instable.</p>
+    <p>En los cambios de estado se modifica. No se modifica la temperatura. La temperatura inicial y final del sistema. La temperatura final. La temperatura inicial.</p>
+    <p>¿Para que sudamos cuando la temperatura corporal es elevada?. Para eliminar toxinas. Para evaporar, consumir energía y bajar la temperatura de la superficie corporal. Para usar los ventiladores.</p>
+    <p>El primer principio de la termodinámica introduce el concepto de: Temperatura. Energía interna. Entropía. Entalpia.</p>
+    <p>Una función de estado en termodinámica es aquella que: Solo depende del sentido en el que se realicen las transformaciones independientemente de losestados. Me gusta mi carrera. Álvaro Condón es el mejor.</p>
+    <p>El segundo principio de la termodinámica introduce el concepto de: Energía interna. Entalpia. Calor. Entropia.</p>
+    <p>El primer principio de la termodinámica es: La energía ni se crea ni se destruye. El calor. La entalpia. La entropia.</p>
+    <p>El segundo principio de la termodinamica determina que: Es imposible obtener un proceso cíclico cuyo único efecto sea la transformación de calor en trabajo. Es posible obtener dicho proceso. Es posible obtener dicho proceso en determinadas condiciones de presión. Es posible obtener dicho proceso en determinadas condiciones de temperatura.</p>
+    <p>¿A que concepto se llega en el principio cero de la termodinámica?. Equilibrio térmico. Entropia. Temperatura. Entalpia.</p>
+    <p>En relación a los dos principios de la termodinámica usted diría: El primero es probabilístico y el segundo rígido. Ambos son probabilístico. El segundo es probabilístico y el primero rígido. Ambos son rígidos.</p>
+    <p>En cualquier proceso donde un sistema termodinámicamente aislado pasa de un estado a otro: Su entropía aumenta. Su entropía disminuye. Su entalpia aumenta. Su entalpia disminuye.</p>
+    <p>¿Qué no es una función de estado?. Presión. Temperatura. Entropía. Trabajo.</p>
+    <p>¿Cómo regula el ser humano su temperatura corporal?. Cediendo calor al exterior. Tomando calor del exterior. Variando su resistencia térmica. Manteniendo todos los puntos del cuerpo a la misma temperatura.</p>
+    <p>¿Cómo regulan ciertos mamíferos y aves sometidas a bajas temperaturas el flujo de calor para sus extremidades?. Variando su resistencia térmica. Variando su temperatura corporal. Dejando que se congelen. Con un sistema de circulación contracorriente.</p>
+    <p>La entropía en un sistema aislado: No varia. Disminuye siempre. Aumenta siempre. Es reversible.</p>
+    <p>En condiciones normales de 25 grados. ¿Por que mecanismo pierde el cuerpo mas calor?. Radiación. Convección. Transpiración. Respiración.</p>
+    <p>El primer experimento de Joule establece relación entre: Calor y temperatura. Energía y materia. Calor y trabajo. Trabajo mecánico y estabilidad.</p>
+    <p>La entropía relaciona: Calor absorbido por las transformaciones con la temperatura. Energía interna con la presión y el volumen. El calor con el trabajo util. El calor con el trabajo.</p>
+    <p>Un sistema es estable si: La temperatura es -273,5. No emite radiación. Alcanza un valor máximo de entropía. Alcanza un valor mínimo de entropía.</p>
+    <p>La unidad entropía es: Julio. Clausius. Caloría. Todas las anteriores.</p>
+    <p>El metabolismo se suele expresar en: Caloría por cm² y minuto. Kilocalorías. Kilocalorías por m². Kilocalorías por m² u hora.</p>
+    <p>El calor transformado en sangre se hace mediante: Convección. Conducción. Emisión. Refrigeración.</p>
+    <p>Los animales de sangre fría son: Poiquilotermos. Homeotermos. Endergónicos. Exergónicos.</p>
+    <p>Los animales de sangre caliente son: Poiquilotermos. Homeotermos. Endergónicos. Exergónicos.</p>
+    <p>Las transformaciones isotermas son: A presión constante. A volumen constante. A temperatura constante. Presión y volumen constante.</p>
+    <p>El primer principio de la termodinámica es: La energía ni se crea ni se destruye, se transforma. El calor. Entalpia. Entropía.</p>
+    <p>En una transformación reversible a presión y temperatura constante: La variación de energía libre es nula. La variación de energía libre es positiva. La variación de energía libre es negativa si no hay trabajo útil. La variación de energía libre es nula si no hay trabajo útil.</p>
+    <p>Las transformaciones adiabáticas se realizan: A presión constante. Sin intercambio de trabajo util. Sin intercambio de energía. Sin intercambio de calor.</p>
+    <p>El cuerpo al alimentarse: Toma energía. Toma materia. Disminuye su entropia. Aumenta S.</p>
+    <p>Al verdadero concepto de temperatura se llega por: Primer principio. Segundo principio. Principio cero. Teoría cinética.</p>
+    <p>La circulación venosa intercambia temperatura con la arteria cuando: Hace frio. Hace calor. Se liberan hormonas. Se produce una isquemia.</p>
+    <p>El temblor o escalofrío es una manera de propagación del calor por: Convección. Radiación. Conducción. No es una manera de propagación.</p>
+    <p>Si aumenta la entropia: Aumenta el desorden. Aumenta el orden. Disminuye la temperatura. Disminuye el calor.</p>
+    <p>Las transformaciones diabáticas son aquellas: Que intercambian calor y trabajo con el exterior. Que solo intercambia calor. Que no intercambia calor con el exterior. Que no intercambia trabajo con el exterior.</p>
+    <p>Se llama calor de reacción al calor que absorbe o desprende al: Formarse un mol de una sustancia compuesta a partir de las sustancias simples correspondientes. Reaccionar varias sustancias. Quemarse totalmente una sustancia cualquiera. Oxidarse una sustancia determinada.</p>
+    <p>El metabolismo básico o basal es la cantidad de calor que produce un sujeto por metro cuadrado y por hora cuando: El sujeto esta en su actividad habitual a temperatura no agresiva. El sujeto esta en reposo físico y mental a cualquier temperatura. El sujeto esta en reposo físico y mental a temperatura agradable. El sujeto desarrolla su actividad habitual a temperatura agradable.</p>
+    <p>La principal reacción química que se analiza para el estudio del valor calórico del oxígeno es: C6H12O6 + O2. NH2 + CH. C6H6 + O2. H2 + O2.</p>
+    <p>La ley de Hess es fundamental para determinar: La cantidad de proteínas de los alimentos. El valor calórico de los alimentos. La energía interna de los componentes químicos. La cantidad de grasa de los alimentos.</p>
+    <p>La cantidad de calor desprendido por la combustión completa de un alimento determinado se denomina: Energía interna del alimento. Energía libre del alimento. Valor calórico del alimento. Corriente calórica.</p>
+    <p>El valor calórico de los alimentos será exactamente igual al calor desprendido de la combustión de los mismos si: Se produjera trabajo útil además de calor. Solamente se produjera trabajo útil. Nunca se produjera trabajo útil. Se diera otra circunstancia.</p>
+    <p>A que concepto se llega con el primer principio de la termodinámica: Energía interna. Entalpía. Entropía. Temperatura.</p>
+    <p>En un sistema reversible: S aumenta. S disminuye. S permanece constante. Ninguna de las anteriores.</p>
+    <p>La cantidad de calor Q transmitida por conducción en una unidad de tiempo se define por: Q/t = K * S/1 * (T1-T2). Q/t = K * S/1 * (T2-T1). Q= K * S/1 * (T1-T2). Q/t = K * (T1-T2).</p>
+    <p>La importancia de la magnitud física de la energía radica en: Su permanencia. No se puede crear. No se puede destruir. Todas son ciertas.</p>
+    <p>En una transformación isoterma e isobárica  la función de Gibbs: Aumenta. Disminuye para procesos irreversibles. Es igual. Ninguna es cierta.</p>
+    <p>¿Va en contra del primer principio la vida y sus procesos biológicos?. Si, porque cada vez hay especies más complejas. No, porque es un subsistema. No, porque disminuye la entropia.</p>
+    <p>En una reacción reversible el trabajo útil es: Máximo. Mínimo. Igual. No hay.</p>
+    <p>En una reacción irreversible la entropía es: Mayor que cero. Menor que cero. Igual que cero. Menor o igual que cero.</p>
+    <p>En un proceso reversible la entropía es: Mayor que cero. Menor que cero. Igual a cero.</p>
+    <p>Por que un barco no puede navegar usando la energía del mar. Va en contra del primer principio. Va en contra del segundo principio. No es posible mecanicamente. No seria rentable.</p>
+    <p>El verdadero concepto de temperatura se alcanza con: Teoría de la información. Teoría nuclear. Teoría cinética. Teoría kinética.</p>
+    <p>La transmisión de calor por contacto físico entre dos cuerpos se denomina: Convección. Conducción. Difusión. Radiación.</p>
+    <p>Alimentarse consiste en: Adquirir entropía negativa. Adquirir entropía positiva o igual a cero. Adquirir energía en forma de calor. Adquirir entalpia.</p>
+    <p>Una pieza helada pasa a líquida, implicando un aumento de: Entropía. Entalpía. Función de Gibbs. Función de Helmholtz.</p>
+    <p>El calor en el vacío: Se propaga por convección. Se propaga por conducción. No se propaga. Se propaga por radiación.</p>
+    <p>La forma mas baja o degradada de energía es: El calor. La temperatura. La energía cinética. La energía potencial.</p>
+    <p>La entalpía: Es una función de estado. No es una función de estado.</p>
+    <p>El calor que se transfiere de un sistema a otro: Es una función de estado. No es una función de estado. Se mide en watios.</p>
+    <p>La transferencia de calor que se produce en los fluidos por desplazamiento de partículas es debido a una corriente de: Conducción. Radiación. Convección. Desplazante.</p>
+    <p>Las transformaciones isotermas son aquellas en las que: La T aumenta. La T disminuye. No hay transferencia de calor, el calor es constante. Todas son falsas.</p>
+    <p>En un proceso real: La entropía del universo aumenta. La entropía del universo disminuye. La entropía del universo se mantiene constante. El trabajo es máximo.</p>
+    <p>Una función de estado es aquella que depende de: Del estado físico inicial y final. Del estado final. De varias variables que varían. Ninguna de las anteriores.</p>
+    <p>La entalpia del organismo es: Máxima. Mínima. Equilibrada. Todas son falsas.</p>
+    <p>La energía interna relaciona: Entropía con trabajo. Calor con trabajo útil. Calor con entropia. Calor con trabajo.</p>
+    <p>El hipotálamo al aumentar la temperatura a 37 grados: Produce temblor. Produce sudor. Produce vaso dilatación. Todas son correctas.</p>
+    <p>Es inherente al aumento de entropía: La disminución de información. El aumento de información.</p>
+    <p>La posibilidad de invertir calor en trabajo es lo mismo que: Aumento de entropía. Disminución de entropía. Aumento de entalpía. Disminución de entalpía,.</p>
+    <p>Si el incremento de la función de Gibbs y Heimory se iguala, diremos que la transformación es: Adiabática. Isobara. Isocora. Isoterma.</p>
+    <p>¿Qué tipo de perdida de calor favorece el sudor?. Convección. Conducción. Radiación. La pregunta es falsa.</p>
+    <p>Consecuencia de que principio es la inaccesibilidad al cero absoluto: Primero. Segundo. Tercero. Cero.</p>
+    <p>En los cambios de estado se modifica: La temperatura inicial. La temperatura final. No se modifica la temperatura. La temperatura inicial y final.</p>
+    <p>La ecuación fundamental de transmisión de calor entre dos medios indica que el calor es: Inversamente proporcional a la resistencia termica. Inversamente proporcional a la diferencia de temperatura. Muy elevado. Directamente proporcional a la resistencia termina.</p>
+    <p>La temperatura es la magnitud que permite: Determinar si dos cuerpos están o no en equilibrio termico. Es lo que subo o baja en un termometro. Se mide en calorias. Regular el sol.</p>
+    <p>¿Para que sudamos cuando la temperatura es elevada?. Para refrigerarnos. Para eliminar toxinas. Para usar ventilacion. Para evaporar el sudor, consumiendo energía y bajando la temperatura de la superficie corporal.</p>
+    <p>Los escalofríos perteneces a la zona de regulación de la temperatura. Sudomotora. Voluntaria. Metabólica. Vasomotora.</p>
+    <p>En cualquier proceso  donde un sistema termodinámicamente aislado pasa de un estado a otro: Su entropía aumenta. Su entropía disminuye. Su entalpía aumenta. Su entalpía disminuye.</p>
+    <p>El ser vivo es un sistema: Ordenado. Estable. Inestable. Sano.</p>
+    <p>El calor se mide en: Grados. Vatios. Caballos de vapor. Julios.</p>
+    <p>Las unidades de la entropía en el SI son: J/K. KJ/h*m². J/Celsius. Kcal./Celsius.</p>
+    <p>Se denomina ecuación de estado: Las propiedades de la materia afectadas por Q y T. Relación matemática que liga las magnitudes P,V y T. Al consiente: P,V y T. Relación matemática que liga las magnitudes que definen el estado de un sistema.</p>
+    <p>Se dice que un sistema es estable, si: Si energía es muy elevada. Esta en estado de máxima entropía. La entalpía es mínima. La entalpía es máxima.</p>
+    <p>Aplicando la función de Gibbs a la evolución de la energía contenida en un mol de glucosa: La energía libre obtenida es igual a la entropía generada. La energía libre obtenida es menor que la entalpía. La energía libre obtenida es mayor que la entalpía. La entropía generada es mayor que la energía libre.</p>
+    <p>Para que el organismo vivo se mantenga en equilibrio térmico, es preciso que: El calor transmitido sea igual a calor producido. El calor trasmitido sea menor a calor producido. El calor transmitido sea mayor al calor producido. Debe estar muy bien alimentado.</p>
+    <p>¿Cuál de las siguientes pérdidas por calor, es la más importante en el ser humano?. Conducción. Conversión. Radiación. Transpiración.</p>
+    <p>La ecuación fundamental de transmisión del calor entre dos medios, nos dice que el calor transmitido es: Directamente proporcional a la resistencia térmica. Inversamente proporcional a la temperatura corporal. Directamente proporcional a la diferencia entre la temperatura corporal y la exterior. No depende de la temperatura exterior.</p>
+    <p>El detector en el mecanismo de control de T del cuerpo humano está en: La piel. El hipotalamo. El sistema circulatorio.</p>
+    <p>La criobiología estudia: Las células cancerígenas. Los efectos de las temperaturas bajas en biología y medicina. La producción y el uso de temperaturas bajas. El calentamiento de tejidos.</p>
+    <p>El primer principio de la termodinámica es: Una ley indeterminista. Una ley determinista y flexible. Una ley determinista y rígida. Una función exponencial.</p>
+    <p>El primer experimento de Joule establece la relación entre: Calor y temperatura. Energía y materia. Calor y trabajo. Trabajo mecánico y estabilidad.</p>
+    <p>En un sistema irreversible: S aumenta. S disminuye. S permanece constante. Ninguna de las anteriores.</p>
+    <p>La temperatura es: Una energía. Una magnitud. Una sensación. Calor.</p>
+    <p>Los puntos fijos del termómetro son: 0 y 100. Dos puntos tomados al azar y ulteriormente estandarizados en todos los termómetros. Dos puntos que corresponden con la dilatación del mercurio en la fusión del hielo y en la ebullición del agua. Todas son ciertas-.</p>
+    <p>El enunciado “es imposible obtener un proceso cíclico cuando el único efecto sea la transformación de calor en trabajo” (entropía). Es el enunciado del primer principio. Es el enunciado del segundo. Es falso.</p>
+    <p>A la relación matemática f(P,V,T)=0 se la denomina: Función de estado. Equilibrio termodínamico. Ecuación de estado. Estado en equilibrio.</p>
+    <p>¿A quien deberías seguir en Instagram?. Not_yisuss. Santibenvenuty. Susoocalderoon. Ignbartel (elmejordandocharlasmotivadoras). Antonioarroyoo19. Pepegarridoo. Álvaro Condón, no tiene insta pero Álvaro Condón.</p>
+    <p>El mecanismo de las aves de unir el seno venoso con el arterial para ganar calor lo realizan: Cuando las pérdidas son grandes. Cuando el clima es húmedo y caluroso. Cuando hace mucho frío. Cuando las pérdidas son grandes y hace mucho frio.</p>
+    <p>Quieres ser el novi@ de Bartel?. SI. Si. si. sI.</p>
+    <p>A escala molecular la temperatura es: Inversamente proporcional a la masa del cuerpo. Inversamente proporcional a la constante de Stefan-Boltzmann. Similar al calor. Directamente proporcional a la velocidad de las partículas que forman el cuerpo.</p>
+    <p>Una variable termodinámica que no depende del tamaño ni de la cantidad de materia se denomina: Intensiva. Extensiva. Adiabática. Fija.</p>
+    <p>Si la variación de energía interna es igual a cero, entonces decimos que se trata de un proceso: Adiabático. Isotermo. Isobaro. Isocoro.</p>
+    <p>La energía transferida del cuerpo a otro debido a una diferencia entre sus temperaturas se denomina: Calor. Energía interna. Trabajo calórico. Trabajo.</p>
+    <p>¿Cuál de lo siguientes sistemas termodinámicos puede transmitir materia a los alrededores?. Sistema Adiabático. Sistema Cerrado. Sistema Aislado. Sistema Abierto.</p>
+    <p>Se denomina energía: A la temperatura alcanzada. Al producto escalar de la fuerza por el espacio recorrido. A la cantidad de trabajo producido o consumida por unidad de tiempo. A la capacidad que tienen los cuerpos para producir cambios para realizar un trabajo.</p>
+    <p>El proceso en el cual la energía interna se incrementa en la misma proporción que el trabajo mecánico se denomina: Adiabático. Isocoro. Isotermo. Isobaro.</p>
+    <p>El proceso en el cual la energía interna se incrementa en la misma proporción que el trabajo mecánico se denomina: Isotermo. Isócoro. Adiabático. Isobaro.</p>
+    <p>Si en un sistema reversible a 300 K la entropía se incrementa en 200 J/K, ¿Cuánto calor seagrego al sistema?. 500 calorías. 2.090 Julios. 60.000 calorías. 60.000 Julios.</p>
+    <p>La energía transferida de un cuerpo a otro debido a una diferencia entre sustemperaturas se denomina: Calor. Energía interna. Trabajo. Trabajo calorico.</p>
+    <p>Una función o variable de estado puede definirse como: Aquella que define la forma del sistema. Aquella cuyas variaciones NO DEPENDEN solamente de los estados inicial y final del sistema. Aquella cuyas variaciones dependen exclusivamente de los estados inicial y final del sistema. Aquella que nos indica el estado físico del sistema.</p>
+    <p>Un gas contenido en un sistema cilíndrico provisto de un pistón sufre una expansión al absorber calor. Si la energía interna no experimenta ninguna variación, entonces el trabajo realizo por el gas es: Mayor que el calor absorbido. Igual que el calor absorbido. Menor que el calor absorbido. Cero.</p>
+    `;
+
+    // Función para mezclar un array (Fisher-Yates Shuffle)
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    // Parseo del contenido HTML para extraer preguntas y respuestas
+    function parseQuestions(html) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const paragraphs = doc.querySelectorAll('p');
+        const questionsData = [];
+
+        paragraphs.forEach((p, index) => {
+            let text = p.textContent.trim();
+            // Lógica heurística para separar pregunta de respuestas
+            // Asumimos que la pregunta termina en el primer punto que es seguido por texto, o en '?' o ':'
+            
+            // Dividimos por puntos seguidos de espacio, o puntos finales.
+            // Primero, intentamos detectar si hay un ':' que divida pregunta de opciones
+            let parts = [];
+            
+            if (text.includes(': ') && text.indexOf(': ') < text.length / 2) {
+                // Si hay dos puntos en la primera mitad, es probable que sea "Pregunta: Op1. Op2."
+                let splitIndex = text.indexOf(': ');
+                let questionPart = text.substring(0, splitIndex + 1); // Incluir ':'
+                let optionsPart = text.substring(splitIndex + 1);
+                // Dividir opciones por punto
+                let options = optionsPart.split('.').filter(o => o.trim().length > 0).map(o => o.trim());
+                parts = [questionPart, ...options];
+            } else if (text.includes('?')) {
+                // Si hay interrogación
+                let splitIndex = text.lastIndexOf('?');
+                let questionPart = text.substring(0, splitIndex + 1);
+                let optionsPart = text.substring(splitIndex + 1);
+                // A veces hay un punto después del ?
+                if (optionsPart.startsWith('.')) optionsPart = optionsPart.substring(1);
+                
+                let options = optionsPart.split('.').filter(o => o.trim().length > 0).map(o => o.trim());
+                parts = [questionPart, ...options];
+            } else {
+                // División estándar por puntos
+                // Esto es más arriesgado, asumimos que el primer segmento es la pregunta.
+                parts = text.split('.').filter(o => o.trim().length > 0).map(o => o.trim());
+            }
+
+            if (parts.length >= 2) {
+                const questionText = parts[0];
+                const options = parts.slice(1);
+                questionsData.push({
+                    id: index + 1,
+                    text: questionText,
+                    options: options
+                });
+            }
+        });
+        return questionsData;
+    }
+
+    function renderQuiz() {
+        const questions = parseQuestions(rawHtmlContent);
+        const container = document.getElementById('quizContainer');
+        container.innerHTML = ''; // Limpiar
+
+        questions.forEach(q => {
+            const qBlock = document.createElement('div');
+            qBlock.className = 'question-block';
+
+            const qTitle = document.createElement('div');
+            qTitle.className = 'question-text';
+            qTitle.textContent = `${q.id}. ${q.text}`;
+            qBlock.appendChild(qTitle);
+
+            const optionsList = document.createElement('ul');
+            optionsList.className = 'options-list';
+
+            // Clona y mezcla las opciones
+            const shuffledOptions = shuffleArray([...q.options]);
+
+            shuffledOptions.forEach(opt => {
+                const li = document.createElement('li');
+                li.className = 'option-item';
+                
+                // Usamos radio buttons para que se sienta como un test
+                const label = document.createElement('label');
+                label.style.cursor = 'pointer';
+                label.style.display = 'block';
+                
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = `q_${q.id}`;
+                input.value = opt;
+
+                label.appendChild(input);
+                label.appendChild(document.createTextNode(opt));
+                li.appendChild(label);
+                
+                // Al hacer click en el LI, marcar el radio
+                li.onclick = (e) => {
+                    if(e.target !== input) input.checked = true;
+                };
+
+                optionsList.appendChild(li);
+            });
+
+            qBlock.appendChild(optionsList);
+            container.appendChild(qBlock);
+        });
+    }
+
+    // Ejecutar al cargar
+    window.onload = renderQuiz;
+</script>
+
+</body>
+</html>

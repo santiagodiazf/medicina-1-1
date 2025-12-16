@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Ondas y Ultrasonidos - FM SHARK CREW</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --success: #27ae60;
+            --error: #c0392b;
+            --light: #ecf0f1;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: var(--primary);
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        h1 { margin: 0; color: var(--accent); }
+        .subtitle { color: #7f8c8d; font-size: 0.9em; margin-top: 10px; }
+        
+        .question-card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+        .question-card:hover { transform: translateY(-2px); }
+        
+        .q-text {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        
+        .options-grid {
+            display: grid;
+            gap: 10px;
+        }
+        
+        .option {
+            padding: 15px;
+            border: 2px solid var(--light);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .option:hover {
+            background-color: var(--light);
+            border-color: #bdc3c7;
+        }
+        
+        /* Estados de respuesta */
+        .answered .option { pointer-events: none; }
+        
+        .option.correct {
+            background-color: #d5f5e3;
+            border-color: var(--success);
+            color: var(--success);
+            font-weight: bold;
+        }
+        .option.correct::after { content: "✓"; float: right; }
+        
+        .option.incorrect {
+            background-color: #fadbd8;
+            border-color: var(--error);
+            color: var(--error);
+            opacity: 0.7;
+        }
+        .option.incorrect::after { content: "✕"; float: right; }
+        
+        #controls {
+            text-align: center;
+            margin: 40px 0;
+        }
+        button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1em;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            transition: background 0.3s;
+        }
+        button:hover { background-color: #2980b9; }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Test Ondas y Ultrasonidos</h1>
+    <div class="subtitle">Recopilación FM Shark Crew</div>
+</header>
+
+<div id="quiz-container">Loading...</div>
+
+<div id="controls">
+    <button onclick="location.reload()">⟳ Reiniciar y Barajar Respuestas</button>
+</div>
+
+<script>
+const quizData = [
+    { q: "¿Se puede propagar la luz y el sonido en el vacío?", a: ["La luz sí, el sonido no", "Ambos se pueden transmitir", "Ninguno se puede transmitir", "La luz no, el sonido sí"] },
+    { q: "Cuando se utiliza un sistema de ultrasonidos en diagnóstico, la sonda emisora-receptora se suele untar de una especie de gel con objeto de:", a: ["Acoplar las impedancias acústicas", "Que se desplace mejor sobre el paciente", "Aumentar la tensión sexual", "Que existe una gran discontinuidad de impedancias"] },
+    { q: "El número de capas hemireductoras mínimo necesario para que tras un blindaje la intensidad de un haz de fotones se vea reducida a menos de la décima parte del valor inicial es:", a: ["4", "5", "3", "2"] },
+    { q: "Cuando el valor de 'CHR' es muy grande diremos que la radiación es:", a: ["Muy penetrante", "Monoenergética", "Poco penetrante", "Regular de penetrante"] },
+    { q: "Cuando una onda se propaga en un medio disipativo, su intensidad:", a: ["Decrece exponencialmente con la distancia", "Permanece constante", "Es inversamente proporcional al cuadrado de la distancia", "Se anula"] },
+    { q: "Cuando duplicamos la frecuencia de un sonido, el nuevo sonido tendrá:", a: ["Un tono más agudo (una octava superior)", "Un timbre diferente", "Un tono más grave", "Doble número de fones"] },
+    { q: "Para la realización de ecografías se suele utilizar:", a: ["La misma sonda para la emisión y la captación de los ultrasonidos reflejados", "Una sonda que emite los ultrasonidos y otra distinta que los recibe", "Una placa sensible a la radiación ultrasonora", "Una sonda que emite los ultrasonidos a 50 cm del paciente como mínimo"] },
+    { q: "La obtención de imágenes ecográficas de tipo Doppler se basa en:", a: ["La variación de frecuencia debida al movimiento del objeto que refleja la onda", "El movimiento de la sonda que emite los ultrasonidos", "Las diferencias de densidad del medio", "La amplitud de la onda reflejada"] },
+    { q: "Recibe el nombre de Onda o Movimiento ondulatorio:", a: ["Una perturbación que se propaga", "La línea ondulada que se obtiene al agitar una cuerda", "Cualquier movimiento que produzca ondulaciones en la superficie del agua", "Aquellas que pueden ser captadas mediante una antena"] },
+    { q: "Una onda transversal es:", a: ["Aquella en la que la dirección de la perturbación y la de propagación son perpendiculares", "Aquella en la que la dirección de la perturbación y la de propagación son iguales", "Aquella que atraviesa de forma transversal el medio", "El sonido"] },
+    { q: "Cuando una onda se propaga en un medio material:", a: ["Hace que las partículas del medio oscilen", "Atraviesa éste sin que sus partículas sufran alteración alguna", "Provoca un movimiento uniformemente acelerado en sus partículas", "Las partículas del medio se mueven con velocidad constante"] },
+    { q: "Indicar cuál de las siguientes afirmaciones puede ser verdadera (sobre el periodo):", a: ["El periodo de una onda es de 5 s", "El periodo de una onda es de 5 m", "El periodo de una onda es de 5 Hz", "El periodo de una onda es directamente proporcional a su velocidad de propagación"] },
+    { q: "La frecuencia de las ondas sonoras disminuye cuando la fuente y el receptor:", a: ["Se alejan", "Se mueven de forma que se mantiene constante la separación de ambos", "Se acercan", "Están en reposo"] },
+    { q: "Debido a su tono distinguimos entre sonidos:", a: ["Agudos y Graves", "Complejos y simples", "Fuertes y débiles", "Rápidos y lentos"] },
+    { q: "El periodo de una onda:", a: ["Es el tiempo que tarda en completar un ciclo", "Es el espacio que tarda en repetirse una onda", "Dividido por 2π da la frecuencia", "Ninguna de las afirmaciones anteriores es cierta"] },
+    { q: "La función del oído humano es:", a: ["Convertir las ondas sonoras en impulsos eléctricos/nerviosos", "Convertir los impulsos eléctricos en ondas sonoras", "Transformar los impulsos nerviosos en ondas sonoras", "Transformar los impulsos mecánicos en ondas sonoras"] },
+    { q: "En su camino a lo largo del oído externo, las ondas sonoras alcanzan finalmente:", a: ["El Tímpano", "El pabellón auditivo", "El conducto Auditivo", "El vestíbulo"] },
+    { q: "En la cadena de huesecillos del oído medio se encuentra:", a: ["El yunque", "El vestíbulo", "El tímpano", "El conducto auditivo"] },
+    { q: "La oreja es parte constitutiva del:", a: ["Oído externo", "Oído medio", "Oído interno", "Oído musical"] },
+    { q: "Las distintas frecuencias son recogidas en puntos distintos de:", a: ["La membrana basilar", "El pabellón auditivo", "La membrana oval", "El vestíbulo"] },
+    { q: "El oído medio se encuentra limitado por la base de la cóclea y el:", a: ["El tímpano", "El pabellón auditivo", "El conducto auditivo", "El vestíbulo"] },
+    { q: "Las vibraciones de la ventana oval son transformadas en impulsos nerviosos en:", a: ["La cóclea (Órgano de Corti)", "La ventana redonda", "El martillo", "El tímpano"] },
+    { q: "Cuando una persona habla con voz más aguda que otra significa que:", a: ["Produce sonidos de mayor frecuencia", "Produce sonidos de mayor amplitud", "Produce sonidos de mayor longitud de onda", "Produce sonidos de menor frecuencia"] },
+    { q: "Cierto movimiento ondulatorio posee una frecuencia de 10Hz y una longitud de onda de 3m, así que su velocidad de propagación es:", a: ["30 m/s", "10/3 m/s", "10 m/s", "3 m/s"] },
+    { q: "Una onda armónica de longitud de onda de 3m, se propaga a una velocidad de 3m/s. La frecuencia de onda es:", a: ["1 Hz", "1 rad/s", "1 m", "1 s"] },
+    { q: "Las ondas mecánicas se propagan:", a: ["En un medio material", "En el vacío", "Siempre que haya un transporte neto de materia", "Siempre que no haya un transporte de energía"] },
+    { q: "Para medir la velocidad de la sangre en un vaso realizaremos:", a: ["Una ecografía Doppler", "Una ecografía tipo A", "Una ecografía tipo B", "Una ecografía TM"] },
+    { q: "En el estudio del funcionalismo cardiaco se utiliza frecuentemente:", a: ["La ecografía TM", "La ecografía A", "La ecografía B", "La Espirometría"] },
+    { q: "Para una onda armónica, la razón entre la longitud de onda y el periodo es:", a: ["La velocidad de propagación de la onda", "El número de ondas", "La frecuencia de la onda", "La frecuencia angular"] },
+    { q: "La intensidad relativa de una onda se mide en:", a: ["Decibelios", "Erizos", "W/m2", "Metros"] },
+    { q: "El coeficiente de absorción de una onda se puede medir en:", a: ["1/cm", "mol/cm2", "electron/voltio", "decibelios"] },
+    { q: "¿Cual de las siguientes afirmaciones es cierta?", a: ["Todas las ondas son movimientos ondulatorios", "Todos los movimientos ondulatorios son ondas", "El movimiento ondulatorio no es una onda", "Solo algunos movimientos ondulatorios son ondas"] },
+    { q: "En un movimiento ondulatorio se dice que dos puntos estan en concordancia de fase cuando:", a: ["Están separados por una distancia igual a la longitud de onda (o múltiplo)", "Estan separados por una distancia igual a la mitad de la longitud de la onda", "Estan separados por una distancia igual a la cuarta parte de la longitud de la onda", "Estan separados por una distancia igual a 10 veces la longitud de onda"] },
+    { q: "La energia transmitida por una onda por unidad de tiempo y de superficie perpendicular a la direccion de propagacion se denomina:", a: ["Intensidad de la onda", "Potencia de la onda", "Energia de la onda", "Coeficiente de transmision de la onda"] },
+    { q: "Todo punto de un medio alcanzado por un movimiento vibratorio que se propaga por el se convierte en foco emisor de ondas secundarias, este enunciado corresponde a:", a: ["Principio de Huygens", "Efecto doppler", "Poder de refraccion", "Ley de Zurita"] },
+    { q: "La ecuacion y = A sen 2π (1/T –x/λ) representa:", a: ["El movimiento ondulatorio", "La atraccion de dos cargas electricas puntiformes", "La fuerza de atraccion vectorial de un campo magnetico", "Una formula trigonometrica cualquiera"] },
+    { q: "La intensidad de un movimiento ondulatorio es inversamente proporcional a:", a: ["El cuadrado de la distancia", "La amplitud del movimiento", "La distancia en centimetros", "El cuadrado de la amplitud"] },
+    { q: "Un medio disipativo es aquel en el cual:", a: ["El medio absorbe parte de la energia que la onda transmite", "Las ondas se transmiten segun frentes de onda esfericas", "Se puede transmitir radiaciones electromagneticas", "Se cumple la ley del inverso del cuadrado"] },
+    { q: "Al pasar una onda de un medio a otro su energia:", a: ["Parte se transmite y parte se refleja", "Permanece constante", "No se transmite en absoluto", "Ninguna de las anteriores"] },
+    { q: "Indicar cual de las siguientes afirmaciones es falsa:", a: ["Las ondas no propagan energia", "En toda onda hay propagacion de energia", "Los puntos que pertenecen al mismo frente de onda estan en fase", "El movimiento ondulatorio posee una periodicidad espacial y temporal"] },
+    { q: "En las ondas planas los frentes de onda son:", a: ["Planos", "Rectos", "Esféricos", "Circunferencias"] },
+    { q: "Las ondas se propagan mas rapidamente en:", a: ["Sólidos", "Aire", "Agua", "Es indiferente"] },
+    { q: "Para que la onda sonora llegue al oido su longitud ha de ser:", a: ["4 veces la del oido (resonancia)", "1/3 la del oido", "3 veces la del oido", "2 veces la del oido"] },
+    { q: "El oído medio:", a: ["Actua como acoplador de impedancias entre el aire y la perilinfa", "Hace que toda la intensidad de la onda en el aire se transmita a la perilinfa", "Transforma las ondas sonoras en impulsos nerviosos", "Actua como acoplador de impedancias y hace que toda la intensidad se transmita"] },
+    { q: "Un sonido de 10 decibelios y 1000 Hz:", a: ["Es audible", "No es audible", "Es muy agudo", "Produce una sensación inefable"] },
+    { q: "Señale la proposicion correcta:", a: ["Los sonidos graves se transmiten mejor que los agudos", "Los sonidos agudos se transmiten mejor que los graves", "Graves y agudos se transmiten de la misma forma", "Los sonidos se transmiten mejor en medios poco densos"] },
+    { q: "Al umbral de la sensacion auditiva desagradable le corresponden:", a: ["120 dB", "130 dB", "110 dB", "150 dB"] }, // Nota: Suele ser 120-130 dB
+    { q: "Desde el punto de vista fisico, el conducto auditivo externo actua como:", a: ["Amplificador de ondas sonoras (resonador)", "Transformador de presiones", "Perceptor de ondas", "Amplificador y perceptor de ondas sonoras"] },
+    { q: "El organo de Corti se encuentra situado sobre:", a: ["La membrana basilar", "El timpano", "La membrana tectorial", "Rampa vestibular"] },
+    { q: "¿Cual de las siguientes afirmaciones es de dudosa veracidad?", a: ["Lo que caracteriza a las distintas notas musicales es su intensidad", "Dos notas musicales distintas poseen siempre distinta frecuencia", "Una misma nota musical se puede emitir con frecuencias distintas separadas por un intervalo de una octava", "Todas son ciertas"] },
+    { q: "Es falso que en la propagacion de un sonido influye que el medio sea:", a: ["Transparente a la luz visible", "Más o menos denso", "Muy comprensivo (compresible)", "Poco comprensivo"] },
+    { q: "¿Cual es la cualidad del sonido que distingue a otro de distinta nota?", a: ["Tono", "Mel", "Fon", "Intensidad"] },
+    { q: "Indique cual de las siguientes afirmaciones es falsa:", a: ["Lo que caracteriza distintas notas musicales es su intensidad", "Dos notas musicales distintas poseen siempre diferente frecuencia", "Una misma nota musical se puede emitir con frecuencias distintas separadas por un intervalo de una octava", "Intervalo de tono es sinonimo de diferencia de frecuencias"] },
+    { q: "En la obtencion de la direccion de un sonido por audicion biaural no influye:", a: ["La musicalidad del sonido", "La diferencia de fase con que se percibe en cada oido", "La diferencia de intensidad que se percibe con cada oido", "Es imposible obtener la direccion"] },
+    { q: "La produccion de ultrasonidos de ultrafrecuencia se debe a:", a: ["Efecto piezoelectrico", "Efecto recíproco al piezoelectrico", "Efecto térmico", "Efecto magnético"] },
+    { q: "En la ecografia tipo B o de Scan:", a: ["El transductor se mueve y hay una modulacion en brillo del impulso reflejado", "El transductor permanece fijo", "El transductor se mueve", "Hay una modulacion en brillo del impulso reflejado"] },
+    { q: "La ecografia TM se emplea normalmente:", a: ["Para determinar la posicion variable de un obstaculo que se supone en movimiento (cardiaco)", "Para obtener una imagen de la estructura explorada", "Para obtener informacion unidimensional de las estructuras encontradas por el haz", "Como metodo terapeutico"] },
+    { q: "En la aplicacion terapeutica o diagnostica de los ultrasonidos, se coloca entre el transductor y la piel una sustancia de acoplamiento para:", a: ["Disminuir la reflexion y aumentar la transmision", "Que el transductor se deslice con facilidad", "Proteger la piel de la irradiacion", "Aumentar la frecuencia"] },
+    { q: "La ecografia Doppler se utiliza para determinar:", a: ["La velocidad de la sangre en los vasos sanguineos", "La morfologia de la zona explorada", "La posicion de las estructuras encontradas por el haz", "El espesor de los musculos"] },
+    { q: "La base de la utilizacion diagnostica de los ultrasonidos es:", a: ["El fenomeno del eco", "El efecto piezoelectrico", "El efecto recíproco al piezoelectrico", "El efecto fotoelectrico"] },
+    { q: "Con el sistema B-Mode de registro de los ecos, las interfases de las diferentes impedancias acusticas se registran en el osciloscopio como:", a: ["Puntos luminosos", "Deflexiones horizontales", "Deflexiones verticales", "Depende del transductor"] },
+    { q: "A frecuencias altas de ultrasonidos:", a: ["Mas directividad y menos divergencia", "Mas directividad y divergencia", "Menos directividad y mas divergencia", "Menos directividad y menos divergencia"] },
+    { q: "La funcion de un transductor es:", a: ["Traducir la magnitud que recoge la variable biologica (transformar energía)", "Servir de conductor de una señal electrica", "Traducir la magnitud que recoge a otra distancia", "Amplificar la magnitud recogida"] },
+    { q: "Para un observador al borde de una acera, el ruido del coche por cruza a gran velocidad:", a: ["Es mas grave al alejarse que al acercarse", "Es mas agudo al alejarse que acercarse", "Es igual de agudo", "Es imperceptible"] },
+    { q: "El uso de acople de impedancia es necesario:", a: ["Al usar electrodos de contacto (o microelectrodos)", "Al introducir una señal en el osciloscopio", "Al usar manometros de tension", "Al usar microelectrodos"] },
+    { q: "Para recoger cual de las siguientes variables es necesario un transductor:", a: ["Flujo venoso / Presion", "Electroencefalograma", "Potencial sinaptico", "Potencial de membrana"] },
+    { q: "La formula que expresa el indice de refraccion absoluta:", a: ["n= C/V", "n= C/N", "n= V/C", "n= N/C"] },
+    { q: "Es falso que los ultrasonidos actuen sobre el metabolismo celular como consecuencia de producir:", a: ["Disminucion de temperatura", "Aumento de temperatura", "Rotura de macromoleculas", "Contacto intimo entre diferentes componentes"] },
+    { q: "Para comprobar que el cabezal de ecografia emite podemos realizar la prueba del:", a: ["Gota de agua", "Benceno", "Yoduro potásico", "Silbato de Zurita"] },
+    { q: "Algunos animales no perciben ultrasonidos como:", a: ["El hombre", "El perro", "El murciélago", "El delfín"] },
+    { q: "El material usado inicialmente para producir ultrasonidos fue:", a: ["Cuarzo", "Rubí", "Topacio", "Amatista"] },
+    { q: "La resistencia que oponen las diversas sustancias a ser atravesadas por los ultrasonidos se denomina:", a: ["Impedancia acústica", "Ecogenicidad", "Densidad resistiva", "Resistencia específica"] },
+    { q: "Para una accion terapeutica superficial elegiremos cabezales de:", a: ["3 Mhz", "2 Mhz", "1 Mhz", "750 Khz"] },
+    { q: "En la ecografia Doppler medimos la velocidad de la sangre cuando la variacion de frecuencia del haz se refleja en:", a: ["Los hematies", "El plasma sanguineo", "Las proteinas sanguineas", "Los electrolitos del plasma"] },
+    { q: "Los ultrasonidos se utilizan en terapéutica aprovechando:", a: ["Su acción térmica y mecánica", "Su acción térmica", "Que disminuyen la temperatura de los tejidos tratados", "Su acción mecánica (o dinámica)"] },
+    { q: "Las ondas sonoras o acústicas son:", a: ["Ondas longitudinales de presión que se propagan por el aire", "Ondas transversales de presión que se propagan por el aire", "Ondas estacionarias", "Ondas electromagnéticas"] },
+    { q: "La frecuencia captada por un observador que se dirige a una fuente de ondas sonoras es:", a: ["Mayor que la frecuencia emitida por la fuente", "Igual a la emitida por la fuente", "Independiente de la velocidad del observador", "Depende de la distancia"] },
+    { q: "¿A quién vas a seguir en instagram cuando termines este test?", a: ["pepegarridoo", "susoocalderoon", "teochaza", "santibenvenuty"] },
+    { q: "Alvaro Condón", a: ["Alvaro Condón", "Alvaro Condón", "Alvaro Condón", "Alvaro Condón"] },
+    { q: "Los sonidos y los ultrasonidos de alta frecuencia se diferencian en que:", a: ["Son movimientos ondulatorios de distinta frecuencia", "Uno se propaga en el vacio y otro no", "Uno tiene caracter ondulatorio", "Uno es longitudinal y otro transversal"] },
+    { q: "En todo movimiento ondulatorio:", a: ["Se propaga siempre energía", "Se propaga siempre materia", "Se requiere un medio material para su propagacion", "Se propaga siempre materia y se requiere un medio material para su propagacion"] },
+    { q: "En las ondas estacionarias se cumple que la distancia entre nodo y un vientre es:", a: ["1/4 λ", "λ", "1/2 λ", "1/3 λ"] },
+    { q: "La cualidad que del sonido que permite reconocer dos instrumentos distintos dando la misma nota, se denomina:", a: ["Timbre", "Tono", "Intensidad", "Sonoridad"] },
+    { q: "El umbral de la sensación desagradable es:", a: ["Practicamente independiente de la frecuencia", "Dependiente de la frecuencia", "Dependiente del numero de fonos", "Dependiente del tiempo"] },
+    { q: "El nivel de intensidad se mide en:", a: ["Decibelios", "Fonos", "Sones", "Mels"] },
+    { q: "Un sonido con doble numero de sones que otro se percibe con:", a: ["Doble sonoridad", "Igual sonoridad", "Triple sonoridad", "De la mitad de la intensidad"] },
+    { q: "Dos sonidos de intensidades 10^-4 y 10^-6 W/m2 respectivamente lo oiremos:", a: ["Dos veces mas intenso (en dB es +20dB, en sonoridad aprox 4 veces)", "Dos veces menos intenso", "Igual de intensos", "No existe ninguna relación"] }, // Nota: La pregunta es ambigua. En escala logarítmica es 100 veces más intenso. En dB es 20dB más. En sonoridad (Sones) es 4 veces. La respuesta 'canónica' de estos test suele ser 'Dos veces mas intenso' refiriéndose a los Belios (2 Belios de diferencia) o simplemente está mal formulada en el original.
+    { q: "El aumento de presión que se consigue en el oído medio se debe a:", a: ["La cadena de huesecillos actúa como palanca y la diferencia de área del tímpano y la membrana oval", "La impedancia de la endolinfa", "La cadena de huesecillos actúa como palanca", "La diferencia de área del tímpano y la membrana oval"] },
+    { q: "Si la relación entre las impedancias de la perilinfa y el aire es de 3.249, ¿Qué aumento de presión se producirá para que toda la intensidad del aire se transmita a la perilinfa?", a: ["Aumentara 57 veces", "No se tiene que producir ningun aumento de presion", "No que aumenta es la energia", "Disminuira la presion 4 veces"] },
+    { q: "Un sonido de -10 dB y 1.000 Hz:", a: ["No es audible", "Es audible", "Es muy agudo", "Produce sensación dolorosa"] },
+    { q: "La sensación sonora se mide en:", a: ["Fonos (o Sones)", "W/m2", "Decibelios", "No tiene unidades"] },
+    { q: "Cuando se propaga una onda sonora por la coclea se establece una deformación en la partición coclear, en una posición que depende de:", a: ["La frecuencia de la onda", "La longitud de onda", "La intensidad del sonido", "El nivel de sonoridad"] },
+    { q: "Al pasar una onda de un medio a otro de distinta densidad permanece invariable:", a: ["Su frecuencia", "Su velocidad de propagación", "Su longitud de onda", "Su coeficiente de absorción"] },
+    { q: "La impedancia acústica depende de:", a: ["La velocidad de propagación y la densidad del medio", "La velocidad debida a la perturbación", "La velocidad de propagación", "La densidad del medio"] },
+    { q: "La unidad de agudeza subjetiva de un sonido es:", a: ["Mel", "Son", "Fon", "Decibelio"] },
+    { q: "Con el sistema A-Mode(modulación de amplitud) de registro de los ecos, las interfases de diferentes impedancias acústicas se registran en el osciloscopio como:", a: ["Deflexiones verticales", "Deflexiones horizontales", "Puntos luminosos", "Dependerá del transductor"] },
+    { q: "En la ecografía TM determinaremos:", a: ["La variación de la posición de una estructura a lo largo del tiempo (movimiento)", "La morfología de la zona que hay estudiar", "La velocidad de la sangre en un vaso", "El espesor de las masas musculares superficiales"] },
+    { q: "En la ecografía Doppler el haz de ultrasonidos es:", a: ["Continuo (o pulsado, pero continuo es la base)", "Pulsado", "Semipulsado", "Semicontinuo"] },
+    { q: "Cierto movimiento ondulatorio posee una frecuencia de 10 Hz y una longitud de onda de 3m, así que su velocidad de propagación es:", a: ["30 m/s", "10/3 m/s", "10 m/s", "3 m/s"] },
+    { q: "Una onda armónica de longitud de onda 3m se propaga a una velocidad de 3 m/s, la frecuencia es:", a: ["1 Hz", "1 rad/s", "1 m", "1 dB"] },
+    { q: "Las ondas mecánicas se propagan:", a: ["En un medio material", "En el vacío", "Siempre que haya transporte neto de energía", "Siempre que no haya transporte de energía"] },
+    { q: "Uno de los siguientes sistemas no se puede emplear como acoplador de impedancia:", a: ["Microelectrodo", "Transformador", "Seguidor catódico", "Seguidor de emisión"] },
+    { q: "La velocidad del sonido:", a: ["Depende del medio por el que se propaga y es mayor en los sólidos que en los gases", "Depende del medio por el que se propaga", "Siempre es la misma", "Es mayor en los sólidos que en los gases"] },
+    { q: "¿Qué es la longitud de onda?", a: ["La distancia entre dos puntos consecutivos que están en la misma fase", "La distancia que recorre la onda en un tiempo mayor al periodo", "La distancia que recorre la onda en un tiempo menor al periodo", "La distancia que recorre una partícula en la unidad de tiempo"] },
+    { q: "Con el sistema B-mode de registro de los ecos, las interfases de diferentes impedancias acústicas:", a: ["Se registran como puntos luminosos y permite conocer la morfología de la zona", "Se registran como deflexiones horizontales", "Se registran como puntos luminosos", "Permite conocer la morfología de la zona"] },
+    { q: "Los sonidos y los ultrasonidos se diferencian en que:", a: ["Son movimientos ondulatorios de distinta frecuencia", "Uno es movimiento ondulatorio armónico y el otro no", "Ambos no se propagan en el vacío", "Son movimientos ondulatorios de distinta frecuencia y ambos no se propagan en el vacío"] },
+    { q: "Las ondas sonoras o acústicas son:", a: ["Ondas longitudinales de presión", "Ondas transversales", "Ondas electromagnéticas", "Ondas estacionarias"] },
+    { q: "El sistema TM de registro de los ecos:", a: ["Las tres anteriores", "Determina la posición variable de un obstáculo en movimiento", "Permite la representación de un obstáculo en movimiento en función del tiempo", "Permite el estudio del funcionalismo cardíaco"] },
+    { q: "Un sonido se propaga en el aire con una longitud de onda de 2 m y una velocidad de 340 m/s, en el agua lo hace a 1500 m/s ¿Cuál es su frecuencia en el agua?", a: ["170 Hz", "340 Hz", "340 m/s", "1500 Hz"] },
+    { q: "Qué es el periodo de una onda?", a: ["El tiempo que tarda una partícula en realizar una oscilación completa", "La máxima elongación de una partícula respecto a su posición de equilibrio", "El número de oscilaciones que realiza una partícula en 1 segundo", "La mínima elongación de una partícula respecto a su posición de equilibrio"] },
+    { q: "Las cualidades que nuestro oído distingue en un sonido nos permite afirmar:", a: ["La frecuencia de un sonido hace que lo percibamos más o menos grave", "El tono de un sonido aumenta si la longitud de onda lo hace también", "El volumen de un sonido es independiente de la energía que transporta la onda sonora", "Ninguna de las anteriores"] },
+    { q: "La detección de distintos sonidos son recogidos en puntos de:", a: ["Membrana basilar", "Pabellón auditivo", "Cóclea", "Membrana oval"] },
+    { q: "Una onda sonora de frecuencia 2000 Hz se propaga en el aire e incide sobre un material cuya impedancia acústica es igual a la del hueso. Podemos afirmar que:", a: ["Se va a producir una refllexión del 100 % (aprox) en esa interfase", "Se va a producir una transmisión del 0 % en esa interfase", "Se va a producir una reflexión del 0 % en esa interfase", "Se va a producir una refllexión del 100 % y una transmisión del 0 % en esa interfase"] },
+    { q: "Para conseguir reflexiones importantes en la superficie que separa dos medios:", a: ["Las impedancias acústicas deben ser muy distintas", "Las impedancias acústicas deben ser muy similares", "Los dos medios deben tener una densidad elevada", "Los dos medios deben tener una densidad pequeña"] },
+    { q: "En su camino a lo largo del oído externo, las ondas sonoras alcanzan finalmente:", a: ["El tímpano", "El pabellón auditivo", "El conducto Auditivo", "El vestíbulo"] },
+    { q: "¿Que es la resolución longitudinal?", a: ["Minima distancia entre dos objetos que se ven en la pantalla como dos ecos diferentes", "Maxima distancia entre dos objetos que se ven en la pantalla como dos ecos diferentes", "La culpa es de helena", "Machuca ponme matrícula"] },
+    { q: "El uso de acople de impedancia es necesario:", a: ["Al usar electrodos de contacto", "Al usar microelectrodo", "Al introducir una señal en el osciloscopio", "Al usar manómetros de tensión"] },
+    { q: "Al acoplar un receptor a un generador de tensión interesa:", a: ["Que la impedancia de entrada del receptor sea mayor que la de salida del generador (voltaje)", "Que la impedancia de entrada sea mucho menor que la de salida", "Que sean iguales (potencia)", "Que sean 0"] }, // Contexto biomédico suele ser voltaje (Mayor).
+    { q: "Las ondas sonoras son:", a: ["Ondas longitudinales de presión que se propagan por el aire", "Ondas transversales de presión que se propagan por el aire", "Ondas electromagnéticas", "Ondas estacionarias"] },
+    { q: "El aumento de la presión que se consigue en el oído medio se debe a:", a: ["La b y la c (Palanca y Area)", "La impedancia de la endolinfa", "La cadena de huesecillos actuando como palanca", "La diferencia de área del tímpano y la membrana oval"] },
+    { q: "Un reproductor de música mp3, que es capaz de reproducir un rango de frecuencia de [60- 10.000] HZ, vale 85 €; pero por 1€ más nos da otro que reproduce un rango de [10-40.000] Hz. El primero se oye mejor.", a: ["No notaría ninguna diferencia en el sonido (o inapreciable)", "Compraría el segundo, la calidad del sonido es mucho mejor", "El primero se oye peor", "El primero se oye mejor"] },
+    { q: "Si la potencia de una onda sonora se duplica y la distancia disminuye la mitad, ¿en que factor cambia la intensidad del sonido?", a: ["La intensidad aumenta en ocho", "La intensidad disminuye en ocho", "La intensidad aumenta el doble", "La intensidad disminuye a la mitad"] },
+    { q: "Si el movimiento de una partícula vibrante que da origen a las ondas tiene la misma dirección que la que tiene esta en su avance, las ondas se llaman:", a: ["Longitudinales", "Horizontales", "Perpendiculares", "Transversales"] },
+    { q: "Cuál de las siguientes afirmaciones son ciertas?", a: ["El sonido es una onda longitudinal", "El sonido es una onda electromagnética", "La luz es una onda mecánica", "Todas son ciertas"] },
+    { q: "Resulta sencillo calcular la longitud de onda de una onda si se conoce:", a: ["La velocidad de propagación y la frecuencia de vibración", "La frecuencia de vibración y amplitud de la onda", "La frecuencia de vibración y el periodo de vibración", "La velocidad de propagación y la amplitud de la onda"] },
+    { q: "La frecuencia del sonido captada por un observador en reposo:", a: ["Aumenta cuando se acerca la fuente y disminuye cuando se aleja la fuente", "Disminuye cuando se acerca o aleja de la fuente", "Aumenta cuando se aleja la fuente y disminuye cuando se acerca la fuente", "Aumenta cuando se acerca o se aleja de la fuente"] },
+    { q: "Un sonido de 1.000Hz y 40db produce la misma sensación sonora que otro de 200 Hz y 55db.¿Cuántos fonos tiene este último sonido?", a: ["40 fonos", "40 db", "55 db", "55 fonos"] },
+    { q: "¿Que relación existe entre las intensidades de un sonido de 10 dB y otro de 20 db?", a: ["El de 20 dB tiene una intensidad 10 veces mayor que el de 10 dB", "El de 20 dB tiene una intensidad 20 veces mayor que el de 10 dB", "El de 20 dB tiene una intensidad doble que el de 10 dB", "Es de 20 dB tiene intensidad 1000 veces mayor que el de 10 dB"] },
+    { q: "Si la distancia desde una fuente sonora se duplica, ¿en qué factor cambia la intensidad del sonido?", a: ["Disminuye a la cuarta parte", "Aumenta 4 veces", "Disminuye a la mitad", "Aumenta el doble"] },
+    { q: "Una onda sonora va por el aire y se refleja en la pared de una casa. ¿Cambiará la velocidad de propagación (c), la frecuencia (f) o la longitud de onda (λ)?", a: ["f no cambia, λ no cambia y c no cambia", "f disminuye, λ aumenta y c no cambia", "f aumenta, λ aumenta y c aumenta", "f aumenta, λ disminuye y c no cambia"] },
+    { q: "Una onda sonora se propaga por el aire según la ecuación (unidades en el SI): y= 3 cos (4π t - π x).", a: ["Su amplitud es de 3m, su periodo es de 0,5s y su longitud de onda es de 2m", "Su amplitud es de 5m, su periodo es de 3s y su longitud de onda es de 2m", "Su amplitud es de 3m, su periodo es de 2s y su longitud de onda es de 0,5m", "Su amplitud es de 3m, su periodo es de 5s y su longitud de onda es de 2m"] },
+    { q: "Suponga una onda sonora propagándose por un medio No Disipativo. Si la potencia de la fuente sonora se duplica y la distancia disminuye la tercera parte, ¿en qué factor cambia la intensidad del sonido?", a: ["Aumenta 18 veces la intensidad inicial", "Aumenta a 8 veces la intensidad inicial", "Como es un medio No disipativo la intensidad se mantiene constante", "Se duplica"] },
+    { q: "La luz y el sonido son ondas que tienen en común:", a: ["Transportar energía", "Ser longitudinales", "Ser transversales", "Necesitar de un medio material"] },
+    { q: "La generación de ultrasonidos mediante generadores por magnetostricción se debe a:", a: ["Campo magnético oscilante al que se encuentra sometido", "Efecto piezoeléctrico", "Efecto recíproco del fotoeléctrico", "b) y c)"] },
+    { q: "La velocidad del sonido:", a: ["La a) y la c)", "Depende del medio por el que se propague", "Siempre es la misma", "Es mayor en los sólidos que en los gases"] },
+    { q: "Cuando se propaga una onda sonora por la cóclea, se establece una deformación en la partición coclear, en una posición que depende de:", a: ["La frecuencia", "La longitud de onda", "La intensidad del sonido", "Ninguna de las tres"] },
+    { q: "Un sonido se propaga en el aire con una longitud de onda de 2m y una velocidad de 340m/s, en el agua lo hace a 1500m/s. ¿Cuál es su frecuencia en el agua?", a: ["170 Hz", "340 Hz", "340 m/s", "1500 Hz"] },
+    { q: "Qué es la longitud de onda?", a: ["La distancia entre dos puntos consecutivos que están en la misma fase", "La distancia que recorre una partícula en unidad de tiempo", "La distancia que recorre la onda en un tiempo menor al período", "La distancia que recorre la onda en un tiempo mayor al período"] },
+    { q: "Una persona en la estación oye en la lejanía el silbato de un tren, percibiéndolo cada vez menos agudo, de ello deduce que:", a: ["El tren se está alejando de la estación", "El tren está llegando a la estación", "El silbato del tren está estropeado", "El tren está parado en el andén"] },
+    { q: "En las ondas estacionarias los nodos son los puntos en los que:", a: ["La amplitud es mínima (cero)", "La amplitud es máxima", "La distancia entre ellos es landa/2", "La a y c"] },
+    { q: "Una Onda longitudinal es:", a: ["Aquella en la que la dirección de la perturbación y la de propagación son paralelas", "Aquella que atraviesa de forma trasversal el medio", "El sonido", "La a y c"] },
+    { q: "En las ondas estacionarias los vientres son los puntos en los que:", a: ["La amplitud es máxima", "La amplitud es mínima", "La distancia entre ellos es landa/2", "La b y c"] },
+    { q: "Cuando un rayo de luz pasa desde el aire al agua se produce un cambio en:", a: ["La a y la b (Longitud de onda y Velocidad, frecuencia no)", "La frecuencia", "La longitud de onda", "La energía"] },
+    { q: "Si un tren de ondas se mueve a lo largo de una cuerda y tiene una velocidad de 60 m/s y una longitud de onda de 3 m, ¿cuál es su frecuencia?:", a: ["20 Hz", "."] },
+    { q: "El umbral de audición representa:", a: ["El nivel en el que comienza la sensación auditiva", "."] },
+    { q: "El rango de frecuencias que percibe un ser humano se extiende entre los:", a: ["16 Hz y 20 000 Hz", "."] }
+];
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function renderQuiz() {
+    const container = document.getElementById('quiz-container');
+    container.innerHTML = '';
+
+    quizData.forEach((item, index) => {
+        // Prepare options: first item in 'a' array is always correct in our data source
+        // We create objects to track original index
+        let options = item.a.map((txt, i) => ({ text: txt, isCorrect: i === 0 }));
+        
+        // Shuffle options
+        shuffleArray(options);
+
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        
+        const qText = document.createElement('div');
+        qText.className = 'q-text';
+        qText.innerHTML = `${index + 1}. ${item.q}`;
+        card.appendChild(qText);
+        
+        const grid = document.createElement('div');
+        grid.className = 'options-grid';
+        
+        options.forEach(opt => {
+            const btn = document.createElement('div');
+            btn.className = 'option';
+            btn.innerText = opt.text;
+            
+            btn.onclick = () => {
+                if(card.classList.contains('answered')) return;
+                card.classList.add('answered');
+                
+                if(opt.isCorrect) {
+                    btn.classList.add('correct');
+                } else {
+                    btn.classList.add('incorrect');
+                    // Find correct one
+                    const allBtns = grid.querySelectorAll('.option');
+                    allBtns.forEach(b => {
+                        if(b.innerText === item.a[0]) b.classList.add('correct');
+                    });
+                }
+            };
+            
+            grid.appendChild(btn);
+        });
+        
+        card.appendChild(grid);
+        container.appendChild(card);
+    });
+}
+
+window.onload = renderQuiz;
+</script>
+
+</body>
+</html>

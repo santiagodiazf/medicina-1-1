@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Radiaciones - FM Shark Crew</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+        }
+        .question-block {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+            background-color: #fff;
+        }
+        .question-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #2980b9;
+            margin-bottom: 10px;
+        }
+        .options-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .option-item {
+            margin: 5px 0;
+            padding: 10px;
+            background: #fcfcfc;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: flex-start;
+        }
+        .option-item:hover {
+            background-color: #f1f8ff;
+            border-color: #bbdefb;
+        }
+        .option-item input {
+            margin-top: 5px;
+            margin-right: 10px;
+        }
+        .btn-reset {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #e74c3c;
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-top: 30px;
+            text-decoration: none;
+        }
+        .btn-reset:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Test Radiaciones</h1>
+    <p class="subtitle">Orden de preguntas fijo. Opciones aleatorias.</p>
+    
+    <div id="quizContainer">Cargando preguntas...</div>
+    
+    <button class="btn-reset" onclick="location.reload()">Mezclar Opciones (Recargar)</button>
+</div>
+
+<script>
+    // Datos extraídos del texto proporcionado
+    const rawHtmlData = `
+    <p>1. ¿Cual de las siguientes parejas “tipo de radiación Ionizante/composición” es INCORRECTA. a) Radiación alfa / Núcleos de Helio. b) Radiación beta negativa / electrones. c) Radiación beta positiva / protones. d) Radiación X / fotones.</p>
+    <p>2. De las siguientes características, ¿cuál NO es propia de los RX?. a) Poseen carga negativa. b) Son capaces de ionizar gases. c) Pueden producir fluorescencia. d) Se propagan en línea recta a la velocidad de la luz.</p>
+    <p>3. ¿Cuándo será más penetrante una radiación ionizante?: a) Cuanto menor sea la energía de la radiación. b) Cuanto mayor sea la carga y la masa de la radiación. c) Cuanto menor sea la capa hemireductora del absorbente. d) Cuanto menor sea el coeficiente de atenuación del lineal del absorbente.</p>
+    <p>4. ¿Qué mecanismo atómico de absorción de las radiaciones ionizantes predomina con radiacionesde bajas energías?. a) Efecto fotoeléctrico. b) Efecto Compton. c) Efecto de formación de pares. d) Efecto piezoeléctrico.</p>
+    <p>5. ¿Qué mecanismo atómico de absorción de las radiaciones ionizantes predomina con radiacionesde muy altas energías?. a) Efecto fotoeléctrico. b) Efecto Compton. c) Efecto piezoeléctrico. d) Efecto de formación de pares.</p>
+    <p>6. ¿Por qué se utilizan radiaciones de baja energía en radiodiagnóstico?. a) Porque así reduce la dosis recibida por el paciente. b) Porque así toda la radiación incidente es absorbida por el paciente. c) Porque se absorben selectivamente en unas estructuras orgánicas respecto a otras. d) Todas las respuestas anteriores son correctas.</p>
+    <p>7. ¿De qué es unidad el Culombio/Kg.?: a) Dosis absorbida. b) Dosis Equivalente. c) Exposición. d) Actividad.</p>
+    <p>8. ¿De qué es unidad el Gray?: a) Dosis Equivalente. b) Dosis Absorbida. c) Exposición. d) Actividad.</p>
+    <p>9. ¿De qué es unidad el Becquerelio?: a) Dosis Equiva lente. b) Dosis Absorbida. c) Exposición. d) Actividad.</p>
+    <p>10. ¿En qué efecto de las radiaciones se basa el funcionamiento del Detector de Geiger-Muller?: a) Efecto fotoquímico. b) Fluorescencia. c) Ionización. d) Termoluminiscencia.</p>
+    <p>11. ¿En qué efecto de las radiaciones se basa el funcionamiento del Detector de Centelleo?: a) Efecto fotoquímico. b) Fluorescencia. c) Ionización. d) Termoluminiscencia.</p>
+    <p>12. ¿Qué ocurre al aumentar la diferencia de potencial ánodo-cátodo en tubo de RX?: a) Aumenta la energía máxima de la radiación producida. b) Aumenta la intensidad de la radiación producida. c) Disminuye la energía máxima de la radiación producida. d) Son correctas a y b.</p>
+    <p>13. ¿Qué tienen en común los elementos isótopos?. a) El peso atómico. b) El número de electrones. c) El numero de neutrones. d) La posición en la tabla periódica.</p>
+    <p>14. ¿Qué tienen en común los elementos isótonos?: a) El peso atómico. b) El numero de electrones. c) El número de Neutrones. d) La posición en la tabla periódica.</p>
+    <p>15. ¿A qué tipo de desintegración corresponde la reacción. a) Emisión gamma. b) Captura electrónica. c) Emisión de neutrones. d) Desintegración beta.</p>
+    <p>16. Si un núcleo sufre una desintegración beta: a) El núcleo resultante será un isóbaro del precursor. b) El núcleo resultante será un isótono del precursor. c) El núcleo resultante será un isótopo del precursor. d) El núcleo resultante será un isómero del precursor.</p>
+    <p>17. Si un núcleo sufre una desintegración por captura electrónica: a) El núcleo resultante será un isóbaro del precursor. b) El núcleo resultante será un isótono del precursor. c) El núcleo resultante será un isótopo del precursor. d) El núcleo resultante será un isómero del precursor.</p>
+    <p>18. Un núcleo radiactivo emite una partícula alfa, el elemento resultante: a) Retrocede un lugar en la tabla periódica. b) Permanece en la misma posición en la tabla periódica. c) Retrocede dos lugares en la tabla periódica. d) Avanza dos lugares en la tabla periódica.</p>
+    <p>20. ¿Qué es el efecto Compton?: a) El efecto que explica las emisiones radiactivas espontáneas. b) El mecanismo que explica la producción de los rayos X. c) Un mecanismo de atenuación de las radiaciones ionizantes. d) El efecto por el que se explica la resonancia magnética nuclear.</p>
+    <p>21. ¿Qué efecto da lugar a fenómenos de fluorescencia?: a) Compton. b) Fotoeléctrico. c) Creación de pares. d) Doppler.</p>
+    <p>22. ¿Cuál de los siguientes elementos es mejor absorbente de las radiaciones ionizantes?: a) 198         Hg      80. b) 203        Tl      81. c) 208        Pb      82. d) 205        Bi      83.</p>
+    <p>23. El espectro de rayos X característico es: a) Continuo. b) De bandas. c) Discreto. d) Tiene una parte Discreta y otra continua.</p>
+    <p>24. Los núcleos estables: a) Tienen menos neutrones que protones. b) Tienen siempre el mismo número de neutrones que de protones. c) Van teniendo mayor número de neutrones que de protones a medida que Z aumenta. d) Carecen de repulsión de Coulomb entre sus protones.</p>
+    <p>25. Los núcleos en estado excitado: a) Son más estables que el fundamental ya que tienen menos energía en el fundamental. b) Son menos estables que el fundamental debido a que tienen más energía cuando están en elfundamental. c) Son menos estables que el fundamental porque este último tiene energía mínima. d) Son menos estables que el fundamental porque este último tiene energía máxima.</p>
+    <p>26. La creación de pares electrón-positrón: a) Se da en la interacción de neutrones con la materia. b) Se produce a partir de un umbral y resulta más probable a medida que aumenta la energía delos fotones. c) Es menos probable a medida que aumenta el Z del medio. d) Es un proceso por el que la energía del fotón que interacciona no se absorbe en la materia deforma total.</p>
+    <p>27. En un detector de Centelleo, los dínodos: a) Convierten la radiación gamma en radiación luminosa. b) Amplifican la amplitud de los impulsos eléctricos. c) Miden el valor medio de la corriente de impulsos. d) Recogen los impulsos de una determinada amplitud.</p>
+    <p>28. ¿Cómo se denomina el efecto que protege la piel de las radiaciones al depositar la máximadosis en profundidad?: a) Efecto Compton. b) Radiación de frenado. c) Efecto fotoeléctrico. d) Fenómeno de transición.</p>
+    <p>29. El filtrado del haz de un tubo de RX se emplea para: a) Evitar que aparezcan electrones en el exterior. b) Aumentar la producción de fotones. c) Disminuir el porcentaje de fotones de baja energía. d) Atenuar los fotones de alta energía.</p>
+    <p>30. ¿ Se puede propagar la luz y el sonido en el vacío?: a) Ambos se pueden transmitir. b) Ninguno se puede transmitir. c) La luz sí, el sonido no. d) La luz no, el sonido sí.</p>
+    <p>31. Cuando se utiliza un sistema de ultrasonidos en diagnóstico, la sonda emisora-receptora sesuele untar de una especie de gel con objeto de: a) Que se desplace mejor sobre el paciente. b) Acoplar las impedancias acústicas. c) Acoplar las impedancias acústicas. d) Que existe una gran discontinuidad de impedancias.</p>
+    <p>Pone Z+1. a) Aparece un protón reemplazando a un neutrón y los núcleos originario y residual sonisóbaros. b) El núcleo residual queda siempre en su estado fundamental. c) Aparece un neutrón reemplazando a un protón y los núcleos originario y residual son isóbaros. d) No es cierta ninguna de las anteriores.</p>
+    <p>33. La probabilidad de que se produzca una interacción de tipo fotoeléctrico: a) Es mayor para electrones muy ligados y para materiales de Z alto. b) Es menor para electrones muy ligados. c) Aumenta fuertemente a medida que aumenta la energía de los fotones. d) Es mayor para neutrones que para fotones.</p>
+    <p>34. El número de capas hemireductoras mínimo necesario para que tras un blindaje la intensidadde un haz de fotones se vea reducida a menos de la décima parte del valor inicial es: a) 5. b) 4. c) 3. d) 2.</p>
+    <p>35. En la definición de dosis equivalente interviene el factor de calidad Q, que está relacionadocon: a) El medio absorbente. b) El número de ionizaciones que produce la radiación por unidad de recorrido. c) El tiempo que se tarda en impartir una cierta dosis. d) La actividad de una fuente radiactiva.</p>
+    <p>36. Señale la afirmación ERRÓNEA: Es más peligroso. a) 1 mGy impartido con partículas Alfa que con rayos X. b) 1 mGy impartido con partículas Alfa que con radiación beta. c) 1 mGy impartido con radición gamma que con partículas alfa. d) 1 mGy impartido con protones que con electrones.</p>
+    <p>37. La detección de radiación ionizante con gases se basa en que: a) La energía interna del gas varía y la medida de su variación constituye la detección. b) Varía la cantidad de movimiento de las moléculas del gas. c) La radiación provoca ionizaciones, liberándose carga eléctrica que es colectada y medida. d) La radiación provoca reacciones nucleares, fragmentando los núcleos de los átomos del gas.</p>
+    <p>38. ¿Qué proceso físico se produce específicamente en una cámara de ionización?: a) Ionización primaria por la radiación incidente sin fenómenos de recombinación. b) Ionización secundaria por los iones primarios. c) Avalancha de iones. d) Descarga continua.</p>
+    <p>39. La desintegración por captura electrónica: a) Supone que A se mantienen constante y Z disminuye en una unidad. b) Supone la emisión de positrones. c) Consiste en la captura de un electrón cortical. d) La a y la c.</p>
+    <p>40. ¿Qué proceso físico se produce en el contador proporcional?: a) Ionización primaria por la radiación incidente. b) Ionización secundaria por los iones primarios. c) Avalancha de iones. d) Descarga continua.</p>
+    <p>41. En la desintegración por Conversión Interna se modifica: a) El número atómico. b) El peso atómico. c) Su estado energético. d) La b y la c.</p>
+    <p>42. Cuando el valor de “CHR” es muy grande diremos que la radiación es: a) Muy penetrante. b) Monoenergética. c) Poco penetrante. d) Regular de penetrante.</p>
+    <p>43. En un detector TLD (Dosímetro de Termoluminiscencia): a) La radiación ionizante produce centelleo. b) La radiación ionizante produce pares de iones. c) La radiación ionizante produce pares electrón-hueco que se recolectan. d) La radiación ionizante produce pares electrón-hueco que al recombinarse producen luzvisible, que es la que se detecta.</p>
+    <p>44. La dosimetría fotográfica se basa en la utilización de: a) Cámaras fotográficas. b) Películas fotográficas sensibles a las radiaciones ionizantes. c) Radiografías para visualizar los efectos sobre el profesional. d) Emulsiones sensibles a los infrarrojos.</p>
+    <p>45. Elegir el mejor criterio desde el punto de vista de la Protección Radiológica: a) No recibir absolutamente ninguna dosis de radiación ionizante. b) Que a igualdad de beneficio, se reciban las mínimas dosis de radiación posible. c) Conseguir que las radiaciones no lleguen al órgano más sensible a las radiaciones. d) Que trabajen varias personas simultáneamente con las fuentes de radiaciones ionizantes conobjeto de que la dosis se reparta entre ellas.</p>
+    <p>46. Los efectos estocásticos de las radiaciones ionizantes: a) Tienen un umbral por debajo del cual no se producen. b) Pueden evitarse de forma absoluta. c) Deben limitarse en su probabilidad ya que no se pueden evitar de forma absoluta. d) Tienen idéntico umbral de dosis que los efectos no estocásticos.</p>
+    <p>47. Los efectos deterministas de las radiaciones ionizantes: a) Tienen un umbral por debajo del cual no se producen. b) No pueden evitarse de forma absoluta. c) Deben limitarse en su probabilidad ya que no se pueden evitar de forma absoluta. d) Tienen idéntico umbral de dosis que los efectos no estocásticos.</p>
+    <p>48. La dosis equivalente se define como unidad especial debido a que: a) La dosis absorbida no se aplica en el caso de tejidos biológicos. b) Iguales dosis absorbidas producen diferentes efectos en los tejidos biológicos diferentes. c) Iguales dosis absorbidas producen diferentes efectos en función del tipo de radiación. d) Iguales dosis absorbidas producen los mismos efectos en los tejidos biológicos diferentes.</p>
+    <p>49. La dosis efectiva se define como unidad especial debido a que: a) La dosis equivalente no se aplica en el caso de tejidos biológicos. b) Iguales dosis equivalentes producen diferentes efectos en tejidos biológicos diferentes. c) Iguales dosis equivalentes producen diferentes efectos en función del tipo de radiación. d) Iguales dosis equivalentes producen los mismos efectos en los tejidos biológicos diferentes.</p>
+    <p>50. El organismo competente en Protección Radiológica en España es: a) El C.I.E.M.A.T. b) El Ministerio de Industria. c) El Consejo de Seguridad Nuclear. d) El ministerio de Sanidad.</p>
+    <p>51. La acción de la RR.II. a nivel celular sobre individuos sanos es: a) Siempre potencialmente lesiva. b) Siempre beneficiosa. c) Sólo lesiva con rayos X de alta energía. d) Siempre de carácter no estocástico.</p>
+    <p>52. El trabajador expuesto de categoría B: a) Requiere dosímetro personal. b) No necesita ningún tipo de control dosimétrico. c) No requiere necesariamente dosímetro personal pero sí que haya dosimetría de área para sucontrol. d) Requiere dosimetría personal y de área.</p>
+    <p>53. Si andando por un hospital encontramos una señalización que consiste en un trébol de colorrojo sobre fondo punteado, estamos en una zona: a) De acceso prohibido. b) Vigilada. c) De permanencia reglamentada. d) Controlada.</p>
+    <p>54. La señal anterior (&quot;Si andando por un hospital encontramos una señalización que consiste en un trébol de colorrojo sobre fondo punteado, estamos en una zona: ...&quot;) indicará también que existe riesgo de: a) Irradiación externa. b) Irradiación interna. c) Contaminación. d) La a y la c.</p>
+    <p>55. El Co-60: a) Es un radionucleido natural. b) No es un isótopo radiactivo. c) Se obtiene bombardeando con neutrones el Co-59. d) Emite partículas alfa.</p>
+    <p>56. El haz de radiación en cobaltoterapia, se puede limitar a las medidas necesarias mediante: a) Pantallas de Pb. b) Filtros. c) Cuñas de Fe. d) Colimadores.</p>
+    <p>57. La actividad máxima de una fuente de Co-60 puede llegar a: a) 3,7 x 10^14Bq. b) 37 MBq. c) 20 Cl. d) 13,2 R/h.</p>
+    <p>58. ¿Cómo se denomina la habitación dónde se controla el tratamiento de radioterapia: a) Sala de tratamiento. b) Sala de control remoto. c) Bunker. d) Zona de acceso prohibido.</p>
+    <p>59. ¿Qué factor determina la energía de radiación producida por un tubo de RX?: a) La diferencia de potencial ánodo-cátodo. b) La intensidad eléctrica que circula por el cátodo. c) El número atómico del material con que se fabrica el ánodo. d) Son correctas a y c.</p>
+    <p>60. En radiodiagnóstico, ¿a qué se denomina radiación dura?: a) A la radiación de alta frecuencia. b) A la radiación de alta energía. c) A la radiación de baja longitud de onda. d) Todas son correctas.</p>
+    <p>61. Se desea aumentar la energía media del espectro de rayos X de un tubo. ¿Cuál de lassiguientes afirmaciones es CORRECTA?: a) Deben emplearse filtros con Z elevado y bajar el Kilovoltaje. b) Deben emplearse filtros con Z bajo y subir, si es preciso, el Kilovoltaje. c) Debe elevarse la corriente de operación. d) Debe reducirse al máximo la corriente de operación.</p>
+    <p>62. Una radiografía convencional: a) Presenta distintos contrastes en función de que lleguen más o menos fotones. b) Presenta distintos contrastes en función de que los fotones que lleguen tengan distinta energía ya que llega idéntico número de fotones por unidad de superficie de la placa. c) Se obtiene con fotones energéticos. d) Se obtiene con electrones al chocar contra la placa fotográfica.</p>
+    <p>63. ¿Qué es un radiofármaco?: a) Un fármaco radiactivo. b) Un fármaco al que se liga un radionúcleido con el fin de ser introducido en el organismo. c) Un fármaco indicado en el tratamiento de los efectos nocivos de las radiaciones ionizantes. d) Un fármaco indicado para eliminar los radionúclidos existentes en el organismo.</p>
+    <p>64. ¿Por qué en Medicina Nuclear diagnostica se prefiere utilizar radionúcleidos de vida corta?: a) Porque tienen menor actividad. b) Porque son más estables. c) Porque son más baratos de producir. d) Porque así se reduce la dosis absorbida por el paciente.</p>
+    <p>65. En Medicina Nuclear diagnostica se utilizan radionúclidos de vida corta, ¿por qué?: a) Porque son más baratos de producir. b) Porque emiten radiaciones poco penetrantes. c) Porque se eliminan rápidamente del cuerpo del paciente. d) Porque producen imágenes de mayor calidad.</p>
+    <p>66. Los radionúclidos más útiles en las aplicaciones diagnósticas de Medicina Nuclear son: a) Los emisores gamma puros. b) Los emisores beta puros. c) Los emisores alfas puros. d) Los que tienen un periodo muy superior al tiempo necesario para realizar la prueba diagnóstica.</p>
+    <p>67. ¿Cuál de estos radionúclidos se utilizará en Medicina Nuclear?: a) Uno estable. b) Uno de periodo T= 2x 10^4 años. c) Uno de periodo T = 2 x 10^4 s. d) Uno de periodo T= 2x 10^-24 s.</p>
+    <p>68. Qué radiaciones no ionizantes producen inducción débiles: a) Térmicas. b) No térmicas. c) Ópticas. d) La a) y c).</p>
+    <p>69. El espectro de la radiación emitida por un tubo de rayos X es: a) Continuo por la radiación de frenado. b) Continuo formado exclusivamente por una mezcla de fotones cuyas energíasaumentan de forma continua. c) Discreto formado por la radiación característica. d) La a) y c).</p>
+    <p>70. La sección eficaz para el efecto fotoeléctrico varía aproximadamente: a) Con la energía como Z4. b) Con la longitud de onda como 1/λ3. c) Con la energía como 1/E3. d) La a) y c).</p>
+    <p>71. La masa de cualquier núcleo atómico es: a) Siempre inferior a la suma de las masas de los protones que la componen. b) Siempre superior a la suma de las masas de los nucleones que la componen. c) Igual a la suma de las masas de los nucleones que la componen. d) Ninguna de las tres.</p>
+    <p>72. El fifilamento de un tubo de rayos x emite: a) Rayos x. b) Electrones. c) Rayos x característicos. d) Ninguna de las tres.</p>
+    <p>73. ¿Qué es el índice UV?. a) La cantidad de radiación UV necesaria para producir un eritema en la piel. b) La capacidad protectora de un fifiltro solar frente a la radiación UV. c) La cantidad de radiación UV a la que están expuestas las personas en lasuperfificie terrestre. d) Es el método utilizado para medir el factor de protección solar.</p>
+    <p>74.¿En qué núclido se desintegra el 13N (Z=7) por emisión beta positiva?. a) 13C ( Z=6 ). b) 16O ( Z=8 ). c) 11B ( Z=5 ). d) 14N ( Z=7 ).</p>
+    <p>75.Los núcleos estables: a) Las fuerzas electrostáticas no superan a las fuerzas nucleares. b) Tienen siempre el mismo número de neutrones que de protones. c) Van teniendo mayor número de neutrones que de protones a medida que Zaumenta. d) La a) y c).</p>
+    <p>76.Cuando el valor de CHR es muy pequeña diremos que la radiación es: a) Muy penetrante. b) Monoenergética. c) Poco penetrante. d) Regular de penetrante.</p>
+    <p>77. Cuando el valor de CHR es muy grande diremos que la radiación es: a) Muy penetrante. b) Monoenergética. c) Poco penetrante. d) Regular de penetrante.</p>
+    <p>78.La desintegración por conversión interna: a) Supone que A se mantiene constante y Z también. b) Supone la emisión de positrones. c) Consiste en la captura de un electrón …. d) Supone que A se mantiene constante y “Z disminuye en una unidad”.</p>
+    <p>79.Los haces de protones son radiaciones: a) No ionizantes. b) Indirectamente ionizantes. c) Directamente ionizantes. d) La a y la c).</p>
+    <p>80.Las radiaciones ultravioletas pueden dañar: a) La piel. b) El sistema inmunológico. c) Los ojos. d) Las 3 anteriores.</p>
+    <p>81.Las radiaciones no ionizantes: a) Pueden producir ionizaciones. b) Pueden producir efectos térmicos. c) No producen excitaciones. d) La b) y la c).</p>
+    <p>82. En el Radiodiagnóstico se utilizan Rayos X de baja energía porque: a) Son poco penetrantes. b) Son muy homogéneos. c) Su coefificiente de absorción independiente del absorbente. d) Ninguna de las tres.</p>
+    <p>83. Los tratamientos radioterápicos que consisten en la colocación de fuentesencapsuladas dentro de la proximidad del tumor, se denomina: a) Ciberknife. b) Handroterapia. c) Braquiterapia. d) Tomoterapia.</p>
+    <p>84. La hadronterapia son radiaciones de: a) Partículas pesadas sin carga. b) Partículas pesadas cargadas. c) Protones e iones. d) La b) y la c).</p>
+    <p>85. La radiación característica se produce como consecuencia de: a) La aniquilación del electrón. b) La pérdida de energía cinética de los electrones. c) La pérdida de energía de un fotón. d) El salto del electrón de una órbita a otra.</p>
+    <p>86. La energía crítica correspondiente al poder de frenado es: a) Inversamente proporcional al número atómico del medio. b) Inversamente proporcional al número másico del medio. c) Directamente proporcional al número másico del. d) Directamente proporcional al número atómico del medio.</p>
+    <p>88. La intensidad radiante se mide en: a) Vatios. b) Vatios / sr. c) Vatios / m. d) Julios.</p>
+    <p>89. La irradiancia se mide en: a) Julios. b) Julios/ m^2. c) Vatios/m^2. d) Vatios/sr.</p>
+    <p>90. La radiación infrarroja está contraindicada en: a) Enfermedad cardiovascular avanzada. b) Hemorragias recientes. c) Hipertensión. d) La a) y b).</p>
+    <p>91. ¿En qué núclido se desintegra el 14C (Z=6) por emisión beta negativa?. a) 14N (Z=7). b) 13C (Z=6). c) 15N (Z=7). d) 13C (Z=6).</p>
+    <p>92. ¿Por que se utilizan radiaciones de baja energía en radio diagnóstico?. a) Porque se absorben selectivamente en unas estructuras orgánicas respecto aotras. b) Porque así se reduce la dosis recibida por el paciente. c) Porque mayoritariamente actúa el efecto fotoeléctrico. d) La a) y b).</p>
+    <p>93. En la emisión beta negativa admitimos la hipótesis, que un neutrón se descompone en: a) n—&gt; p + e+ + v. b) n—&gt; p + e- + v. c) n—&gt; p + e+ + v (vectorial). d) n—&gt; p + e- + v (vectorial).</p>
+    <p>95. Si un núcleo sufre una desintegración por captura electrónica: a) El núcleo resultante será un isómero del precursor. b) El núcleo resultante será un isótono del precursor. c) El núcleo resultante será un isótopo del precursor. d) Ninguna de las tres.</p>
+    <p>96. ¿Que ocurre al aumentar la corriente en el filamento en un tubo de R-X?. a) Aumenta la temperatura. b) Aumenta el número de electrones. c) Disminuye la energía máxima de la radiación producida. d) Son correctas a) y b).</p>
+    <p>97. ¿Que ocurre al aumentar la diferencia de potencial ánodo-cátodo en un tubode R-X?. a) Aumenta la energía máxima de la radiación producida. b) Aumenta el número de fotones. c) Disminuye de de energía máxima de la radiación producida. d) Son correctas a) y b).</p>
+    <p>98. ¿Qué factor determina la energía de la radiación producida por un tubo de R-X?. a) La intensidad eléctrica que circula por el cátodo. b) La diferencia de potencial ánodo-cátodo. c) El número atomico del material con que se fabrica el anodo. d) Son correctas b) y c).</p>
+    <p>99. De las siguientes características, ¿cuál es propia de los R-X?. a) Poseen carga negativa. b) Son radiaciones ionizantes. c) Se propagan en el vacío a una velocidad menor que la radiación gamma. d) Pueden producir fluorescencia.</p>
+    <p>100. La masa en cualquier núcleo atómico es: a) Siempre superior a la suma de las masas de los cuerpos que la componen. b) Siempre inferior a la suma de las masas de los protones que la componen. c) Igual a la suma de las masas de los nucleones que la componen. d) Ninguna de las anteriores.</p>
+    <p>101. En la absorción de la radiación emitida por el Co-60 predomina: a) El efecto fotoeléctrico. b) La formación de pares. c) Efecto Compton. d) Ninguno de los anteriores.</p>
+    <p>102. ¿Que radiaciones no ionizantes producen inducción de corrientes débiles?. a) Térmicas. b) No térmicas. c) Ópticas. d) La a) y c).</p>
+    <p>103. Decimos que el 62,28Ni; 63,29Cu y el 64,30Zn son elementos: a) Isótonos. b) Isótopos. c) Isómeros. d) Isóbaros.</p>
+    <p>104. Los núcleos inestables: a) Van teniendo mayor número de neutrones que de protones a medida que Zaumenta. b) Tienen siempre el mismo número de neutrones que los protones. c) Las fuerzas electroestáticas superan las fuerzas nucleares. d) Tienen menos neutrones que protones.</p>
+    <p>105. En qué radica la diferencia entre un haz de R-X y un haz de rayos gamma ambosmonoenergéticos: a) En la frecuencia de los fotones. b) En su origen. c) En su penetración. d) En su espectro energético.</p>
+    <p>106. La desintegración por captura electronica: a) Supone que A se mantiene constante y Z disminuye en una unidad. b) Supone la emisión de positrones. c) Consiste en la cesión de un electrón cortical. d) La a) y la c).</p>
+    <p>107. ¿De qué es unidad el W/m^2.sr?. a) Energia radiante. b) Radiancia. c) Intensidad radiante. d) Irradiancia.</p>
+    <p>108. ¿Que efecto da lugar a fenómenos de fluorescencia?. a) Compton. b) Fotoeléctrico. c) Doppler. d) Creación de pares.</p>
+    <p>109. ¿Qué radiaciones no ionizantes producen excitación de electrones?. a) Térmicas. b) No térmicas. c) Ópticas. d) La a) y c).</p>
+    <p>110. En una instalación radiactiva, el personal laboral recibe una dosis de 6mSv por lo que el local deberá estar señalizado con un trébol: a) Verde sobre fondo blanco, bordeado con puntas radiales. b) Gris azulado sobre fondo blanco, bordeado con puntas radiales. c) Verde sobre fondo azul con campo punteado. d) Amarillo sobre fondo blanco, bordeado de punta radiales.</p>
+    <p>111. Aquellas radiaciones no ionizantes que pueden inducir cargas y corrienteseléctricas en los tejidos, corresponden a una frecuencia: a) Mayor de 1000 KHz. b) Mayor de 10 GHz. c) Menor de 100 KHz. d) Entre 100 KHz y 10 GHz.</p>
+    <p>112. La sección eficaz para el efecto fotoeléctrico varía aproximadamente: a) Con la energía como E α. b) Con la longitud de onda como 1/λ. c) Con la energia como 1/E α. d) La b) y c).</p>
+    <p>113. ¿Que radiaciones no ionizantes producen inducción de corrientes intensas?. a) Térmicas. b) No térmicas. c) Opticas. d) La a) y c).</p>
+    <p>114. ¿De que es unidad el W/sr?. a) Energia radiante. b) Intensidad radiante. c) Irradiancia. d) Radiancia.</p>
+    <p>115. En radiodiagnóstico se utilizan RX de baja energía porque: a) Son muy penetrantes. b) Su coeficiente de absorción depende mucho del absorbente. c) Son muy homogéneos. d) Son muy fáciles de filtrar.</p>
+    <p>116. ¿En qué se basa el funcionamiento del detector Gelger-Muller?. a) Ionización. b) Termoluminiscencia. c) Potenciales mayores de 400 voltios. d) La a) y c).</p>
+    <p>117. La irradiación se mide en: a) Julios. b) Julios/m2. c) Vatios/m2. d) Vatios/sr.</p>
+    <p>118. La radiación de frenado se produce como consecuencia de: a) El salto del electrón de una orbita. b) La pérdida de energía de un protón. c) La pérdida de energía cinética de los electrones. d) La aniquilación del electrón.</p>
+    <p>119. La vida media de unos átomos es mayor si su periodo de semidesintegraciónvale: a) 3 años. b) 9 dias. c) 9 horas. d) 3 meses.</p>
+    <p>120. Los efectos deterministas de las radiaciones ionizantes: a) Tienen un umbral por debajo del cual no se producen. b) No pueden evitarse de forma absoluta. c) Se pueden evitar de forma absoluta. d) La a) y la c).</p>
+    <p>121. Cuando el valor de “CHR” es muy grande diremos que la radiación es: a) Mono energética. b) Poco penetrante. c) Muy penetrante. d) Regular de penetrante.</p>
+    <p>122. ¿Por qué en Medicina Nuclear diagnóstica se prefiere utilizar radionúclidos deonda corta?. a) Porque tienen menor actividad. b) Porque son más estables. c) Porque son mas baratos de producir. d) Ninguna de las tres.</p>
+    <p>123. Cuanto menor sea la constante de desintegración radiactiva de una superficie: a) Menor es su período de semidesintegracion. b) Mayor es la vida de los átomos. c) Mayor es su periodo de semidesintegración. d) La b) y c).</p>
+    <p>124. ¿Cuáles de estas pertenece a las radiaciones ópticas?. a) Radiofrecuencias. b) Ultravioletas. c) Luz visible. d) La b) y c).</p>
+    <p>125. El espectro de la radiación emitida por un tubo de rayos X es: a) Combinado de uno de ración de frenado (continuo) y otro característico(discreto) del ánodo. b) De electrones y fotones. c) Bien definido y da lugar solamente a unos picos caracteresticos. d) Continuo formado exclusivamente por una mezcla de fotones cuyas energías aumentan de forma continua.</p>
+    <p>126. El filamento de un tubo de rayos X emite: a) Rayos X. b) Positrones. c) Electrones. d) Rayos X característicos.</p>
+    <p>127. ¿En que nuclido se desintegra el 32P (Z=15) por emisión beta negativa?. a) 32S (Z=16). b) 30P (Z=15). c) 30Si (Z=14). d) 35S (Z=16).</p>
+    <p>128. . Si tenemos una cantidad de 99mTc (T 1/2=6), pasadas 30 horas nos quedará: a) 1/2 de la inicial. b) 1/4 de la inicial. c) 1/16 de la inicial. d) 1/32 de la inicial.</p>
+    <p>129. ¿En qué núclido se desintegra el 11C (Z=6) por emisión beta positiva?. a) 14N (Z=7). b) 16O (Z=8). c) 11B (Z=5). d) 12C (Z=6).</p>
+    <p>130. Para definir físicamente la velocidad de desintegración de un radionúclidoempleamos: a) La actividad. b) El periodo de desintegración. c) La constante de desintegración. d) La vida media.</p>
+    <p>131. La dosis equivalente se define como unidad especial debido a que: a) La dosis absorbida no se aplica en el caso de tejidos biologicos. b) Iguales dosisabsorbidas producen diferentes efectos en los tejidos biológicos diferentes. c) Iguales dosis absorbidas producen diferentes efectos en función del tipo deradiación. d) Iguales dosis absorbidas producen los mismos efectos en tejidos biológicosdiferentes.</p>
+    <p>132. La dosis efectiva se define como unidad especial debido a que: a) La dosis equivalente no se aplica en el caso de tejido biologico. b) Iguales dosis equivalentes producen diferentes efectos en tejidos biológicosdiferentes. c) Iguales dosis equivalentes producen diferentes efectos en función del tipo deradiación. d) Iguales dosis equivalentes producen los mismos efectos en los tejidos biológicosdiferentes.</p>
+    <p>133. ¿Qué factor determina la energía de la radiación producida por un tubo de RX?. a) La diferencia de potencial ánodo cátodo. b) la intensidad eléctrica que circula por el cátodo. c) el numero atómico del material con el que se fabrica el ánodo. d) son corectas a y c.</p>
+    <p>134. ¿Qué tienen en común los elementos isobaros?. a)El peso atómico. b)La posición en la tabla periódica. c)El número de neutrones. d)El número de electrones.</p>
+    <p>135. Si un núcleo sufre una desintegración por captura electrónica. a) El núcleo resultante será un isóbaro del precursor. b) El núcleo resultante será un isótono del precursor. c) El núcleo resultante será un isótopo del precursor. d) El núcleo resultante será un isómero del precursor.</p>
+    <p>136. Se produce emisión de radiación gamma: a) Por efecto fotoeléctrico. b) Cuando un núcleo decae de un estado excitado a su estado fundamental. c) Cuando excitamos un átomo. d) Siempre hay una desintegración radiactiva.</p>
+    <p>137. El espectro de rayos X característico es: a) Continuo. b) De bandas. c) Discreto. d) Tiene una parte Discreta y otra continua.</p>
+    <p>138. La creación de pares electrón-positrón: a) Se da en la interacción de neutrones con la materia. b) Se produce a partir de un umbral y resulta más probable a medida que aumentala energía de los fotones. c) Es menos probable a medida que aumenta el Z del medio. d) Es un proceso por el que la energía del fotón que interacciona no se absorbe en lamateria de forma total.</p>
+    <p>139. En un detector de Centelleo, los dínodos: a) Convierten la radiación gamma en radiación luminosa. b) Amplifican la amplitud de los impulsos eléctricos. c) Miden el valor medio de la corriente de impulsos. d) Recogen los impulsos de una determinada amplitud.</p>
+    <p>140. En la definición de dosis equivalente interviene el factor de calidad Q, que estárelacionado con: a) El medio absorbente. b) El número de ionizaciones que produce la radiación por unidad de recorrido. c) El tiempo que se tarda en impartir una cierta dosis. d) La actividad de una fuente radiactiva.</p>
+    <p>141. La dosis equivalente se define como unidad especial debido a que: a) La dosis absorbida no se aplica en el caso de tejidos biológicos. b) Iguales dosis absorbidas producen diferentes efectos en los tejidos biológicosdiferentes. c) Iguales dosis absorbidas producen diferentes efectos en función del tipo deradiación. d) Iguales dosis absorbidas producen los mismos efectos en los tejidos biológicosdiferentes.</p>
+    <p>142. ¿Qué factor determina la energía de radiación producida por un tubo de RX?. a) La diferencia de potencial ánodo-cátodo. b) La intensidad eléctrica que circula por el cátodo. c) El número atómico del material con que se fabrica el ánodo. d) Son correctas a y c.</p>
+    <p>143. La unidad de dosis absorbida en el sistema internacional es: a) Culombio partido por kilogramo. b) Sievert. c) Grey. d) Becquerel.</p>
+    <p>144. La unidad de dosis equivalente en el sistema internacional es: a) Culombio partido por kilogramo. b) Sievert. c) Grey. d) Becquerel.</p>
+    <p>145. La unidad de exposición en el sistema internacional: a) Culombio partido por kilogramo. b) Sievert. c) Grey. d) Becquerel.</p>
+    <p>146. En el Radiodiagnóstico se utilizan Rayos X de baja energía porque: a) Son muy penetrantes. b) Son muy homogéneos. c) Su coeficiente de absorción depende mucho del absorbente. d) Son muy fáciles de filtrar.</p>
+    <p>147. El factor de calidad Q de una radiación: a) Decrece con la L.E.T. b) Toma un valor máximo para una energía dada. c) Crece con la L.E.T. d) Es independiente e la L.E.T.</p>
+    <p>148. En una instalación radiactiva el personal laboral recibe una dosis efectiva 4 mSv poraño oficial, esta zona es: a) De permanencia limitada. b) Controlada. c) Vigilada. d) De acceso prohibido.</p>
+    <p>149. En un detector de centelleo, el fotocátodo: a) Traduce la radiación ionizante a luz visible. b) Amplifica el valor de la corriente eléctrica. c) Selecciona los impulsos de una determinada amplitud. d) Traduce la luz visible a corriente eléctrica.</p>
+    <p>150. Si una persona A esta situada a dos metros de una fuente radiactiva y otra B estasituada a un metro, la dosis de radiación que recibe A en un mismo intervalo de tiemposerá respecto a B: a) El doble. b) La mitad. c) Igual. d) La cuarta parte.</p>
+    <p>151. Según el criterio ALARA, cualquier dosis de radiación por debajo de los límitesanuales establecidos en la reglamentación estará: a) Permitida siempre en condiciones habituales. b) Tolerada incondicionalmente. c) Permitida solo para profesional expuesto. d) Permitida si su recepción está justificada y la operación que da lugar a la misma hasido perfeccionada para hacerla lo mejor posible.</p>
+    <p>152. Decimos que el K y el K son elementos. a) Isotopos. b) Isóbaros. c) Isótonos. d) Isómeros.</p>
+    <p>153. La producción de pares se debe: a) La interacción de un fotón en el campo de un núcleo. b) La interacción de un fotón en el campo de un electrón. c) Un núcleo absorbe un fotón y emite dos nucleones. d) La a y c.</p>
+    <p>154. Los aceleradores lineales, aceleran: a) Isótopos radiactivos. b) Neutrones. c) Electrones. d) Partículas a.</p>
+    <p>155. Los colimadores en radioterapia: a) Sirven para filtrar las radiaciones. b) Son transparentes a las radiaciones. c) Se sitúan para proteger las radiografías de la radiación dispersa. d) Limitan el haz de radiación a las medidas deseadas.</p>
+    <p>156.Tele cobaltoterapia, es una forma de radioterapia: a) Interna. b) Externa. c) Endocavilatoria. d) Intersticial.</p>
+    <p>157. La desintegración del cobalto-60, se realiza mediante la emisión de: a) Partículas a. b) Protones. c) 2 fotones y de 1,17 y 1,33 MeV&lt;. d) Neutrones.</p>
+    <p>158. Se denomina volumen blanco: a) Al volumen a irradiar. b) Al tumor de color blanco. c) Al tumor benigno. d) A la zona tumoral a proteger.</p>
+    <p>159. En un generador de isotopos de vida corta, el isotopo padre: a) Es el que se le administra al paciente. b) Tiene un periodo relativamente largo comparado con el isotopo hijo. c) Siempre será emisor gamma. d) La a y c.</p>
+    <p>160. Para obtener una gammagrafía, es preciso: a) Irradiar externamente al paciente con rayos X. b) Irradiar externamente al paciente con rayos gamma. c) Administrar al paciente una sustancia radiactiva emisora beta. d) Administrar al paciente una sustancia radiactiva emisora gamma.</p>
+    <p>161. Es contraindicación para realizar una gammagrafía: a) Que la paciente este en periodo de gestación. b) Que el paciente sea portador de implantes metálicos. c) Que la paciente este en periodo de lactancia materna. d) La a y c.</p>
+    <p>162. Los isotopos empleados en Medicina Nuclear diagnostica deben de: a) Tener periodo de semidesintegración corto. b) Ser emisores gamma. c) Ser emisores alfa. d) La a y b.</p>
+    <p>163. Es Falso para las pruebas en Medicina Nuclear diagnostica: a) No produce reacciones alérgicas. b) Las pruebas que se requieren son incruentas y atraumaticas. c) Producen una gran irradiación. d) Las pruebas tienen un relativo bajo coste.</p>
+    <p>164. Las cartulinas de refuerzo (hojas reforzadoras) tienen como misión: a) Evitar que incida en la película la radiación difusa. b) Filtrar la radiación. c) Conseguir que la imagen se produzca con menor dosis. d) Proteger la película.</p>
+    <p>165. Las rejillas antidifusoras (Bucky) tienen como misión: a) Evitar que incida en la película la radiación difusa. b) Filtrar la radiación. c) Conseguir que la imagen se produzca con menor dosis. d) Proteger la película.</p>
+    <p>166. La filtración del haz de rayos X es necesaria para: a) Eliminar los fotones menos energéticos. b) Eliminar los fotones más energéticos. c) Endurecer el haz. d) La a y c.</p>
+    <p>167. La tomografía es un método radiográfico para: a) Colimador, Tubo R-X, Placa, Antidifusor y paciente. b) Tubo, Colimador, Paciente, Antidifusor y Placa. c) Tubo, Colimador, Antidifusor, Paciente y Placa. d) Tubo, Antidifusor, Paciente, Colimador y Placa.</p>
+    <p>ÁLVARO CONDÓN. ÁLVARO CONDÓN. ÁLVARO CONDÓN.</p>
+    <p>169. El número de capas de hemirreductoras mínimo necesario para que, tras un blindaje, la intensidad de un haz de fotones se vea reducida a menos de la treintava parte del valor inicial: a) 2. b) 5. c) 3. d) 4.</p>
+    <p>El número de capas de hemirreductoras mínimo necesario para que tras un blindaje la intensidad de un haz de fotones se vea reducida a menos de la séptima parte del valor inicial es: a) 4. b) 5. c) 3. d) 2.</p>
+    <p>171. La distribución de antes de telefonía móvil en un entorno urbano debe ser: a) Homogénea y que emitan la menor potencia posible. b) Perimetral y que emita a la máxima potencia. c) Homogénea y que emita la máxima potencia. d) Perimetral y que emita a la menor potencia posible.</p>
+    <p>174. Los rayos X proceden de: a) Estados moleculares excitados. b) Estados atómicos excitados. c) Núcleos atómicos inestables. d) Las tres anteriores.</p>
+    <p>175. El fenómeno de build-up tiene como consecuencia que: a) La absorción a nivel de la piel es mucho menor que a algunos centímetros deprofundidad. b) La energía de los electrones de ionización aumenta. c) La radiación se absorbe ahora por efecto de formación de pares. d) La A y la B.</p>
+    <p>176. Cuando el valor de “mu” (coeficiente de atenuación) es muy grande diremos quela radiación es: a) Regular de penetrante. b) Poco penetrante. c) Muy penetrante. d) Monoenergetica.</p>
+    <p>177. La hadronterapia se caracteriza porque: a) La mayor parte de la energía se deposita en los primero mm de la trayectoria. b) La mayor parte de la energía se deposita en los últimos mm de la trayectoria. c) La mayor parte de la energía se deposita en lo mm intermedios de la trayectoria. d) Ninguna de las tres.</p>
+    <p>178. La sección eficaz para el efecto compton: a) Aumenta al aumentar la energía. b) Es independiente del número atómico e inversamente proporcional a la E. c) Es independiente de la energía. d) La B y la C.</p>
+    <p>179. En un detector de centelleo, el fotocátodo: a) Selecciona los impulsos de una determinada amplitud. b) Amplifica el valor de la corriente eléctrica. c) Traduce la luz visible a corriente eléctrica. d) Traduce la radiación ionizante a luz visible.</p>
+    <p>180. En las emisiones de las antenas de telefonía móvil, se verifica: a) La potencia disminuye rápidamente con la distancia. b) Los elementos del entorno influyen aumentando la potencia. c) A partir de 7 m de distancia recibimos más emisión de RF del teléfono que laantena. d) La A y la C.</p>
+    <p>181. Las radiaciones infrarrojas son radiaciones: a) De fotones no ionizantes. b) Corpusculares ionizantes. c) Electromagnéticas. d) La A y la C.</p>
+    <p>182. Un tubo de rayos X: a) Emite electrones. b) Acelera iones positivos para la producción de fotones. c) Utiliza electrones para la producción de fotones. d) Necesita de un intenso campo magnético.</p>
+    <p>183. ¿Por qué se utilizan radiaciones de baja energía en radiodiagnóstico?. a) Porque se absorben selectivamente en unas estructuras orgánicas respecto aotras. b) Porque así se reduce la dosis recibida por el paciente. c) Porque mayoritariamente actúa el efecto Compton. d) La A y la C.</p>
+    <p>184. ¿En que núclido se desintegra el 126I (Z=53) por captura electrónica?. a) 125Te (Z=52. b) 126Te (Z=52). c) 127Xe (Z=54). d) 126M (Z=53).</p>
+    <p>185. Tenemos 4000 Bq de un radionucleido cuyo período de semidesintegración es de 5 años. ¿Qué actividad poseerá a los 20 años?. a) 2000 Bq. b) 500 Bq. c) 250 Bq. d) 1000 Bq.</p>
+    <p>186. ¿Cuál de las siguientes radiaciones electromagnéticas se propagan con mayor velocidad en el vacío: a) Las ondas de radar. b) Los rayos X. c) Las ondas ultravioleta. d) Todas a igual velocidad.</p>
+    <p>187. Los radares de tráfico aéreo utilizan: a) Radiofrecuencias. b) Infrarrojos. c) Microondas. d) Láseres tipo I.</p>
+    <p>188. Colocando entre el tubo y el operador un blindaje equivalente a dos capas hemirreductoras, la tasa de exposición se reduce a: a) La mitad. b) La cuarta parte. c) La tercera parte. d) Prácticamente a cero.</p>
+    <p>189. El ozono existente en la atmósfera actúa como filtro de: a) La radiación gamma. b) La radiación microonda. c) La radiación infrarroja del sol. d) La radiación ultravioleta del sol.</p>
+    <p>190. Un ejemplo de un par partícula-antipartícula es: a) El electrón y el positrón. b) El neutrón y el neutrino. c) El protón y el neutrón. d) El protón y el positrón.</p>
+    <p>191. Cuanto mayor es la constante de desintegración de una sustancia radioactiva: a) Menor es su periodo de semidesintegración. b) Mayor es la vida media de sus átomos. c) Mayor es su período de semidesintegración. d) Mayor es su actividad específica.</p>
+    <p>192. ¿Cuál de estas radiaciones son directamente ionizantes?. a) Radiación gamma. b) Radiación X. c) Ninguna. d) Neutrino.</p>
+    <p>193. Si andando por un hospital encontramos una señalización que consiste en un trébol de color naranja bordeado de puntas radiales sobre fondo blanco, estamos en una zona: a) De acceso prohibido. b) De permanencia reglamentada. c) Controlada. d) Vigilada.</p>
+    <p>194. La vida media de los átomos es menor cuando el período de semidesintegración vale: a) 14 días. b) 3 años. c) 3 horas. d) 2400 años.</p>
+    <p>195. La carga eléctrica de un fotón es igual a la del: a) positrón. b) electrón. c) protón. d) neutrón.</p>
+    <p>196. Un tejido blando se somete a la exposición de 100 R. La dosis de exposición absorbida es, aproximadamente: a) 10000 rads. b) 1000 rads. c) 100 rads. d) 500 rads.</p>
+    <p>197. Un núcleo atómico tiene una masa que es: a) Igual a la masa total de los nucleones. b) Inferior a la masa total de los nucleones. c) Superior a la masa total de los nucleones. d) Cualquiera de las anteriores, dependiendo del núcleo.</p>
+    <p>198. ¿Cuál de estas radiaciones son directamente ionizantes?. a) Neutrones. b) Protones. c) Radiación gamma. d) Radiación X.</p>
+    <p>199. Las cataratas fototérmicas en el cristalino son producidas por: a) Luz ultravioleta A. b) Luz ultavioleta B-C. c) Infrarrojos. d) Luz visible.</p>
+    <p>200. El número de protones en un núcleo del isótopo de boro 11 5 B es: a) 6. b) No tiene protones. c) 11. d) 5.</p>
+    <p>201. El espectro visible abarca las radiaciones de longitud de onda entre: a) 780 nm a 1024 nm. b) 400 nm a 780 nm. c) 220 nm a 400 nm. d) 100 nm a 220 nm.</p>
+    <p>202. El número atómico de un elemento es el número de: a) Protones y neutrones en su núcleo. b) Protones en su núcleo. c) Electrones en su núcleo. d) Neutrones en su núcleo.</p>
+    <p>203. Los hornos de inducción utilizan: a) Microondas. b) Láseres tipo I. c) Infrarrojos. d) Radiofrecuencias.</p>
+    <p>204. Los núcleos de los isótopos de un elemento contienen el mismo número de: a) Electrones. b) Neutrones. c) Nucleones. d) Protones.</p>
+    <p>205. Dentro de las RNI ópticas, las menos energéticas son: a) Todas las ópticas tienen igual de energía. b) Las infrarrojas. c) Ultravioleta. d) Las visibles.</p>
+    <p>206. ¿Cuál de las siguientes RNI no es óptica?. a) Visible. b) Microondas. c) Ultravioleta. d) Infrarroja.</p>
+    <p>207. Una de las siguientes afirmaciones no se refiere al Láser: a) Gran direccionalidad. b) Luz coherente. c) Luz polarizada. d) Luz monocromática.</p>
+    <p>208. Los láseres no abarcan longitudes de onda del espectro: a) Infrarrojo. b) Visible. c) Microondas. d) Ultravioleta.</p>
+    <p>209. Las microondas están compuestas por: a) Neutrones. b) Electrones. c) Fotones. d) Protones.</p>
+    <p>210. ¿Qué radiación se propaga a más velocidad en el vacío?. a) Sonido. b) Todas a igual velocidad. c) ELF. d) Ultrasonido.</p>
+    <p>211. ¿Qué tienen en común los elementos isóbaros?. a) El número másico. b) El número de neutrones. c) La posición en la tabla periódica. d) El número de electrones.</p>
+    <p>212. La vida media es: a) La inversa del periodo de desintegración. b) La inversa de la actividad. c) La inversa de la constante de desintegración. d) La inversa de la dosis.</p>
+    <p>212. En la emisión beta positiva admitimos la hipótesis: a) n ---&gt; p + e- + v. b) p ---&gt; n + e++ v. c) p ---&gt; p + e- +v. d) n ---&gt; p + e+ + v.</p>
+    <p>213. En un detector de centelleo, el fotocátodo: a) Traduce la radiación ionizante a luz visible. b) Traduce la luz visible a corriente eléctrica. c) Selecciona los impulsos de una determinada amplitud. d) Amplifica el valor de la corriente eléctrica.</p>
+    <p>214. Cuáles de estas pertenece a las radiaciones C.E. a) Radiofrecuencias. b) Microondas. c) Ultravioletas. d) La a y b.</p>
+    <p>215. Cuáles de estas pertenece a las radiaciones ópticas: a) Radiofrecuencias. b) Ultravioletas. c) Microondas. d) La b y c.</p>
+    <p>216. La puloximetría por infrarrojo se utiliza para medir: a) Frecuencia cardíaca. b) Curva de pulso. c) Saturación de oxígeno. d) Las tres anteriores.</p>
+    `;
+
+    // Función de mezcla (Fisher-Yates)
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    // Parseo del HTML a objetos
+    function parseAndRender() {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(rawHtmlData, 'text/html');
+        const paragraphs = doc.querySelectorAll('p');
+        const container = document.getElementById('quizContainer');
+        container.innerHTML = '';
+
+        paragraphs.forEach((p, index) => {
+            const fullText = p.textContent.trim();
+            // Ignorar textos que no parecen preguntas (ej. nombres sueltos o muy cortos sin opciones)
+            if (fullText.length < 10) return;
+
+            // Separar pregunta de respuestas.
+            // Buscamos patrones como " a) ", " b) ", o al final de la pregunta "?." o ":"
+            
+            // Intentamos localizar donde empieza la primera respuesta "a)" o "a."
+            let splitIndex = -1;
+            // Buscar "a)" o "a." precedido de espacio o punto
+            const regexA = /(\s|\.)a[\)\.]/i;
+            const match = fullText.match(regexA);
+            
+            if (match) {
+                splitIndex = match.index + 1; // Ajuste por el caracter previo
+            } else {
+                // Si no encuentra "a)", buscar el último interrogante
+                splitIndex = fullText.lastIndexOf('?');
+                if (splitIndex !== -1) splitIndex += 1;
+            }
+
+            if (splitIndex === -1) return; // Si no se puede separar, saltar
+
+            const questionText = fullText.substring(0, splitIndex).trim();
+            let answersPart = fullText.substring(splitIndex).trim();
+            
+            // Separar las respuestas usando una expresión regular
+            // Busca a), b), c), d) o a., b., c., d.
+            // Usamos un split positivo
+            const options = answersPart.split(/[\s\.]?[abcd][\)\.]\s/i).filter(opt => opt.trim().length > 0);
+
+            // Si no detectó opciones (formato raro), intentar división manual simple si hay puntos
+            let finalOptions = options;
+            if (finalOptions.length < 2) {
+                 finalOptions = answersPart.split('. ').filter(o => o.trim().length > 0);
+            }
+
+            // Renderizar
+            const qBlock = document.createElement('div');
+            qBlock.className = 'question-block';
+
+            const qTitle = document.createElement('div');
+            qTitle.className = 'question-title';
+            qTitle.textContent = questionText; // Mantenemos el número original del texto si existe
+            qBlock.appendChild(qTitle);
+
+            const ul = document.createElement('ul');
+            ul.className = 'options-list';
+
+            // Mezclar opciones
+            const shuffledOptions = shuffleArray([...finalOptions]);
+
+            shuffledOptions.forEach(opt => {
+                const li = document.createElement('li');
+                li.className = 'option-item';
+
+                const label = document.createElement('label');
+                label.style.width = '100%';
+                label.style.cursor = 'pointer';
+                label.style.display = 'flex';
+                label.style.alignItems = 'center';
+
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = `question_${index}`; // Un nombre único por pregunta
+                radio.value = opt;
+
+                label.appendChild(radio);
+                label.appendChild(document.createTextNode(opt));
+                li.appendChild(label);
+                ul.appendChild(li);
+            });
+
+            qBlock.appendChild(ul);
+            container.appendChild(qBlock);
+        });
+    }
+
+    // Ejecutar al cargar
+    window.onload = parseAndRender;
+</script>
+
+</body>
+</html>
