@@ -139,7 +139,7 @@
 
     <div class="section-title">
         Recopilación Vivero
-        <span class="badge badge-vivero">Vivero 500</span>
+        <span class="badge badge-vivero">Quizzes Interactivos</span>
     </div>
     <div class="grid-container" id="container-vivero"></div>
 
@@ -156,13 +156,9 @@
     <div class="grid-container" id="container-plat"></div>
 
     <script>
-        // --- 1. VIVERO (5 Partes) ---
+        // --- 1. VIVERO (Sustituido por Quizzes) ---
         const seriesVivero = [
-            { file: 'VIVERO 500, 1-100.html', title: 'Parte 1: Preguntas 1-100' },
-            { file: 'VIVERO 500, 101-200.html', title: 'Parte 2: Preguntas 101-200' },
-            { file: 'VIVERO 500, 201-300.html', title: 'Parte 3: Preguntas 201-300' },
-            { file: 'VIVERO 500, 301-400.html', title: 'Parte 4: Preguntas 301-400' },
-            { file: 'VIVERO 500, 401-480.html', title: 'Parte 5: Preguntas 401-480' }
+            { file: 'quizzes_anatomia_10x50_v2.html', title: 'Batería Completa: 456 Preguntas Interactivas' }
         ];
 
         // --- 2. TEMÁTICOS (Letras A-G) ---
@@ -195,7 +191,7 @@
                             <div class="card-cat">${catName}</div>
                             <span class="test-title">${ex.title}</span>
                         </div>
-                        <a href="${ex.file}" class="btn-start ${btnClass}">Abrir Test</a>
+                        <a href="${ex.file}" class="btn-start ${btnClass}">Abrir Quizzes</a>
                     </div>
                 `;
                 container.innerHTML += html;
