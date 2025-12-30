@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Biomecánica y Elasticidad - FM Shark Crew</title>
+    <title>Test Biomecánica y Elasticidad - Modo Estudio</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f0f2f5;
             color: #333;
             max-width: 800px;
             margin: 0 auto;
@@ -16,49 +16,99 @@
         h1 {
             text-align: center;
             color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
         }
         .question-card {
             background: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 5px solid #3498db;
         }
         .question-title {
-            font-weight: bold;
-            font-size: 1.1em;
-            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 1.15em;
+            margin-bottom: 20px;
+            color: #2c3e50;
         }
         .options-list {
             list-style-type: none;
             padding: 0;
         }
         .option-item {
-            background: #e9ecef;
-            margin: 5px 0;
-            padding: 10px 15px;
-            border-radius: 5px;
+            background: #f8f9fa;
+            margin: 8px 0;
+            padding: 12px 15px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background 0.2s;
+            border: 1px solid #e9ecef;
+            transition: all 0.2s ease;
+            position: relative;
         }
-        .option-item:hover {
-            background: #dce0e3;
+        .option-item:hover:not(.disabled) {
+            background: #e2e6ea;
+            transform: translateX(5px);
         }
+        /* Estilos de estado */
         .option-item.correct {
             background-color: #d4edda;
             color: #155724;
-            border: 1px solid #c3e6cb;
+            border-color: #c3e6cb;
+            font-weight: 500;
+        }
+        .option-item.correct::after {
+            content: "✓";
+            float: right;
+            font-weight: bold;
         }
         .option-item.incorrect {
             background-color: #f8d7da;
             color: #721c24;
-            border: 1px solid #f5c6cb;
+            border-color: #f5c6cb;
+            opacity: 0.8;
         }
-        .feedback {
-            margin-top: 10px;
-            font-style: italic;
-            font-size: 0.9em;
+        .option-item.incorrect::after {
+            content: "✕";
+            float: right;
+            font-weight: bold;
         }
+        .option-item.disabled {
+            cursor: default;
+            pointer-events: none;
+        }
+        
+        /* Caja de Explicación */
+        .explanation-box {
+            display: none; /* Oculto por defecto */
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e8f4fd;
+            border-radius: 6px;
+            border-left: 4px solid #2980b9;
+            font-size: 0.95em;
+            color: #444;
+            animation: slideDown 0.3s ease-out;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .explanation-title {
+            font-weight: bold;
+            color: #2980b9;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.85em;
+            text-transform: uppercase;
+        }
+
         .btn-reset {
             display: block;
             width: 100%;
@@ -67,441 +117,522 @@
             color: white;
             text-align: center;
             border: none;
-            border-radius: 5px;
-            font-size: 1.2em;
+            border-radius: 8px;
+            font-size: 1.1em;
             cursor: pointer;
-            margin-top: 30px;
+            margin-top: 40px;
+            margin-bottom: 60px;
+            transition: background 0.2s;
         }
         .btn-reset:hover {
             background-color: #2980b9;
-        }
-        .note {
-            font-size: 0.8em;
-            color: #777;
-            text-align: center;
         }
     </style>
 </head>
 <body>
 
     <h1>Test Biomecánica y Elasticidad</h1>
-    <p class="note">FM Shark Crew - Modo Práctica</p>
+    <p class="subtitle">FM Shark Crew | Modo Estudio con Feedback Inmediato</p>
 
     <div id="quiz-container"></div>
     
     <button class="btn-reset" onclick="location.reload()">Reiniciar Test</button>
 
 <script>
-    // Banco de preguntas extraído y depurado
-    // El índice 0 de 'answers' es la respuesta correcta en esta estructura base.
-    // El script se encarga de mezclarlas al mostrarla.
+    // Datos procesados: Las opciones ya están mezcladas aquí para evitar pistas visuales en el código.
+    // 'correctIndex' indica cuál es la correcta (0 = primera opción, 1 = segunda, etc.)
     const quizData = [
         {
             q: "La inversión postural o tracción de inversión produce:",
-            answers: [
-                "una translación del centro de gravedad y una alineación tridimensional vertebral.",
+            options: [
                 "un giro del centro de gravedad.",
-                "una translación del centro de gravedad.",
-                "marea mucho."
-            ]
+                "marea mucho.",
+                "una translación del centro de gravedad y una alineación tridimensional vertebral.",
+                "una translación del centro de gravedad."
+            ],
+            correctIndex: 2,
+            explanation: "La inversión invierte la acción de la gravedad, descomprimiendo las vértebras (alineación) y desplazando el centro de gravedad corporal hacia la cabeza."
         },
         {
             q: "Una persona realiza un ejercicio isotónico cuando:",
-            answers: [
-                "varia la longitud del músculo sin variar la tensión muscular.",
-                "bebe mucha bebida isotónica.",
+            options: [
                 "varia la tensión muscular y la longitud del músculo permanece constante.",
-                "empuja un mueble."
-            ]
+                "varia la longitud del músculo sin variar la tensión muscular.",
+                "empuja un mueble.",
+                "bebe mucha bebida isotónica."
+            ],
+            correctIndex: 1,
+            explanation: "Isotónico (iso=igual, tónico=tensión) implica que el músculo se acorta o alarga (cambia longitud) manteniendo una tensión constante."
         },
         {
             q: "El uso de un bastón para caminar tiene como objetivo:",
-            answers: [
+            options: [
                 "reducir la fuerza muscular sobre la cadera de la pierna enferma.",
-                "aumentar la fuerza muscular de la pierna sana.",
                 "reducir la fuerza muscular en la pierna sana.",
+                "aumentar la fuerza muscular de la pierna sana.",
                 "caminar sobre tres apoyos."
-            ]
+            ],
+            correctIndex: 0,
+            explanation: "Al usar el bastón en el lado opuesto, se crea un momento de fuerza que reduce la necesidad de contracción de los abductores de la cadera enferma, reduciendo la compresión articular."
         },
         {
             q: "La suspensoterapia o inmovilización en suspensión de un miembro:",
-            answers: [
-                "elimina la gravedad y los rozamientos.",
-                "induce a tensionar los músculos antagónicos.",
+            options: [
                 "aumenta el peso del miembro afectado.",
-                "produce entumecimientos y calambres."
-            ]
+                "elimina la gravedad y los rozamientos.",
+                "produce entumecimientos y calambres.",
+                "induce a tensionar los músculos antagónicos."
+            ],
+            correctIndex: 1,
+            explanation: "Al suspender el miembro, se contrarresta la fuerza de la gravedad, permitiendo movimientos sin fricción contra la superficie y con menor esfuerzo muscular."
         },
         {
             q: "El límite de ruptura:",
-            answers: [
-                "En general es distinto según se trate de compresión o tracción.",
-                "es una función del modulo de Young.",
+            options: [
                 "es una consecuencia de la ley de Hooke.",
-                "Todas son falsas."
-            ]
+                "Todas son falsas.",
+                "En general es distinto según se trate de compresión o tracción.",
+                "es una función del modulo de Young."
+            ],
+            correctIndex: 2,
+            explanation: "Los materiales biológicos son anisotrópicos; por ejemplo, el hueso resiste mucho más a la compresión que a la tracción o cizalladura antes de romperse."
         },
         {
             q: "Los huesos del cuerpo al ser huecos se consigue:",
-            answers: [
-                "menos peso a igual resistencia.",
+            options: [
                 "menos consumo de calcio.",
+                "menos resistencia y mas agilidad.",
                 "menor dificultad de eliminación de fosfato en su eliminación.",
-                "menos resistencia y mas agilidad."
-            ]
+                "menos peso a igual resistencia."
+            ],
+            correctIndex: 3,
+            explanation: "Mecánicamente, el material en el centro (eje neutro) apenas contribuye a la resistencia a la flexión. Al ser huecos, maximizan el momento de inercia con menos masa."
         },
         {
             q: "Un material es menos deformable cuando:",
-            answers: [
-                "su modulo de Young es alto.",
-                "su numero de Reynolds es bajo.",
+            options: [
                 "su modulo de Young es bajo.",
-                "sólo depende de la naturaleza del material."
-            ]
+                "su modulo de Young es alto.",
+                "sólo depende de la naturaleza del material.",
+                "su numero de Reynolds es bajo."
+            ],
+            correctIndex: 1,
+            explanation: "El Módulo de Young (E) mide la rigidez. Cuanto mayor es E, más tensión se necesita para deformarlo, por tanto, es más rígido (menos deformable)."
         },
         {
             q: "El módulo de Young expresa:",
-            answers: [
+            options: [
                 "la capacidad de elasticidad de un cuerpo.",
-                "la resistencia intermolecular.",
                 "la capacidad calorífica de un cristal.",
+                "la resistencia intermolecular.",
                 "la energía total de las moléculas de un cristal."
-            ]
+            ],
+            correctIndex: 0,
+            explanation: "Es la constante de proporcionalidad entre el esfuerzo aplicado y la deformación unitaria producida en la zona elástica."
         },
         {
             q: "El módulo de Young:",
-            answers: [
-                "es una característica del material del cual esta hecho el cuerpo.",
-                "es una función de la fuerza que se realiza.",
+            options: [
                 "es una función de la temperatura.",
-                "Ninguna de las tres."
-            ]
+                "es una característica del material del cual esta hecho el cuerpo.",
+                "Ninguna de las tres.",
+                "es una función de la fuerza que se realiza."
+            ],
+            correctIndex: 1,
+            explanation: "Es una propiedad intrínseca del material (acero, hueso, goma), independiente de la forma o tamaño del objeto."
         },
         {
             q: "Cuando un hueso trabaja a flexión la deformación será menor si:",
-            answers: [
-                "todas las anteriores.",
-                "mayor modulo de Young.",
+            options: [
                 "menor momento flexor.",
-                "mayor momento de inercia geométrica."
-            ]
+                "mayor momento de inercia geométrica.",
+                "todas las anteriores.",
+                "mayor modulo de Young."
+            ],
+            correctIndex: 2,
+            explanation: "La deformación depende inversamente de la rigidez (Módulo de Young) y de la geometría (Momento de inercia), y directamente de la carga (Momento flexor). Si optimizamos todo, la deformación es mínima."
         },
         {
             q: "Los huesos están constituidos de:",
-            answers: [
+            options: [
                 "material compuesto de apatito y colágeno.",
-                "calcio.",
                 "apatito (alto modulo de Young).",
-                "colágeno (bajo modulo de Young)."
-            ]
+                "colágeno (bajo modulo de Young).",
+                "calcio."
+            ],
+            correctIndex: 0,
+            explanation: "El hueso es un material compuesto natural: la hidroxiapatita aporta dureza/rigidez y el colágeno aporta flexibilidad/tenacidad."
         },
         {
             q: "Los huesos presentan mayor limite de rotura al trabajar a:",
-            answers: [
+            options: [
                 "compresión.",
-                "flexión.",
                 "tracción.",
-                "cizallamiento."
-            ]
+                "cizallamiento.",
+                "flexión."
+            ],
+            correctIndex: 0,
+            explanation: "La estructura ósea está evolutivamente diseñada para soportar grandes cargas de peso, por lo que su resistencia a la compresión es superior a la tracción o torsión."
         },
         {
             q: "Los materiales elásticos son aquellos que:",
-            answers: [
-                "recuperan su forma original cuando se les deja de aplicar una fuerza.",
-                "están compuestos de elastómeros.",
+            options: [
                 "a y b.",
-                "ninguna de las anteriores."
-            ]
+                "están compuestos de elastómeros.",
+                "ninguna de las anteriores.",
+                "recuperan su forma original cuando se les deja de aplicar una fuerza."
+            ],
+            correctIndex: 3,
+            explanation: "La elasticidad es la propiedad física de volver a la forma original una vez desaparece la fuerza deformante (siempre que no supere el límite elástico)."
         },
         {
             q: "El momento de inercia (I), ¿de que depende?",
-            answers: [
+            options: [
                 "de su geometría porque depende de lo alejada que esté la masa de la fibra neutra.",
-                "de la fuerza aplicada.",
                 "del modulo de Young.",
+                "de la fuerza aplicada.",
                 "del material del cuerpo."
-            ]
+            ],
+            correctIndex: 0,
+            explanation: "El momento de inercia es una propiedad geométrica que indica cómo se distribuye la masa respecto a un eje. Cuanto más lejos esté la masa del eje, mayor es I."
         },
         {
             q: "Las fibras musculares se pueden considerar elastómeros, es decir:",
-            answers: [
-                "se deforman elásticamente.",
+            options: [
                 "se cumple la ley de Hooke.",
+                "a y la b.",
                 "existe proporcionalidad entra la fuerza y la deformación ejercida por ella.",
-                "a y la b."
-            ]
+                "se deforman elásticamente."
+            ],
+            correctIndex: 3,
+            explanation: "Aunque se deforman elásticamente (vuelven a su forma), los tejidos biológicos blandos no suelen seguir la Ley de Hooke (no son lineales) en todo su rango."
         },
         {
             q: "La operación isométrica de un músculo depende de:",
-            answers: [
-                "El músculo realiza una fuerza pero este no sufre deformación.",
+            options: [
                 "el músculo realiza una fuerza constante y varía su longitud.",
-                "el músculo se contrae sin realizar fuerza.",
-                "El músculo no realiza fuerza."
-            ]
+                "El músculo realiza una fuerza pero este no sufre deformación.",
+                "El músculo no realiza fuerza.",
+                "el músculo se contrae sin realizar fuerza."
+            ],
+            correctIndex: 1,
+            explanation: "Isométrico (igual medida): El músculo genera tensión (fuerza) pero no hay cambio visible en la longitud del músculo ni movimiento articular."
         },
         {
             q: "Los huesos son un ejemplo de material biológico:",
-            answers: [
+            options: [
+                "simple.",
                 "compuesto.",
                 "blando.",
-                "duro.",
-                "simple."
-            ]
+                "duro."
+            ],
+            correctIndex: 1,
+            explanation: "Es un material compuesto (composite) formado por una matriz orgánica (colágeno) y una inorgánica (minerales)."
         },
         {
             q: "El uso del bastón tiene como misión:",
-            answers: [
-                "reducir la fuerza muscular sobre la cadera de la pierna enferma.",
-                "reducir la fuerza muscular sobre la cadera de la pierna sana.",
+            options: [
                 "aumentar la fuerza muscular en la pierna sana.",
-                "aumentar la fuerza muscular en la pierna enferma."
-            ]
+                "reducir la fuerza muscular sobre la cadera de la pierna enferma.",
+                "aumentar la fuerza muscular en la pierna enferma.",
+                "reducir la fuerza muscular sobre la cadera de la pierna sana."
+            ],
+            correctIndex: 1,
+            explanation: "Repetición de concepto: Al descargar peso en el bastón y aumentar la base de sustentación, se reduce la carga y la fuerza muscular requerida en la cadera afectada."
         },
         {
             q: "¿En qué tipo de deformación puede aparecer pandeo?",
-            answers: [
-                "compresión.",
+            options: [
+                "torsión.",
                 "cizalladura.",
-                "tracción.",
-                "torsión."
-            ]
+                "compresión.",
+                "tracción."
+            ],
+            correctIndex: 2,
+            explanation: "El pandeo es una inestabilidad elástica que ocurre en elementos esbeltos (columnas, huesos largos) sometidos a compresión, donde se doblan lateralmente."
         },
         {
             q: "Cuanto mayor es el modulo de Young (E) de un material:",
-            answers: [
-                "menos deformable es el material.",
-                "más frágil es.",
+            options: [
+                "más deformable.",
                 "menos frágil es.",
-                "más deformable."
-            ]
+                "menos deformable es el material.",
+                "más frágil es."
+            ],
+            correctIndex: 2,
+            explanation: "Un módulo de Young alto indica alta rigidez, por lo tanto, el material se deforma menos ante una misma carga."
         },
         {
             q: "En un hueso largo sometido a flexión, la fibra central que no sufre ni compresión ni extensión se llama:",
-            answers: [
-                "fibra neutra.",
-                "fibra larga.",
+            options: [
                 "fibra invariable.",
-                "fibra media."
-            ]
+                "fibra larga.",
+                "fibra media.",
+                "fibra neutra."
+            ],
+            correctIndex: 3,
+            explanation: "En flexión, un lado se comprime y el otro se tracciona. En el centro geométrico existe una línea donde la tensión es cero: la fibra neutra."
         },
         {
             q: "Un ejercicio se denomina isotónico cuando:",
-            answers: [
+            options: [
                 "varía la longitud pero no la tensión muscular.",
-                "no varía ni la tensión ni la longitud muscular.",
                 "varía la tensión muscular conservando la longitud.",
+                "no varía ni la tensión ni la longitud muscular.",
                 "varía la postura corporal y los ejercicios respiratorios."
-            ]
+            ],
+            correctIndex: 0,
+            explanation: "Nuevamente: Isotónico mantiene la tensión (tono) pero cambia la longitud (hay movimiento)."
         },
         {
             q: "Si estamos apoyados en un solo pie, la fuerza de contacto que la cadera ejerce sobre el fémur:",
-            answers: [
-                "Sigue la línea del cuello del fémur.",
+            options: [
                 "Se compensa con la fuerza peso.",
-                "Es vertical para neutralizar el peso del cuerpo.",
-                "Es horizontal."
-            ]
+                "Sigue la línea del cuello del fémur.",
+                "Es horizontal.",
+                "Es vertical para neutralizar el peso del cuerpo."
+            ],
+            correctIndex: 1,
+            explanation: "La fuerza resultante de reacción en la cadera es muy alta y su vector suele alinearse con la estructura trabecular del cuello del fémur para optimizar la resistencia."
         },
         {
             q: "El tejido muscular es:",
-            answers: [
-                "Un material muy deformable, permite el movimiento de los animales y no cumple la ley de Hooke.",
+            options: [
+                "Muy resistente y poco deformable.",
                 "Muy duro.",
                 "Un material muy deformable y cumple la ley de Hooke.",
-                "Muy resistente y poco deformable."
-            ]
+                "Un material muy deformable, permite el movimiento de los animales y no cumple la ley de Hooke."
+            ],
+            correctIndex: 3,
+            explanation: "El músculo es viscoelástico y capaz de grandes deformaciones activas y pasivas. Su curva tensión-deformación no es una línea recta (no Hooke)."
         },
         {
             q: "La fuerza ejercida por una articulación sobre un hueso, o la que ejerce un hueso sobre una articulación, se denomina:",
-            answers: [
+            options: [
+                "Fuerza muscular.",
                 "Fuerza de contacto.",
-                "Fuerza de compresión.",
                 "Fuerza gravitatoria.",
-                "Fuerza muscular."
-            ]
+                "Fuerza de compresión."
+            ],
+            correctIndex: 1,
+            explanation: "Es la fuerza de reacción articular o fuerza de contacto hueso-hueso."
         },
         {
             q: "Los huesos constituyen un material:",
-            answers: [
-                "Elástico poco deformable y cumplen la ley de Hooke.",
-                "Elástico poco deformable y no cumple la ley de Hooke.",
+            options: [
                 "Simple.",
-                "Elástico muy deformable y poco resistente."
-            ]
+                "Elástico poco deformable y no cumple la ley de Hooke.",
+                "Elástico muy deformable y poco resistente.",
+                "Elástico poco deformable y cumplen la ley de Hooke."
+            ],
+            correctIndex: 3,
+            explanation: "En el rango fisiológico normal, el hueso se comporta elásticamente (recupera forma), es rígido (poco deformable) y sigue aproximadamente la linealidad de Hooke antes de microfracturarse."
         },
         {
             q: "La figura representa la cabeza de un estudiante inclinada sobre un libro. Las fuerzas F1, F2 y F3 son respectivamente:",
-            answers: [
+            options: [
+                "Fuerza gravitatoria, muscular y de contacto.",
                 "Fuerza gravitatoria, de contacto y muscular.",
                 "Fuerza muscular, de contacto y gravitatoria.",
-                "Fuerza gravitatoria, muscular y de contacto.",
                 "Fuerza de contacto, gravitatoria y muscular."
-            ]
+            ],
+            correctIndex: 1,
+            explanation: "En un esquema clásico de palanca de 1er género (cabeza): Peso (gravedad) delante, Fulcro (contacto vertebral) en medio, y Potencia (músculo) detrás. (Nota: basado en la respuesta original correcta)."
         },
         {
             q: "Una persona en bipedestación se mantendrá en equilibrio siempre que:",
-            answers: [
-                "Su centro de gravedad esté dentro de la base de sustentación.",
+            options: [
                 "Su centro de gravedad esté fuera de la base de sustentación.",
                 "La posición del centro de gravedad no interviene en el equilibrio de la persona.",
-                "Su centro de gravedad se halle en el punto medio de su altura."
-            ]
+                "Su centro de gravedad se halle en el punto medio de su altura.",
+                "Su centro de gravedad esté dentro de la base de sustentación."
+            ],
+            correctIndex: 3,
+            explanation: "Condición fundamental de estabilidad: la proyección vertical del Centro de Gravedad (CG) debe caer dentro del área de apoyo (base de sustentación)."
         },
         {
             q: "Si la persona de la figura pasa a la posición (1) a la (2), su centro de gravedad se desplaza:",
-            answers: [
-                "Hacia abajo.",
+            options: [
                 "Hacia la izquierda.",
                 "Hacia la derecha.",
+                "Hacia abajo.",
                 "Hacia arriba."
-            ]
+            ],
+            correctIndex: 0,
+            explanation: "(Basado en la respuesta original 'Hacia abajo'). Generalmente, al agacharse o flexionar rodillas (típico cambio de posición 1 a 2 en esquemas), el CG desciende aumentando la estabilidad."
         },
         {
             q: "El módulo de Young:",
-            answers: [
+            options: [
                 "es una caracteristica del material del cual esta hecho el cuerpo.",
-                "es una funcion de la fuerza que se realiza.",
                 "es una funcion de la temperatura.",
-                "Ninguna de las anteriores."
-            ]
+                "Ninguna de las anteriores.",
+                "es una funcion de la fuerza que se realiza."
+            ],
+            correctIndex: 0,
+            explanation: "Reiteración: El módulo de Young define la rigidez intrínseca del material, no del objeto ni de la fuerza externa."
         },
         {
             q: "¿Cuál de las siguientes funciones no es caracteristica de los huesos?",
-            answers: [
-                "nutricion.",
+            options: [
                 "locomocion.",
-                "flexibilidad y elasticidad corporal.",
-                "soporte del cuerpo."
-            ]
+                "nutricion.",
+                "soporte del cuerpo.",
+                "flexibilidad y elasticidad corporal."
+            ],
+            correctIndex: 1,
+            explanation: "Los huesos dan soporte, permiten locomoción (palancas) y protegen órganos. La nutrición es función de los sistemas digestivo/circulatorio, aunque el hueso almacena minerales."
         },
         {
             q: "La fuerza ejercida por una articulación sobre un hueso se denomina:",
-            answers: [
+            options: [
                 "Fuerza de contacto.",
                 "Fuerza muscular.",
                 "Fuerza gravitatoria.",
                 "Fuerza de compresión."
-            ]
+            ],
+            correctIndex: 0,
+            explanation: "Es la fuerza de reacción que aparece en la superficie de contacto articular."
         },
         {
             q: "Si busco una posición con POCA estabilidad, puedo optar por:",
-            answers: [
-                "a y b.",
-                "Aumentar la altura de mi centro de gravedad.",
+            options: [
                 "Llevar la proyección de mi centro de gravedad al borde de mi base de sustentación.",
-                "Centrar la proyección de mi centro de gravedad en mi base de sustentación."
-            ]
+                "a y b.",
+                "Centrar la proyección de mi centro de gravedad en mi base de sustentación.",
+                "Aumentar la altura de mi centro de gravedad."
+            ],
+            correctIndex: 1,
+            explanation: "Para inestabilidad: subir el Centro de Gravedad (péndulo invertido más alto) y acercarlo al límite de la base (fácil de volcar)."
         },
         {
             q: "Se dice que un cuerpo está en equilibrio indiferente cuando al apartarlo del punto de equilibrio:",
-            answers: [
-                "No tiende ni a recuperarlo ni a alejarse de él.",
-                "Tiende a volver a él.",
+            options: [
+                "No tiende a volver a él.",
                 "Tiende a alejarse de él.",
-                "No tiende a volver a él."
-            ]
+                "No tiende ni a recuperarlo ni a alejarse de él.",
+                "Tiende a volver a él."
+            ],
+            correctIndex: 2,
+            explanation: "En equilibrio indiferente (como una esfera en suelo plano), cualquier nueva posición es también de equilibrio; no hay fuerzas que lo devuelvan ni lo alejen."
         },
         {
             q: "El momento de una fuerza con respecto a un punto 0, da a entender en qué medida existe tendencia a que esa fuerza produzca:",
-            answers: [
+            options: [
+                "Mareos.",
                 "La rotación de un cuerpo con respecto de punto 0.",
                 "Rozamiento con el suelo.",
-                "El desplazamiento del cuerpo respecto del punto 0.",
-                "Mareos."
-            ]
+                "El desplazamiento del cuerpo respecto del punto 0."
+            ],
+            correctIndex: 1,
+            explanation: "El Momento (Torque) es la capacidad de una fuerza para producir un giro o rotación alrededor de un eje."
         },
         {
             q: "Un cuerpo se encuentra en equilibrio traslacional:",
-            answers: [
+            options: [
+                "Cuando la suma escalar de las fuerzas aplicadas es cero.",
                 "Cuando la suma vectorial de todas las fuerzas aplicadas es cero.",
-                "Cuando la suma de fuerzas y momentos es cero.",
                 "Cuando el sumatorio de los momentos es cero.",
-                "Cuando la suma escalar de las fuerzas aplicadas es cero."
-            ]
+                "Cuando la suma de fuerzas y momentos es cero."
+            ],
+            correctIndex: 1,
+            explanation: "Equilibrio traslacional implica que no hay aceleración lineal, por lo tanto, la resultante vectorial de todas las fuerzas (F=ma) debe ser cero."
         },
         {
             q: "Si el sistema de la figura está en equilibrado, ¿Cuánto vale la masa de 'M'?",
-            answers: [
-                "2 Kg.",
-                "4 Kg.",
+            options: [
                 "3 Kg.",
-                "1 Kg."
-            ]
+                "1 Kg.",
+                "2 Kg.",
+                "4 Kg."
+            ],
+            correctIndex: 2,
+            explanation: "Basado en ley de la palanca: Fuerza x Brazo = Fuerza x Brazo. (Respuesta original: 2 Kg)."
         },
         {
             q: "La barra de la figura tiene una masa de 3 Kg y una longitud de 4m y está apoyada en uno de sus extremos. ¿Qué fuerza habría que aplicar a 2 m de su extremo para que estuviera en equilibrio?",
-            answers: [
+            options: [
+                "3 N.",
                 "3 Kp.",
                 "3 Kg.",
-                "6 Kp.",
-                "3 N."
-            ]
+                "6 Kp."
+            ],
+            correctIndex: 1,
+            explanation: "El peso de la barra (3kp) actúa en su centro (a 2m del apoyo). Si aplicamos la fuerza justo ahí para sostenerla, debemos contrarrestar exactamente esos 3kp."
         }
     ];
 
-    function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-    }
-
+    // Función para renderizar el test aleatorizando el orden de aparición de las preguntas
     function renderQuiz() {
         const container = document.getElementById('quiz-container');
         container.innerHTML = '';
+        
+        // Creamos un array de índices [0, 1, 2...] y lo mezclamos para mostrar preguntas en orden aleatorio
+        // sin alterar el objeto original
+        let questionOrder = Array.from(Array(quizData.length).keys());
+        questionOrder.sort(() => Math.random() - 0.5);
 
-        quizData.forEach((item, index) => {
-            // Creamos una copia de las respuestas con su índice original para identificar la correcta (índice 0)
-            let optionsWithIndices = item.answers.map((ans, i) => ({ text: ans, originalIndex: i }));
+        questionOrder.forEach((originalIndex, displayIndex) => {
+            const item = quizData[originalIndex];
             
-            // Mezclamos las opciones
-            shuffleArray(optionsWithIndices);
-
             const card = document.createElement('div');
             card.className = 'question-card';
+            card.dataset.index = originalIndex; // Referencia al dato original
 
             const title = document.createElement('div');
             title.className = 'question-title';
-            title.innerText = `${index + 1}. ${item.q}`;
+            title.innerText = `${displayIndex + 1}. ${item.q}`;
             card.appendChild(title);
 
             const ul = document.createElement('ul');
             ul.className = 'options-list';
 
-            optionsWithIndices.forEach(opt => {
+            item.options.forEach((optText, optIdx) => {
                 const li = document.createElement('li');
                 li.className = 'option-item';
-                li.innerText = opt.text;
+                li.innerText = optText;
                 
                 li.onclick = function() {
-                    // Evitar múltiples clics
+                    // Evitar múltiples respuestas
                     if (card.dataset.answered === "true") return;
                     card.dataset.answered = "true";
 
-                    if (opt.originalIndex === 0) {
+                    // Bloquear todas las opciones visualmente
+                    const allOptions = ul.querySelectorAll('.option-item');
+                    allOptions.forEach(opt => opt.classList.add('disabled'));
+
+                    // Comprobar acierto
+                    const isCorrect = (optIdx === item.correctIndex);
+
+                    if (isCorrect) {
                         li.classList.add('correct');
                     } else {
                         li.classList.add('incorrect');
-                        // Buscar y resaltar la correcta
-                        const allOptions = ul.querySelectorAll('.option-item');
-                        allOptions.forEach((otherLi, idx) => {
-                           if (optionsWithIndices[idx].originalIndex === 0) {
-                               otherLi.classList.add('correct');
-                           }
-                        });
+                        // Resaltar la que era correcta
+                        allOptions[item.correctIndex].classList.add('correct');
                     }
+
+                    // Mostrar explicación
+                    const explanationBox = card.querySelector('.explanation-box');
+                    explanationBox.style.display = 'block';
                 };
 
                 ul.appendChild(li);
             });
 
             card.appendChild(ul);
+
+            // Crear caja de explicación (oculta al inicio)
+            const explainDiv = document.createElement('div');
+            explainDiv.className = 'explanation-box';
+            explainDiv.innerHTML = `<span class="explanation-title">Explicación:</span> ${item.explanation}`;
+            card.appendChild(explainDiv);
+
             container.appendChild(card);
         });
     }
 
-    // Renderizar al cargar
+    // Iniciar
     window.onload = renderQuiz;
 
 </script>
