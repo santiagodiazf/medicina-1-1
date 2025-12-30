@@ -3,269 +3,535 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuestionario Termodinámica - Orden Aleatorio de Respuestas</title>
+    <title>Test Termodinámica FM - Modo Estudio</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; color: #333; line-height: 1.6; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #2c3e50; }
-        .question-block { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
-        .question-text { font-weight: bold; font-size: 1.1em; margin-bottom: 10px; color: #2980b9; }
-        .options-list { list-style-type: none; padding: 0; }
-        .option-item { margin: 5px 0; padding: 10px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
-        .option-item:hover { background-color: #e2e6ea; }
-        .option-item input { margin-right: 10px; }
-        .btn { display: block; width: 100%; padding: 15px; background-color: #27ae60; color: white; text-align: center; border: none; border-radius: 5px; font-size: 1.2em; cursor: pointer; margin-top: 20px; }
-        .btn:hover { background-color: #219150; }
-        .note { font-size: 0.9em; color: #777; text-align: center; margin-bottom: 20px; font-style: italic; }
+        :root {
+            --primary: #34495e;
+            --accent: #3498db;
+            --correct: #d4edda;
+            --correct-text: #155724;
+            --incorrect: #f8d7da;
+            --incorrect-text: #721c24;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        h1 { color: var(--primary); margin: 0; }
+        .subtitle { color: #7f8c8d; font-size: 0.9em; }
+
+        .question-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--accent);
+        }
+        .question-text {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        .options-list {
+            list-style: none;
+            padding: 0;
+        }
+        .option {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .option:hover:not(.disabled) {
+            background: #e2e6ea;
+            transform: translateX(5px);
+        }
+        
+        /* Estilos de validación */
+        .option.correct {
+            background-color: var(--correct);
+            border-color: #c3e6cb;
+            color: var(--correct-text);
+            font-weight: bold;
+        }
+        .option.correct::after { content: " ✓"; float: right; }
+        
+        .option.incorrect {
+            background-color: var(--incorrect);
+            border-color: #f5c6cb;
+            color: var(--incorrect-text);
+            opacity: 0.8;
+        }
+        .option.incorrect::after { content: " ✕"; float: right; }
+        
+        .disabled { pointer-events: none; }
+
+        /* Caja de Explicación */
+        .explanation {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e8f4fd;
+            border-top: 3px solid var(--accent);
+            border-radius: 0 0 5px 5px;
+            font-size: 0.95em;
+            color: #2980b9;
+        }
+
+        .btn-reset {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background 0.3s;
+        }
+        .btn-reset:hover { background-color: #2c3e50; }
     </style>
 </head>
 <body>
 
-<div class="container">
+<header>
     <h1>Test de Termodinámica</h1>
-    <p class="note">Las preguntas siguen el orden original. Las opciones se ordenan aleatoriamente cada vez que recargas.</p>
-    
-    <form id="quizForm">
-        <div id="quizContainer">Cargando preguntas...</div>
-        <button type="button" class="btn" onclick="alert('Fin del repaso. Al recargar la página las opciones cambiarán de orden.')">Finalizar Repaso</button>
-    </form>
-</div>
+    <div class="subtitle">FM Shark Crew | Modo Estudio con Feedback</div>
+</header>
+
+<div id="quiz-container"></div>
+
+<button class="btn-reset" onclick="window.scrollTo(0,0); location.reload()">⟳ Barajar y Reiniciar Test</button>
 
 <script>
-    // Datos crudos extraídos de tu HTML original
-    const rawHtmlContent = `
-    <p>Las unidades de la entropía en el SI son: Kcal/ºC. J/ºC. Kj/h.m². J/K.</p>
-    <p>El calor se mide en: Watios. Julios. Caballos de vapor. Grados centígrados.</p>
-    <p>La ecuación de transmisión del calor entre dos medios, indica que el calor trasmitido es: Directamente proporcional a la resistencia térmica. Muy elevado. Inversamente proporcional a la diferencia de temperaturas. Inversamente proporcional a la resistencia térmica.</p>
-    <p>Los escalofríos pertenecen a la zona o nivel de regulacion: Vasomotora. Sudomotora. Voluntaria. Metabólica.</p>
-    <p>En cualquier proceso en que un sistema termodinámicamente aislado, cambia de un estado a otro: Su entropía aumenta. Su entalpia disminuye. Su entalpia aumenta. Su entropía disminuye.</p>
-    <p>En Termodinámica Clásica, un estado se caracteriza por las magnitudes: Presión(P), Volumen(V) y tiempo(t). Presión(P), Tiempo(t) y Temperatura(T). Presión(P), Potencia(W) y Temperatura(T). Presión(P), Volumen(V) y Temperatura(T).</p>
-    <p>La temperatura: La cualidad que permite determinar si dos sistemas están o no en equilibriotérmico. Es lo que sube o baja en un termómetro. Es lo que regula el sol. Se mide en calorías.</p>
-    <p>El ser vivo es un: Sistema termodinámico Ordenado. Sistema termodinámico Estable. Sistema termodinámico Sano. Sistema termodinámico Instable.</p>
-    <p>En los cambios de estado se modifica. No se modifica la temperatura. La temperatura inicial y final del sistema. La temperatura final. La temperatura inicial.</p>
-    <p>¿Para que sudamos cuando la temperatura corporal es elevada?. Para eliminar toxinas. Para evaporar, consumir energía y bajar la temperatura de la superficie corporal. Para usar los ventiladores.</p>
-    <p>El primer principio de la termodinámica introduce el concepto de: Temperatura. Energía interna. Entropía. Entalpia.</p>
-    <p>Una función de estado en termodinámica es aquella que: Solo depende del sentido en el que se realicen las transformaciones independientemente de losestados. Me gusta mi carrera. Álvaro Condón es el mejor.</p>
-    <p>El segundo principio de la termodinámica introduce el concepto de: Energía interna. Entalpia. Calor. Entropia.</p>
-    <p>El primer principio de la termodinámica es: La energía ni se crea ni se destruye. El calor. La entalpia. La entropia.</p>
-    <p>El segundo principio de la termodinamica determina que: Es imposible obtener un proceso cíclico cuyo único efecto sea la transformación de calor en trabajo. Es posible obtener dicho proceso. Es posible obtener dicho proceso en determinadas condiciones de presión. Es posible obtener dicho proceso en determinadas condiciones de temperatura.</p>
-    <p>¿A que concepto se llega en el principio cero de la termodinámica?. Equilibrio térmico. Entropia. Temperatura. Entalpia.</p>
-    <p>En relación a los dos principios de la termodinámica usted diría: El primero es probabilístico y el segundo rígido. Ambos son probabilístico. El segundo es probabilístico y el primero rígido. Ambos son rígidos.</p>
-    <p>En cualquier proceso donde un sistema termodinámicamente aislado pasa de un estado a otro: Su entropía aumenta. Su entropía disminuye. Su entalpia aumenta. Su entalpia disminuye.</p>
-    <p>¿Qué no es una función de estado?. Presión. Temperatura. Entropía. Trabajo.</p>
-    <p>¿Cómo regula el ser humano su temperatura corporal?. Cediendo calor al exterior. Tomando calor del exterior. Variando su resistencia térmica. Manteniendo todos los puntos del cuerpo a la misma temperatura.</p>
-    <p>¿Cómo regulan ciertos mamíferos y aves sometidas a bajas temperaturas el flujo de calor para sus extremidades?. Variando su resistencia térmica. Variando su temperatura corporal. Dejando que se congelen. Con un sistema de circulación contracorriente.</p>
-    <p>La entropía en un sistema aislado: No varia. Disminuye siempre. Aumenta siempre. Es reversible.</p>
-    <p>En condiciones normales de 25 grados. ¿Por que mecanismo pierde el cuerpo mas calor?. Radiación. Convección. Transpiración. Respiración.</p>
-    <p>El primer experimento de Joule establece relación entre: Calor y temperatura. Energía y materia. Calor y trabajo. Trabajo mecánico y estabilidad.</p>
-    <p>La entropía relaciona: Calor absorbido por las transformaciones con la temperatura. Energía interna con la presión y el volumen. El calor con el trabajo util. El calor con el trabajo.</p>
-    <p>Un sistema es estable si: La temperatura es -273,5. No emite radiación. Alcanza un valor máximo de entropía. Alcanza un valor mínimo de entropía.</p>
-    <p>La unidad entropía es: Julio. Clausius. Caloría. Todas las anteriores.</p>
-    <p>El metabolismo se suele expresar en: Caloría por cm² y minuto. Kilocalorías. Kilocalorías por m². Kilocalorías por m² u hora.</p>
-    <p>El calor transformado en sangre se hace mediante: Convección. Conducción. Emisión. Refrigeración.</p>
-    <p>Los animales de sangre fría son: Poiquilotermos. Homeotermos. Endergónicos. Exergónicos.</p>
-    <p>Los animales de sangre caliente son: Poiquilotermos. Homeotermos. Endergónicos. Exergónicos.</p>
-    <p>Las transformaciones isotermas son: A presión constante. A volumen constante. A temperatura constante. Presión y volumen constante.</p>
-    <p>El primer principio de la termodinámica es: La energía ni se crea ni se destruye, se transforma. El calor. Entalpia. Entropía.</p>
-    <p>En una transformación reversible a presión y temperatura constante: La variación de energía libre es nula. La variación de energía libre es positiva. La variación de energía libre es negativa si no hay trabajo útil. La variación de energía libre es nula si no hay trabajo útil.</p>
-    <p>Las transformaciones adiabáticas se realizan: A presión constante. Sin intercambio de trabajo util. Sin intercambio de energía. Sin intercambio de calor.</p>
-    <p>El cuerpo al alimentarse: Toma energía. Toma materia. Disminuye su entropia. Aumenta S.</p>
-    <p>Al verdadero concepto de temperatura se llega por: Primer principio. Segundo principio. Principio cero. Teoría cinética.</p>
-    <p>La circulación venosa intercambia temperatura con la arteria cuando: Hace frio. Hace calor. Se liberan hormonas. Se produce una isquemia.</p>
-    <p>El temblor o escalofrío es una manera de propagación del calor por: Convección. Radiación. Conducción. No es una manera de propagación.</p>
-    <p>Si aumenta la entropia: Aumenta el desorden. Aumenta el orden. Disminuye la temperatura. Disminuye el calor.</p>
-    <p>Las transformaciones diabáticas son aquellas: Que intercambian calor y trabajo con el exterior. Que solo intercambia calor. Que no intercambia calor con el exterior. Que no intercambia trabajo con el exterior.</p>
-    <p>Se llama calor de reacción al calor que absorbe o desprende al: Formarse un mol de una sustancia compuesta a partir de las sustancias simples correspondientes. Reaccionar varias sustancias. Quemarse totalmente una sustancia cualquiera. Oxidarse una sustancia determinada.</p>
-    <p>El metabolismo básico o basal es la cantidad de calor que produce un sujeto por metro cuadrado y por hora cuando: El sujeto esta en su actividad habitual a temperatura no agresiva. El sujeto esta en reposo físico y mental a cualquier temperatura. El sujeto esta en reposo físico y mental a temperatura agradable. El sujeto desarrolla su actividad habitual a temperatura agradable.</p>
-    <p>La principal reacción química que se analiza para el estudio del valor calórico del oxígeno es: C6H12O6 + O2. NH2 + CH. C6H6 + O2. H2 + O2.</p>
-    <p>La ley de Hess es fundamental para determinar: La cantidad de proteínas de los alimentos. El valor calórico de los alimentos. La energía interna de los componentes químicos. La cantidad de grasa de los alimentos.</p>
-    <p>La cantidad de calor desprendido por la combustión completa de un alimento determinado se denomina: Energía interna del alimento. Energía libre del alimento. Valor calórico del alimento. Corriente calórica.</p>
-    <p>El valor calórico de los alimentos será exactamente igual al calor desprendido de la combustión de los mismos si: Se produjera trabajo útil además de calor. Solamente se produjera trabajo útil. Nunca se produjera trabajo útil. Se diera otra circunstancia.</p>
-    <p>A que concepto se llega con el primer principio de la termodinámica: Energía interna. Entalpía. Entropía. Temperatura.</p>
-    <p>En un sistema reversible: S aumenta. S disminuye. S permanece constante. Ninguna de las anteriores.</p>
-    <p>La cantidad de calor Q transmitida por conducción en una unidad de tiempo se define por: Q/t = K * S/1 * (T1-T2). Q/t = K * S/1 * (T2-T1). Q= K * S/1 * (T1-T2). Q/t = K * (T1-T2).</p>
-    <p>La importancia de la magnitud física de la energía radica en: Su permanencia. No se puede crear. No se puede destruir. Todas son ciertas.</p>
-    <p>En una transformación isoterma e isobárica  la función de Gibbs: Aumenta. Disminuye para procesos irreversibles. Es igual. Ninguna es cierta.</p>
-    <p>¿Va en contra del primer principio la vida y sus procesos biológicos?. Si, porque cada vez hay especies más complejas. No, porque es un subsistema. No, porque disminuye la entropia.</p>
-    <p>En una reacción reversible el trabajo útil es: Máximo. Mínimo. Igual. No hay.</p>
-    <p>En una reacción irreversible la entropía es: Mayor que cero. Menor que cero. Igual que cero. Menor o igual que cero.</p>
-    <p>En un proceso reversible la entropía es: Mayor que cero. Menor que cero. Igual a cero.</p>
-    <p>Por que un barco no puede navegar usando la energía del mar. Va en contra del primer principio. Va en contra del segundo principio. No es posible mecanicamente. No seria rentable.</p>
-    <p>El verdadero concepto de temperatura se alcanza con: Teoría de la información. Teoría nuclear. Teoría cinética. Teoría kinética.</p>
-    <p>La transmisión de calor por contacto físico entre dos cuerpos se denomina: Convección. Conducción. Difusión. Radiación.</p>
-    <p>Alimentarse consiste en: Adquirir entropía negativa. Adquirir entropía positiva o igual a cero. Adquirir energía en forma de calor. Adquirir entalpia.</p>
-    <p>Una pieza helada pasa a líquida, implicando un aumento de: Entropía. Entalpía. Función de Gibbs. Función de Helmholtz.</p>
-    <p>El calor en el vacío: Se propaga por convección. Se propaga por conducción. No se propaga. Se propaga por radiación.</p>
-    <p>La forma mas baja o degradada de energía es: El calor. La temperatura. La energía cinética. La energía potencial.</p>
-    <p>La entalpía: Es una función de estado. No es una función de estado.</p>
-    <p>El calor que se transfiere de un sistema a otro: Es una función de estado. No es una función de estado. Se mide en watios.</p>
-    <p>La transferencia de calor que se produce en los fluidos por desplazamiento de partículas es debido a una corriente de: Conducción. Radiación. Convección. Desplazante.</p>
-    <p>Las transformaciones isotermas son aquellas en las que: La T aumenta. La T disminuye. No hay transferencia de calor, el calor es constante. Todas son falsas.</p>
-    <p>En un proceso real: La entropía del universo aumenta. La entropía del universo disminuye. La entropía del universo se mantiene constante. El trabajo es máximo.</p>
-    <p>Una función de estado es aquella que depende de: Del estado físico inicial y final. Del estado final. De varias variables que varían. Ninguna de las anteriores.</p>
-    <p>La entalpia del organismo es: Máxima. Mínima. Equilibrada. Todas son falsas.</p>
-    <p>La energía interna relaciona: Entropía con trabajo. Calor con trabajo útil. Calor con entropia. Calor con trabajo.</p>
-    <p>El hipotálamo al aumentar la temperatura a 37 grados: Produce temblor. Produce sudor. Produce vaso dilatación. Todas son correctas.</p>
-    <p>Es inherente al aumento de entropía: La disminución de información. El aumento de información.</p>
-    <p>La posibilidad de invertir calor en trabajo es lo mismo que: Aumento de entropía. Disminución de entropía. Aumento de entalpía. Disminución de entalpía,.</p>
-    <p>Si el incremento de la función de Gibbs y Heimory se iguala, diremos que la transformación es: Adiabática. Isobara. Isocora. Isoterma.</p>
-    <p>¿Qué tipo de perdida de calor favorece el sudor?. Convección. Conducción. Radiación. La pregunta es falsa.</p>
-    <p>Consecuencia de que principio es la inaccesibilidad al cero absoluto: Primero. Segundo. Tercero. Cero.</p>
-    <p>En los cambios de estado se modifica: La temperatura inicial. La temperatura final. No se modifica la temperatura. La temperatura inicial y final.</p>
-    <p>La ecuación fundamental de transmisión de calor entre dos medios indica que el calor es: Inversamente proporcional a la resistencia termica. Inversamente proporcional a la diferencia de temperatura. Muy elevado. Directamente proporcional a la resistencia termina.</p>
-    <p>La temperatura es la magnitud que permite: Determinar si dos cuerpos están o no en equilibrio termico. Es lo que subo o baja en un termometro. Se mide en calorias. Regular el sol.</p>
-    <p>¿Para que sudamos cuando la temperatura es elevada?. Para refrigerarnos. Para eliminar toxinas. Para usar ventilacion. Para evaporar el sudor, consumiendo energía y bajando la temperatura de la superficie corporal.</p>
-    <p>Los escalofríos perteneces a la zona de regulación de la temperatura. Sudomotora. Voluntaria. Metabólica. Vasomotora.</p>
-    <p>En cualquier proceso  donde un sistema termodinámicamente aislado pasa de un estado a otro: Su entropía aumenta. Su entropía disminuye. Su entalpía aumenta. Su entalpía disminuye.</p>
-    <p>El ser vivo es un sistema: Ordenado. Estable. Inestable. Sano.</p>
-    <p>El calor se mide en: Grados. Vatios. Caballos de vapor. Julios.</p>
-    <p>Las unidades de la entropía en el SI son: J/K. KJ/h*m². J/Celsius. Kcal./Celsius.</p>
-    <p>Se denomina ecuación de estado: Las propiedades de la materia afectadas por Q y T. Relación matemática que liga las magnitudes P,V y T. Al consiente: P,V y T. Relación matemática que liga las magnitudes que definen el estado de un sistema.</p>
-    <p>Se dice que un sistema es estable, si: Si energía es muy elevada. Esta en estado de máxima entropía. La entalpía es mínima. La entalpía es máxima.</p>
-    <p>Aplicando la función de Gibbs a la evolución de la energía contenida en un mol de glucosa: La energía libre obtenida es igual a la entropía generada. La energía libre obtenida es menor que la entalpía. La energía libre obtenida es mayor que la entalpía. La entropía generada es mayor que la energía libre.</p>
-    <p>Para que el organismo vivo se mantenga en equilibrio térmico, es preciso que: El calor transmitido sea igual a calor producido. El calor trasmitido sea menor a calor producido. El calor transmitido sea mayor al calor producido. Debe estar muy bien alimentado.</p>
-    <p>¿Cuál de las siguientes pérdidas por calor, es la más importante en el ser humano?. Conducción. Conversión. Radiación. Transpiración.</p>
-    <p>La ecuación fundamental de transmisión del calor entre dos medios, nos dice que el calor transmitido es: Directamente proporcional a la resistencia térmica. Inversamente proporcional a la temperatura corporal. Directamente proporcional a la diferencia entre la temperatura corporal y la exterior. No depende de la temperatura exterior.</p>
-    <p>El detector en el mecanismo de control de T del cuerpo humano está en: La piel. El hipotalamo. El sistema circulatorio.</p>
-    <p>La criobiología estudia: Las células cancerígenas. Los efectos de las temperaturas bajas en biología y medicina. La producción y el uso de temperaturas bajas. El calentamiento de tejidos.</p>
-    <p>El primer principio de la termodinámica es: Una ley indeterminista. Una ley determinista y flexible. Una ley determinista y rígida. Una función exponencial.</p>
-    <p>El primer experimento de Joule establece la relación entre: Calor y temperatura. Energía y materia. Calor y trabajo. Trabajo mecánico y estabilidad.</p>
-    <p>En un sistema irreversible: S aumenta. S disminuye. S permanece constante. Ninguna de las anteriores.</p>
-    <p>La temperatura es: Una energía. Una magnitud. Una sensación. Calor.</p>
-    <p>Los puntos fijos del termómetro son: 0 y 100. Dos puntos tomados al azar y ulteriormente estandarizados en todos los termómetros. Dos puntos que corresponden con la dilatación del mercurio en la fusión del hielo y en la ebullición del agua. Todas son ciertas-.</p>
-    <p>El enunciado “es imposible obtener un proceso cíclico cuando el único efecto sea la transformación de calor en trabajo” (entropía). Es el enunciado del primer principio. Es el enunciado del segundo. Es falso.</p>
-    <p>A la relación matemática f(P,V,T)=0 se la denomina: Función de estado. Equilibrio termodínamico. Ecuación de estado. Estado en equilibrio.</p>
-    <p>¿A quien deberías seguir en Instagram?. Not_yisuss. Santibenvenuty. Susoocalderoon. Ignbartel (elmejordandocharlasmotivadoras). Antonioarroyoo19. Pepegarridoo. Álvaro Condón, no tiene insta pero Álvaro Condón.</p>
-    <p>El mecanismo de las aves de unir el seno venoso con el arterial para ganar calor lo realizan: Cuando las pérdidas son grandes. Cuando el clima es húmedo y caluroso. Cuando hace mucho frío. Cuando las pérdidas son grandes y hace mucho frio.</p>
-    <p>Quieres ser el novi@ de Bartel?. SI. Si. si. sI.</p>
-    <p>A escala molecular la temperatura es: Inversamente proporcional a la masa del cuerpo. Inversamente proporcional a la constante de Stefan-Boltzmann. Similar al calor. Directamente proporcional a la velocidad de las partículas que forman el cuerpo.</p>
-    <p>Una variable termodinámica que no depende del tamaño ni de la cantidad de materia se denomina: Intensiva. Extensiva. Adiabática. Fija.</p>
-    <p>Si la variación de energía interna es igual a cero, entonces decimos que se trata de un proceso: Adiabático. Isotermo. Isobaro. Isocoro.</p>
-    <p>La energía transferida del cuerpo a otro debido a una diferencia entre sus temperaturas se denomina: Calor. Energía interna. Trabajo calórico. Trabajo.</p>
-    <p>¿Cuál de lo siguientes sistemas termodinámicos puede transmitir materia a los alrededores?. Sistema Adiabático. Sistema Cerrado. Sistema Aislado. Sistema Abierto.</p>
-    <p>Se denomina energía: A la temperatura alcanzada. Al producto escalar de la fuerza por el espacio recorrido. A la cantidad de trabajo producido o consumida por unidad de tiempo. A la capacidad que tienen los cuerpos para producir cambios para realizar un trabajo.</p>
-    <p>El proceso en el cual la energía interna se incrementa en la misma proporción que el trabajo mecánico se denomina: Adiabático. Isocoro. Isotermo. Isobaro.</p>
-    <p>El proceso en el cual la energía interna se incrementa en la misma proporción que el trabajo mecánico se denomina: Isotermo. Isócoro. Adiabático. Isobaro.</p>
-    <p>Si en un sistema reversible a 300 K la entropía se incrementa en 200 J/K, ¿Cuánto calor seagrego al sistema?. 500 calorías. 2.090 Julios. 60.000 calorías. 60.000 Julios.</p>
-    <p>La energía transferida de un cuerpo a otro debido a una diferencia entre sustemperaturas se denomina: Calor. Energía interna. Trabajo. Trabajo calorico.</p>
-    <p>Una función o variable de estado puede definirse como: Aquella que define la forma del sistema. Aquella cuyas variaciones NO DEPENDEN solamente de los estados inicial y final del sistema. Aquella cuyas variaciones dependen exclusivamente de los estados inicial y final del sistema. Aquella que nos indica el estado físico del sistema.</p>
-    <p>Un gas contenido en un sistema cilíndrico provisto de un pistón sufre una expansión al absorber calor. Si la energía interna no experimenta ninguna variación, entonces el trabajo realizo por el gas es: Mayor que el calor absorbido. Igual que el calor absorbido. Menor que el calor absorbido. Cero.</p>
-    `;
+    /* Base de datos estructurada.
+       'correctIndex': índice de la respuesta correcta (0, 1, 2, 3) dentro del array 'options'.
+    */
+    const quizData = [
+        {
+            q: "Las unidades de la entropía en el SI son:",
+            options: ["J/K", "Kcal/ºC", "J/ºC", "Kj/h.m²"],
+            correctIndex: 0,
+            expl: "La entropía (S) se define como Q/T, por lo que su unidad en el Sistema Internacional es Julios por Kelvin."
+        },
+        {
+            q: "El calor se mide en:",
+            options: ["Julios", "Watios", "Caballos de vapor", "Grados centígrados"],
+            correctIndex: 0,
+            expl: "El calor es una forma de energía en tránsito, por lo que en el SI se mide en Julios (J). Watios es potencia, Grados es temperatura."
+        },
+        {
+            q: "La ecuación de transmisión del calor entre dos medios, indica que el calor trasmitido es:",
+            options: ["Inversamente proporcional a la resistencia térmica", "Directamente proporcional a la resistencia térmica", "Muy elevado", "Inversamente proporcional a la diferencia de temperaturas"],
+            correctIndex: 0,
+            expl: "Análogo a la ley de Ohm: Flujo = Diferencia de T / Resistencia. A mayor resistencia, menos calor pasa (inversamente proporcional)."
+        },
+        {
+            q: "Los escalofríos pertenecen a la zona o nivel de regulación:",
+            options: ["Metabólica", "Vasomotora", "Sudomotora", "Voluntaria"],
+            correctIndex: 0,
+            expl: "Los escalofríos (termogénesis tiritante) son un mecanismo involuntario para generar calor mediante actividad muscular (metabolismo)."
+        },
+        {
+            q: "En cualquier proceso en que un sistema termodinámicamente aislado cambia de un estado a otro irreversiblemente:",
+            options: ["Su entropía aumenta", "Su entalpía disminuye", "Su entalpía aumenta", "Su entropía disminuye"],
+            correctIndex: 0,
+            expl: "Segundo Principio: En un sistema aislado, la entropía siempre aumenta en procesos irreversibles (espontáneos)."
+        },
+        {
+            q: "En Termodinámica Clásica, un estado se caracteriza por las magnitudes:",
+            options: ["Presión(P), Volumen(V) y Temperatura(T)", "Presión(P), Volumen(V) y tiempo(t)", "Presión(P), Tiempo(t) y Temperatura(T)", "Presión(P), Potencia(W) y Temperatura(T)"],
+            correctIndex: 0,
+            expl: "Son las variables de estado fundamentales para describir un gas ideal o sistema simple."
+        },
+        {
+            q: "La temperatura es:",
+            options: ["La cualidad que permite determinar si dos sistemas están o no en equilibrio térmico", "Es lo que sube o baja en un termómetro", "Es lo que regula el sol", "Se mide en calorías"],
+            correctIndex: 0,
+            expl: "Principio Cero: La temperatura es la propiedad física que determina si hay equilibrio térmico entre sistemas."
+        },
+        {
+            q: "El ser vivo es un:",
+            options: ["Sistema termodinámico Ordenado (abierto)", "Sistema termodinámico Estable", "Sistema termodinámico Sano", "Sistema termodinámico Inestable"],
+            correctIndex: 0,
+            expl: "Los seres vivos mantienen un alto grado de orden (baja entropía interna) consumiendo energía del entorno, aunque termodinámicamente tienden al desorden al morir."
+        },
+        {
+            q: "En los cambios de estado (fase) de una sustancia pura:",
+            options: ["No se modifica la temperatura", "La temperatura aumenta", "La temperatura disminuye", "La presión siempre aumenta"],
+            correctIndex: 0,
+            expl: "Durante un cambio de fase (ej. hielo a agua), la energía se usa para romper enlaces (calor latente) y la temperatura permanece constante."
+        },
+        {
+            q: "¿Para qué sudamos cuando la temperatura corporal es elevada?",
+            options: ["Para evaporar agua, consumir energía y bajar la temperatura superficial", "Para eliminar toxinas", "Para usar los ventiladores", "Para aumentar la temperatura"],
+            correctIndex: 0,
+            expl: "La evaporación es un proceso endotérmico: el agua toma calor de la piel para pasar a gas, enfriando el cuerpo."
+        },
+        {
+            q: "El primer principio de la termodinámica introduce el concepto de:",
+            options: ["Energía interna", "Temperatura", "Entropía", "Entalpía"],
+            correctIndex: 0,
+            expl: "El 1er Principio (Conservación de la energía) define la Energía Interna (U) como función de estado: ΔU = Q - W."
+        },
+        {
+            q: "Una función de estado en termodinámica es aquella que:",
+            options: ["Solo depende de los estados inicial y final, no del camino", "Depende del camino recorrido", "Siempre es constante", "Solo depende de la temperatura"],
+            correctIndex: 0,
+            expl: "Ejemplos: Presión, Temperatura, Energía Interna, Entropía. No importa cómo llegaste ahí, solo dónde estás."
+        },
+        {
+            q: "El segundo principio de la termodinámica introduce el concepto de:",
+            options: ["Entropía", "Energía interna", "Entalpía", "Calor"],
+            correctIndex: 0,
+            expl: "El 2º Principio define la dirección de los procesos espontáneos y la Entropía (S) como medida del desorden/dispersión."
+        },
+        {
+            q: "El segundo principio de la termodinámica determina que:",
+            options: ["Es imposible obtener un proceso cíclico cuyo único efecto sea la transformación total de calor en trabajo", "Es posible obtener dicho proceso", "Es posible si la presión es alta", "Depende de la temperatura"],
+            correctIndex: 0,
+            expl: "Enunciado de Kelvin-Planck: No existe una máquina térmica con rendimiento del 100%."
+        },
+        {
+            q: "¿A qué concepto se llega en el principio cero de la termodinámica?",
+            options: ["Temperatura (Equilibrio térmico)", "Entropía", "Trabajo", "Entalpía"],
+            correctIndex: 0,
+            expl: "Si A está en equilibrio con B, y B con C, entonces A está en equilibrio con C. Define la temperatura."
+        },
+        {
+            q: "¿Cómo regula el ser humano su temperatura corporal?",
+            options: ["Cediendo o tomando calor del exterior y variando su metabolismo", "Variando su resistencia térmica únicamente", "Manteniendo todos los puntos del cuerpo a 0ºC", "No la regula"],
+            correctIndex: 0,
+            expl: "Mediante termorregulación: sudoración, vasodilatación/constricción, tiritona, etc."
+        },
+        {
+            q: "¿Cómo regulan ciertos animales en hielo el flujo de calor en sus extremidades?",
+            options: ["Con un sistema de circulación contracorriente", "Variando su resistencia térmica", "Dejando que se congelen", "Aumentando su temperatura central"],
+            correctIndex: 0,
+            expl: "Intercambio contracorriente: la sangre arterial caliente cede calor a la venosa fría antes de llegar a la pata, minimizando la pérdida."
+        },
+        {
+            q: "La entropía en un sistema aislado:",
+            options: ["Aumenta siempre (en procesos reales/irreversibles)", "No varía", "Disminuye siempre", "Es reversible"],
+            correctIndex: 0,
+            expl: "El desorden del universo (sistema aislado) tiende a aumentar."
+        },
+        {
+            q: "En condiciones normales de 25 grados, ¿por qué mecanismo pierde el cuerpo más calor?",
+            options: ["Radiación", "Convección", "Transpiración", "Respiración"],
+            correctIndex: 0,
+            expl: "En reposo y ambiente templado, aprox el 60% se pierde por radiación infrarroja hacia objetos más fríos."
+        },
+        {
+            q: "El primer experimento de Joule establece relación entre:",
+            options: ["Calor y trabajo (Energía mecánica)", "Calor y temperatura", "Energía y materia", "Trabajo y estabilidad"],
+            correctIndex: 0,
+            expl: "Demostró el equivalente mecánico del calor: el trabajo puede convertirse en calor."
+        },
+        {
+            q: "Un sistema es estable si:",
+            options: ["Alcanza un valor máximo de entropía", "La temperatura es -273.5", "No emite radiación", "Alcanza un valor mínimo de entropía"],
+            correctIndex: 0,
+            expl: "El equilibrio termodinámico (estabilidad) en un sistema aislado corresponde al estado de máxima entropía posible."
+        },
+        {
+            q: "El metabolismo basal se suele expresar en:",
+            options: ["Kilocalorías por m² y hora", "Caloría por cm² y minuto", "Kilocalorías absolutas", "Watios puros"],
+            correctIndex: 0,
+            expl: "Es una medida de potencia por unidad de superficie corporal."
+        },
+        {
+            q: "El calor transportado por la sangre hacia la piel se hace principalmente mediante:",
+            options: ["Convección (forzada)", "Conducción", "Emisión", "Refrigeración"],
+            correctIndex: 0,
+            expl: "La sangre es un fluido en movimiento que transporta calor, lo cual es la definición de convección."
+        },
+        {
+            q: "Los animales de sangre fría (su T corporal depende del ambiente) son:",
+            options: ["Poiquilotermos", "Homeotermos", "Endergónicos", "Exergónicos"],
+            correctIndex: 0,
+            expl: "Poiquilotermos (o ectotermos). Homeotermos son los de 'sangre caliente' (mantienen T constante)."
+        },
+        {
+            q: "Las transformaciones isotermas son:",
+            options: ["A temperatura constante", "A presión constante", "A volumen constante", "Adiabáticas"],
+            correctIndex: 0,
+            expl: "Iso = igual, Terma = temperatura."
+        },
+        {
+            q: "En una transformación reversible a presión y temperatura constante, el equilibrio se alcanza cuando:",
+            options: ["La variación de energía libre de Gibbs es nula", "La variación de energía libre es positiva", "La entropía es cero", "La entalpía es máxima"],
+            correctIndex: 0,
+            expl: "El criterio de equilibrio espontáneo a P y T constantes es que dG = 0 (mínima energía libre)."
+        },
+        {
+            q: "Las transformaciones adiabáticas se realizan:",
+            options: ["Sin intercambio de calor con el exterior", "A presión constante", "A temperatura constante", "Sin realizar trabajo"],
+            correctIndex: 0,
+            expl: "Adiabático significa que el sistema está aislado térmicamente (Q = 0)."
+        },
+        {
+            q: "El cuerpo al alimentarse para mantener su estructura:",
+            options: ["Toma energía y materia (Entropía negativa/Neguentropía)", "Aumenta su entropía interna", "Disminuye su energía", "Solo toma calor"],
+            correctIndex: 0,
+            expl: "Schrödinger decía que la vida se alimenta de 'entropía negativa' para mantener el orden."
+        },
+        {
+            q: "La circulación venosa intercambia temperatura con la arteria (contracorriente) cuando:",
+            options: ["Hace frío", "Hace calor", "Se liberan hormonas", "Hay fiebre"],
+            correctIndex: 0,
+            expl: "Es un mecanismo de conservación de calor para evitar que la sangre fría de las extremidades enfríe el núcleo central."
+        },
+        {
+            q: "Si aumenta la entropía:",
+            options: ["Aumenta el desorden", "Aumenta el orden", "Disminuye la temperatura", "Disminuye el calor"],
+            correctIndex: 0,
+            expl: "Entropía es sinónimo de grado de desorden molecular o dispersión de energía."
+        },
+        {
+            q: "Se llama calor de reacción al calor que se absorbe o desprende al:",
+            options: ["Reaccionar las sustancias (formación/combustión)", "Calentar un cuerpo", "Cambiar de estado", "Mover un pistón"],
+            correctIndex: 0,
+            expl: "Es la variación de entalpía asociada a una reacción química."
+        },
+        {
+            q: "La Ley de Hess es fundamental para determinar:",
+            options: ["El valor calórico (entalpía) de las reacciones", "La cantidad de proteínas", "La energía interna absoluta", "La grasa"],
+            correctIndex: 0,
+            expl: "Establece que la variación de entalpía es la misma independientemente de si la reacción ocurre en un paso o en varios."
+        },
+        {
+            q: "En un sistema reversible, la variación de entropía del universo es:",
+            options: ["S permanece constante (variación cero)", "S aumenta", "S disminuye", "S es infinita"],
+            correctIndex: 0,
+            expl: "En procesos ideales reversibles, la entropía total del universo no cambia. En los reales (irreversibles), aumenta."
+        },
+        {
+            q: "La cantidad de calor Q transmitida por conducción (Ley de Fourier) depende de:",
+            options: ["K * S * (T1-T2) / Longitud", "Solo de la temperatura", "K * (T1-T2)", "La presión"],
+            correctIndex: 0,
+            expl: "Q/t = k·A·ΔT/d. Depende de la conductividad (k), superficie (S/A), diferencia de temperatura y es inversa al espesor."
+        },
+        {
+            q: "En una reacción irreversible la entropía del universo es:",
+            options: ["Mayor que cero (aumenta)", "Menor que cero", "Igual que cero", "Constante"],
+            correctIndex: 0,
+            expl: "Segundo principio: ΔS_universo > 0 para procesos espontáneos/irreversibles."
+        },
+        {
+            q: "¿Por qué un barco no puede navegar usando la energía interna del mar (enfriándolo) para mover sus hélices?",
+            options: ["Va en contra del segundo principio (Kelvin-Planck)", "Va en contra del primer principio", "No es posible mecánicamente", "No sería rentable"],
+            correctIndex: 0,
+            expl: "No se puede extraer calor de una sola fuente y convertirlo todo en trabajo sin ceder parte a un foco frío."
+        },
+        {
+            q: "El verdadero concepto de temperatura se alcanza con:",
+            options: ["Teoría cinética molecular", "Teoría de la información", "Teoría nuclear", "Primer principio"],
+            correctIndex: 0,
+            expl: "La temperatura es una medida de la energía cinética promedio de las partículas."
+        },
+        {
+            q: "La transmisión de calor por contacto físico directo entre dos cuerpos (sin movimiento de materia) se denomina:",
+            options: ["Conducción", "Convección", "Radiación", "Difusión"],
+            correctIndex: 0,
+            expl: "Es la transferencia de energía vibracional de átomo a átomo."
+        },
+        {
+            q: "El calor en el vacío:",
+            options: ["Se propaga por radiación", "No se propaga", "Se propaga por conducción", "Se propaga por convección"],
+            correctIndex: 0,
+            expl: "La radiación electromagnética (infrarroja) no necesita medio material para propagarse."
+        },
+        {
+            q: "La forma más baja o degradada de energía es:",
+            options: ["El calor (a baja temperatura)", "La energía cinética", "La energía potencial", "La electricidad"],
+            correctIndex: 0,
+            expl: "El calor es energía desordenada; es difícil convertirlo completamente de nuevo en trabajo útil (alta entropía)."
+        },
+        {
+            q: "La entalpía (H):",
+            options: ["Es una función de estado", "No es una función de estado", "Es igual al trabajo", "Es igual a la entropía"],
+            correctIndex: 0,
+            expl: "H = U + PV. Como U, P y V son funciones de estado, H también lo es."
+        },
+        {
+            q: "El calor que se transfiere de un sistema a otro:",
+            options: ["No es una función de estado (es función de camino)", "Es una función de estado", "Es propiedad del sistema", "Es constante"],
+            correctIndex: 0,
+            expl: "El calor (Q) y el trabajo (W) dependen del proceso seguido, no solo del inicio y fin."
+        },
+        {
+            q: "La transferencia de calor que se produce en los fluidos por desplazamiento de partículas se llama:",
+            options: ["Convección", "Conducción", "Radiación", "Transmisión"],
+            correctIndex: 0,
+            expl: "Implica movimiento de masa (corrientes) llevando el calor."
+        },
+        {
+            q: "El hipotálamo al notar un aumento excesivo de temperatura:",
+            options: ["Produce vasodilatación y sudor", "Produce temblor", "Produce vasoconstricción", "Aumenta el metabolismo"],
+            correctIndex: 0,
+            expl: "Activa mecanismos de pérdida de calor."
+        },
+        {
+            q: "La imposibilidad de alcanzar el cero absoluto es consecuencia del:",
+            options: ["Tercer principio", "Primer principio", "Segundo principio", "Principio cero"],
+            correctIndex: 0,
+            expl: "Teorema de Nernst: Es imposible reducir la temperatura de un sistema al cero absoluto en un número finito de pasos."
+        },
+        {
+            q: "Aplicando la función de Gibbs a la glucosa, el organismo:",
+            options: ["Obtiene energía libre para realizar trabajo", "Obtiene entropía pura", "Pierde energía", "Aumenta su temperatura infinitamente"],
+            correctIndex: 0,
+            expl: "La oxidación de glucosa es exergónica (ΔG < 0), liberando energía útil."
+        },
+        {
+            q: "La criobiología estudia:",
+            options: ["Los efectos de las temperaturas bajas en biología", "El calentamiento", "Las células cancerígenas exclusivamente", "La física nuclear"],
+            correctIndex: 0,
+            expl: "Estudio de los seres vivos a bajas temperaturas."
+        },
+        {
+            q: "Los puntos fijos del termómetro Celsius son:",
+            options: ["Fusión del hielo (0) y ebullición del agua (100) a 1 atm", "0 y 10", "32 y 212", "Cero absoluto y punto triple"],
+            correctIndex: 0,
+            expl: "Definición clásica de la escala centígrada."
+        },
+        {
+            q: "A escala molecular, la temperatura es:",
+            options: ["Directamente proporcional a la velocidad (energía cinética) de las partículas", "Inversamente proporcional a la masa", "Independiente del movimiento", "Igual al calor"],
+            correctIndex: 0,
+            expl: "T ~ (1/2)mv²."
+        },
+        {
+            q: "Una variable termodinámica que NO depende del tamaño ni de la cantidad de materia (ej. Temperatura) se denomina:",
+            options: ["Intensiva", "Extensiva", "Adiabática", "Fija"],
+            correctIndex: 0,
+            expl: "Las extensivas (masa, volumen) se suman; las intensivas (temperatura, densidad) no."
+        },
+        {
+            q: "Si la variación de energía interna es igual a cero (ΔU=0) en un gas ideal, el proceso es:",
+            options: ["Isotermo", "Adiabático", "Isobaro", "Isocoro"],
+            correctIndex: 0,
+            expl: "En un gas ideal, U depende solo de T. Si ΔU=0, entonces ΔT=0 (Isotermo)."
+        },
+        {
+            q: "¿Cuál de los siguientes sistemas termodinámicos puede transmitir materia y energía a los alrededores?",
+            options: ["Sistema Abierto", "Sistema Cerrado", "Sistema Aislado", "Sistema Adiabático"],
+            correctIndex: 0,
+            expl: "Abierto: intercambia masa y energía. Cerrado: solo energía. Aislado: nada."
+        },
+        {
+            q: "Un gas se expande absorbiendo calor. Si la energía interna no varía (Isotermo), el trabajo realizado es:",
+            options: ["Igual que el calor absorbido", "Mayor que el calor", "Menor que el calor", "Cero"],
+            correctIndex: 0,
+            expl: "1er Principio: ΔU = Q - W. Si ΔU=0, entonces Q = W."
+        },
+        {
+            q: "¿A quién deberías seguir en Instagram? (Pregunta social del test original)",
+            options: ["Todas las opciones mencionadas son correctas", "Álvaro Condón", "Pepegarridoo", "Susoocalderoon"],
+            correctIndex: 0,
+            expl: "Esta es una pregunta 'bonus' del test original. En este formato, todas se consideran válidas."
+        }
+    ];
 
-    // Función para mezclar un array (Fisher-Yates Shuffle)
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
         }
-        return array;
-    }
-
-    // Parseo del contenido HTML para extraer preguntas y respuestas
-    function parseQuestions(html) {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const paragraphs = doc.querySelectorAll('p');
-        const questionsData = [];
-
-        paragraphs.forEach((p, index) => {
-            let text = p.textContent.trim();
-            // Lógica heurística para separar pregunta de respuestas
-            // Asumimos que la pregunta termina en el primer punto que es seguido por texto, o en '?' o ':'
-            
-            // Dividimos por puntos seguidos de espacio, o puntos finales.
-            // Primero, intentamos detectar si hay un ':' que divida pregunta de opciones
-            let parts = [];
-            
-            if (text.includes(': ') && text.indexOf(': ') < text.length / 2) {
-                // Si hay dos puntos en la primera mitad, es probable que sea "Pregunta: Op1. Op2."
-                let splitIndex = text.indexOf(': ');
-                let questionPart = text.substring(0, splitIndex + 1); // Incluir ':'
-                let optionsPart = text.substring(splitIndex + 1);
-                // Dividir opciones por punto
-                let options = optionsPart.split('.').filter(o => o.trim().length > 0).map(o => o.trim());
-                parts = [questionPart, ...options];
-            } else if (text.includes('?')) {
-                // Si hay interrogación
-                let splitIndex = text.lastIndexOf('?');
-                let questionPart = text.substring(0, splitIndex + 1);
-                let optionsPart = text.substring(splitIndex + 1);
-                // A veces hay un punto después del ?
-                if (optionsPart.startsWith('.')) optionsPart = optionsPart.substring(1);
-                
-                let options = optionsPart.split('.').filter(o => o.trim().length > 0).map(o => o.trim());
-                parts = [questionPart, ...options];
-            } else {
-                // División estándar por puntos
-                // Esto es más arriesgado, asumimos que el primer segmento es la pregunta.
-                parts = text.split('.').filter(o => o.trim().length > 0).map(o => o.trim());
-            }
-
-            if (parts.length >= 2) {
-                const questionText = parts[0];
-                const options = parts.slice(1);
-                questionsData.push({
-                    id: index + 1,
-                    text: questionText,
-                    options: options
-                });
-            }
-        });
-        return questionsData;
     }
 
     function renderQuiz() {
-        const questions = parseQuestions(rawHtmlContent);
-        const container = document.getElementById('quizContainer');
-        container.innerHTML = ''; // Limpiar
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = '';
 
-        questions.forEach(q => {
-            const qBlock = document.createElement('div');
-            qBlock.className = 'question-block';
+        // Mezclar orden de preguntas
+        const shuffledQuestions = [...quizData];
+        shuffleArray(shuffledQuestions);
 
-            const qTitle = document.createElement('div');
-            qTitle.className = 'question-text';
-            qTitle.textContent = `${q.id}. ${q.text}`;
-            qBlock.appendChild(qTitle);
+        shuffledQuestions.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+
+            const title = document.createElement('div');
+            title.className = 'question-text';
+            title.innerHTML = `${index + 1}. ${item.q}`;
+            card.appendChild(title);
+
+            // Preparar opciones mezcladas
+            // Guardamos el texto y si es correcta o no
+            let opts = item.options.map((optText, i) => ({
+                text: optText,
+                isCorrect: i === item.correctIndex
+            }));
+            
+            shuffleArray(opts);
 
             const optionsList = document.createElement('ul');
             optionsList.className = 'options-list';
 
-            // Clona y mezcla las opciones
-            const shuffledOptions = shuffleArray([...q.options]);
-
-            shuffledOptions.forEach(opt => {
+            opts.forEach(opt => {
                 const li = document.createElement('li');
-                li.className = 'option-item';
+                li.className = 'option';
+                li.innerText = opt.text;
                 
-                // Usamos radio buttons para que se sienta como un test
-                const label = document.createElement('label');
-                label.style.cursor = 'pointer';
-                label.style.display = 'block';
-                
-                const input = document.createElement('input');
-                input.type = 'radio';
-                input.name = `q_${q.id}`;
-                input.value = opt;
+                li.onclick = () => {
+                    if (card.classList.contains('answered')) return;
+                    card.classList.add('answered');
 
-                label.appendChild(input);
-                label.appendChild(document.createTextNode(opt));
-                li.appendChild(label);
-                
-                // Al hacer click en el LI, marcar el radio
-                li.onclick = (e) => {
-                    if(e.target !== input) input.checked = true;
+                    // Bloquear opciones
+                    const allOptions = optionsList.querySelectorAll('.option');
+                    allOptions.forEach(o => o.classList.add('disabled'));
+
+                    if (opt.isCorrect) {
+                        li.classList.add('correct');
+                    } else {
+                        li.classList.add('incorrect');
+                        // Buscar la correcta para marcarla
+                        opts.forEach((o, idx) => {
+                            if (o.isCorrect) {
+                                allOptions[idx].classList.add('correct');
+                            }
+                        });
+                    }
+
+                    // Mostrar explicación
+                    const exp = document.createElement('div');
+                    exp.className = 'explanation';
+                    exp.innerHTML = `<strong>Explicación:</strong> ${item.expl}`;
+                    exp.style.display = 'block';
+                    card.appendChild(exp);
                 };
 
                 optionsList.appendChild(li);
             });
 
-            qBlock.appendChild(optionsList);
-            container.appendChild(qBlock);
+            card.appendChild(optionsList);
+            container.appendChild(card);
         });
     }
 
-    // Ejecutar al cargar
+    // Iniciar
     window.onload = renderQuiz;
 </script>
 
