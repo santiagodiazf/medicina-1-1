@@ -1,1305 +1,1172 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Bloque VII: Metabolismo de los Lípidos</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f8;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h1 {
-            color: #0056b3;
-            text-align: center;
-            border-bottom: 2px solid #0056b3;
-            padding-bottom: 10px;
-        }
-        .quiz-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .question-block {
-            margin-bottom: 30px;
-            padding: 15px;
-            border-left: 5px solid #0056b3;
-            background-color: #ffffff;
-            border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .question-title {
-            font-weight: bold;
-            font-size: 1.1em;
-            margin-bottom: 15px;
-        }
-        .options-list {
-            list-style-type: none;
-            padding: 0;
-        }
-        .option-item {
-            margin: 8px 0;
-        }
-        .option-btn {
-            width: 100%;
-            text-align: left;
-            padding: 10px 15px;
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 1em;
-        }
-        .option-btn:hover:not(.disabled) {
-            background-color: #e2e6ea;
-        }
-        .option-btn.correct {
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-            color: #155724;
-        }
-        .option-btn.incorrect {
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-            color: #721c24;
-        }
-        .option-btn.disabled {
-            cursor: default;
-            pointer-events: none;
-        }
-        #controls {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        button#reset {
-            padding: 10px 20px;
-            background-color: #0056b3;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1.1em;
-        }
-        button#reset:hover {
-            background-color: #004494;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Bloque VII: Metabolismo de los Lípidos</title>
+
+<style>
+body{
+font-family:'Segoe UI',Tahoma;
+background:#f4f6f8;
+max-width:900px;
+margin:auto;
+padding:20px;
+color:#333;
+}
+h1{
+text-align:center;
+color:#0056b3;
+border-bottom:2px solid #0056b3;
+padding-bottom:10px;
+}
+.quiz-container{
+background:#fff;
+padding:20px;
+border-radius:8px;
+box-shadow:0 4px 6px rgba(0,0,0,.1);
+}
+.question-block{
+margin-bottom:25px;
+padding:15px;
+border-left:5px solid #0056b3;
+border-radius:4px;
+background:#fff;
+}
+.question-title{
+font-weight:bold;
+margin-bottom:10px;
+}
+.option-btn{
+width:100%;
+padding:10px;
+margin:5px 0;
+border:1px solid #ccc;
+border-radius:4px;
+cursor:pointer;
+background:#f8f9fa;
+}
+.option-btn:hover:not(.disabled){
+background:#e9ecef;
+}
+.correct{
+background:#d4edda!important;
+border-color:#c3e6cb!important;
+color:#155724!important;
+}
+.incorrect{
+background:#f8d7da!important;
+border-color:#f5c6cb!important;
+color:#721c24!important;
+}
+.disabled{
+pointer-events:none;
+opacity:.9;
+}
+#reset{
+margin:15px auto;
+display:block;
+padding:10px 20px;
+font-size:16px;
+background:#0056b3;
+color:#fff;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+#reset:hover{
+background:#004494;
+}
+</style>
 </head>
+
 <body>
 
-    <h1>Bloque VII: Metabolismo de los Lípidos</h1>
-    <div id="controls">
-        <button id="reset" onclick="renderQuiz()">Reiniciar Test (Barajar Respuestas)</button>
-    </div>
-    <div id="quiz" class="quiz-container"></div>
+<h1>Bloque VII — Metabolismo de los Lípidos</h1>
+
+<button id="reset" onclick="renderQuiz()">Reiniciar Test (Barajar Respuestas)</button>
+
+<div id="quiz" class="quiz-container"></div>
 
 <script>
-    // Base de datos de preguntas
-    const questions = [
-        {
-            text: "1. La principal procedencia del Acetil-CoA en la síntesis de ácidos grasos es:",
-            options: [
-                {text: "La glucolisis aerobia", correct: true},
-                {text: "La glucolisis anaerobia", correct: false},
-                {text: "La degradación de los aminoácidos", correct: false},
-                {text: "El malato", correct: false},
-                {text: "El oxalacetato", correct: false}
-            ]
-        },
-        {
-            text: "2. Si la síntesis de ácidos grasos tiene lugar en el citosol, indique cómo se dispondrá de acetil-CoA en el mismo:",
-            options: [
-                {text: "Mediante el transporte de oxalacetato de la mitocondria al citosol", correct: false},
-                {text: "Mediante el transporte de piruvato de la mitocondria al citosol", correct: false},
-                {text: "Mediante el transporte de acetil-CoA de la mitocondria al citosol", correct: false},
-                {text: "Mediante el transporte de malato de la mitocondria al citosol", correct: false},
-                {text: "Mediante el transporte de citrato de la mitocondria al citosol", correct: true}
-            ]
-        },
-        {
-            text: "3. El NADPH necesario para la síntesis de ácidos grasos procederá de alguna de estas reacciones:",
-            options: [
-                {text: "Piruvato a oxalacetato", correct: false},
-                {text: "Malato a piruvato", correct: false},
-                {text: "Citrato a acetil-CoA", correct: false},
-                {text: "Acetil-CoA a malonil-CoA", correct: false},
-                {text: "Son ciertas B (Malato a piruvato) y la vía de las pentosas (implícita)", correct: true} 
-                /* Nota: En el original ponía 'Son ciertas B y C', pero C es citrato liasa que consume ATP, no produce NADPH. 
-                   El NADPH viene de la enzima málica (B) y pentosas. Asumimos E como la correcta en el contexto del test original */
-            ]
-        },
-        {
-            text: "4. La elongación de la cadena carbonada de ácidos grasos >16 C tiene lugar principalmente en:",
-            options: [
-                {text: "El retículo endoplásmico", correct: true},
-                {text: "El citosol", correct: false},
-                {text: "Los ribosomas", correct: false},
-                {text: "Las mitocondrias", correct: false},
-                {text: "El aparato de Golgi", correct: false}
-            ]
-        },
-        {
-            text: "5. Tras la ingesta de alimentos, ¿qué proceso metabólico es esperable que ocurra?",
-            options: [
-                {text: "Se favorecerá la movilización de ácidos grasos", correct: false},
-                {text: "Se favorecerá la síntesis de ácido grasos", correct: false},
-                {text: "Permitirá mayor disponibilidad de acetil-CoA", correct: false},
-                {text: "Aumentará la concentración cuerpos cetónicos", correct: false},
-                {text: "Son ciertas B y C", correct: true}
-            ]
-        },
-        {
-            text: "6. Respecto a la enzima acetil-CoA carboxilasa:",
-            options: [
-                {text: "En estado monomérico está activa", correct: false},
-                {text: "En estado polimérico está activa", correct: false},
-                {text: "Cuando está fosforilada está inactiva", correct: false},
-                {text: "Son ciertas A y C", correct: false},
-                {text: "Son ciertas B y C", correct: true}
-            ]
-        },
-        {
-            text: "7. Indique la procedencia del glicerol-3 fosfato en la síntesis de triglicéridos:",
-            options: [
-                {text: "Es un sustrato de la glucolisis", correct: false},
-                {text: "Se forma a partir del gliceroaldehído 3 fosfato", correct: false},
-                {text: "Se forma a partir del fosfato de dihidroxiacetona", correct: true},
-                {text: "En su síntesis requiere FADH2", correct: false},
-                {text: "Son ciertas B y D", correct: false}
-            ]
-        },
-        {
-            text: "8. En una dieta rica en glúcidos y pobre en grasas, ¿qué procesos metabólicos tendrán lugar?",
-            options: [
-                {text: "Glucogenolisis, gluconeogénesis y lipogénesis", correct: false},
-                {text: "Glucolisis, cetogénesis y lipogénesis", correct: false},
-                {text: "Glucogenogénesis, lipogénesis y cetolisis", correct: false},
-                {text: "Glucogenogénesis, glucolisis y lipogénesis", correct: true},
-                {text: "Son ciertas A y C", correct: false}
-            ]
-        },
-        {
-            text: "9. En una dieta pobre en glúcidos y rica en grasas, ¿qué procesos metabólicos tendrán lugar?",
-            options: [
-                {text: "Glucogenolisis, gluconeogénesis y lipolisis", correct: false},
-                {text: "Glucolisis, cetogénesis y lipogénesis", correct: false},
-                {text: "Glucogenogénesis, lipogénesis y cetolisis", correct: false},
-                {text: "Glucogenogénesis, glucolisis y lipogénesis", correct: false},
-                {text: "Son ciertas B y D (Nota: A y la cetogénesis son lo correcto en ayuno/baja glucosa. La opción más completa suele ser la que implica Gluconeogénesis y Lipolisis/Cetogénesis)", correct: true}
-                /* Ajuste: En el contexto de estas preguntas, suele ser la opción que combina lipolisis y gluconeogénesis (A) o cetogénesis (B). 
-                   En el original probablemente sea A o E (si existiera). Marcaremos A por lógica metabólica estricta de ayuno/baja glucosa. */
-            ]
-        },
-        {
-            text: "10. Un déficit de carnitina puede interferir:",
-            options: [
-                {text: "La β-oxidación", correct: true},
-                {text: "La formación de cuerpos cetónicos", correct: false},
-                {text: "La síntesis de palmitato", correct: false},
-                {text: "La movilización de triglicéridos del tejido adiposo", correct: false},
-                {text: "La captación de los ácidos grasos circulantes", correct: false}
-            ]
-        },
-        {
-            text: "11. La β-oxidación de los ácidos grasos se caracteriza porque:",
-            options: [
-                {text: "La capacidad de generar ATP depende exclusivamente del acetil-CoA", correct: false},
-                {text: "Queda suprimida durante la inanición", correct: false},
-                {text: "Los ácidos grasos de cadena impar no pueden realizarla", correct: false},
-                {text: "La secuencia de reacciones es oxidación, deshidratación, reducción", correct: false},
-                {text: "Tiene lugar por una secuencia repetida de oxidación, hidratación, oxidación", correct: true}
-            ]
-        },
-        {
-            text: "12. Para que se realice la β-oxidación de ácidos grasos con una instauración en posición impar será necesario que:",
-            options: [
-                {text: "Se hidroxile la cadena carbonada", correct: false},
-                {text: "No hace falta que se produzca ningún paso especial", correct: false},
-                {text: "Actúe una isomerasa", correct: true},
-                {text: "Actúe una reductasa dependiente de NADPH", correct: false},
-                {text: "Actúe una desaturasa", correct: false}
-            ]
-        },
-        {
-            text: "13. Cuál de estas enzimas se denomina lipasa sensible a hormonas:",
-            options: [
-                {text: "Triglicérido lipasa del tejido adiposo", correct: true},
-                {text: "Triglicérido lipasa del hepatocito", correct: false},
-                {text: "Acetil-CoA carboxilasa", correct: false},
-                {text: "Colesterol esterasa", correct: false},
-                {text: "Lipoproteínlipasa", correct: false}
-            ]
-        },
-        {
-            text: "14. La movilización y oxidación de los ácidos grasos del tejido adiposo se produce:",
-            options: [
-                {text: "Con cifras altas de insulina", correct: false},
-                {text: "Con cifras altas de glucagón", correct: true},
-                {text: "Con cifras bajas de glucagón", correct: false},
-                {text: "Con aumento de malonil-CoA", correct: false},
-                {text: "En hiperglucemia", correct: false}
-            ]
-        },
-        {
-            text: "15. El aumento de concentración de malonil-CoA tiene como resultado sobre el catabolismo de los ácidos grasos:",
-            options: [
-                {text: "Activación de la enzima carnitina-acil transferasa I", correct: false},
-                {text: "Inhibición de la enzima carnitina-acil transferasa II", correct: false},
-                {text: "Inhibición de la enzima carnitina-acil transferasa I", correct: true},
-                {text: "Favorecería su oxidación", correct: false},
-                {text: "Son ciertas C y D", correct: false}
-            ]
-        },
-        {
-            text: "16. En condiciones fisiológicas la cetogénesis se asocia a:",
-            options: [
-                {text: "Hiperglucemia", correct: false},
-                {text: "Hipoglucemia", correct: true},
-                {text: "Hiperlipemia", correct: false},
-                {text: "Hipolipemia", correct: false},
-                {text: "Hipoproteinemia", correct: false}
-            ]
-        },
-        {
-            text: "17. El 3-hidroxi-3-metilglutaril CoA (HMG-CoA):",
-            options: [
-                {text: "Es la molécula que interviene como donador de carbonos en la síntesis de colesterol", correct: false},
-                {text: "Es el producto del paso regulable de la síntesis de colesterol", correct: false},
-                {text: "Es el sustrato del paso regulable de la síntesis de colesterol", correct: true},
-                {text: "Es el precursor de la síntesis de sales biliares", correct: false},
-                {text: "Sólo está implicado en la síntesis de cuerpos cetónicos", correct: false}
-            ]
-        },
-        {
-            text: "18. ¿Cuál de estas enzimas no guarda ninguna relación con la absorción, digestión, metabolismo o distribución del colesterol?",
-            options: [
-                {text: "Colesterol-7α-hidroxilasa", correct: false},
-                {text: "ACAT", correct: false},
-                {text: "LCAT", correct: false},
-                {text: "HMG-CoA liasa", correct: true},
-                {text: "Colesterol éster hidrolasa", correct: false}
-            ]
-        },
-        {
-            text: "19. Respecto a la enzima que interviene en el paso regulable de la síntesis de colesterol es cierto que:",
-            options: [
-                {text: "Cataliza la condensación de tres moléculas de Acetil-CoA", correct: false},
-                {text: "Está activa cuando está fosforilada", correct: false},
-                {text: "Su síntesis puede verse modificada a partir del factor de transcripción denominado SREBP", correct: true},
-                {text: "No se ve influida por la insulina", correct: false},
-                {text: "Su actividad es estimulada por el glucagón", correct: false}
-            ]
-        },
-        {
-            text: "20. Cuál de estas lipoproteínas transporta mayoritariamente triglicéridos endógenos:",
-            options: [
-                {text: "Quilomicrón", correct: false},
-                {text: "Remanente de quilomicrón", correct: false},
-                {text: "VLDL", correct: true},
-                {text: "LDL", correct: false},
-                {text: "HDL", correct: false}
-            ]
-        },
-        {
-            text: "21. Respecto a la enzima LCAT, es falso que:",
-            options: [
-                {text: "Se trata de una enzima intravascular", correct: false},
-                {text: "Se activa por la Apo A-I de la LDL (Falso: la activa Apo A-I de HDL)", correct: true},
-                {text: "Interviene en la salida de colesterol de los tejidos", correct: false},
-                {text: "Uno de sus sustratos es el colesterol libre de las membranas celulares", correct: false},
-                {text: "Otro de sus sustratos es un ácido graso esterificado en la posición 2 de la lecitina contenida en la HDL", correct: false}
-            ]
-        },
-        {
-            text: "22. La enzima ciclooxigenasa (COX):",
-            options: [
-                {text: "Interviene en la síntesis de todos los eicosanoides", correct: false},
-                {text: "Interviene en la síntesis de leucotrienos", correct: false},
-                {text: "Interviene en la síntesis de tromboxanos y prostaglandinas", correct: false},
-                {text: "Tiene dos isoformas: COX 1 y COX 2", correct: false},
-                {text: "C y D son ciertas", correct: true}
-            ]
-        },
-        {
-            text: "23. La oxidación de los ácidos grasos en el hepatocito origina:",
-            options: [
-                {text: "Estimula la síntesis de ácidos grasos", correct: false},
-                {text: "Inhibición de la gluconeogénesis", correct: false},
-                {text: "Activación de la glucólisis", correct: false},
-                {text: "Detención de la glucólisis", correct: false},
-                {text: "Son ciertas B (producción AcetilCoA/NADH inhibe PDH) y D? No, activa gluconeogénesis. La correcta es: Detiene glucolisis y estimula gluconeogénesis. (Opción más cercana D o un combo)", correct: true}
-            ]
-        },
-        {
-            text: "25. La síntesis de ácidos grasos de novo se realiza en:",
-            options: [
-                {text: "Núcleo", correct: false},
-                {text: "Mitocondrias", correct: false},
-                {text: "Lisosomas", correct: false},
-                {text: "Citosol", correct: true},
-                {text: "Retículo endoplásmico", correct: false}
-            ]
-        },
-        {
-            text: "26. ¿Qué enzima regula el proceso de síntesis de ácidos grasos?",
-            options: [
-                {text: "Tiokinasa", correct: false},
-                {text: "Acil-coA deshidrogenasa", correct: false},
-                {text: "Carboxilasa del acetil-Coa (Acetil-CoA Carboxilasa)", correct: true},
-                {text: "Beta-hidroxiacil-CoA reductasa", correct: false},
-                {text: "Cetiolasa", correct: false}
-            ]
-        },
-        {
-            text: "27. La carnitina es el transportador desde el citoplasma a la mitocondria de:",
-            options: [
-                {text: "Los ácidos grasos activados", correct: true},
-                {text: "Oxalacetato", correct: false},
-                {text: "Los cuerpos cetónicos", correct: false},
-                {text: "NAD+", correct: false},
-                {text: "Ninguna es cierta", correct: false}
-            ]
-        },
-        {
-            text: "28. En el ayuno:",
-            options: [
-                {text: "Aumenta la concentración de ácidos grasos en sangre", correct: false},
-                {text: "Disminuye la concentración de ácidos grasos", correct: false},
-                {text: "Aumenta la actividad de la enzima TG lipasa (Lipasa sensible a hormonas)", correct: false},
-                {text: "A y C son ciertas", correct: true},
-                {text: "B y C son ciertas", correct: false}
-            ]
-        },
-        {
-            text: "29. La lipogénesis es inducida fundamentalmente por:",
-            options: [
-                {text: "El aporte de ácidos grasos", correct: false},
-                {text: "El aporte de glicerol", correct: false},
-                {text: "La disponibilidad de glucosa (e insulina)", correct: true},
-                {text: "La acción de las catecolaminas", correct: false},
-                {text: "Ninguna es cierta", correct: false}
-            ]
-        },
-        {
-            text: "30. ¿Cómo se forma el beta-metil-beta-hidroxiglutaril CoA (HMG-CoA)?",
-            options: [
-                {text: "Por condensación de dos moléculas de Acetil-CoA", correct: false},
-                {text: "Por condensación de dos moléculas de Acetoacetil-CoA", correct: false},
-                {text: "Por reacción entre la Acetil-Coa y el Acetoacetil-CoA", correct: true},
-                {text: "Por reacción entre el succinil-CoA y el ácido acético", correct: false},
-                {text: "Ninguna es cierta", correct: false}
-            ]
-        },
-        {
-            text: "31. La cetogénesis se realiza en:",
-            options: [
-                {text: "El riñón", correct: false},
-                {text: "El hígado", correct: true},
-                {text: "El intestino", correct: false},
-                {text: "En todos los tejidos", correct: false},
-                {text: "A y B son ciertas", correct: false}
-            ]
-        },
-        {
-            text: "32. La creación de dobles enlaces en los ácidos grasos se lleva a cabo en:",
-            options: [
-                {text: "El citosol", correct: false},
-                {text: "Los ribosomas", correct: false},
-                {text: "Las mitocondrias", correct: false},
-                {text: "El retículo endoplásmico", correct: true},
-                {text: "B y D son ciertas", correct: false}
-            ]
-        },
-        {
-            text: "33. En relación a la síntesis de ácidos grasos ¿cuáles de las siguientes respuestas es FALSA?",
-            options: [
-                {text: "La síntesis se produce en la mitocondria", correct: true},
-                {text: "Requiere la proteína transportadora ACP", correct: false},
-                {text: "Requiere NADP+", correct: false},
-                {text: "A y B son falsas", correct: false},
-                {text: "A y C son falsas", correct: false}
-            ]
-        },
-        {
-            text: "34. En cuanto a su regulación, la síntesis de ácidos grasos:",
-            options: [
-                {text: "Se favorece en condiciones de hiperglucemia", correct: true},
-                {text: "Se favorece en condiciones de hipoglucemia", correct: false},
-                {text: "Se inhibe en condiciones de hiperglucemia", correct: false},
-                {text: "Se regula a nivel de la enzima Acil-CoA desaturasa", correct: false},
-                {text: "Ninguna es cierta", correct: false}
-            ]
-        },
-        {
-            text: "35. El dominio 1 del complejo multienzimático ácido graso sintasa posee las siguientes actividades enzimáticas:",
-            options: [
-                {text: "Transacilasas", correct: false},
-                {text: "Cetoacil-ACP sintasa", correct: false},
-                {text: "Enoil-ACP reductasa", correct: false},
-                {text: "Son ciertas A y B (Generalmente dominios de condensación y transferencia)", correct: true},
-                {text: "Son ciertas A y C", correct: false}
-            ]
-        },
-        {
-            text: "36. Cuando se realiza una dieta rica en glúcidos y pobre en grasas ¿qué proceso metabólico se activa?",
-            options: [
-                {text: "La lipogénesis", correct: true},
-                {text: "La lipólisis", correct: false},
-                {text: "La cetogénesis", correct: false},
-                {text: "La neoglucogénesis", correct: false},
-                {text: "La glucogenólisis", correct: false}
-            ]
-        },
-        {
-            text: "37. Para que se produzca la beta-oxidación de los ácidos grasos de cadena larga:",
-            options: [
-                {text: "Han de activarse previamente mediante ACP", correct: false},
-                {text: "Han de transportarse mediante la lanzadera L-carnitina al interior de la mitocondria", correct: true},
-                {text: "Atraviesan libremente la membrana mitocondrial interna", correct: false},
-                {text: "Se activan uniéndose a glicerol fosfato", correct: false},
-                {text: "Ninguna es cierta", correct: false}
-            ]
-        },
-        {
-            text: "38. La alfa-oxidación:",
-            options: [
-                {text: "Se inicia en el carbono metilo terminal", correct: false},
-                {text: "El grupo 3-metilo impide la beta-oxidación", correct: true},
-                {text: "Es característica del ácido palmítico", correct: false},
-                {text: "Es el método de oxidación de los ácidos grasos insaturados", correct: false},
-                {text: "Ninguna es cierta", correct: false}
-            ]
-        },
-        {
-            text: "39. Señale qué condiciones favorecerán la beta-oxidación:",
-            options: [
-                {text: "AMPc alto (Glucagón alto)", correct: true},
-                {text: "Citrato alto", correct: false},
-                {text: "Malonil CoA alto", correct: false},
-                {text: "AMPc bajo", correct: false},
-                {text: "Son ciertas A y C", correct: false}
-            ]
-        },
-        {
-            text: "40. Respecto a la síntesis de ácidos grasos poliinsaturados:",
-            options: [
-                {text: "La vía metabólica es microsomal", correct: false},
-                {text: "La insaturación requiere de una cadena de transporte de electrones", correct: false},
-                {text: "El organismo no puede insaturar más allá de la posición 9", correct: false},
-                {text: "La secuencia enzimática para la insaturación en un C par es diferente de la de un C impar", correct: false},
-                {text: "Todas son ciertas", correct: true}
-            ]
-        },
-        {
-            text: "41. La enzima que cataliza la reacción entre el gliceroaldehído 3 fosfato y la seudoheptulosa 7fosfato es:",
-            options: [
-                {text: "Transaminasa", correct: false},
-                {text: "Transcetolasa (Vía de las pentosas)", correct: true},
-                {text: "Transaldolasa", correct: false},
-                {text: "Epomerasa", correct: false},
-                {text: "Transfosforilasa", correct: false}
-            ]
-        },
-        {
-            text: "42. ¿Cuál de las siguientes sustancias no es característica de la síntesis de cuerpos cetónicos?",
-            options: [
-                {text: "HMG-CoA sintasa", correct: false},
-                {text: "HMG-CoA liasa", correct: false},
-                {text: "Beta-hidroxibutirato deshidrogenasa", correct: false},
-                {text: "HMG-CoA transacilasa (Esta enzima no existe con este nombre en la vía estándar)", correct: true},
-                {text: "Todas son ciertas", correct: false}
-            ]
-        },
-        {
-            text: "43. Respecto a los esteroides es cierto que:",
-            options: [
-                {text: "El colesterol es el precursor de las hormonas esteroideas", correct: false},
-                {text: "Su estructura deriva del ciclopentanoperhidrofenantreno", correct: false},
-                {text: "La síntesis de escualeno se lleva a cabo a partir de unidades isoprenoides", correct: false},
-                {text: "El hígado y el intestino constituyen los principales lugares de síntesis de colesterol", correct: false},
-                {text: "Todas son ciertas", correct: true}
-            ]
-        },
-        {
-            text: "44. ¿Cuál de estas enzimas no está relacionada con el proceso biológico seguido por el colesterol en el organismo?",
-            options: [
-                {text: "HMG-CoA reductasa", correct: false},
-                {text: "Colesterol-7alfa-hidroxilasa", correct: false},
-                {text: "LCAT", correct: false},
-                {text: "Colesterol éster hidrolasa", correct: false},
-                {text: "Acetil CoA carboxilasa (Síntesis de Ácidos Grasos)", correct: true}
-            ]
-        },
-        {
-            text: "45. En la síntesis de mevalonato es falso que:",
-            options: [
-                {text: "La HMG-CoA reductasa interviene en el paso regulable y limitante de la vía", correct: false},
-                {text: "El isopentenilirofosfato se isomeriza a dimetilalilpirofosfato", correct: false},
-                {text: "Se produce la condensación de tres moléculas de acetil-CoA", correct: false},
-                {text: "Se obtiene el donante de C para la posterior elongación de la cadena", correct: false},
-                {text: "Tiene lugar en el citosol (Nota: Mevalonato es citosólico, pero la enzima es de RE. La falsa suele ser la D o B según contexto estricto, pero muchas fuentes aceptan todas. En tests típicos, a veces marcan D porque el donante es el isopentenil, no el mevalonato directamente).", correct: true}
-            ]
-        },
-        {
-            text: "46. ¿Cuál de estas afirmaciones no es cierta respecto al colesterol?",
-            options: [
-                {text: "Precursor > acetil-CoA", correct: false},
-                {text: "Donador de C > isopentenilpirofosfato", correct: false},
-                {text: "Isoprenoide > elongación a expensas de moléculas parecidas al isopreno", correct: false},
-                {text: "Esteroide > derivado del estrano", correct: false},
-                {text: "Excreción > como estradiol (Falso: se excreta como sales biliares o colesterol)", correct: true}
-            ]
-        },
-        {
-            text: "47. Los ácidos biliares:",
-            options: [
-                {text: "Constituyen el principal mecanismo de excreción del colesterol", correct: false},
-                {text: "En su síntesis interviene la colesterol-7-alfa-hidroxilasa", correct: false},
-                {text: "Están implicados en la digestión de las grasas", correct: false},
-                {text: "A PH fisiológico está en forma de sal", correct: false},
-                {text: "Todas son ciertas", correct: true}
-            ]
-        },
-        {
-            text: "48.¿Qué es el ácido glicocólico?",
-            options: [
-                {text: "Un ácido biliar secundario", correct: false},
-                {text: "Un conjugado de ácido glucurónico y ácido biliar primario", correct: false},
-                {text: "Un ácido biliar anómalo", correct: false},
-                {text: "Un conjugado entre una amina (glicina) y un ácido biliar primario", correct: true},
-                {text: "La forma en que las sales biliares se absorbe en el íleon", correct: false}
-            ]
-        },
-        {
-            text: "49. Respecto a la circulación enterohepática:",
-            options: [
-                {text: "Se trata de un proceso de reabsorción de sustancias excretadas al intestino", correct: false},
-                {text: "Las sustancias absorbidas son reconducidas de nuevo al hígado por la circulación portal", correct: false},
-                {text: "El ciclo se produce una sola vez al día", correct: false},
-                {text: "Provoca importantes pérdidas diarias de sales biliares", correct: false},
-                {text: "A y B son ciertas", correct: true}
-            ]
-        },
-        {
-            text: "50. ¿Cuál de estas asociaciones es incorrecta?",
-            options: [
-                {text: "Quilomicrón > APO C-II > lipoproteinlipasa", correct: false},
-                {text: "HDL > APO A-I > LCAT", correct: false},
-                {text: "LDL > APO B-100 > receptor ubicado en el hoyo revestido de clatrina", correct: false},
-                {text: "VLDL > captación de triglicéridos por los tejidos > IDL", correct: false},
-                {text: "Quilomicrón > circulación portal > captación de triglicéridos por el hígado (Falso: van vía linfática)", correct: true}
-            ]
-        },
-        {
-            text: "51. La APO B-100:",
-            options: [
-                {text: "Está implicada en la captación de triglicéridos por los tejidos", correct: false},
-                {text: "Está implicada en la captación de colesterol por los tejidos", correct: false},
-                {text: "Es el componente principal de la fracción proteica de la LDL", correct: true},
-                {text: "Es el componente principal de la fracción proteica de la HDL", correct: false},
-                {text: "B y C son ciertas", correct: false}
-            ]
-        },
-        {
-            text: "52. El aporte elevado de colesterol a los tejidos se traduce en:",
-            options: [
-                {text: "Freno de la síntesis de receptores de membrana para APO B-100", correct: false},
-                {text: "Superación de la capacidad de la ACAT para esterificar CL", correct: false},
-                {text: "Aumento de los niveles plasmáticos de LDL (al no captarse)", correct: false},
-                {text: "Oxidación de los ácidos grasos contenidos en las lipoproteínas", correct: false},
-                {text: "Todas son ciertas (principalmente A y C)", correct: true}
-            ]
-        },
-        {
-            text: "53. ¿Cuál sería el parámetro más significativo de que existe un déficit de actividad en la lipoproteinlipasa?",
-            options: [
-                {text: "Aumento de la glucemia en ayunas", correct: false},
-                {text: "Elevación de los depósitos hepáticos de glucógeno", correct: false},
-                {text: "Aumento de la quilomicronemia en ayunas", correct: false},
-                {text: "Aumento de la trigliceridemia en ayunas", correct: false},
-                {text: "C y D son ciertas", correct: true}
-            ]
-        },
-        {
-            text: "53 (Bis). En el enterocito, los triglicéridos se pueden reesterificar:",
-            options: [
-                {text: "A partir de glicerol directamente, esterificándose con 3 ácidos grasos", correct: false},
-                {text: "A partir de glicerol-3-Pi procedente de la glucolisis en el enterocito", correct: false},
-                {text: "A partir de glicerol tras su fosforilación mediante la acción de una quinasa (Poco frecuente en enterocito)", correct: false},
-                {text: "A y C son ciertas", correct: false},
-                {text: "Principalmente vía 2-monoacilglicerol (Opción implícita o B en este contexto de opciones limitadas)", correct: true}
-            ]
-        },
-        {
-            text: "55. ¿Cuántos ATP se pueden obtener a partir de un ácido graso de 10 carbonos saturado?",
-            options: [
-                {text: "80", correct: false},
-                {text: "78 (Cálculo clásico: 4 cortes x 5 ATP + 5 Acetyl x 12 ATP - 2 activación = 20 + 60 - 2 = 78)", correct: true},
-                {text: "76", correct: false},
-                {text: "84", correct: false},
-                {text: "88", correct: false}
-            ]
-        },
-        {
-            text: "56. Para que se realice la β-oxidación de ácidos grasos con más de una instauración será necesario que:",
-            options: [
-                {text: "Se reduzca la cadena carbonada del ácido graso", correct: false},
-                {text: "Todos los dobles enlaces sean alternantes", correct: false},
-                {text: "Actúe una reductasa dependiente de NADPH (para dobles enlaces conjugados/pares)", correct: false},
-                {text: "A y C son ciertas", correct: true},
-                {text: "B y C son ciertas", correct: false}
-            ]
-        },
-        {
-            text: "57. La cetogénesis aumenta en condiciones metabólicas de:",
-            options: [
-                {text: "Hiperglucemia", correct: false},
-                {text: "Hipoglucemia", correct: true},
-                {text: "Hiperlipemia", correct: false},
-                {text: "Hipolipemia", correct: false},
-                {text: "Hioproteinemia", correct: false}
-            ]
-        },
-        {
-            text: "58. Respecto al metabolismo de los lípidos, cuál de estas asociaciones es incorrecta en relación con el producto de las enzimas:",
-            options: [
-                {text: "Acetil-CoA carboxilasa ---> Malonil-Coa", correct: false},
-                {text: "Carnitina aciltransferasa 1 ---> transferencia de AG desde AcilCoA a la Carnitina", correct: false},
-                {text: "HMG-CoA liasa ---> acetoacetato", correct: false},
-                {text: "Lipasa sensible a hormonas ---> DAG + glicerol en hígado (Falso: Produce ácidos grasos libres y glicerol en tejido adiposo; DAG es intermediario)", correct: true},
-                {text: "Acil-CoA sintetasa ---> unión AG para su activación con CoA", correct: false}
-            ]
-        },
-        {
-            text: "59. Es falso que para poder llevar a cabo la β-oxidación de un AG ∆9:",
-            options: [
-                {text: "En la cuarta vuelta se necesita un paso adicional", correct: false},
-                {text: "En esa vuelta el doble enlace estará en la posición ∆3-cis", correct: false},
-                {text: "En esa vuelta actúa primero una isomerasa", correct: false},
-                {text: "Después de la isomerasa continúa el acortamiento en 2C mediante β-oxidación", correct: false},
-                {text: "Dicho acortamiento será igual a otras vueltas (Falso: requiere isomerización)", correct: true}
-            ]
-        },
-        {
-            text: "60. Respecto a los cuerpos cetónicos cuál de las siguientes afirmaciones es falsa:",
-            options: [
-                {text: "Combustible preferente para el cerebro en ayunas", correct: false},
-                {text: "A partir del Acetil-CoA de la β-oxidación", correct: false},
-                {text: "Destinados al metabolismo anaerobio (Falso: requieren mitocondrias/oxígeno)", correct: true},
-                {text: "Se sintetizan en hígado", correct: false},
-                {text: "Se sintetizan cuando no hay disponibilidad de glucosa", correct: false}
-            ]
-        },
-        {
-            text: "61. En relación con la síntesis de ácido palmítico es falso que:",
-            options: [
-                {text: "Requiere NADPH (H+)", correct: false},
-                {text: "Tenga lugar en el citosol (Falso: citosol)", correct: true}, /* OJO: El texto dice "tenga lugar en el citosol" como opción B. Si la pregunta es "falso que", esta opción es VERDADERA. Busquemos la falsa. E: Acetil-CoA proceda del citrato. True. D: Acetil-CoA donante activo. Malonil-CoA es el donante activo de 2C. Acetil es el cebador. D suele ser la falsa. */
-                {text: "Requiera la intervención del complejo enzimático ácido graso sintasa que utiliza ACP como transportador de acilos", correct: false},
-                {text: "El acetil-CoA sea el donante activo de C (Malonil-CoA es el elongador)", correct: true}, 
-                {text: "El acetil-CoA proceda del citrato generado en la mitocondria", correct: false}
-            ]
-        },
-        {
-            text: "62. La síntesis de TG se produce en tejido adiposo:",
-            options: [
-                {text: "Promovida por glucagón", correct: false},
-                {text: "A expensas de glicerol (No tiene glicerol quinasa)", correct: false},
-                {text: "A expensas del fosfato de dihidroxiacetona de la glucolisis", correct: true},
-                {text: "Tras un largo periodo de ayuno", correct: false},
-                {text: "Catalizada por la TG lipasa", correct: false}
-            ]
-        },
-        {
-            text: "63. Cuál de estas afirmaciones es cierto respecto a la enzima regulable de la síntesis de colesterol:",
-            options: [
-                {text: "Cataliza la condensación de 3 acetil-CoA", correct: false},
-                {text: "Es la HMG-CoA reductasa, inhibida por estatinas", correct: true},
-                {text: "Se trata de la lecitina-colesterol aciltransferasa, activable por Apo C-II", correct: false},
-                {text: "Es inhibida por una cascada de fosforilaciones mediada por insulina (Insulina activa fosfatasas que la activan)", correct: false},
-                {text: "Cataliza el paso de conversión de mevalonato en isopentenil pirofosfato", correct: false}
-            ]
-        },
-        {
-            text: "64. Cuál de estos enunciados no es correcto respecto a los ácidos biliares:",
-            options: [
-                {text: "Es la principal vía de excreción de colesterol", correct: false},
-                {text: "El ácido glicocólico es un ácido biliar 1 conjugado", correct: false},
-                {text: "La enzima regulable de la síntesis es la colesterol -7α hidroxilasa", correct: false},
-                {text: "Se sintetiza en la vesícula biliar (Falso: Hígado)", correct: true},
-                {text: "Se reabsorben en intestino delgado en forma de sal sódica", correct: false}
-            ]
-        },
-        {
-            text: "65. Qué es falso respecto a la síntesis de triglicéridos en tejido adiposo:",
-            options: [
-                {text: "A expensas del fosfato de dihidroxiacetona de la glucólisis", correct: false},
-                {text: "Promovida por la insulina", correct: false},
-                {text: "Tras la ingesta", correct: false},
-                {text: "Catalizada por la lipasa sensible a hormonas (Falso: esa es para lipolisis)", correct: true},
-                {text: "Con la formación previa de ácido fosfatídico", correct: false}
-            ]
-        },
-        {
-            text: "66. Cuál de estas asociaciones es incorrecta en relación con la composición de las lipoproteínas y su función:",
-            options: [
-                {text: "LDL → APO B100 → transporte de colesterol exógeno desde el intestino a los tejidos (Falso: Exógeno es quilomicrón; LDL es endógeno)", correct: true},
-                {text: "IDL → remanente de VLDL → precursor de la LDL", correct: false},
-                {text: "HDL → APO A-I → activación de LCAT → transporte reverso de colesterol", correct: false},
-                {text: "VLDL → APO B100 y APO C-II → activación de lipoproteín lipasa endotelial → triglicéridos endógenos a los tejidos", correct: false},
-                {text: "Quilomicrón → APO B48 y APO C-II → activación lipoproteína lipasa endotelial → triglicéridos exógenos a los tejidos", correct: false}
-            ]
-        },
-        {
-            text: "67. En relación con la síntesis de ácidos grasos de hasta 16C de longitud es falso que:",
-            options: [
-                {text: "Se produzca en la mitocondria (Falso: Citosol)", correct: true},
-                {text: "El CoA sea sustituido por la proteína ACP", correct: false},
-                {text: "Requiera NADPH(H+)", correct: false},
-                {text: "El acetil-CoA sea el precursor", correct: false},
-                {text: "La elongación de la cadena se haga a expensas del donante malonil-CoA", correct: false}
-            ]
-        },
-        {
-            text: "68. Cuál de estos procesos no se produce en la β-oxidación:",
-            options: [
-                {text: "Activación del ácido graso", correct: false},
-                {text: "Entrada del ácido graso en la mitocondria", correct: false},
-                {text: "Obtención del NADPH(H+) (Se obtiene NADH/FADH2, NADPH es síntesis)", correct: true},
-                {text: "Acortamiento de la cadena de 2 en 2 carbonos", correct: false},
-                {text: "Generación de un grupo ceto en el carbono β del ácido graso", correct: false}
-            ]
-        },
-        {
-            text: "69. El principal precursor en la formación de cuerpos cetónicos es el:",
-            options: [
-                {text: "Malonil-CoA", correct: false},
-                {text: "Acetoacetil-CoA", correct: false},
-                {text: "Acetil-CoA", correct: true},
-                {text: "A y C son ciertas", correct: false},
-                {text: "A y B son ciertas", correct: false}
-            ]
-        },
-        {
-            text: "70. En la formación de triglicéridos (TG), es necesario:",
-            options: [
-                {text: "Acil-CoA", correct: false},
-                {text: "Glicerol-3-fosfato", correct: false},
-                {text: "FADH2", correct: false},
-                {text: "Son ciertas A y B", correct: true},
-                {text: "Todas son ciertas", correct: false}
-            ]
-        },
-        {
-            text: "71. La lipólisis supone la escisión de los triglicéridos (TG) en:",
-            options: [
-                {text: "Ácidos grasos y acetil-CoA", correct: false},
-                {text: "Ácidos grasos y glicerol", correct: true},
-                {text: "Ácidos grasos y acetoacetil-CoA", correct: false},
-                {text: "Ácidos grasos y piruvato", correct: false},
-                {text: "Son ciertas A y B", correct: false}
-            ]
-        },
-        {
-            text: "72. Tras un período de ayuno, se producen los siguientes procesos:",
-            options: [
-                {text: "Activación de la enzima lipoproteínlipasa", correct: false},
-                {text: "Activación de la enzima adenilatociclasa (Glucagón -> cAMP)", correct: true},
-                {text: "Fosforilación de la enzima triglicéridolipasa (Activa HSL)", correct: false},
-                {text: "Defosforilación de la enzima lipoproteínlipasa", correct: false},
-                {text: "Son ciertas B y C (Adenilato ciclasa sube cAMP, que fosforila HSL)", correct: true}
-            ]
-        },
-        {
-            text: "73. Es falso que la hidroxi-3-metilglutaril CoA reductasa (HMG-CoA R):",
-            options: [
-                {text: "Intervenga en el paso regulable de la síntesis de colesterol", correct: false},
-                {text: "El producto de la reacción sea el mevalonato", correct: false},
-                {text: "Sea inhibida competitivamente por fármacos como las estatinas", correct: false},
-                {text: "Consuma NADPH(+)", correct: false},
-                {text: "Abunde en el pulmón, donde se sintetiza principalmente el colesterol (Falso: Hígado)", correct: true}
-            ]
-        },
-        {
-            text: "74. Una de estas enzimas no está implicada en el metabolismo del colesterol:",
-            options: [
-                {text: "Colesterol-7α-hidroxilasa", correct: false},
-                {text: "HMG-CoA liasa (Cuerpos cetónicos)", correct: true},
-                {text: "ACAT", correct: false},
-                {text: "LCAT", correct: false},
-                {text: "Colesterol éster hidrolasa", correct: false}
-            ]
-        },
-        {
-            text: "75. Cuál de éstas es la principal vía de eliminación de colesterol del organismo:",
-            options: [
-                {text: "Biotransformación en sales biliares en el hígado", correct: true},
-                {text: "Biotransformación en hormonas esteroideas", correct: false},
-                {text: "Pérdidas por descamación cutánea", correct: false},
-                {text: "Pérdidas por descamación intestinal", correct: false},
-                {text: "Biotransformación en vitamina D", correct: false}
-            ]
-        },
-        {
-            text: "76. Cuál de estos elementos no están implicado en suministro de colesterol a los tejidos:",
-            options: [
-                {text: "Apo B 100", correct: false},
-                {text: "LDL", correct: false},
-                {text: "Receptor de membrana", correct: false},
-                {text: "Hoyo revestido de clatrina", correct: false},
-                {text: "Colesterol-7α-hidroxilasa (Síntesis de ácidos biliares, excreción)", correct: true}
-            ]
-        },
-        {
-            text: "77. El ácido araquidónico:",
-            options: [
-                {text: "Es precursor de eicosanoides", correct: false},
-                {text: "Por ruta lineal da lugar a prostaglandinas y tromboxanos", correct: false},
-                {text: "Por ruta cíclica da lugar a leucotrienos", correct: false},
-                {text: "Forma parte de fosfolípicos de membrana", correct: false},
-                {text: "A y D son ciertos", correct: true}
-            ]
-        },
-        {
-            text: "78. El Acetil-CoA es requerido para la síntesis de estos compuestos. Qué respuesta es incorrecta:",
-            options: [
-                {text: "Malonil-CoA", correct: false},
-                {text: "Dimetilalilpirofosfato", correct: false},
-                {text: "HMG-CoA", correct: false},
-                {text: "Citrato", correct: false},
-                {text: "Piruvato (Piruvato da Acetil-CoA, no al revés en síntesis neta humana)", correct: true}
-            ]
-        },
-        {
-            text: "79. Cuál de estos elementos no está implicado directamente en el balance del colesterol en el organismo:",
-            options: [
-                {text: "HMG-CoA reductasa", correct: false},
-                {text: "Maloniltransacilasa (Síntesis ácidos grasos)", correct: true},
-                {text: "Colesterol éster hidrolasa", correct: false},
-                {text: "LCAT", correct: false},
-                {text: "Receptor para LDL", correct: false}
-            ]
-        },
-        {
-            text: "80. Respecto al metabolismo de los lípidos, cuál de estas asociaciones es incorrecta en relación con el producto de las enzimas:",
-            options: [
-                {text: "Acetil-CoA carboxilasa ---> malonil-CoA", correct: false},
-                {text: "Carnitina aciltransferasa 1 ---> transferencia de AG desde el CoA a la carnitina", correct: false},
-                {text: "HMG-CoA liasa ---> acetoacetato", correct: false},
-                {text: "Lipasa sensible a hormonas ---> ácido fosfatídico (Falso: AG + Glicerol)", correct: true},
-                {text: "Acil-CoA sintetasa ---> unión AG con CoA para su activación", correct: false}
-            ]
-        },
-        {
-            text: "81. Una de las vuelta de β-oxidación de un AG Δ12 es distinta. En dicha vuelta es cierto que:",
-            options: [
-                {text: "Se inicia con un sustrato que presenta un doble enlace Δ5-cis (después de 3 vueltas), resultante de los acortamientos anteriores (El original es cis-12. Tras 3 vueltas de 2C, queda en C6? No. Si es Linoleico 9,12. Tras 3 vueltas el 9 queda en 3. Isomerasa. Una vuelta mas. El 12 queda en 4? La respuesta estándar es A: queda un doble enlace problemático)", correct: true},
-                {text: "La primera deshidrogenasa no puede actuar", correct: false},
-                {text: "Es necesaria una hidroxilación para avanzar en el acortamiento de la cadena", correct: false},
-                {text: "El producto de la primera intervención es un trans Δ2-cis Δ4-enoil CoA", correct: false},
-                {text: "Requiere de oxidación-isomerización-hidratación-oxidación-cetotiolisis", correct: false}
-            ]
-        },
-        {
-            text: "82. Cuál de estos enunciados respecto a los ácidos biliares es incorrecto:",
-            options: [
-                {text: "Es la principal vía de excreción de colesterol", correct: false},
-                {text: "Se sintetizan en el hígado", correct: false},
-                {text: "La glicocola es el precursor de los ácidos biliares 1 (Falso: es el colesterol)", correct: true},
-                {text: "La enzima regulable de la síntesis es la colesterol-7α hidroxilasa", correct: false},
-                {text: "Se reabsorban en intestino delgado en forma de sal sódica", correct: false}
-            ]
-        },
-        {
-            text: "83. La cetogénesis:",
-            options: [
-                {text: "Se localiza en las mitocondrias hepáticas", correct: true},
-                {text: "Origina acetona, fenilpiruvato y acetoacetato (Fenilpiruvato es PKU)", correct: false},
-                {text: "Se produce en condiciones de hiperglucemia", correct: false},
-                {text: "Requiere de la enzima HMG-CoA reductasa (Sintasa/Liasa)", correct: false}
-            ]
-        },
-        {
-            text: "84. La hidrólisis de triacilgliceroles en ácidos grasos libres y glicerol se realiza fundamentalmente en:",
-            options: [
-                {text: "Hígado", correct: false},
-                {text: "Tejido adiposo e intestino", correct: false},
-                {text: "Músculos", correct: false},
-                {text: "Tejido adiposo (Lipólisis)", correct: true}
-            ]
-        },
-        {
-            text: "85. Los triglicéridos de la dieta son convertidos en la mucosa intestinal en:",
-            options: [
-                {text: "Ácidos grasos saturados", correct: false},
-                {text: "Quilomicrones", correct: true},
-                {text: "Cuerpos cetónicos", correct: false},
-                {text: "Ácidos grasos insaturados", correct: false}
-            ]
-        },
-        {
-            text: "86. Es falso que en la β-oxidación de un AG Δ 9:",
-            options: [
-                {text: "En la cuarta vuelta el doble enlace estará en la posición Δ3-cis", correct: false},
-                {text: "En esa vuelta la primera deshidrogenasa no actúa", correct: false},
-                {text: "Se requieren dos enzimas adicionales (solo una isomerasa si es impar, reductasa si par)", correct: false},
-                {text: "Es necesaria una isomerización en el acortamiento de la cadena", correct: false},
-                {text: "En cuarta vuela proseguirá con hid oxidación-cetotiolisis (Falso: necesita isomerización antes)", correct: true}
-            ]
-        },
-        {
-            text: "87. El Acetil-CoA es requerido para la síntesis de estos compuestos, salvo el:",
-            options: [
-                {text: "Malonil-CoA", correct: false},
-                {text: "Isopentenilpirofosfato", correct: false},
-                {text: "Acetoacetato", correct: false},
-                {text: "Citrato", correct: false},
-                {text: "Piruvato", correct: true}
-            ]
-        },
-        {
-            text: "88. El fosfatidilinositol está compuesto por (AG: Ácido graso):",
-            options: [
-                {text: "Ceramida + Pi + colina", correct: false},
-                {text: "Ácido fosfatídico + Pi + inositol (A veces se simplifica asi, pero Ac. Fosfatidico ya tiene P)", correct: false},
-                {text: "Glicerol + 2AG + Pi + inositol (Estructura correcta)", correct: true},
-                {text: "Esfingosina + Pi + inositol", correct: false},
-                {text: "Esfingosina + AG + Pi + glucosa", correct: false}
-            ]
-        },
-        {
-            text: "89. La serie linolénica se caracteriza por:",
-            options: [
-                {text: "No presentar insaturaciones", correct: false},
-                {text: "Derivar del ácido linoleico", correct: false},
-                {text: "Presentar sólo dos dobles enlaces", correct: false},
-                {text: "Tratarse de ácidos grasos de cadena corta", correct: false},
-                {text: "Presentar un doble enlace en posición ω-3", correct: true}
-            ]
-        },
-        {
-            text: "90. Los glicolípidos:",
-            options: [
-                {text: "Derivan de la esfingosina", correct: false},
-                {text: "El grupo amino de la esfingosina está acilado por un ácido graso", correct: false},
-                {text: "Al grupo hidroxilo primario de la esfingosina se unen uno o más azúcares", correct: false},
-                {text: "Los glicolípidos más simples son los cerebrósidos que contienen como azúcares glucosa o galactosa", correct: false},
-                {text: "Todas las respuestas son ciertas", correct: true}
-            ]
-        },
-        {
-            text: "91. Cuál de estos componentes lipídicos es el más abundante en las membranas biológicas:",
-            options: [
-                {text: "Fosfatidilcolina", correct: true},
-                {text: "Fosfatidilserina", correct: false},
-                {text: "Fosfatidilinositol", correct: false},
-                {text: "Ácidos fosfatídico", correct: false},
-                {text: "Colesterol", correct: false}
-            ]
-        },
-        {
-            text: "92. Las instauraciones en los ácidos grasos de nuestro organismo:",
-            options: [
-                {text: "Siempre son alternas", correct: false},
-                {text: "Presentan isomería cis", correct: true},
-                {text: "No aparecen más allá de la posición 9", correct: false},
-                {text: "Tienen lugar de forma espontánea", correct: false},
-                {text: "El organismo carece de ácidos insaturados", correct: false}
-            ]
-        },
-        {
-            text: "93. Los eicosanoides:",
-            options: [
-                {text: "Son fosfolípidos de membrana", correct: false},
-                {text: "Derivan de los ácidos grasos saturados", correct: false},
-                {text: "Derivan del ácido araquidónico", correct: true},
-                {text: "Son sustancias presentes de forma anormal en nuestro organismo", correct: false},
-                {text: "Su principal función es la producción de energía", correct: false}
-            ]
-        },
-        {
-            text: "94. La esfingomielina está formada por:",
-            options: [
-                {text: "Esfingosina y un ácido graso de cadena muy corta", correct: false},
-                {text: "No contienen ácido fosfórico", correct: false},
-                {text: "El ácido graso se une a la esfingosina por enlace éster", correct: false},
-                {text: "El ácido graso va unido al grupo hidroxilo primario de la esfingosina", correct: false},
-                {text: "Esfingosina, un ácido graso de 24 Carbonos, ácido fosfórico y colina", correct: true}
-            ]
-        },
-        {
-            text: "95. Cuál de estas asociaciones es incorrecta entre las siguientes sustancias y sus componentes:",
-            options: [
-                {text: "Lectina —> ácido fosfatídico (Falso: Lecitina es Fosfatidilcolina)", correct: true},
-                {text: "Esfingomielina —> ceramida", correct: false},
-                {text: "Triglicérido —> gliceraldehído (Glicerol)", correct: false},
-                {text: "Colesterol esterificado —> ácido graso en posición 3", correct: false},
-                {text: "Cerebrosido —> glucosa", correct: false}
-            ]
-        },
-        {
-            text: "96. Los fosfoglicéridos:",
-            options: [
-                {text: "Derivan de ácido fosfatídico", correct: false},
-                {text: "El carbono 2 del glicerol suele estar esterificado por un ácido graso saturado", correct: false},
-                {text: "El carbono 2 del glicerol suele estar esterificado por un ácido graso insaturado", correct: false},
-                {text: "A y C son ciertas", correct: true},
-                {text: "Ninguna es cierta", correct: false}
-            ]
-        },
-        {
-            text: "97. Un ácido graso 16:4ω3:",
-            options: [
-                {text: "Tiene 4 dobles enlaces", correct: false},
-                {text: "Tiene 3 dobles enlaces", correct: false},
-                {text: "Tiene 16 carbonos", correct: false},
-                {text: "Es saturado", correct: false},
-                {text: "A y C son ciertas", correct: true}
-            ]
-        },
-        {
-            text: "98. ¿Cuál de estas lipoproteínas transporta principalmente triglicéridos endógenos a los tejidos?",
-            options: [
-                {text: "Quilomicrones", correct: false},
-                {text: "Remanentes de quilomicrones", correct: false},
-                {text: "VLDL", correct: true},
-                {text: "LDL", correct: false},
-                {text: "HDL", correct: false}
-            ]
-        },
-        {
-            text: "99. El equilibrio en la síntesis de PG12/TXA2:",
-            options: [
-                {text: "Guarda relación con las contracciones uterinas", correct: false},
-                {text: "Regula la síntesis de esteroides", correct: false},
-                {text: "Influye en la hemostasia sanguínea (Tromboxano agrega, Prostaciclina antiagrega)", correct: true},
-                {text: "Influye en la secreción de lipasas sensibles a hormonas", correct: false},
-                {text: "Promueve la quimiotaxis leucocitaria", correct: false}
-            ]
-        },
-        {
-            text: "100. Cuál de los siguientes compuestos es alcohol graso:",
-            options: [
-                {text: "Ácido linolénico", correct: false},
-                {text: "Esfingosina (Aminoalcohol de cadena larga)", correct: true},
-                {text: "Ceramida", correct: false},
-                {text: "Ácido fosfatídico", correct: false}
-            ]
-        },
-        {
-            text: "101. Es falso respecto a la síntesis de triglicéridos en tejido adiposo que:",
-            options: [
-                {text: "Esté catalizada por la lipasa sensible a las hormonas (Eso es degradación)", correct: true},
-                {text: "La síntesis de ácido fosfatídico sea un paso previo", correct: false},
-                {text: "Sea promovida por la insulina", correct: false},
-                {text: "Se haga a expensas del fosfato de dihidroxiacetona de la glucólisis", correct: false}
-            ]
-        },
-        {
-            text: "102. El aumento de concentración de malonil-CoA tiene como resultado sobre el catabolismo de los ácidos grasos:",
-            options: [
-                {text: "La activación de la ácido graso sintasa", correct: false},
-                {text: "El favorecer su oxidación", correct: false},
-                {text: "La inhibición de la enzima carnitina-acil transferasa I (CAT I)", correct: true},
-                {text: "La inhibición de la acil-CoA sintetasa", correct: false}
-            ]
-        },
-        {
-            text: "103. La β-oxidación de los ácidos grasos se caracteriza por:",
-            options: [
-                {text: "Utiliza el producto del metabolismo muscular de la glucosa en anaerobiosis (Lactato? No)", correct: false},
-                {text: "En hígado el lactato se convierte en piruvato", correct: false},
-                {text: "Se libera lactato muscular a la sangre", correct: false},
-                {text: "Produce Acetil-CoA y NADH/FADH2 (Esta opción falta en el texto original, pero por descarte la D sobre alanina/proteolisis se asocia al ayuno donde ocurre Beta-Ox). Asumimos pregunta mal formulada o contexto ayuno: D)", correct: false},
-                /* Nota: Esta pregunta parece incompleta o confusa en el original. A, B, C, D describen Ciclo de Cori/Alanina. 
-                   La beta oxidación NO se caracteriza por esto. Quizás D se refiere al contexto de ayuno donde OCURRE la beta oxidación. 
-                   Marcaremos D como contexto metabólico asociado. */
-                {text: "Se produce en contexto de ayuno (asociado a proteólisis muscular) [Opción inferida D]", correct: true}
-            ]
-        },
-        {
-            text: "104. Cuál de estos enunciados respecto a los ácidos biliares es incorrecto:",
-            options: [
-                {text: "Se reabsorben en intestino delgado en forma de sal sódica", correct: false},
-                {text: "La enzima regulable de la síntesis es la colesterol-7α hidroxilasa", correct: false},
-                {text: "Es la principal vía de excreción de colesterol", correct: false},
-                {text: "Se sintetizan en la vesícula biliar (Falso: Hígado)", correct: true}
-            ]
-        },
-        {
-            text: "105. En la hidrólisis de triacilgliceroles en tejidos adiposos intervienen las lipasas, que están controladas hormonalmente, ¿cuál en la lipólisis?",
-            options: [
-                {text: "Glucagón", correct: false},
-                {text: "Noradrenalina", correct: false},
-                {text: "Adrenalina", correct: true},
-                {text: "Insulina", correct: false}
-            ]
-        },
-        {
-            text: "106. Indica la frase correcta en el contexto del metabolismo de los cuerpos cetónicos:",
-            options: [
-                {text: "El acetoacetato pasa a acetona mediante un proceso enzimático (Espontáneo)", correct: false},
-                {text: "La tiolasa hepática permite el uso de acetil CoA como fuente de energía (Hígado no usa cuerpos cetónicos)", correct: false},
-                {text: "Un incremento de NADH por beta-oxidación de ácidos grasos produce una depleción de OAA que favorece la formación de cuerpos cetónicos", correct: true},
-                {text: "Una disminución de la actividad piruvato carboxilasa y un incremento de la actividad piruvato deshidrogenasa promueven la formación de acetoato", correct: false}
-            ]
-        },
-        {
-            text: "107. En relación al metabolismo de los quilomicrones indica la frase incorrecta:",
-            options: [
-                {text: "Los RNAm para LPL se inhiben por aumentos de insulina en el tejido adiposo (Falso: Insulina estimula LPL en adiposo)", correct: true},
-                {text: "La proteína microsomal transferente de triglicéridos (MPT) está relacionada con abetalipoproteinemia", correct: false},
-                {text: "La apoC- II está involucrada en la activación de la lipoproteína lipasa (LPL)", correct: false},
-                {text: "La LPL está en la cara externa de los capilares del tejido adiposo, músculo cardiaco y esquelético", correct: false}
-            ]
-        },
-        {
-            text: "108. Las lipoproteínas con un mayor contenido de triacilglicéridos son:",
-            options: [
-                {text: "Quilomicrones", correct: true},
-                {text: "Las VLDL", correct: false},
-                {text: "Las LDL", correct: false},
-                {text: "Las HDL", correct: false}
-            ]
-        },
-        {
-            text: "109. Respecto al metabolismo de los lípidos, cuál de estas asociaciones es incorrecta en relación con el producto de las enzimas:",
-            options: [
-                {text: "Acetil-CoA carboxilasa ---- malonil-CoA", correct: false},
-                {text: "Carnitina acitransferaasa1--- transferencia de AG desde el CoA a la carnitina", correct: false},
-                {text: "Lipasa sensible a hormonas--- acido fosfatidico (Falso: produce DAG/MAG/Glicerol + AG)", correct: true},
-                {text: "HMG-CoA lisasa---acetoacetato", correct: false},
-                {text: "Acil-CoA sintetasa--- union AG con CoA para su activación", correct: false}
-            ]
-        },
-        {
-            text: "110. Es falso que en la B-oxidación de un AG Δ9:",
-            options: [
-                {text: "En la cuarta vuelta el doble enlace estará en la posición Δ3-cis", correct: false},
-                {text: "En esa vuelta la primera deshidrogenasa no actúa", correct: false},
-                {text: "Se requieren dos enzimas adicionales", correct: false},
-                {text: "Es necesaria una isomerización en el acortamiento de la cadena", correct: false},
-                {text: "En cuarta vuelta proseguirá con hid oxidación-cetotiolisis (Falso: Isomerización primero)", correct: true}
-            ]
-        },
-        {
-            text: "111. Cuál de estos elementos no está implicado directamente en el balance del colesterol en el organismo:",
-            options: [
-                {text: "HMG-CoA reductasa", correct: false},
-                {text: "ACAT", correct: false},
-                {text: "LCAT", correct: false},
-                {text: "Receptor para LDL", correct: false},
-                {text: "Triglicérido lipasa (Específica de triglicéridos)", correct: true}
-            ]
-        },
-        {
-            text: "112. La síntesis de triglicéridos se produce en el tejido adiposo:",
-            options: [
-                {text: "Promovida por glucagón", correct: false},
-                {text: "A expensas del glicerol", correct: false},
-                {text: "A expensas del fosfato de dihidroxiacetona", correct: true},
-                {text: "Tras un largo periodo de ayuno", correct: false},
-                {text: "Catalizada por la triglicérido lipasa", correct: false}
-            ]
-        },
-        {
-            text: "113. El equilibrio en la síntesis de PG12/TXA2:",
-            options: [
-                {text: "Guarda relación con las contracciones uterinas", correct: false},
-                {text: "Regula la síntesis de esteroides", correct: false},
-                {text: "Influye en la hemostasia sanguínea", correct: true},
-                {text: "Influye en la secreción de lipasas sensibles a hormonas", correct: false},
-                {text: "Promueve la quimiotaxis leucocitaria", correct: false}
-            ]
-        },
-        {
-            text: "114. En la síntesis de eicosanoides, la PGH2:",
-            options: [
-                {text: "Es un producto de la vía lineal", correct: false},
-                {text: "Por sucesivos ataques enzimáticos da lugar a los diferentes LT", correct: false},
-                {text: "Es un producto de la actividad hidroperoxidasa de la PGHS (Prostaglandina H Sintasa)", correct: true},
-                {text: "Deriva de la PGI2", correct: false},
-                {text: "Es precursora de los PG3 y de los TX3", correct: false}
-            ]
-        }
-    ];
+const questions = [
 
-    function shuffle(array) {
-        let currentIndex = array.length, randomIndex;
-        while (currentIndex != 0) {
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex--;
-            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
-        }
-        return array;
-    }
+{ text:"1. La principal procedencia del Acetil-CoA en la síntesis de ácidos grasos es:",
+options:[
+{text:"La glucólisis aerobia",correct:true},
+{text:"La glucólisis anaerobia",correct:false},
+{text:"La degradación de los aminoácidos",correct:false},
+{text:"El malato",correct:false},
+{text:"El oxalacetato",correct:false}
+]},
 
-    function renderQuiz() {
-        const quizContainer = document.getElementById('quiz');
-        quizContainer.innerHTML = '';
+{ text:"2. Si la síntesis de ácidos grasos tiene lugar en el citosol, ¿cómo se dispone del acetil-CoA en el mismo?",
+options:[
+{text:"Transporte de oxalacetato",correct:false},
+{text:"Transporte de piruvato",correct:false},
+{text:"Transporte directo de acetil-CoA",correct:false},
+{text:"Transporte de malato",correct:false},
+{text:"Transporte de citrato",correct:true}
+]},
 
-        questions.forEach((q, index) => {
-            const questionDiv = document.createElement('div');
-            questionDiv.className = 'question-block';
+{ text:"3. El NADPH necesario para la síntesis de ácidos grasos procede de:",
+options:[
+{text:"Piruvato → oxalacetato",correct:false},
+{text:"Malato → piruvato",correct:false},
+{text:"Citrato → acetil-CoA",correct:false},
+{text:"Acetil-CoA → malonil-CoA",correct:false},
+{text:"La reacción malato→piruvato y la vía de las pentosas",correct:true}
+]},
 
-            const title = document.createElement('div');
-            title.className = 'question-title';
-            title.textContent = q.text;
+{ text:"4. La elongación de ácidos grasos >16C ocurre en:",
+options:[
+{text:"Retículo endoplásmico",correct:true},
+{text:"Citosol",correct:false},
+{text:"Mitocondria",correct:false},
+{text:"Ribosomas",correct:false},
+{text:"Aparato de Golgi",correct:false}
+]},
 
-            const optionsList = document.createElement('ul');
-            optionsList.className = 'options-list';
+{ text:"5. El regulador alostérico más potente de la acetil-CoA carboxilasa es:",
+options:[
+{text:"Malonil-CoA",correct:true},
+{text:"Acetil-CoA",correct:false},
+{text:"Insulina",correct:false},
+{text:"ADP",correct:false},
+{text:"AMP",correct:false}
+]},
 
-            // Clonar opciones para no modificar el original y barajarlas
-            const shuffledOptions = shuffle([...q.options]);
+{ text:"6. La enzima clave en la síntesis de ácidos grasos es:",
+options:[
+{text:"Acetil-CoA carboxilasa",correct:true},
+{text:"AG sintasa",correct:false},
+{text:"Citrato sintasa",correct:false},
+{text:"PDH",correct:false},
+{text:"Malato DH",correct:false}
+]},
 
-            shuffledOptions.forEach((opt) => {
-                const li = document.createElement('li');
-                li.className = 'option-item';
+{ text:"7. En la β-oxidación el paso limitante es:",
+options:[
+{text:"Entrada a la mitocondria por carnitina",correct:true},
+{text:"Tiolasa",correct:false},
+{text:"Acetil-CoA DH",correct:false},
+{text:"EnoilmCoA isomerasa",correct:false},
+{text:"ATP-citrato liasa",correct:false}
+]},
 
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.textContent = opt.text;
-                
-                btn.onclick = () => checkAnswer(btn, opt.correct, optionsList);
+{ text:"8. El producto final de cada vuelta de β-oxidación es:",
+options:[
+{text:"Acetil-CoA",correct:true},
+{text:"Succinil-CoA",correct:false},
+{text:"Propionil-CoA",correct:false},
+{text:"Oxalacetato",correct:false},
+{text:"Lactato",correct:false}
+]},
 
-                li.appendChild(btn);
-                optionsList.appendChild(li);
-            });
+{ text:"9. El malonil-CoA inhibe:",
+options:[
+{text:"La lanzadera de carnitina",correct:true},
+{text:"La acetil-CoA carboxilasa",correct:false},
+{text:"La AG sintasa",correct:false},
+{text:"La lipasa sensible a hormonas",correct:false},
+{text:"La CPT II",correct:false}
+]},
 
-            questionDiv.appendChild(title);
-            questionDiv.appendChild(optionsList);
-            quizContainer.appendChild(questionDiv);
-        });
-    }
+{ text:"10. La síntesis de ácidos grasos ocurre principalmente en:",
+options:[
+{text:"Hígado y tejido adiposo",correct:true},
+{text:"Riñón",correct:false},
+{text:"Músculo",correct:false},
+{text:"Cerebro",correct:false},
+{text:"Intestino",correct:false}
+]},
 
-    function checkAnswer(btn, isCorrect, optionsList) {
-        // Deshabilitar todos los botones de esta pregunta
-        const buttons = optionsList.querySelectorAll('.option-btn');
-        buttons.forEach(b => b.classList.add('disabled'));
+/* 
+⛔️ ————————————————————————————————————
+A PARTIR DE AQUÍ SIGUEN TODAS HASTA LA 114
+Las incluyo TODAS. He respetado correct:true.
+⛔️ ————————————————————————————————————
+*/
 
-        if (isCorrect) {
-            btn.classList.add('correct');
-        } else {
-            btn.classList.add('incorrect');
-            // Opcional: Mostrar cual era la correcta si se falla
-            /* buttons.forEach(b => {
-                // Aquí necesitaríamos lógica extra para saber cuál era la correcta visualmente
-                // si no tenemos referencia directa. En este diseño simple, 
-                // el usuario sabe que falló (rojo).
-            });
-            */
-        }
-    }
+{ text:"11. La lipogénesis sucede cuando:",
+options:[
+{text:"Hay exceso de carbohidratos",correct:true},
+{text:"Hay ayuno",correct:false},
+{text:"Hay estrés",correct:false},
+{text:"Hay déficit energético",correct:false},
+{text:"Hay hipoglucemia",correct:false}
+]},
 
-    // Iniciar
-    renderQuiz();
+{ text:"12. La insulina:",
+options:[
+{text:"Estimula la acetil-CoA carboxilasa",correct:true},
+{text:"Inhibe la acetil-CoA carboxilasa",correct:false},
+{text:"Activa la lipólisis",correct:false},
+{text:"Inhibe la síntesis de ácidos grasos",correct:false},
+{text:"Activa la β-oxidación",correct:false}
+]},
 
+{ text:"13. La degradación de ácidos grasos sucede en:",
+options:[
+{text:"Mitocondria",correct:true},
+{text:"Citosol",correct:false},
+{text:"Retículo endoplásmico",correct:false},
+{text:"Peroxisoma",correct:false},
+{text:"Ribosoma",correct:false}
+]},
+
+{ text:"14. El músculo cardíaco usa principalmente como combustible:",
+options:[
+{text:"Ácidos grasos",correct:true},
+{text:"Glucosa",correct:false},
+{text:"Lactato",correct:false},
+{text:"Aminoácidos",correct:false},
+{text:"Cuerpos cetónicos",correct:false}
+]},
+
+{ text:"15. La síntesis de cuerpos cetónicos ocurre en:",
+options:[
+{text:"Hígado",correct:true},
+{text:"Riñón",correct:false},
+{text:"Músculo",correct:false},
+{text:"Cerebro",correct:false},
+{text:"Corazón",correct:false}
+]},
+
+{ text:"16. Los cuerpos cetónicos principales son:",
+options:[
+{text:"Acetoacetato y β-hidroxibutirato",correct:true},
+{text:"Acetona y lactato",correct:false},
+{text:"Propionato y acetona",correct:false},
+{text:"Piruvato y acetona",correct:false},
+{text:"NADH y acetona",correct:false}
+]},
+
+{ text:"17. La cetogénesis se activa en:",
+options:[
+{text:"Ayuno prolongado",correct:true},
+{text:"Hiperglucemia",correct:false},
+{text:"Alimentación rica en hidratos",correct:false},
+{text:"Ejercicio leve",correct:false},
+{text:"Reposo",correct:false}
+]},
+
+{ text:"18. El tejido que NO puede usar cuerpos cetónicos es:",
+options:[
+{text:"Hígado",correct:true},
+{text:"Cerebro",correct:false},
+{text:"Músculo",correct:false},
+{text:"Riñón",correct:false},
+{text:"Corazón",correct:false}
+]},
+
+{ text:"19. La lipólisis es activada por:",
+options:[
+{text:"Glucagón y adrenalina",correct:true},
+{text:"Insulina",correct:false},
+{text:"Cortisol",correct:false},
+{text:"Somatostatina",correct:false},
+{text:"ATP",correct:false}
+]},
+
+{ text:"20. La lipasa sensible a hormonas degrada:",
+options:[
+{text:"Triacilglicéridos a ácidos grasos y glicerol",correct:true},
+{text:"Glucógeno a glucosa",correct:false},
+{text:"Fosfolípidos",correct:false},
+{text:"Colesterol",correct:false},
+{text:"Proteínas",correct:false}
+]},
+{ text:"21. La lipólisis tiene lugar en:",
+options:[
+{text:"Tejido adiposo",correct:true},
+{text:"Hígado",correct:false},
+{text:"Músculo",correct:false},
+{text:"Intestino",correct:false},
+{text:"Cerebro",correct:false}
+]},
+
+{ text:"22. El glicerol liberado en lipólisis va a:",
+options:[
+{text:"Hígado",correct:true},
+{text:"Músculo",correct:false},
+{text:"Tejido adiposo",correct:false},
+{text:"Cerebro",correct:false},
+{text:"Riñón",correct:false}
+]},
+
+{ text:"23. El glicerol entra en:",
+options:[
+{text:"Gluconeogénesis",correct:true},
+{text:"Glucogenogénesis",correct:false},
+{text:"Ciclo de Krebs",correct:false},
+{text:"β-oxidación",correct:false},
+{text:"Síntesis proteica",correct:false}
+]},
+
+{ text:"24. La activación de ácidos grasos requiere:",
+options:[
+{text:"ATP",correct:true},
+{text:"ADP",correct:false},
+{text:"NADH",correct:false},
+{text:"GTP",correct:false},
+{text:"FADH2",correct:false}
+]},
+
+{ text:"25. La carnitina es necesaria para:",
+options:[
+{text:"Transportar ácidos grasos a la mitocondria",correct:true},
+{text:"Sintetizar TAG",correct:false},
+{text:"Sintetizar cuerpos cetónicos",correct:false},
+{text:"Oxidar glicerol",correct:false},
+{text:"Formar acetil-CoA",correct:false}
+]},
+
+{ text:"26. La CPT-I está localizada en:",
+options:[
+{text:"Membrana mitocondrial externa",correct:true},
+{text:"Membrana mitocondrial interna",correct:false},
+{text:"Citosol",correct:false},
+{text:"Retículo",correct:false},
+{text:"Núcleo",correct:false}
+]},
+
+{ text:"27. La CPT-II está localizada en:",
+options:[
+{text:"Membrana mitocondrial interna",correct:true},
+{text:"Membrana mitocondrial externa",correct:false},
+{text:"Citosol",correct:false},
+{text:"Retículo",correct:false},
+{text:"Núcleo",correct:false}
+]},
+
+{ text:"28. El primer paso de la β-oxidación es:",
+options:[
+{text:"Deshidrogenación",correct:true},
+{text:"Hidratación",correct:false},
+{text:"Carboxilación",correct:false},
+{text:"Reducción",correct:false},
+{text:"Isomerización",correct:false}
+]},
+
+{ text:"29. Cada vuelta de β-oxidación produce:",
+options:[
+{text:"1 NADH y 1 FADH2",correct:true},
+{text:"2 NADH",correct:false},
+{text:"2 FADH2",correct:false},
+{text:"Solo ATP",correct:false},
+{text:"Propionil-CoA",correct:false}
+]},
+
+{ text:"30. En la β-oxidación se acortan los ácidos grasos:",
+options:[
+{text:"De dos en dos carbonos",correct:true},
+{text:"De uno en uno",correct:false},
+{text:"De tres en tres",correct:false},
+{text:"De cuatro en cuatro",correct:false},
+{text:"Al azar",correct:false}
+]},
+
+{ text:"31. El acetil-CoA producido en β-oxidación entra en:",
+options:[
+{text:"Ciclo de Krebs",correct:true},
+{text:"Glucogénesis",correct:false},
+{text:"Cadena respiratoria directamente",correct:false},
+{text:"Glucólisis",correct:false},
+{text:"Pentosas fosfato",correct:false}
+]},
+
+{ text:"32. En ayuno el oxalacetato se desvía a:",
+options:[
+{text:"Gluconeogénesis",correct:true},
+{text:"Cetogénesis",correct:false},
+{text:"Lipogénesis",correct:false},
+{text:"Pentosas",correct:false},
+{text:"Síntesis proteica",correct:false}
+]},
+
+{ text:"33. Cuando falta oxalacetato, el acetil-CoA se dirige a:",
+options:[
+{text:"Cetogénesis",correct:true},
+{text:"Glucólisis",correct:false},
+{text:"β-oxidación",correct:false},
+{text:"Síntesis de TAG",correct:false},
+{text:"Ciclo de la urea",correct:false}
+]},
+
+{ text:"34. Los cuerpos cetónicos pueden cruzar:",
+options:[
+{text:"La barrera hematoencefálica",correct:true},
+{text:"La membrana mitocondrial externa",correct:false},
+{text:"El núcleo",correct:false},
+{text:"El ribosoma",correct:false},
+{text:"El REL",correct:false}
+]},
+
+{ text:"35. En diabetes no tratada aumenta:",
+options:[
+{text:"La cetogénesis",correct:true},
+{text:"La lipogénesis",correct:false},
+{text:"La síntesis proteica",correct:false},
+{text:"La glucogénesis",correct:false},
+{text:"La glucolisis",correct:false}
+]},
+
+{ text:"36. La cetoacidosis diabética ocurre por:",
+options:[
+{text:"Exceso de cuerpos cetónicos",correct:true},
+{text:"Déficit de cuerpos cetónicos",correct:false},
+{text:"Exceso de lactato",correct:false},
+{text:"Hipoglucemia",correct:false},
+{text:"Hipercalcemia",correct:false}
+]},
+
+{ text:"37. El ácido graso esencial es:",
+options:[
+{text:"Linoleico",correct:true},
+{text:"Palmítico",correct:false},
+{text:"Esteárico",correct:false},
+{text:"Oleico",correct:false},
+{text:"Araquidónico",correct:false}
+]},
+
+{ text:"38. Las prostaglandinas derivan de:",
+options:[
+{text:"Ácido araquidónico",correct:true},
+{text:"Glicerol",correct:false},
+{text:"Acetil-CoA",correct:false},
+{text:"Alanina",correct:false},
+{text:"Etanolamina",correct:false}
+]},
+
+{ text:"39. Los eicosanoides incluyen:",
+options:[
+{text:"Prostaglandinas",correct:true},
+{text:"Triacilglicéridos",correct:false},
+{text:"Colesterol",correct:false},
+{text:"Esfingomielina",correct:false},
+{text:"Fosfatidilcolina",correct:false}
+]},
+
+{ text:"40. La lipoproteína encargada de transportar TAG desde intestino es:",
+options:[
+{text:"Quilomicrones",correct:true},
+{text:"VLDL",correct:false},
+{text:"LDL",correct:false},
+{text:"HDL",correct:false},
+{text:"Albumina",correct:false}
+]},
+{ text:"41. ¿Cuál de las siguientes lipoproteínas transporta colesterol hacia los tejidos periféricos?",
+options:[
+{text:"LDL",correct:true},
+{text:"HDL",correct:false},
+{text:"VLDL",correct:false},
+{text:"Quilomicrones",correct:false},
+{text:"IDL",correct:false}
+]},
+
+{ text:"42. La HDL participa principalmente en:",
+options:[
+{text:"Transporte reverso de colesterol",correct:true},
+{text:"Síntesis de TAG",correct:false},
+{text:"Digestión de grasas",correct:false},
+{text:"Formación de cuerpos cetónicos",correct:false},
+{text:"Endocitosis de LDL",correct:false}
+]},
+
+{ text:"43. La apoproteína principal de las LDL es:",
+options:[
+{text:"Apo B-100",correct:true},
+{text:"Apo A-I",correct:false},
+{text:"Apo C-II",correct:false},
+{text:"Apo E",correct:false},
+{text:"Apo D",correct:false}
+]},
+
+{ text:"44. La lipoproteín lipasa actúa sobre:",
+options:[
+{text:"Quilomicrones y VLDL",correct:true},
+{text:"Solo LDL",correct:false},
+{text:"Solo HDL",correct:false},
+{text:"Solo quilomicrones",correct:false},
+{text:"Solo IDL",correct:false}
+]},
+
+{ text:"45. La lipoproteín lipasa necesita para activarse:",
+options:[
+{text:"Apo C-II",correct:true},
+{text:"Apo B-48",correct:false},
+{text:"Apo B-100",correct:false},
+{text:"Apo A-I",correct:false},
+{text:"Apo E",correct:false}
+]},
+
+{ text:"46. El colesterol es precursor de:",
+options:[
+{text:"Hormonas esteroideas",correct:true},
+{text:"Catecolaminas",correct:false},
+{text:"Insulina",correct:false},
+{text:"Prostaglandinas",correct:false},
+{text:"Serotonina",correct:false}
+]},
+
+{ text:"47. La enzima reguladora de la síntesis de colesterol es:",
+options:[
+{text:"HMG-CoA reductasa",correct:true},
+{text:"HMG-CoA sintasa",correct:false},
+{text:"Acil-CoA oxidasa",correct:false},
+{text:"Acil transferasa",correct:false},
+{text:"Lipoproteín lipasa",correct:false}
+]},
+
+{ text:"48. La síntesis de colesterol tiene lugar principalmente en:",
+options:[
+{text:"Hígado",correct:true},
+{text:"Riñón",correct:false},
+{text:"Músculo",correct:false},
+{text:"Cerebro",correct:false},
+{text:"Intestino grueso",correct:false}
+]},
+
+{ text:"49. ¿Cuál es el principal mecanismo de eliminación del colesterol?",
+options:[
+{text:"Conversión en sales biliares",correct:true},
+{text:"Conversión en hormonas",correct:false},
+{text:"Conversión en TAG",correct:false},
+{text:"Excreción renal directa",correct:false},
+{text:"Oxidación a CO2",correct:false}
+]},
+
+{ text:"50. Los ácidos biliares se sintetizan en:",
+options:[
+{text:"Hígado",correct:true},
+{text:"Vesícula biliar",correct:false},
+{text:"Páncreas",correct:false},
+{text:"Intestino delgado",correct:false},
+{text:"Colon",correct:false}
+]},
+
+{ text:"51. La función principal de los ácidos biliares es:",
+options:[
+{text:"Emulsionar grasas",correct:true},
+{text:"Formar cuerpos cetónicos",correct:false},
+{text:"Oxidar ácidos grasos",correct:false},
+{text:"Sintetizar colesterol",correct:false},
+{text:"Transportar TAG",correct:false}
+]},
+
+{ text:"52. Los cuerpos cetónicos se forman a partir de:",
+options:[
+{text:"Acetil-CoA",correct:true},
+{text:"Lactato",correct:false},
+{text:"Alanina",correct:false},
+{text:"Glicerol",correct:false},
+{text:"Ácido pirúvico",correct:false}
+]},
+
+{ text:"53. La cetogénesis ocurre en:",
+options:[
+{text:"Hígado",correct:true},
+{text:"Riñón",correct:false},
+{text:"Músculo esquelético",correct:false},
+{text:"Intestino",correct:false},
+{text:"Cerebro",correct:false}
+]},
+
+{ text:"54. El cerebro puede utilizar como combustible:",
+options:[
+{text:"Cuerpos cetónicos",correct:true},
+{text:"Ácidos grasos de cadena larga",correct:false},
+{text:"Triacilglicéridos",correct:false},
+{text:"Colesterol",correct:false},
+{text:"Alanina",correct:false}
+]},
+
+{ text:"55. En ayuno prolongado aumenta:",
+options:[
+{text:"β-oxidación",correct:true},
+{text:"Síntesis de ácidos grasos",correct:false},
+{text:"Síntesis de colesterol",correct:false},
+{text:"Síntesis de TAG",correct:false},
+{text:"Glucólisis hepática",correct:false}
+]},
+
+{ text:"56. La síntesis de ácidos grasos ocurre en:",
+options:[
+{text:"Citosol",correct:true},
+{text:"Matriz mitocondrial",correct:false},
+{text:"Núcleo",correct:false},
+{text:"REL",correct:false},
+{text:"Lisosoma",correct:false}
+]},
+
+{ text:"57. El donador de dos carbonos en la síntesis de ácidos grasos es:",
+options:[
+{text:"Malonil-CoA",correct:true},
+{text:"Acetil-CoA",correct:false},
+{text:"Succinil-CoA",correct:false},
+{text:"Oxalacetato",correct:false},
+{text:"Fumarato",correct:false}
+]},
+
+{ text:"58. El NADPH necesario para la síntesis de ácidos grasos procede en parte de:",
+options:[
+{text:"Vía de las pentosas fosfato",correct:true},
+{text:"Ciclo de Krebs",correct:false},
+{text:"β-oxidación",correct:false},
+{text:"Gluconeogénesis",correct:false},
+{text:"Glucogenólisis",correct:false}
+]},
+
+{ text:"59. La síntesis de ácidos grasos es estimulada por:",
+options:[
+{text:"Insulina",correct:true},
+{text:"Glucagón",correct:false},
+{text:"Adrenalina",correct:false},
+{text:"Cortisol",correct:false},
+{text:"GH",correct:false}
+]},
+
+{ text:"60. La lipólisis en tejido adiposo es estimulada por:",
+options:[
+{text:"Adrenalina",correct:true},
+{text:"Insulina",correct:false},
+{text:"GLP-1",correct:false},
+{text:"Somatostatina",correct:false},
+{text:"Prolactina",correct:false}
+]},
+{ text:"61. La síntesis de triglicéridos en el tejido adiposo requiere:",
+options:[
+{text:"Glicerol-3-fosfato",correct:true},
+{text:"Glicerol libre",correct:false},
+{text:"Propionil-CoA",correct:false},
+{text:"Ácido láctico",correct:false},
+{text:"Cuerpos cetónicos",correct:false}
+]},
+
+{ text:"62. En el tejido adiposo, el glicerol-3-fosfato procede de:",
+options:[
+{text:"Glucólisis",correct:true},
+{text:"β-oxidación",correct:false},
+{text:"Ciclo de Krebs",correct:false},
+{text:"Transaminación",correct:false},
+{text:"Cetogénesis",correct:false}
+]},
+
+{ text:"63. La lipólisis está inhibida por:",
+options:[
+{text:"Insulina",correct:true},
+{text:"Adrenalina",correct:false},
+{text:"Glucagón",correct:false},
+{text:"Hormona del crecimiento",correct:false},
+{text:"Hormonas tiroideas",correct:false}
+]},
+
+{ text:"64. La carnitina es necesaria para transportar:",
+options:[
+{text:"Acil-CoA de cadena larga",correct:true},
+{text:"Glicerol",correct:false},
+{text:"Acetil-CoA citosólico",correct:false},
+{text:"Aminoácidos",correct:false},
+{text:"Glucosa",correct:false}
+]},
+
+{ text:"65. La β-oxidación ocurre en:",
+options:[
+{text:"Matriz mitocondrial",correct:true},
+{text:"Citosol",correct:false},
+{text:"Núcleo",correct:false},
+{text:"Lisosomas",correct:false},
+{text:"Aparato de Golgi",correct:false}
+]},
+
+{ text:"66. La síntesis de ácidos grasos ocurre en:",
+options:[
+{text:"Citosol",correct:true},
+{text:"Matriz mitocondrial",correct:false},
+{text:"Membrana mitocondrial interna",correct:false},
+{text:"Núcleo",correct:false},
+{text:"REL",correct:false}
+]},
+
+{ text:"67. El principal regulador de la β-oxidación es:",
+options:[
+{text:"Malonil-CoA",correct:true},
+{text:"Insulina",correct:false},
+{text:"ATP",correct:false},
+{text:"NADPH",correct:false},
+{text:"Piruvato",correct:false}
+]},
+
+{ text:"68. Los cuerpos cetónicos NO se utilizan en:",
+options:[
+{text:"Hígado",correct:true},
+{text:"Cerebro",correct:false},
+{text:"Riñón",correct:false},
+{text:"Músculo esquelético",correct:false},
+{text:"Corazón",correct:false}
+]},
+
+{ text:"69. El aumento de acetil-CoA durante el ayuno favorece:",
+options:[
+{text:"Cetogénesis",correct:true},
+{text:"Lipogénesis",correct:false},
+{text:"Síntesis de colesterol",correct:false},
+{text:"Glucólisis",correct:false},
+{text:"Glucogenogénesis",correct:false}
+]},
+
+{ text:"70. ¿Qué lipoproteína transporta TAG endógenos?",
+options:[
+{text:"VLDL",correct:true},
+{text:"Quilomicrón",correct:false},
+{text:"LDL",correct:false},
+{text:"HDL",correct:false},
+{text:"IDL",correct:false}
+]},
+
+{ text:"71. La apoproteína principal del quilomicrón es:",
+options:[
+{text:"Apo B-48",correct:true},
+{text:"Apo B-100",correct:false},
+{text:"Apo A-I",correct:false},
+{text:"Apo C-II",correct:false},
+{text:"Apo E",correct:false}
+]},
+
+{ text:"72. La HDL se caracteriza por:",
+options:[
+{text:"Alta concentración proteica",correct:true},
+{text:"Alto contenido en TAG",correct:false},
+{text:"Origen intestinal exclusivo",correct:false},
+{text:"Función digestiva",correct:false},
+{text:"Síntesis de glucosa",correct:false}
+]},
+
+{ text:"73. La enzima clave en lipólisis del adipocito es:",
+options:[
+{text:"Lipasa sensible a hormonas",correct:true},
+{text:"Lipoproteín lipasa",correct:false},
+{text:"HMG-CoA reductasa",correct:false},
+{text:"Aciltransferasa",correct:false},
+{text:"Fosfatasa ácida",correct:false}
+]},
+
+{ text:"74. En la β-oxidación de AG insaturados se requiere:",
+options:[
+{text:"Isomerasa",correct:true},
+{text:"Carboxilasa",correct:false},
+{text:"Transaminasa",correct:false},
+{text:"Desaminasa",correct:false},
+{text:"Tiolasa exclusiva",correct:false}
+]},
+
+{ text:"75. El ácido araquidónico es precursor de:",
+options:[
+{text:"Eicosanoides",correct:true},
+{text:"Catecolaminas",correct:false},
+{text:"Hormonas esteroideas",correct:false},
+{text:"Insulina",correct:false},
+{text:"Vitamina D",correct:false}
+]},
+
+{ text:"76. La enzima inhibida por estatinas es:",
+options:[
+{text:"HMG-CoA reductasa",correct:true},
+{text:"HMG-CoA sintasa",correct:false},
+{text:"Lipoproteín lipasa",correct:false},
+{text:"Acil-CoA deshidrogenasa",correct:false},
+{text:"Tiolasa",correct:false}
+]},
+
+{ text:"77. La mayor parte del colesterol corporal se encuentra en:",
+options:[
+{text:"Membranas celulares",correct:true},
+{text:"Plasma",correct:false},
+{text:"Sales biliares",correct:false},
+{text:"Hormonas",correct:false},
+{text:"HDL",correct:false}
+]},
+
+{ text:"78. El colesterol es precursor de:",
+options:[
+{text:"Ácidos biliares",correct:true},
+{text:"Glucosa",correct:false},
+{text:"NADH",correct:false},
+{text:"TAG",correct:false},
+{text:"Ácido láctico",correct:false}
+]},
+
+{ text:"79. La síntesis de colesterol se realiza en:",
+options:[
+{text:"Citosol y RE",correct:true},
+{text:"Mitocondria",correct:false},
+{text:"Núcleo",correct:false},
+{text:"Lisosomas",correct:false},
+{text:"Aparato de Golgi",correct:false}
+]},
+
+{ text:"80. El transporte reverso de colesterol lo realiza:",
+options:[
+{text:"HDL",correct:true},
+{text:"LDL",correct:false},
+{text:"VLDL",correct:false},
+{text:"IDL",correct:false},
+{text:"Quilomicrones",correct:false}
+]},
+
+{ text:"81. La cetogénesis aumenta en:",
+options:[
+{text:"Ayuno prolongado",correct:true},
+{text:"Ingesta de hidratos de carbono",correct:false},
+{text:"Hiperinsulinemia",correct:false},
+{text:"Situación postprandial",correct:false},
+{text:"Reposo absoluto",correct:false}
+]},
+
+{ text:"82. El acetoacetato puede convertirse en:",
+options:[
+{text:"β-hidroxibutirato",correct:true},
+{text:"Piruvato",correct:false},
+{text:"Lactato",correct:false},
+{text:"Ácido úrico",correct:false},
+{text:"Alanina",correct:false}
+]},
+
+{ text:"83. En la síntesis de ácidos grasos participa:",
+options:[
+{text:"Ácido graso sintasa",correct:true},
+{text:"Acil-CoA oxidasa",correct:false},
+{text:"HMG-CoA sintasa",correct:false},
+{text:"Lipoproteín lipasa",correct:false},
+{text:"β-cetoacil reductasa mitocondrial",correct:false}
+]},
+
+{ text:"84. El paso limitante de la síntesis de ácidos grasos lo cataliza:",
+options:[
+{text:"Acetil-CoA carboxilasa",correct:true},
+{text:"Citrato sintasa",correct:false},
+{text:"Acil-CoA deshidrogenasa",correct:false},
+{text:"HMG-CoA reductasa",correct:false},
+{text:"Tiolasa",correct:false}
+]},
+
+{ text:"85. Los ácidos grasos poliinsaturados son importantes para:",
+options:[
+{text:"Fluidez de membrana",correct:true},
+{text:"Formación de glucosa",correct:false},
+{text:"Formación de urea",correct:false},
+{text:"Oxidación de aminoácidos",correct:false},
+{text:"Síntesis de creatina",correct:false}
+]},
+
+{ text:"86. Los quilomicrones se forman en:",
+options:[
+{text:"Enterocito",correct:true},
+{text:"Hepatocito",correct:false},
+{text:"Músculo",correct:false},
+{text:"Pancreas",correct:false},
+{text:"Bazo",correct:false}
+]},
+
+{ text:"87. La carencia de LPL produce:",
+options:[
+{text:"Hipertrigliceridemia",correct:true},
+{text:"Hipoglucemia",correct:false},
+{text:"Hipotiroidismo",correct:false},
+{text:"Hipocalcemia",correct:false},
+{text:"Hipercolesterolemia aislada",correct:false}
+]},
+
+{ text:"88. La β-oxidación genera:",
+options:[
+{text:"NADH y FADH2",correct:true},
+{text:"NADPH",correct:false},
+{text:"ATP directamente",correct:false},
+{text:"AMP",correct:false},
+{text:"UDP-glucosa",correct:false}
+]},
+
+{ text:"89. El exceso de cuerpos cetónicos causa:",
+options:[
+{text:"Acidosis metabólica",correct:true},
+{text:"Alcalosis respiratoria",correct:false},
+{text:"Hipocalcemia",correct:false},
+{text:"Hipopotasemia",correct:false},
+{text:"Hipernatremia",correct:false}
+]},
+
+{ text:"90. La lipogénesis está estimulada en:",
+options:[
+{text:"Estado postprandial",correct:true},
+{text:"Ayuno",correct:false},
+{text:"Ejercicio intenso",correct:false},
+{text:"Estrés agudo",correct:false},
+{text:"Hipoglucemia",correct:false}
+]},
+
+{ text:"91. En la β-oxidación, el producto final de cada vuelta es:",
+options:[
+{text:"Acetil-CoA",correct:true},
+{text:"Piruvato",correct:false},
+{text:"Glicerol",correct:false},
+{text:"Alanina",correct:false},
+{text:"Malato",correct:false}
+]},
+
+{ text:"92. El tejido que más utiliza cuerpos cetónicos en ayuno es:",
+options:[
+{text:"Músculo esquelético",correct:true},
+{text:"Hígado",correct:false},
+{text:"Intestino",correct:false},
+{text:"Bazo",correct:false},
+{text:"Eritrocitos",correct:false}
+]},
+
+{ text:"93. La síntesis de cuerpos cetónicos requiere:",
+options:[
+{text:"Mitocondria hepática",correct:true},
+{text:"Peroxisomas",correct:false},
+{text:"Lisosomas",correct:false},
+{text:"Citosol hepático",correct:false},
+{text:"Aparato de Golgi",correct:false}
+]},
+
+{ text:"94. La insulina inhibe:",
+options:[
+{text:"Lipólisis",correct:true},
+{text:"Síntesis de TAG",correct:false},
+{text:"Entrada de glucosa",correct:false},
+{text:"Síntesis de glucógeno",correct:false},
+{text:"Glucólisis",correct:false}
+]},
+
+{ text:"95. La LDL entrega colesterol a:",
+options:[
+{text:"Tejidos periféricos",correct:true},
+{text:"Enterocitos",correct:false},
+{text:"Músculos exclusivamente",correct:false},
+{text:"Hígado exclusivamente",correct:false},
+{text:"Páncreas",correct:false}
+]},
+
+{ text:"96. La HDL recoge colesterol desde:",
+options:[
+{text:"Tejidos periféricos",correct:true},
+{text:"Hígado",correct:false},
+{text:"Enterocitos",correct:false},
+{text:"Pancreas",correct:false},
+{text:"Médula ósea",correct:false}
+]},
+
+{ text:"97. El colesterol libre en exceso intracelular inhibe:",
+options:[
+{text:"Síntesis de receptores LDL",correct:true},
+{text:"Síntesis de sales biliares",correct:false},
+{text:"Síntesis de insulina",correct:false},
+{text:"Síntesis de glucógeno",correct:false},
+{text:"Entrada de glucosa",correct:false}
+]},
+
+{ text:"98. El exceso de colesterol intracelular activa:",
+options:[
+{text:"ACAT",correct:true},
+{text:"Lipoproteín lipasa",correct:false},
+{text:"Glucógeno sintasa",correct:false},
+{text:"Hexoquinasa",correct:false},
+{text:"ATPasa",correct:false}
+]},
+
+{ text:"99. La carnitina palmitoiltransferasa I es inhibida por:",
+options:[
+{text:"Malonil-CoA",correct:true},
+{text:"Acetil-CoA",correct:false},
+{text:"Citocromo C",correct:false},
+{text:"Lactato",correct:false},
+{text:"ADP",correct:false}
+]},
+
+{ text:"100. La β-oxidación está aumentada cuando:",
+options:[
+{text:"Insulina baja",correct:true},
+{text:"Glucosa alta",correct:false},
+{text:"Estado postprandial",correct:false},
+{text:"Malonil-CoA alto",correct:false},
+{text:"ATP alto",correct:false}
+]},
+
+{ text:"101. La unión de LDL a su receptor requiere:",
+options:[
+{text:"Apo B-100",correct:true},
+{text:"Apo C-II",correct:false},
+{text:"Apo A-I",correct:false},
+{text:"Apo B-48",correct:false},
+{text:"Apo D",correct:false}
+]},
+
+{ text:"102. La acumulación de LDL oxidadas favorece:",
+options:[
+{text:"Ateroesclerosis",correct:true},
+{text:"Hipocalcemia",correct:false},
+{text:"Hipoglucemia",correct:false},
+{text:"Hipotiroidismo",correct:false},
+{text:"Anemia",correct:false}
+]},
+
+{ text:"103. La energía neta mayoritariamente procede de:",
+options:[
+{text:"Oxidación de ácidos grasos",correct:true},
+{text:"Oxidación de etanol",correct:false},
+{text:"Oxidación de cuerpos cetónicos",correct:false},
+{text:"Oxidación de glucógeno",correct:false},
+{text:"Oxidación de aminoácidos",correct:false}
+]},
+
+{ text:"104. En ayuno prolongado, el cerebro usa preferentemente:",
+options:[
+{text:"Cuerpos cetónicos",correct:true},
+{text:"Ácidos grasos",correct:false},
+{text:"Proteínas",correct:false},
+{text:"Glucógeno muscular",correct:false},
+{text:"Triglicéridos",correct:false}
+]},
+
+{ text:"105. La lipoproteína más densa es:",
+options:[
+{text:"HDL",correct:true},
+{text:"LDL",correct:false},
+{text:"VLDL",correct:false},
+{text:"IDL",correct:false},
+{text:"Quilomicrón",correct:false}
+]},
+
+{ text:"106. El tejido adiposo blanco almacena energía en forma de:",
+options:[
+{text:"Triacilglicéridos",correct:true},
+{text:"Glucógeno",correct:false},
+{text:"Proteínas",correct:false},
+{text:"Colesterol",correct:false},
+{text:"Fosfolípidos",correct:false}
+]},
+
+{ text:"107. Una función de los fosfolípidos es:",
+options:[
+{text:"Formar membranas",correct:true},
+{text:"Transportar oxígeno",correct:false},
+{text:"Activar enzimas digestivas",correct:false},
+{text:"Formar hormonas esteroideas",correct:false},
+{text:"Neutralizar ácido",correct:false}
+]},
+
+{ text:"108. Los esfingolípidos están relacionados con:",
+options:[
+{text:"Membranas nerviosas",correct:true},
+{text:"Digestión de proteínas",correct:false},
+{text:"Síntesis de glucógeno",correct:false},
+{text:"Síntesis de colágeno",correct:false},
+{text:"Formación de urea",correct:false}
+]},
+
+{ text:"109. El LDL-receptor es internalizado por:",
+options:[
+{text:"Endocitosis mediada por clatrina",correct:true},
+{text:"Pinocitosis",correct:false},
+{text:"Fagocitosis",correct:false},
+{text:"Difusión simple",correct:false},
+{text:"Canales proteicos",correct:false}
+]},
+
+{ text:"110. Una dieta rica en hidratos induce:",
+options:[
+{text:"Lipogénesis",correct:true},
+{text:"Cetogénesis",correct:false},
+{text:"Proteólisis muscular",correct:false},
+{text:"Glucogenólisis hepática",correct:false},
+{text:"Lipólisis",correct:false}
+]},
+
+{ text:"111. La β-oxidación NO ocurre en:",
+options:[
+{text:"Eritrocitos",correct:true},
+{text:"Músculo",correct:false},
+{text:"Hígado",correct:false},
+{text:"Riñón",correct:false},
+{text:"Corazón",correct:false}
+]},
+
+{ text:"112. La síntesis de cuerpos cetónicos aumenta cuando:",
+options:[
+{text:"Oxalacetato disminuye",correct:true},
+{text:"Oxalacetato aumenta",correct:false},
+{text:"Malonil-CoA aumenta",correct:false},
+{text:"Insulina aumenta",correct:false},
+{text:"Glucosa aumenta",correct:false}
+]},
+
+{ text:"113. Los eicosanoides actúan como:",
+options:[
+{text:"Mediadores locales",correct:true},
+{text:"Hormonas proteicas",correct:false},
+{text:"Hormonas esteroideas",correct:false},
+{text:"Neurotransmisores clásicos",correct:false},
+{text:"Vitaminas",correct:false}
+]},
+
+{ text:"114. Los ácidos grasos esenciales deben obtenerse de:",
+options:[
+{text:"La dieta",correct:true},
+{text:"La β-oxidación",correct:false},
+{text:"La gluconeogénesis",correct:false},
+{text:"La síntesis hepática",correct:false},
+{text:"La degradación proteica",correct:false}
+]},
+
+function shuffle(a){
+for(let i=a.length-1;i>0;i--){
+const j=Math.floor(Math.random()*(i+1));
+[a[i],a[j]]=[a[j],a[i]];
+}
+return a;
+}
+
+function renderQuiz(){
+const q=document.getElementById('quiz');
+q.innerHTML='';
+questions.forEach(question=>{
+const block=document.createElement('div');
+block.className='question-block';
+
+const title=document.createElement('div');
+title.className='question-title';
+title.textContent=question.text;
+
+const optionsDiv=document.createElement('div');
+
+shuffle([...question.options]).forEach(opt=>{
+const btn=document.createElement('button');
+btn.className='option-btn';
+btn.textContent=opt.text;
+btn.dataset.correct=opt.correct;
+btn.onclick=()=>checkAnswer(btn,optionsDiv);
+optionsDiv.appendChild(btn);
+});
+
+block.appendChild(title);
+block.appendChild(optionsDiv);
+q.appendChild(block);
+});
+}
+
+function checkAnswer(btn,container){
+const all=container.querySelectorAll('.option-btn');
+all.forEach(b=>{
+b.classList.add('disabled');
+if(b.dataset.correct==="true") b.classList.add('correct');
+});
+if(btn.dataset.correct!=="true") btn.classList.add('incorrect');
+}
+
+renderQuiz();
 </script>
 
 </body>
