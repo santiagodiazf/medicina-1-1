@@ -28,7 +28,7 @@
         }
         .question-title {
             font-weight: 600;
-            font-size: 1.1em;
+            font-size: 1.05em;
             margin-bottom: 15px;
             color: #2c3e50;
         }
@@ -36,6 +36,9 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
         }
         .option-btn {
             padding: 12px;
@@ -45,13 +48,11 @@
             border-radius: 5px;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 1em;
+            font-size: 0.95em;
         }
         .option-btn:hover:not(.disabled) {
             background-color: #e2e6ea;
         }
-        
-        /* Estilos de corrección */
         .option-btn.correct {
             background-color: #d4edda;
             border-color: #c3e6cb;
@@ -65,8 +66,8 @@
         .option-btn.disabled {
             cursor: default;
             opacity: 0.9;
+            pointer-events: none;
         }
-
         .reset-btn {
             display: block;
             width: 100%;
@@ -75,145 +76,155 @@
             color: white;
             border: none;
             border-radius: 5px;
-            font-size: 1.2em;
+            font-size: 1.1em;
             cursor: pointer;
             margin-top: 30px;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
         }
         .reset-btn:hover {
             background-color: #2980b9;
+        }
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            font-size: 0.9em;
+            display: none;
         }
     </style>
 </head>
 <body>
 
     <h1>Bloque II Bioquímica - Álvaro Condón</h1>
-    <div id="quiz-container">
-        </div>
-    <button class="reset-btn" onclick="location.reload()">Reiniciar Test (Barajar Opciones)</button>
+    <div id="quiz-container"></div>
+    <button class="reset-btn" onclick="renderQuiz()">Reiniciar Test (Barajar Opciones)</button>
 
 <script>
-    // Base de datos de preguntas extraídas y corregidas
     const questions = [
         {
-            text: "La normalidad de una solución 0,5M de H2SO4 es:",
+            text: "La normalidad de una solución 0,5 M de H2SO4 es:",
+            explanation: "La normalidad es la molaridad multiplicada por el número de protones intercambiables. El H2SO4 aporta 2 H+, por lo que 0,5 M equivale a 1 N.",
             options: [
                 { text: "1 Normal", correct: true },
-                { text: "0´5 Normal", correct: false },
+                { text: "0,5 Normal", correct: false },
                 { text: "5 Normal", correct: false }
             ]
         },
         {
             text: "Respecto al agua es cierto que:",
+            explanation: "El agua es mayoritaria en los seres vivos, es un dipolo, forma puentes de hidrógeno y puede comportarse como ácido o base.",
             options: [
-                { text: "Todas son correctas", correct: true },
-                { text: "Constituye el 70%- 90% de la composición de los seres vivos", correct: false },
+                { text: "Todas las afirmaciones son correctas", correct: true },
+                { text: "Constituye entre el 70 % y el 90 % de la composición de los seres vivos", correct: false },
                 { text: "Presenta estructura de dipolo eléctrico", correct: false },
                 { text: "Forma puentes de hidrógeno", correct: false },
-                { text: "Es muy reactiva y tiene carácter anfótero", correct: false }
+                { text: "Tiene carácter anfótero", correct: false }
             ]
         },
         {
-            text: "Respecto al plasma, el suero fisiológico (ClNa 9,5g/L 0,16M) es isotónico por lo que:",
+            text: "Respecto al plasma, el suero fisiológico (NaCl 9,5 g/L; 0,16 M) es isotónico, por lo que:",
+            explanation: "El NaCl se disocia en 2 iones, por lo que una solución 0,16 M tiene una osmolaridad aproximada de 0,32 Osm, similar a la del plasma.",
             options: [
-                { text: "Presentan igual concentración osmolar 0,32 osmolar (0,16 x 2 iones)", correct: true },
-                { text: "Presentan igual concentración osmolar 0,16 osmolar", correct: false },
+                { text: "Presentan una concentración osmolar aproximada de 0,32 Osm", correct: true },
+                { text: "Presentan una concentración osmolar de 0,16 Osm", correct: false },
                 { text: "Lisaría a los hematíes contenidos en suspensión", correct: false },
-                { text: "Los iones Cl- y Na+ atravesarían la membrana del hematíe", correct: false }
+                { text: "Los iones Cl− y Na+ atraviesan libremente la membrana del hematíe", correct: false }
             ]
         },
         {
             text: "Se dice que un ácido es de naturaleza fuerte cuando:",
+            explanation: "Un ácido fuerte se disocia casi completamente en agua, lo que se traduce en una constante de disociación (Ka) elevada.",
             options: [
-                { text: "El valor de su Ka sea alto", correct: true },
-                { text: "El valor de su Ka sea bajo", correct: false }
+                { text: "El valor de su Ka es alto", correct: true },
+                { text: "El valor de su Ka es bajo", correct: false }
             ]
         },
         {
-            text: "Respecto al funcionamiento de un sistema amortiguador, si la concentración de H+ del medio disminuye, el sistema compensará esta variación:",
+            text: "En un sistema amortiguador, si la concentración de H+ del medio disminuye, el sistema compensa:",
+            explanation: "Si baja [H+], el equilibrio se desplaza liberando más protones: el ácido débil se disocia y aumenta su forma iónica.",
             options: [
-                { text: "Aumentando la forma iónica del ácido (Disociándose para liberar H+)", correct: true },
+                { text: "Aumentando la forma iónica del ácido", correct: true },
                 { text: "Aumentando la forma iónica de la base", correct: false },
                 { text: "Aumentando la forma molecular del ácido", correct: false }
             ]
         },
         {
-            text: "Una disolución que contiene 2 mEq-g/ml de ClNa, tiene en litro:",
+            text: "Una disolución que contiene 2 Eq-g/L de NaCl tiene en un litro:",
+            explanation: "2 Eq-g/L de NaCl equivalen a 2 moles, 2 equivalentes-gramo, 2000 mmol y una normalidad de 2 N.",
             options: [
-                { text: "Todas son correctas", correct: true },
-                { text: "2 mol de ClNa", correct: false },
-                { text: "2 Eq-g de ClNa", correct: false },
-                { text: "2000 mmol de ClNa", correct: false },
-                { text: "2 N de Cl Na", correct: false }
+                { text: "Todas las afirmaciones son correctas", correct: true },
+                { text: "2 moles de NaCl", correct: false },
+                { text: "2 Eq-g de NaCl", correct: false },
+                { text: "2000 mmol de NaCl", correct: false },
+                { text: "2 N de NaCl", correct: false }
             ]
         },
         {
-            text: "¿Qué cantidad de agua hay que añadir para que una solución de acetato sódico y glucosa presente una osmolalidad de 0,45 y contenga 0,2 moles de sal y 0,5 moles de glucosa?",
+            text: "¿Qué cantidad de agua hay que añadir para que una solución de 0,2 moles de acetato sódico y 0,5 moles de glucosa tenga osmolalidad 0,45 Osm?",
+            explanation: "El acetato aporta 2 partículas por mol: 0,2×2 = 0,4 osmoles. La glucosa aporta 0,5 osmoles. Total: 0,9 osmoles. 0,9 / 0,45 ≈ 2 kg de agua.",
             options: [
                 { text: "2 kg de agua", correct: true },
-                { text: "1kg de agua", correct: false },
-                { text: "1L de agua", correct: false },
+                { text: "1 kg de agua", correct: false },
+                { text: "1 L de agua", correct: false },
                 { text: "2 L de agua", correct: false },
                 { text: "2 moles de agua", correct: false }
-                /* Rationale: Osmolalidad = (moles soluto x i) / kg agua. 
-                   Sal (i=2) -> 0.2*2 = 0.4 osmoles. Glucosa (i=1) -> 0.5 osmoles. Total = 0.9 osmoles.
-                   0.45 = 0.9 / kg agua -> kg agua = 2 */
             ]
         },
         {
-            text: "Una membrana dialítica separa dos compartimentos (Gibbs-Donnan)... Indicar la distribución de solutos en el equilibrio (Pregunta teórica sobre el efecto Donnan):",
+            text: "En el equilibrio de Gibbs-Donnan con una membrana permeable solo a iones difusibles:",
+            explanation: "En el equilibrio de Donnan, el producto de las concentraciones de cationes y aniones difusibles es igual a ambos lados de la membrana.",
             options: [
-                { text: "El producto de los iones difusibles es igual a ambos lados ([K+]A x [Cl-]A = [K+]B x [Cl-]B)", correct: true },
+                { text: "El producto de las concentraciones de los iones difusibles es igual a ambos lados", correct: true },
                 { text: "La concentración de K+ es igual en ambos lados", correct: false },
-                { text: "No hay movimiento de iones", correct: false }
-                /* Nota: En el original las opciones eran letras vacías. Se asume la respuesta teórica correcta */
+                { text: "No hay movimiento de iones en ningún momento", correct: false }
             ]
         },
         {
-            text: "Una solución de un ácido que esté ionizado prácticamente al 100% tendrá:",
+            text: "Una solución de un ácido ionizado prácticamente al 100 % tendrá:",
+            explanation: "Si está totalmente disociado, el grado de disociación α es 1; la acidez real coincide con la total y no hay reserva de ácido sin ionizar.",
             options: [
                 { text: "Un grado de disociación α igual a 1", correct: true },
-                { text: "Un pH menor de 7 (No necesariamente, depende de la concentración)", correct: false },
-                { text: "Una “acidez potencial” 0 (Cierto, si está 100% ionizado no hay reserva)", correct: false },
-                { text: "Una “acidez real” igual a la “acidez total” (Cierto)", correct: false },
-                { text: "Todas son ciertas (En contexto de test bioquímico general suele ser la opción)", correct: true } 
-                /* Se marca 'Todas' como correcta por convención en estos tests, aunque a muy baja concentración el pH podría variar */
+                { text: "Siempre un pH menor de 7", correct: false },
+                { text: "Acidez potencial prácticamente nula", correct: false },
+                { text: "Acidez real igual a la acidez total", correct: false },
+                { text: "Todas las afirmaciones son ciertas", correct: false }
             ]
         },
         {
             text: "Una solución amortiguadora está formada por:",
+            explanation: "Un tampón clásico se compone de un ácido débil y su base conjugada (normalmente la sal con una base fuerte) o una base débil y su ácido conjugado.",
             options: [
-                { text: "A) un ácido débil y su sal conjugada con una base débil (o fuerte)", correct: false },
-                { text: "B) una base débil y su sal conjugada con un ácido fuerte", correct: false },
-                { text: "E) A y B son aceptables como definiciones generales de pares conjugados (aunque la definición estricta suele ser Ácido débil + Base conjugada)", correct: true },
-                { text: "D) un ácido débil y su sal conjugada con una base fuerte", correct: false }
+                { text: "Un ácido débil y su sal con una base fuerte", correct: true },
+                { text: "Una base débil y su sal con un ácido fuerte", correct: false },
+                { text: "Un ácido fuerte y su sal con una base fuerte", correct: false },
+                { text: "Solo un ácido fuerte en agua", correct: false }
             ]
         },
         {
-            text: "Una solución amortiguadora tendrá una buena eficacia para la regulación del pH si:",
+            text: "Una solución amortiguadora tiene máxima eficacia para regular el pH cuando:",
+            explanation: "Según Henderson-Hasselbalch, el tampón es más eficaz cuando pH ≈ pKa, es decir, cuando [sal] y [ácido] son similares.",
             options: [
-                { text: "C) El valor de ese pKa y el del pH que se quiere mantener son aproximadamente iguales", correct: true },
-                { text: "A) El valor de la relación [SAL]/[ACIDO] que en ella exista es muy pequeño", correct: false },
-                { text: "B) El pKa que le corresponde está próximo a 1", correct: false },
-                { text: "D) El pKa que le corresponde está próximo a 9", correct: false },
-                { text: "E) A y B son ciertas", correct: false }
+                { text: "El pH que se desea mantener es aproximadamente igual al pKa del sistema", correct: true },
+                { text: "La relación [sal]/[ácido] es muy pequeña", correct: false },
+                { text: "El pKa del sistema es cercano a 1", correct: false },
+                { text: "El pKa del sistema es cercano a 9", correct: false },
+                { text: "El ácido del sistema es muy fuerte", correct: false }
             ]
         },
         {
-            text: "En el sistema amortiguador de Hemoglobina:",
+            text: "En el sistema amortiguador de la hemoglobina:",
+            explanation: "La desoxihemoglobina se comporta como una base más fuerte que la oxihemoglobina y capta protones, tamponando descensos del pH en los tejidos.",
             options: [
-                { text: "B) La desoxihemoglobina contrarresta fundamentalmente subidas de pH (Falso, es menos ácida, capta H+, tampona bajadas)", correct: false },
-                { text: "A) La desoxihemoglobina contrarresta fundamentalmente bajadas del pH (Al comportarse como base más fuerte que OxiHb)", correct: true },
-                { text: "C) La oxihemoglobina tendrá tendencia a estar ionizada (Es ácido más fuerte)", correct: false },
-                { text: "D) A y C son ciertas", correct: false },
-                { text: "E) B y C son ciertas (A veces hay confusión en los tests, pero la fisiología dicta A)", correct: false } 
-                /* Corrección: DesoxiHb (pKa alto) capta protones (tampona acidez). OxiHb (pKa bajo) libera protones. 
-                   Si la pregunta busca la correcta: A es correcta. Si OxiHb (pKa 6.6) a pH 7.4 está ionizada, C también es correcta. 
-                   Probablemente sea una combinación. Marcaremos A como principal función fisiológica (Efecto Haldane) */
+                { text: "La desoxihemoglobina contrarresta principalmente las bajadas de pH en los tejidos", correct: true },
+                { text: "La desoxihemoglobina contrarresta fundamentalmente subidas de pH", correct: false },
+                { text: "La oxihemoglobina no puede liberar protones", correct: false },
+                { text: "La hemoglobina no participa en el amortiguamiento del pH", correct: false }
             ]
         },
         {
-            text: "La mayor parte del dióxido de carbono de la sangre se transporta como:",
+            text: "La mayor parte del dióxido de carbono que transporta la sangre circula como:",
+            explanation: "El CO2 se hidrata y se transforma en bicarbonato (HCO3−), que es la forma mayoritaria de transporte en sangre.",
             options: [
                 { text: "Bicarbonato", correct: true },
                 { text: "CO2 disuelto", correct: false },
@@ -223,29 +234,32 @@
             ]
         },
         {
-            text: "Una persona con función pulmonar normal hiperventila durante varios segundos, ¿cuál es el cambio más significativo?",
+            text: "En una persona con función pulmonar normal que hiperventila durante varios segundos, el cambio más significativo es:",
+            explanation: "La hiperventilación elimina más CO2 del esperado, produciendo hipocapnia (disminución de pCO2).",
             options: [
-                { text: "Disminución pCO2 arterial (Hipocapnia)", correct: true },
-                { text: "Aumento pO2 arterial", correct: false },
-                { text: "Aumento del porcentaje de saturación de la hemoglobina arterial (Ya está casi saturada)", correct: false },
+                { text: "Disminución de la pCO2 arterial", correct: true },
+                { text: "Gran aumento de la pO2 arterial", correct: false },
+                { text: "Aumento marcado de la saturación de hemoglobina arterial", correct: false },
                 { text: "Disminución del pH arterial", correct: false },
-                { text: "Aumento del pH arterial (Alcalosis respiratoria - consecuencia secundaria)", correct: false }
+                { text: "Aumento de la pCO2 arterial", correct: false }
             ]
         },
         {
-            text: "Cuál de las siguientes condiciones generaría una alcalosis suponiendo que el organismo no pueda compensarla:",
+            text: "¿Cuál de las siguientes situaciones tiende a producir una alcalosis si el organismo no puede compensarla?",
+            explanation: "Los vómitos repetidos originan pérdida de HCl gástrico, lo que equivale a una pérdida de ácido y favorece una alcalosis metabólica.",
             options: [
-                { text: "Vómitos repetidos con pérdida de ClH", correct: true },
-                { text: "Producción de lactato durante el ejercicio", correct: false },
-                { text: "Producción de cuerpos cetónicos durante la diabetes", correct: false },
+                { text: "Vómitos repetidos con pérdida de HCl", correct: true },
+                { text: "Producción de lactato durante el ejercicio intenso", correct: false },
+                { text: "Producción de cuerpos cetónicos en la diabetes mal controlada", correct: false },
                 { text: "Diarrea con pérdida de bicarbonato", correct: false },
-                { text: "Infección que produce fiebre e hipercatabolismo", correct: false }
+                { text: "Fiebre con hipercatabolismo", correct: false }
             ]
         },
         {
-            text: "Un paciente con enteropatía produce gran cantidad de amoniaco... ¿Cuál es la consecuencia probable?",
+            text: "En un paciente con enteropatía que produce gran cantidad de amoniaco (NH3) en la luz intestinal, ¿qué efecto ácido-base es probable?",
+            explanation: "El amoniaco puede captar protones y convertirse en amonio (NH4+), lo que tiende a consumir H+ y favorecer una alcalinización.",
             options: [
-                { text: "Conversión de amoniaco en amonio (NH4+) (Consumiendo H+, subiendo pH)", correct: true },
+                { text: "Conversión de amoniaco en amonio con consumo de protones y tendencia a alcalosis", correct: true },
                 { text: "Descenso del pH sanguíneo", correct: false },
                 { text: "Descenso en la concentración de bicarbonato en sangre", correct: false },
                 { text: "Respiración de Kussmaul", correct: false },
@@ -254,87 +268,95 @@
         },
         {
             text: "Los puentes de hidrógeno son enlaces:",
+            explanation: "Son interacciones no covalentes relativamente débiles comparadas con los enlaces covalentes, aunque muy importantes en biomoléculas.",
             options: [
                 { text: "Débiles", correct: true },
-                { text: "De tipo covalente", correct: false },
-                { text: "Fuertes", correct: false },
+                { text: "Covalentes", correct: false },
+                { text: "Muy fuertes", correct: false },
                 { text: "De alta energía de hidrólisis", correct: false },
-                { text: "Son ciertas A y B", correct: false }
+                { text: "Idénticos a los enlaces iónicos", correct: false }
             ]
         },
         {
-            text: "Calcule la molaridad y la normalidad de una disolución en la que ha disuelto 80 g de NaOH (pm 40) en agua y el volumen final es de 500 ml:",
+            text: "Calcule la molaridad y la normalidad de una disolución en la que se disuelven 80 g de NaOH (PM 40) en agua hasta un volumen final de 500 ml:",
+            explanation: "80/40 = 2 moles en 0,5 L → 4 M. El NaOH aporta un equivalente por mol, por lo que es también 4 N.",
             options: [
                 { text: "4 M y 4 N", correct: true },
                 { text: "2 M y 2 N", correct: false },
                 { text: "2 M y 4 N", correct: false },
                 { text: "1 M y 2 N", correct: false },
                 { text: "4 M y 2 N", correct: false }
-                /* 80g / 40g/mol = 2 moles. 2 moles / 0.5 L = 4 M. NaOH valencia 1 -> 4 N */
             ]
         },
         {
-            text: "Al disolver un soluto en agua pura la presión de vapor de la disolución:",
+            text: "Al disolver un soluto no volátil en agua pura, la presión de vapor de la disolución:",
+            explanation: "Según la ley de Raoult, la presencia de soluto no volátil disminuye la presión de vapor del disolvente.",
             options: [
-                { text: "Disminuye respecto a la del agua (Ley de Raoult)", correct: true },
-                { text: "Aumenta respecto a la del agua", correct: false },
-                { text: "No se afecta respecto a la del agua", correct: false },
+                { text: "Disminuye respecto a la del agua pura", correct: true },
+                { text: "Aumenta respecto a la del agua pura", correct: false },
+                { text: "No se modifica", correct: false },
                 { text: "Es independiente de la concentración de soluto", correct: false },
-                { text: "Depende de la naturaleza del soluto (Propiedad coligativa, depende de número de partículas)", correct: false }
+                { text: "Solo depende de la naturaleza química del soluto", correct: false }
             ]
         },
         {
-            text: "Cuál es el principal catión implicado en el mantenimiento de la presión osmótica extracelular:",
+            text: "¿Cuál es el principal catión implicado en el mantenimiento de la presión osmótica del compartimento extracelular?",
+            explanation: "El sodio (Na+) es el principal catión del líquido extracelular y el que más contribuye a su osmolaridad.",
             options: [
                 { text: "Na+", correct: true },
                 { text: "K+", correct: false },
-                { text: "Cl-", correct: false },
-                { text: "Ca++", correct: false },
-                { text: "Mg++", correct: false }
+                { text: "Cl−", correct: false },
+                { text: "Ca2+", correct: false },
+                { text: "Mg2+", correct: false }
             ]
         },
         {
-            text: "Cuáles de estos factores explican la presión oncótica ejercida por las proteínas:",
+            text: "¿Qué factores explican la presión oncótica ejercida por las proteínas plasmáticas?",
+            explanation: "Las proteínas son coloides confinados al plasma, con carga y tamaño que impiden su paso libre; esto, junto con el equilibrio de Donnan, genera presión oncótica.",
             options: [
-                { text: "Todas son ciertas", correct: true },
-                { text: "Su presencia en el compartimento intravascular separado del intersticio por una membrana dialítica", correct: false },
-                { text: "Su carácter de coloide hidrófilo cargado negativamente", correct: false },
-                { text: "La existencia de cristaloides con carga opuesta en ambos compartimentos", correct: false },
-                { text: "El mantenimiento del equilibrio de membrana de Donnan", correct: false }
+                { text: "La combinación de su carácter coloidal, su carga y la presencia de una membrana semipermeable", correct: true },
+                { text: "Solo su tamaño molecular", correct: false },
+                { text: "Exclusivamente su carga eléctrica", correct: false },
+                { text: "Solo la presencia de cristaloides en el plasma", correct: false },
+                { text: "No ejercen efecto sobre la presión osmótica", correct: false }
             ]
         },
         {
             text: "La constante del producto iónico del agua indica que:",
+            explanation: "A 25 ºC, Kw = [H+][OH−] ≈ 1×10⁻¹⁴, lo que define el pH neutro de 7.",
             options: [
-                { text: "Se representa por Kw y su valor es de 10*(-14)", correct: true },
-                { text: "La proporción entre iones hidronios e hidroxilos es de tres a dos", correct: false },
-                { text: "La proporción de iones hidronios e hidroxilos es del 50%", correct: false },
-                { text: "Se representa por Kw y su valor es de 10*(-7)", correct: false },
-                { text: "Todas son ciertas", correct: false }
+                { text: "Se representa por Kw y su valor es aproximadamente 1×10⁻14", correct: true },
+                { text: "La proporción [H+] y [OH−] es de 3 a 2", correct: false },
+                { text: "La proporción de iones hidronio e hidroxilo es del 50 % en cualquier solución", correct: false },
+                { text: "Kw tiene siempre el valor 1×10⁻7", correct: false },
+                { text: "Todas las afirmaciones son correctas", correct: false }
             ]
         },
         {
             text: "El pH se define como:",
+            explanation: "Por definición, pH = −log10 [H+]. Es una medida logarítmica de la concentración de protones.",
             options: [
-                { text: "El –log de [H+]", correct: true },
-                { text: "El log de [H+]", correct: false },
-                { text: "El log de la inversa de la [OH-]", correct: false },
+                { text: "El −log de la concentración de H+", correct: true },
+                { text: "El log de la concentración de H+", correct: false },
+                { text: "El log de la concentración de OH−", correct: false },
                 { text: "El log de la inversa de Ka", correct: false },
-                { text: "Son ciertas C y D", correct: false }
+                { text: "La suma de pKa y pOH", correct: false }
             ]
         },
         {
             text: "El pH de una solución amortiguadora depende de:",
+            explanation: "Según la ecuación de Henderson-Hasselbalch, pH = pKa + log [base]/[ácido]; depende de esa relación.",
             options: [
-                { text: "De la relación sal/ácido (Ecuación de Henderson-Hasselbalch)", correct: true },
-                { text: "De la relación ácido/sal", correct: false },
-                { text: "De la relación pKa/pKb", correct: false },
-                { text: "De la naturaleza fuerte del ácido", correct: false },
-                { text: "De la naturaleza fuerte de la base", correct: false }
+                { text: "La relación entre la concentración de sal y ácido", correct: true },
+                { text: "La relación ácido/sal solamente", correct: false },
+                { text: "La fuerza del ácido fuerte presente", correct: false },
+                { text: "La fuerza de la base fuerte presente", correct: false },
+                { text: "Solo de la concentración total de tampón", correct: false }
             ]
         },
         {
-            text: "¿Cuál es el nombre de la enzima que cataliza la conversión de CO3H2 en CO2 y viceversa?",
+            text: "¿Cómo se llama la enzima que cataliza la conversión reversible de CO2 y agua en ácido carbónico?",
+            explanation: "La anhidrasa carbónica acelera de forma extraordinaria la reacción CO2 + H2O ⇌ H2CO3.",
             options: [
                 { text: "Anhidrasa carbónica", correct: true },
                 { text: "CO2 carboxilasa", correct: false },
@@ -344,228 +366,157 @@
             ]
         },
         {
-            text: "Respecto a la hemoglobina (Hb), el efecto Böhr:",
+            text: "Respecto a la hemoglobina, el efecto Bohr:",
+            explanation: "El efecto Bohr describe cómo el aumento de H+ y CO2 reduce la afinidad de la Hb por el O2, facilitando su liberación en tejidos.",
             options: [
-                { text: "Permite liberar oxígeno de la Hb cuando el pH baja (y aumenta CO2)", correct: true },
-                { text: "Permite liberar oxígeno de la Hb cuando el pH sube", correct: false },
-                { text: "Es el sistema amortiguador más eficaz de la Hb", correct: false },
-                { text: "Permite captar protones del medio", correct: false },
-                { text: "B y D son ciertas", correct: false } 
-                /* Nota: El efecto Bohr describe la liberación de O2 por H+/CO2. La captación de H+ es consecuencia. La opción más directa es B. */
+                { text: "Permite liberar oxígeno de la hemoglobina cuando el pH baja y aumenta el CO2", correct: true },
+                { text: "Permite liberar oxígeno cuando el pH sube", correct: false },
+                { text: "No tiene relación con el CO2", correct: false },
+                { text: "Hace que la hemoglobina capte menos protones", correct: false },
+                { text: "Impide la salida de oxígeno en los tejidos", correct: false }
             ]
         },
         {
-            text: "Cuál de estas afirmaciones es falsa respecto a la composición del medio interno:",
+            text: "¿Cuál de las siguientes afirmaciones es falsa respecto a la composición del medio interno?",
+            explanation: "El CO2 plasmático circula principalmente como bicarbonato, no como ácido carbónico.",
             options: [
-                { text: "CO2 plasmático mayoritariamente en forma de CO2H2 (Falso, es HCO3-)", correct: true },
-                { text: "Na+, principal catión extracelular", correct: false },
-                { text: "pH sanguínea en alcalosis >7,45", correct: false },
-                { text: "K+, principal catión intracelular", correct: false },
-                { text: "Cl-, principal anión extracelular", correct: false }
+                { text: "El CO2 plasmático circula mayoritariamente como ácido carbónico", correct: true },
+                { text: "El Na+ es el principal catión extracelular", correct: false },
+                { text: "En alcalosis el pH sanguíneo es mayor de 7,45", correct: false },
+                { text: "El K+ es el principal catión intracelular", correct: false },
+                { text: "El Cl− es el principal anión extracelular", correct: false }
             ]
         },
         {
-            text: "Una solución del ClNa de concentración 9.5 g/L:",
+            text: "Una solución de NaCl de concentración 9,5 g/L:",
+            explanation: "9,5 g/L de NaCl corresponden aproximadamente a 0,16 M, muy cercana a la concentración del suero fisiológico estándar.",
             options: [
-                { text: "Equivale a una concentración 0,16M", correct: false }, /* Es 0.16M aprox */
-                { text: "Es hipotónico con el plasma", correct: false },
-                { text: "Equivale a una concentración osmolar 0,16 (Falso, es 0.32)", correct: false },
-                { text: "Lisaría hematíes contenidos en suspensión", correct: false },
-                { text: "Presenta igual concentración molar (0,32M) que el plasma (Falso, es 0.16M pero 0.32 Osm)", correct: false }
-                /* La opción más correcta técnicamente es que es 0.16M. Isotónica ~ 0.30 Osm. 9.5g/L es ligeramente hipertónica (0.9% es 9g/L). 
-                   Pero en el contexto de estas preguntas, suele buscarse 0.16M como dato químico. */
+                { text: "Equivale aproximadamente a 0,16 M", correct: true },
+                { text: "Es claramente hipotónica respecto al plasma", correct: false },
+                { text: "Equivale a 0,16 Osm", correct: false },
+                { text: "Provoca lisis de los hematíes", correct: false },
+                { text: "Tiene una molaridad de 0,32 M", correct: false }
             ]
         },
         {
             text: "En la deshidratación hipertónica:",
+            explanation: "Se pierde más agua que solutos, la osmolaridad plasmática aumenta y el agua sale de las células, deshidratando el compartimento intracelular.",
             options: [
                 { text: "La osmolaridad plasmática está aumentada", correct: true },
                 { text: "La natremia está disminuida", correct: false },
-                { text: "El hematocrito está disminuido", correct: false },
-                { text: "El volumen intracelular no se afecta", correct: false },
-                { text: "Hay pérdida de líquidos y solutos en la misma proporción", correct: false }
+                { text: "El hematocrito está disminuido por hemodilución", correct: false },
+                { text: "El volumen intracelular no se modifica", correct: false },
+                { text: "Se pierden líquidos y solutos en la misma proporción", correct: false }
             ]
         },
         {
-            text: "Una hemorragia aguda produce un trastorno ácido-base en el que:",
+            text: "Una hemorragia aguda intensa produce un trastorno ácido-base en el que:",
+            explanation: "La hipoxia tisular favorece el metabolismo anaerobio y la producción de lactato, originando acidosis metabólica.",
             options: [
-                { text: "Aumenta el lactato en sangre (Acidosis metabólica por hipoxia)", correct: true },
-                { text: "Disminuye la [H+] en sangre", correct: false },
+                { text: "Aumenta el lactato en sangre produciendo acidosis metabólica", correct: true },
+                { text: "Disminuye la concentración de H+ en sangre", correct: false },
                 { text: "Aumenta el bicarbonato sanguíneo", correct: false },
-                { text: "Se afecta inicialmente el componente respiratorio del tampón bicarbonato", correct: false },
-                { text: "Aumenta la pCO2 en sangre", correct: false }
+                { text: "Solo se afecta el componente respiratorio del tampón bicarbonato", correct: false },
+                { text: "Aumenta de forma primaria la pCO2", correct: false }
             ]
         },
         {
-            text: "Cuál de las siguientes afirmaciones es cierto respecto al sistema amortiguador de Hemoglobina (Hb) a pH fisiológico:",
+            text: "En los tejidos periféricos, respecto al sistema amortiguador de la hemoglobina a pH fisiológico:",
+            explanation: "La desoxihemoglobina tiene mayor capacidad para captar protones y por ello ayuda a tamponar la acidez generada en los tejidos.",
             options: [
-                { text: "En los tejidos periféricos la desoxiHb tampona las bajadas de pH", correct: true },
-                { text: "La Hb sin oxigenar tiene pKa=6,7 (Es mayor, ~7.8)", correct: false },
-                { text: "La Hb oxigenada tiene pKa=8,9 (Es menor, ~6.6)", correct: false },
-                { text: "La desoxiHb está mayoritariamente disociada", correct: false },
-                { text: "La oxiHb está mayoritariamente sin disociar", correct: false }
+                { text: "La desoxihemoglobina tampona fundamentalmente las bajadas de pH", correct: true },
+                { text: "La hemoglobina sin oxígeno es el principal catión extracelular", correct: false },
+                { text: "La oxihemoglobina es la forma más básica de la proteína", correct: false },
+                { text: "La hemoglobina no interviene en el equilibrio ácido-base", correct: false }
             ]
         },
         {
-            text: "En el túbulo contorneado distal:",
+            text: "En el túbulo contorneado proximal del riñón:",
+            explanation: "En el túbulo proximal se reabsorbe la mayor parte del bicarbonato filtrado y se genera amonio a partir de glutamina.",
             options: [
-                { text: "Se excretan H+ y CO3H- a la orina (Depende del estado, pero distal acidifica/excreta H+ y reabsorbe HCO3-)", correct: false },
-                { text: "Se reabsorbe CO3H- del filtrado glomerular", correct: false },
-                { text: "Se sintetiza tampón amonio a partir de glutamina en las células del epitelio (Esto es túbulo proximal)", correct: false },
-                { text: "Se sintetiza tampón fosfato para amortiguar la bajada de [H+] en la luz tubular", correct: false },
-                { text: "Se carece de anhidrasa carbónica", correct: false }
-                /* Esta pregunta es compleja sin contexto. La opción más 'correcta' en bioquímica básica suele ser la excreción de H+ y regeneración de HCO3- */
+                { text: "Se reabsorbe la mayor parte del bicarbonato filtrado", correct: true },
+                { text: "Se secreta la mayor parte del bicarbonato a la orina", correct: false },
+                { text: "No se produce amonio a partir de glutamina", correct: false },
+                { text: "No interviene en el equilibrio ácido-base", correct: false }
             ]
         },
         {
-            text: "La hipoxia produce un trastorno ácido-base:",
+            text: "La hipoxia mantenida tiende a producir un trastorno ácido-base:",
+            explanation: "La falta de oxígeno favorece el metabolismo anaerobio y la acumulación de lactato, causando acidosis metabólica.",
             options: [
-                { text: "Debido al exceso del lactato en sangre (Acidosis metabólica)", correct: true },
-                { text: "De tipo respiratorio", correct: false },
-                { text: "Debido a que disminuye el CO3H- sanguíneo (Consecuencia del tamponamiento)", correct: false },
-                { text: "En el que aumenta la pCO2 en sangre", correct: false },
-                { text: "En el que disminuye la [H+] en sangre", correct: false }
+                { text: "De tipo acidosis metabólica por acumulación de lactato", correct: true },
+                { text: "De tipo alcalosis respiratoria primaria", correct: false },
+                { text: "De tipo acidosis respiratoria primaria", correct: false },
+                { text: "Sin repercusión sobre el pH", correct: false }
             ]
         },
         {
             text: "El suero fisiológico es una solución:",
+            explanation: "Es una solución de NaCl al 0,9 % (aprox. 0,154 M) que resulta prácticamente isotónica con el plasma.",
             options: [
                 { text: "Isotónica con el plasma", correct: true },
-                { text: "0,32 M (Falso, es 0.154M)", correct: false },
-                { text: "9,5 g/L de ClK", correct: false },
-                { text: "0,16 osmolar respecto al medio interno", correct: false },
-                { text: "Que lisaría los hematíes en suspensión", correct: false }
+                { text: "De 0,32 M de NaCl", correct: false },
+                { text: "Que contiene 9,5 g/L de KCl", correct: false },
+                { text: "De 0,16 Osm respecto al medio interno", correct: false },
+                { text: "Que produce lisis de los hematíes", correct: false }
             ]
         },
         {
-            text: "Cuál de estas afirmaciones es falsa respecto a la composición del medio interno (Repetida):",
+            text: "Respecto a la composición iónica del plasma:",
+            explanation: "En plasma, típicamente [Na+] ≈ 140 mEq/L y [K+] ≈ 4 mEq/L.",
             options: [
-                { text: "Cl-, principal anión intracelular (Falso, es fosfato/proteínas. Cl- es extracelular)", correct: true },
-                { text: "Na+, principal catión extracelular", correct: false },
-                { text: "pH sanguíneo en alcalosis > 7,45", correct: false },
-                { text: "CO2 plasmático mayoritariamente en forma de CO3H-", correct: false },
-                { text: "K+, principal catión intracelular", correct: false }
+                { text: "[Na+] ≈ 140 mEq/L y [K+] ≈ 4 mEq/L", correct: true },
+                { text: "[Na+] ≈ 140 mEq/L y [K+] ≈ 140 mEq/L", correct: false },
+                { text: "[Na+] ≈ 4 mEq/L y [K+] ≈ 140 mEq/L", correct: false },
+                { text: "El CO2 circula principalmente como ácido carbónico no disociado", correct: false }
             ]
         },
         {
-            text: "Cual de estas afirmaciones es cierta respecto a la composición iónica y ácido base del plasma:",
+            text: "El trastorno ácido-base resultante de una hemorragia aguda intensa sin compensación es:",
+            explanation: "La hipoperfusión y la hipoxia inducen producción de lactato y acidosis metabólica.",
             options: [
-                { text: "(Na+): 140mE q/L (K+):4 mE q/L", correct: true },
-                { text: "(Na+): 140mE q/L (K+):140 mE q/L", correct: false },
-                { text: "(Na+): 4mE q/L (K+):140 mE q/L", correct: false },
-                { text: "CO2 producido en el organismo mayoritariamente en forma de CO3H3", correct: false }
+                { text: "Una acidosis metabólica", correct: true },
+                { text: "Una acidosis respiratoria primaria", correct: false },
+                { text: "Una alcalosis respiratoria primaria", correct: false },
+                { text: "Una alcalosis metabólica primaria", correct: false },
+                { text: "Ausencia de alteración del equilibrio ácido-base", correct: false }
             ]
         },
         {
-            text: "En la deshidratación hipertónica (Repetida):",
+            text: "En una acidosis respiratoria descompensada:",
+            explanation: "En la acidosis respiratoria aumenta la pCO2; una forma de compensación es administrar bicarbonato para tamponar el exceso de H+.",
             options: [
-                { text: "Existe deshidratación intracelular (Sale agua de la célula)", correct: true },
-                { text: "La osmolaridad plasmática es normal", correct: false },
-                { text: "El hematocrito esta disminuido", correct: false },
-                { text: "La natremia esta disminuida", correct: false },
-                { text: "Hay perdidas de líquidos y solutos en la misma proporción", correct: false }
+                { text: "La perfusión con bicarbonato sódico puede ayudar a corregir el pH", correct: true },
+                { text: "Respirar una atmósfera rica en CO2 es la mejor medida", correct: false },
+                { text: "El equilibrio CO2 + H2O ⇌ H+ + HCO3− no se modifica", correct: false },
+                { text: "La pCO2 está disminuida", correct: false }
             ]
         },
         {
-            text: "El trastorno ácido base resultante de una hemorragia aguda intensa es de tipo:",
+            text: "Una solución de HCl tiene una concentración de 3,26 × 10⁻2 M. ¿Cuál es su pH aproximado?",
+            explanation: "Para un ácido fuerte monoácido: pH = −log(3,26×10⁻2) ≈ 1,49.",
             options: [
-                { text: "Acidosis metabólica (↓pCO2 ↓CO3H ↑(H+)", correct: true },
-                { text: "Acidosis respiratoria (↑pCO2 ↑CO3H ↑(H+)", correct: false },
-                { text: "Alcalosis respiratoria (↓pCO2 ↓CO3H ↓(H+)", correct: false },
-                { text: "Alcalosis metabólica (↑pCO2 ↑CO3H ↓(H+)", correct: false },
-                { text: "No afecta al equilibrio ácido base", correct: false }
+                { text: "1,49", correct: true },
+                { text: "12,5", correct: false },
+                { text: "2,0", correct: false },
+                { text: "3,3", correct: false }
             ]
         },
         {
-            text: "Cuál de estas afirmaciones es cierta respecto a la composición del medio interno:",
+            text: "En conjunto, ¿cuál es la principal fuente de ácido metabólico en el organismo?",
+            explanation: "La oxidación de nutrientes produce CO2, que en agua da lugar a ácido carbónico; es la principal carga ácida diaria.",
             options: [
-                { text: "CO2 producido en organismo circula mayoritariamente como CO3H- en plasma", correct: true },
-                { text: "Cl- es el principal anión intracelular", correct: false },
-                { text: "Electrolitos en plasma [Na+]= 4 mEq/L; [K+]= 140 mEq/L", correct: false },
-                { text: "Concentración sanguínea [H+] = 10*-7", correct: false },
-                { text: "Ácidos orgánicos, principales aniones extracelulares", correct: false }
+                { text: "El CO2 producido en el ciclo de los ácidos tricarboxílicos", correct: true },
+                { text: "La ingesta de ácidos fuertes en la dieta", correct: false },
+                { text: "La filtración de bicarbonato en el riñón", correct: false },
+                { text: "La producción de amonio en el intestino", correct: false }
             ]
         },
         {
-            text: "¿Cuál de estas afirmaciones es falsa respecto a la composición del medio interno? (Repetida):",
+            text: "Mensaje final:",
+            explanation: "Simplemente un mensaje de cierre del test.",
             options: [
-                { text: "CO2 plasmático mayoritariamente en forma de CO3H2 (Falso, es HCO3-)", correct: true },
-                { text: "Na+, principal catión extracelular", correct: false },
-                { text: "pH sanguíneo en alcalosis > 7’45", correct: false },
-                { text: "K+, principal catión intracelular", correct: false },
-                { text: "Cl-, principal anión extracelular", correct: false }
-            ]
-        },
-        {
-            text: "Una solución de ClNa de concentración 9’5 g/L (Repetida):",
-            options: [
-                { text: "Equivale a una concentración de 0’16 M (Aprox)", correct: true },
-                { text: "Es hipotónica con el plasma", correct: false },
-                { text: "Equivale a una concentración osmolar 0’16", correct: false },
-                { text: "Lisaría hematíes contenidos en suspensión", correct: false },
-                { text: "Presenta igual concentración molar (0’32 M) que el plasma", correct: false }
-            ]
-        },
-        {
-            text: "En la deshidratación hipertónica (Repetida 3):",
-            options: [
-                { text: "La osmolaridad plasmática está aumentada", correct: true },
-                { text: "La natremia está disminuida", correct: false },
-                { text: "El hematocrito está disminuido", correct: false },
-                { text: "El volumen intracelular no se afecta", correct: false },
-                { text: "Hay pérdida de líquidos y solutos en la misma proporción", correct: false }
-            ]
-        },
-        {
-            text: "La lactacidemia debida a la hipoxia que se produce en una hemorragia aguda intensa provoca:",
-            options: [
-                { text: "Acidosis metabólica (↓ pCO2, ↓ CO3H-, ↑ [H+])", correct: true },
-                { text: "Alcalosis metabólica (↑ pCO2, ↑ CO3H-, ↓ [H+])", correct: false },
-                { text: "Alcalosis respiratoria (↓ pCO2, ↓ CO3H-, ↓ [H+])", correct: false },
-                { text: "Acidosis respiratoria (↑ pCO2, ↑ CO3H-, ↑ [H+])", correct: false }
-            ]
-        },
-        {
-            text: "En una acidosis respiratoria indica qué afirmación es la correcta:",
-            options: [
-                { text: "El equilibrio CO2 + H2O a (H+) + HCO3- se desplaza a la derecha, y respirar una atmosfera rica en CO2 puede ser una alternativa de intervención adecuada (Falso)", correct: false },
-                { text: "El equilibrio CO2 + H2O a (H+) + HCO3- se desplaza a la derecha, y una perfusión con bicarbonato de sodio (NaHCO3-) puede ser una alternativa de intervención adecuada (Para compensar pH)", correct: true },
-                { text: "El equilibrio CO2 + H2O a (H+) + HCO3- se desplaza a la derecha, y runa perfusión con NH4Cl puede ser una alternativa adecuada (Empeoraría)", correct: false },
-                { text: "El equilibrio CO2 + H2O a (H+) + HCO3- no se ve afectado", correct: false }
-            ]
-        },
-        {
-            text: "Una solución de HCL tiene una concentración de 3.26 x10*-2 M ¿Cuál es el pH de esta solución?",
-            options: [
-                { text: "1,49 (-log(0.0326))", correct: true },
-                { text: "12.5", correct: false },
-                { text: "2", correct: false },
-                { text: "3.3", correct: false }
-            ]
-        },
-        {
-            text: "En el túbulo contorneado proximal:",
-            options: [
-                { text: "Se reabsorbe el CO3H del filtrado glomerular (85-90%)", correct: true },
-                { text: "Se sintetiza tampón amonio a partir de glutamina en las células del epitelio", correct: false },
-                { text: "Se excretan H+ y CO3H a la orina", correct: false },
-                { text: "Se sintetiza tampón fosfato para amortiguar la bajada de H+ en la luz tubular", correct: false },
-                { text: "El tallo en su funcionamiento provocaría alcalosis metabólica", correct: false }
-            ]
-        },
-        {
-            text: "Indica qué afirmación es la correcta:",
-            options: [
-                { text: "La fuente de acido metabólico es el CO2 que procede de la oxidación que se lleva a cabo en el ciclo de los acidos tricarboxílicos de las células", correct: true },
-                { text: "La homeostasia del pH en sangre se mantiene gracias a la absorción de amonio", correct: false },
-                { text: "Un aumento en la concentración de bicarbonato sanguíneo produce un aumento en la frecuencia de ventilación", correct: false },
-                { text: "Si hay una disminución de la pCO2 se aumenta la reabsorción de bicarbonato", correct: false }
-            ]
-        },
-        {
-            text: "Mensaje final del documento:",
-            options: [
-                { text: "Gracias por la ayuda a: Mi persona, Suso, Santi, Cristina, Pepe, Clara, Ale, Martin, Arroyo...", correct: true },
+                { text: "Gracias por la ayuda a todos los que han colaborado en estos apuntes", correct: true },
                 { text: "Fin del test", correct: false }
             ]
         }
@@ -573,10 +524,12 @@
 
     function shuffle(array) {
         let currentIndex = array.length, randomIndex;
-        while (currentIndex != 0) {
+        while (currentIndex !== 0) {
             randomIndex = Math.floor(Math.random() * currentIndex);
             currentIndex--;
-            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            [array[currentIndex], array[randomIndex]] = [
+                array[randomIndex], array[currentIndex]
+            ];
         }
         return array;
     }
@@ -591,47 +544,57 @@
 
             const title = document.createElement('div');
             title.className = 'question-title';
-            title.textContent = `${index + 1}. ${q.text}`;
+            title.textContent = (index + 1) + ". " + q.text;
             card.appendChild(title);
 
             const optionsList = document.createElement('ul');
             optionsList.className = 'options-list';
 
-            // Clonar opciones y barajar
             const shuffledOptions = shuffle([...q.options]);
 
             shuffledOptions.forEach(opt => {
+                const li = document.createElement('li');
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.textContent = opt.text;
-                
-                btn.onclick = () => checkAnswer(btn, opt.correct, optionsList);
+                btn.dataset.correct = opt.correct ? "true" : "false";
 
-                optionsList.appendChild(btn);
+                btn.onclick = () => checkAnswer(btn, optionsList, card, q.explanation);
+
+                li.appendChild(btn);
+                optionsList.appendChild(li);
             });
 
             card.appendChild(optionsList);
+
+            const fb = document.createElement('div');
+            fb.className = 'feedback';
+            fb.textContent = q.explanation;
+            card.appendChild(fb);
+
             container.appendChild(card);
         });
     }
 
-    function checkAnswer(btn, isCorrect, list) {
+    function checkAnswer(clickedBtn, list, card, explanation) {
         const buttons = list.querySelectorAll('.option-btn');
+
         buttons.forEach(b => {
             b.classList.add('disabled');
-            b.onclick = null;
+            if (b.dataset.correct === "true") {
+                b.classList.add('correct');
+            }
         });
 
-        if (isCorrect) {
-            btn.classList.add('correct');
-        } else {
-            btn.classList.add('incorrect');
+        if (clickedBtn.dataset.correct !== "true") {
+            clickedBtn.classList.add('incorrect');
         }
+
+        const fb = card.querySelector('.feedback');
+        fb.style.display = 'block';
     }
 
-    // Iniciar
     renderQuiz();
-
 </script>
 
 </body>
