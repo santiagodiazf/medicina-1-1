@@ -89,6 +89,14 @@
         #reset-btn:hover {
             background-color: #2980b9;
         }
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            font-size: 0.9em;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -1192,6 +1200,11 @@
             const optionsDiv = document.createElement('div');
             optionsDiv.className = 'options-grid';
 
+            // feedback genérico
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'feedback';
+            feedbackDiv.textContent = 'Explicación: la opción marcada en verde es la correcta. Revisa este concepto en tus apuntes de Bioquímica.';
+
             // Clonar opciones para no modificar el orden original en los datos
             let currentOptions = [...q.options];
             shuffleArray(currentOptions);
@@ -1201,25 +1214,26 @@
                 btn.className = 'option-btn';
                 btn.textContent = opt.text;
                 btn.dataset.correct = opt.correct;
-                
-                btn.onclick = () => checkAnswer(btn, optionsDiv);
-                
+
+                btn.onclick = () => checkAnswer(btn, optionsDiv, feedbackDiv);
+
                 optionsDiv.appendChild(btn);
             });
 
             card.appendChild(optionsDiv);
+            card.appendChild(feedbackDiv);
             container.appendChild(card);
         });
     }
 
-    function checkAnswer(selectedBtn, parentDiv) {
+    function checkAnswer(selectedBtn, parentDiv, feedbackDiv) {
         const buttons = parentDiv.querySelectorAll('.option-btn');
-        const isCorrect = selectedBtn.dataset.correct === 'true';
+        const isCorrect = selectedBtn.dataset.correct === 'true' || selectedBtn.dataset.correct === true;
 
         // Deshabilitar botones y mostrar colores
         buttons.forEach(btn => {
             btn.classList.add('disabled');
-            if (btn.dataset.correct === 'true') {
+            if (btn.dataset.correct === 'true' || btn.dataset.correct === true) {
                 btn.classList.add('correct');
             }
         });
@@ -1227,6 +1241,8 @@
         if (!isCorrect) {
             selectedBtn.classList.add('incorrect');
         }
+
+        feedbackDiv.style.display = 'block';
     }
 
     // Iniciar el cuestionario al cargar
