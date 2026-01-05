@@ -167,85 +167,21 @@
             {id:286, q:"El producto final del catabolismo de los nucleótidos pirimidínicos es:", opts:{a:"Ácido úrico", b:"Timina", c:"Uracilo", d:"Todas", e:"Beta-alanina"}, ans:"e", note:"Productos solubles como beta-alanina y CO2."}
         ];
 
-        // LÓGICA DEL SIMULADOR
         const quizContainer = document.getElementById('quiz-container');
         const scoreSpan = document.getElementById('score');
         
         let score = 0;
         let answeredCount = 0;
 
+        // función para barajar arrays (Fisher–Yates)
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
         function renderQuiz() {
             questionsDB.forEach((q) => {
-                // Crear Tarjeta
-                const card = document.createElement('div');
-                card.className = 'card';
-                
-                // Pregunta
-                const title = document.createElement('div');
-                title.className = 'question-text';
-                title.textContent = `${q.id}. ${q.q}`;
-                card.appendChild(title);
-
-                // Opciones
-                const grid = document.createElement('div');
-                grid.className = 'options-grid';
-
-                for (const [key, value] of Object.entries(q.opts)) {
-                    const btn = document.createElement('button');
-                    btn.className = 'option-btn';
-                    btn.innerHTML = `<strong>${key.toUpperCase()})</strong> ${value}`;
-                    
-                    // Evento Click
-                    btn.onclick = () => checkAnswer(card, key, q.ans, q.note, btn);
-                    
-                    grid.appendChild(btn);
-                }
-                card.appendChild(grid);
-
-                // Feedback
-                const feedback = document.createElement('div');
-                feedback.className = 'feedback';
-                feedback.innerHTML = `<strong>Respuesta Correcta: ${q.ans.toUpperCase()}</strong><br>${q.note}`;
-                card.appendChild(feedback);
-
-                quizContainer.appendChild(card);
-            });
-        }
-
-        function checkAnswer(card, selected, correct, note, btn) {
-            if(card.classList.contains('answered')) return;
-            
-            card.classList.add('answered');
-            answeredCount++;
-
-            const allBtns = card.querySelectorAll('.option-btn');
-            
-            // Lógica de acierto/error
-            if(selected === correct) {
-                score++;
-                btn.classList.add('correct');
-                card.classList.add('correct');
-            } else {
-                btn.classList.add('incorrect');
-                card.classList.add('incorrect');
-                // Marcar la correcta visualmente
-                allBtns.forEach(b => {
-                    if(b.innerHTML.includes(`<strong>${correct.toUpperCase()})`)) {
-                        b.classList.add('correct');
-                    }
-                });
-            }
-
-            // Deshabilitar botones
-            allBtns.forEach(b => b.classList.add('disabled'));
-
-            // Mostrar feedback
-            scoreSpan.textContent = score;
-            card.querySelector('.feedback').style.display = 'block';
-        }
-
-        renderQuiz();
-
-    </script>
-</body>
-</html>
+                const card = do
