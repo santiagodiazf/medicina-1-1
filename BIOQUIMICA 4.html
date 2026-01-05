@@ -1,843 +1,499 @@
 <!DOCTYPE html>
+
 <html lang="es">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Bioquímica - Bloque 4 (151-200)</title>
+
+    <title>Examen Bioquímica - Bloque 4 (151-200)</title>
+
     <style>
+
         :root {
-            --primary: #4a148c;
-            --success: #2e7d32;
-            --error: #c62828;
-            --bg: #f4f7f6;
+
+            --primary: #5e35b1; /* Deep Purple */
+
+            --secondary: #ede7f6;
+
+            --success: #388e3c;
+
+            --error: #d32f2f;
+
+            --text: #263238;
+
+            --bg: #fafafa;
+
         }
+
+
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+            font-family: 'Segoe UI', sans-serif;
+
             background-color: var(--bg);
-            color: #333;
+
+            color: var(--text);
+
             margin: 0;
-            padding: 20px;
+
+            padding-top: 80px;
+
+            padding-bottom: 60px;
+
         }
+
+
+
+        /* HEADER */
+
+        #header-bar {
+
+            position: fixed;
+
+            top: 0; left: 0; width: 100%;
+
+            background: var(--primary);
+
+            color: white;
+
+            padding: 15px 0;
+
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+            z-index: 100;
+
+            text-align: center;
+
+        }
+
+
+
+        .header-content {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            max-width: 800px;
+
+            margin: 0 auto;
+
+            padding: 0 20px;
+
+        }
+
+
+
+        /* TARJETAS */
 
         .container {
+
             max-width: 800px;
+
             margin: 0 auto;
-            padding-bottom: 50px;
+
+            padding: 20px;
+
         }
 
-        /* Marcador flotante */
-        .score-board {
-            position: sticky;
-            top: 10px;
-            background: white;
-            padding: 15px 20px;
-            border-radius: 50px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            margin-bottom: 30px;
-            border: 1px solid #ddd;
-        }
 
-        .score-board h2 { margin: 0; font-size: 1.1rem; color: var(--primary); }
-        .score-pill { font-weight: bold; background: var(--primary); color: white; padding: 5px 15px; border-radius: 20px; }
 
-        /* Tarjetas */
         .card {
+
             background: white;
-            border-radius: 15px;
+
+            border-radius: 8px;
+
             padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+
+            margin-bottom: 20px;
+
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+
             border-left: 5px solid transparent;
+
         }
+
+
+
+        .card.correct { border-left-color: var(--success); }
+
+        .card.incorrect { border-left-color: var(--error); }
+
+
 
         .question-text {
+
             font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            line-height: 1.4;
+
+            font-weight: 600;
+
+            margin-bottom: 15px;
+
         }
+
+
 
         .options-grid {
-            display: flex;
-            flex-direction: column;
+
+            display: grid;
+
             gap: 10px;
+
         }
+
+
 
         .option-btn {
+
             background: #fff;
-            border: 2px solid #e0e0e0;
-            padding: 15px;
-            border-radius: 10px;
+
+            border: 1px solid #d1c4e9;
+
+            padding: 12px;
+
+            border-radius: 6px;
+
             cursor: pointer;
+
             text-align: left;
-            font-size: 1rem;
+
             transition: all 0.2s;
-            display: flex;
-            align-items: flex-start;
+
         }
 
-        .option-btn:hover:not(.disabled) {
-            background: #f3e5f5;
-            border-color: var(--primary);
-        }
 
-        .letter {
-            font-weight: bold;
-            color: var(--primary);
-            margin-right: 10px;
-            min-width: 20px;
-        }
 
-        /* Estilos de validación */
-        .correct {
-            background-color: #dcedc8 !important;
-            border-color: var(--success) !important;
-            color: #1b5e20;
-        }
+        .option-btn:hover:not(.disabled) { background: var(--secondary); }
 
-        .incorrect {
-            background-color: #ffcdd2 !important;
-            border-color: var(--error) !important;
-            color: #b71c1c;
-        }
+        
 
-        .disabled {
-            pointer-events: none;
-            opacity: 0.7;
-        }
+        .option-btn.correct { background: #c8e6c9; border-color: var(--success); }
 
-        .explanation {
+        .option-btn.incorrect { background: #ffcdd2; border-color: var(--error); }
+
+        .option-btn.disabled { pointer-events: none; }
+
+
+
+        .feedback {
+
             margin-top: 15px;
-            padding: 15px;
-            background: #e1f5fe;
-            border-left: 4px solid #039be5;
-            border-radius: 5px;
+
+            padding: 10px;
+
+            background: #ede7f6;
+
+            border-radius: 4px;
+
             display: none;
-            font-size: 0.95rem;
+
+            font-size: 0.9rem;
+
+            border-left: 4px solid var(--primary);
+
         }
 
-        .reset-btn {
+
+
+        .btn-reset {
+
             display: block;
+
+            width: 200px;
+
             margin: 30px auto;
-            padding: 15px 30px;
+
+            padding: 15px;
+
             background: var(--primary);
+
             color: white;
+
             border: none;
-            border-radius: 30px;
-            font-size: 1.1rem;
+
+            border-radius: 50px;
+
+            font-weight: bold;
+
             cursor: pointer;
+
         }
+
     </style>
+
 </head>
+
 <body>
 
-<div class="container">
-    <div class="score-board">
-        <h2>Bioquímica (151-200)</h2>
-        <div class="score-pill">Aciertos: <span id="score">0</span> / <span id="total">0</span></div>
+
+
+    <div id="header-bar">
+
+        <div class="header-content">
+
+            <h2>Bioquímica (151-200)</h2>
+
+            <div>Aciertos: <span id="score">0</span>/50</div>
+
+        </div>
+
     </div>
 
-    <div id="quiz-container"></div>
-    
-    <button class="reset-btn" onclick="location.reload()">Mezclar y Reiniciar</button>
-</div>
 
-<script>
-    // Datos corregidos y verificados
-    const questionsDB = [
-        {
-            id: 151,
-            q: "El Ca2+ en músculo sobre el complejo PDH (Piruvato Deshidrogenasa):",
-            opts: [
-                { t: "Inhibe fosfatasa", c: false },
-                { t: "Activa quinasa", c: false },
-                { t: "No tiene efecto", c: false },
-                { t: "Solo en hígado", c: false },
-                { t: "Activa fosfatasa -> PDH activa", c: true }
-            ],
-            exp: "El Ca2+ (señal de contracción) activa la fosfatasa para desfosforilar y activar la PDH, produciendo energía."
-        },
-        {
-            id: 152,
-            q: "¿Qué enzima convierte la glucosa en glucosa-6-fosfato?",
-            opts: [
-                { t: "Glucógeno sintasa", c: false },
-                { t: "Fosfofructocinasa-1", c: false },
-                { t: "Glucosa-6-fosfatasa", c: false },
-                { t: "Glucógeno fosforilasa", c: false },
-                { t: "Hexocinasa", c: true }
-            ],
-            exp: "Primera reacción de la glucólisis (gasto de ATP)."
-        },
-        {
-            id: 153,
-            q: "La glucoquinasa tiene importancia ya que cataliza la fosforilación:",
-            opts: [
-                { t: "De la glucosa en ayuno", c: false },
-                { t: "De fructosa", c: false },
-                { t: "Cuando falta hexoquinasa", c: false },
-                { t: "En diabetes", c: false },
-                { t: "De la glucosa en la hiperglucemia alimenticia", c: true }
-            ],
-            exp: "Tiene baja afinidad (alta Km), actuando solo cuando la glucosa es alta."
-        },
-        {
-            id: 154,
-            q: "Indica qué afirmación es INCORRECTA en relación a la glucoquinasa:",
-            opts: [
-                { t: "Tiene Km mayor que otras", c: false },
-                { t: "Es una transferasa", c: false },
-                { t: "En hígado y páncreas", c: false },
-                { t: "Es inhibida por ATP", c: false },
-                { t: "Muestra inhibición por la glucosa 6P", c: true }
-            ],
-            exp: "A diferencia de la hexoquinasa, la glucoquinasa NO se inhibe por su producto (G6P)."
-        },
-        {
-            id: 155,
-            q: "¿Qué enzima convierte el piruvato en lactato en condiciones anaerobias?",
-            opts: [
-                { t: "PDH", c: false },
-                { t: "Citrato sintasa", c: false },
-                { t: "PFK-1", c: false },
-                { t: "Piruvato quinasa", c: false },
-                { t: "Lactato deshidrogenasa (LDH)", c: true }
-            ],
-            exp: "Regenera NAD+ para mantener la glucólisis."
-        },
-        {
-            id: 156,
-            q: "¿Por qué se forma lactato en la glucólisis anaerobia?",
-            opts: [
-                { t: "Para oxidar piruvato", c: false },
-                { t: "Para oxidar NADH", c: false },
-                { t: "Para obtener energía extra", c: false },
-                { t: "Para regenerar NAD+ y oxidar NADH (evitar bloqueo)", c: true },
-                { t: "Ninguna de las anteriores", c: false }
-            ],
-            exp: "Esencial para que la GAP-deshidrogenasa siga funcionando sin oxígeno."
-        },
-        {
-            id: 157,
-            q: "¿Qué coenzima es clave en la conversión de piruvato a lactato?",
-            opts: [
-                { t: "NAD+", c: false },
-                { t: "FADH2", c: false },
-                { t: "CoA", c: false },
-                { t: "PLP", c: false },
-                { t: "NADH", c: true }
-            ],
-            exp: "El NADH cede sus electrones al piruvato."
-        },
-        {
-            id: 158,
-            q: "¿Qué ruta metabólica produce ATP sin oxígeno?",
-            opts: [
-                { t: "Beta-oxidación", c: false },
-                { t: "Krebs", c: false },
-                { t: "Fosforilación oxidativa", c: false },
-                { t: "Vía pentosas", c: false },
-                { t: "Glucólisis anaerobia", c: true }
-            ],
-            exp: "Producción neta de 2 ATP por glucosa."
-        },
-        {
-            id: 159,
-            q: "¿Qué enzima NO interviene en la glucólisis?",
-            opts: [
-                { t: "Glucoquinasa", c: false },
-                { t: "PFK-1", c: false },
-                { t: "Triosa isomerasa", c: false },
-                { t: "Gliceraldehído-3-P-DH", c: false },
-                { t: "Piruvato carboxilasa", c: true }
-            ],
-            exp: "La Piruvato Carboxilasa es la primera enzima de la Gluconeogénesis."
-        },
-        {
-            id: 160,
-            q: "¿En qué etapa de la glucólisis hay fosforilación a nivel de sustrato?",
-            opts: [
-                { t: "F6P a F1,6BP", c: false },
-                { t: "2-PG a PEP", c: false },
-                { t: "F1,6BP a triosas", c: false },
-                { t: "GAP a 1,3BPG", c: false },
-                { t: "Ácido 1,3 bifosfoglicérico a 3-fosfoglicérico", c: true }
-            ],
-            exp: "Generación directa de ATP por la Fosfoglicerato quinasa."
-        },
-        {
-            id: 161,
-            q: "Pasos de fosforilación a nivel de sustrato:",
-            opts: [
-                { t: "Glucosa a G6P", c: false },
-                { t: "F6P a F1,6BP", c: false },
-                { t: "GAP a DHAP", c: false },
-                { t: "Hexoquinasa y PFK-1", c: false },
-                { t: "1-3 BPG a 3-PG (y PEP a Piruvato)", c: true }
-            ],
-            exp: "Son los dos pasos donde se gana ATP."
-        },
-        {
-            id: 162,
-            q: "¿Cuáles son enzimas regulables en la glucólisis?",
-            opts: [
-                { t: "Piruvato quinasa", c: false },
-                { t: "Fosfogliceratoquinasa", c: false },
-                { t: "Fosfoglucomutasa", c: false },
-                { t: "Solo Glucoquinasa", c: false },
-                { t: "HK/GK, PFK-1 y Piruvato Quinasa", c: true }
-            ],
-            exp: "Las tres irreversibles: HK/GK, PFK-1, PK."
-        },
-        {
-            id: 163,
-            q: "¿Cuál es el principal inhibidor alostérico de la fosfofructocinasa-1 (PFK-1)?",
-            opts: [
-                { t: "ADP", c: false },
-                { t: "AMP", c: false },
-                { t: "NADH", c: false },
-                { t: "Citrato", c: false },
-                { t: "ATP", c: true }
-            ],
-            exp: "El ATP actúa como señal de alta energía, inhibiendo la vía."
-        },
-        {
-            id: 164,
-            q: "¿Cuál es el efecto del ATP sobre la PFK-1?",
-            opts: [
-                { t: "Activa", c: false },
-                { t: "Sin efecto", c: false },
-                { t: "Activa gluconeogénesis", c: false },
-                { t: "Desfosforila", c: false },
-                { t: "La inhibe", c: true }
-            ],
-            exp: "Reduce la afinidad de la enzima por la fructosa-6-P."
-        },
-        {
-            id: 165,
-            q: "En músculo, el H+ elevado (acidosis) durante ejercicio intenso sobre PFK-1:",
-            opts: [
-                { t: "Activa", c: false },
-                { t: "No afecta", c: false },
-                { t: "La degrada", c: false },
-                { t: "La fosforila", c: false },
-                { t: "Inhibe", c: true }
-            ],
-            exp: "Previene el daño por acidosis láctica excesiva."
-        },
-        {
-            id: 166,
-            q: "La PFK-1 hepática está activada por:",
-            opts: [
-                { t: "ATP", c: false },
-                { t: "Citrato", c: false },
-                { t: "H+", c: false },
-                { t: "Alanina", c: false },
-                { t: "Fructosa-2,6-bisfosfato", c: true }
-            ],
-            exp: "Es el activador alostérico más potente."
-        },
-        {
-            id: 167,
-            q: "La piruvato quinasa se activa por (Feed-forward):",
-            opts: [
-                { t: "Citrato", c: false },
-                { t: "Alanina", c: false },
-                { t: "ATP", c: false },
-                { t: "NADH", c: false },
-                { t: "Fructosa-1,6-bisfosfato", c: true }
-            ],
-            exp: "Activación por el producto de la PFK-1 para coordinar la vía."
-        },
-        {
-            id: 168,
-            q: "La alanina sobre la piruvato quinasa:",
-            opts: [
-                { t: "Activa", c: false },
-                { t: "No afecta", c: false },
-                { t: "Activa en hígado", c: false },
-                { t: "Inhibe músculo", c: false },
-                { t: "Inhibe", c: true }
-            ],
-            exp: "La alanina (que viene del piruvato) señala abundancia de precursores, inhibiendo la glucólisis."
-        },
-        {
-            id: 169,
-            q: "¿Qué enzima se inhibe ante la bajada del pH celular?",
-            opts: [
-                { t: "Glucógeno fosforilasa", c: false },
-                { t: "PDH", c: false },
-                { t: "PEPCK", c: false },
-                { t: "Piruvato quinasa", c: false },
-                { t: "Fosfofructoquinasa 1 muscular", c: true }
-            ],
-            exp: "Mecanismo de protección contra la acidosis."
-        },
-        {
-            id: 170,
-            q: "Fructosa-2,6-BP en hígado:",
-            opts: [
-                { t: "Activa FBPasa-1", c: false },
-                { t: "Inhibe PFK-1", c: false },
-                { t: "No afecta", c: false },
-                { t: "Activa piruvato carboxilasa", c: false },
-                { t: "Activa PFK-1", c: true }
-            ],
-            exp: "Señal de glucosa abundante que acelera la glucólisis."
-        },
-        {
-            id: 171,
-            q: "Respecto al regulador F-2,6-BP es cierto que:",
-            opts: [
-                { t: "Producto de modo fosfatasa", c: false },
-                { t: "Síntesis por glucagón", c: false },
-                { t: "Activa FBPasa", c: false },
-                { t: "Actúa en músculo", c: false },
-                { t: "Facilita la glucólisis", c: true }
-            ],
-            exp: "Al activar PFK-1 e inhibir FBPasa-1."
-        },
-        {
-            id: 172,
-            q: "El regulador hepático que coordina glucólisis/gluconeogénesis es:",
-            opts: [
-                { t: "Glucógeno sintasa", c: false },
-                { t: "Piruvato carboxilasa", c: false },
-                { t: "LDH", c: false },
-                { t: "HK II", c: false },
-                { t: "Enzima bifuncional PFK-2/FBPasa-2", c: true }
-            ],
-            exp: "Controla los niveles de F-2,6-BP."
-        },
-        {
-            id: 173,
-            q: "La insulina pone a la enzima bifuncional en modo:",
-            opts: [
-                { t: "Fosfatasa", c: false },
-                { t: "Hidrolasa", c: false },
-                { t: "Liasa", c: false },
-                { t: "Isomerasa", c: false },
-                { t: "Kinasa (Quinasa)", c: true }
-            ],
-            exp: "Desfosforila la enzima bifuncional, activando el dominio PFK-2."
-        },
-        {
-            id: 174,
-            q: "Tras la ingesta, la insulina favorecerá:",
-            opts: [
-                { t: "Fosforilación PFK-1", c: false },
-                { t: "Actividad FBPasa-2", c: false },
-                { t: "Conversión F26BP a F6P", c: false },
-                { t: "Gluconeogénesis", c: false },
-                { t: "La actividad fosfofructoquinasa-2 (PFK-2)", c: true }
-            ],
-            exp: "Aumentando F-2,6-BP y la glucólisis."
-        },
-        {
-            id: 175,
-            q: "El glucagón, vía PKA, sobre la piruvato quinasa hepática:",
-            opts: [
-                { t: "Activa fosforilando", c: false },
-                { t: "Activa desfosforilando", c: false },
-                { t: "No afecta", c: false },
-                { t: "La degrada", c: false },
-                { t: "Inhibe por fosforilación", c: true }
-            ],
-            exp: "Frena la glucólisis hepática en ayuno."
-        },
-        {
-            id: 176,
-            q: "La fructosa 1,6 bifosfato activa a la enzima:",
-            opts: [
-                { t: "Piruvato carboxilasa", c: false },
-                { t: "PEPCK", c: false },
-                { t: "G6Pasa", c: false },
-                { t: "FBPasa-1", c: false },
-                { t: "Piruvato quinasa", c: true }
-            ],
-            exp: "Activación anterógrada."
-        },
-        {
-            id: 177,
-            q: "En la glucogenogénesis la forma activada es:",
-            opts: [
-                { t: "Genera glucosa", c: false },
-                { t: "Interviene fosforilasa", c: false },
-                { t: "ADP-Glucosa", c: false },
-                { t: "Glucosa-6-P", c: false },
-                { t: "UDP-glucosa", c: true }
-            ],
-            exp: "Donante de glucosa para la síntesis."
-        },
-        {
-            id: 178,
-            q: "La enzima que transfiere residuos de glucosa al polímero de glucógeno es:",
-            opts: [
-                { t: "Transferasa", c: false },
-                { t: "Fosforilasa", c: false },
-                { t: "Fosfatasa", c: false },
-                { t: "Glucogenina", c: false },
-                { t: "Glucógeno sintasa", c: true }
-            ],
-            exp: "Forma enlaces alfa 1-4."
-        },
-        {
-            id: 179,
-            q: "Por degradación completa de una molécula de glucógeno se obtiene:",
-            opts: [
-                { t: "Solo G6P", c: false },
-                { t: "Solo glucosa", c: false },
-                { t: "G1P, G6P y Glucosa", c: false },
-                { t: "G6P y Glucosa", c: false },
-                { t: "Glucosa-1-fosfato y en menor proporción glucosa", c: true }
-            ],
-            exp: "90% G1P, 10% Glucosa libre (enzima desramificante)."
-        },
-        {
-            id: 180,
-            q: "La glucógeno sintasa (GS). ¿Cuál es FALSA?",
-            opts: [
-                { t: "Máxima actividad forma I", c: false },
-                { t: "Forma D activa con G6P", c: false },
-                { t: "Fosfatasa separa fosfórico", c: false },
-                { t: "Paso de I a D catalizado por una kinasa", c: false },
-                { t: "Transformación es un ciclo reversible simple", c: true }
-            ],
-            exp: "Son dos reacciones distintas (quinasa y fosfatasa), no una reacción reversible simple."
-        },
-        {
-            id: 181,
-            q: "En el metabolismo del glucógeno la insulina:",
-            opts: [
-                { t: "Inhibe PP1", c: false },
-                { t: "Inhibe fosforilasa fosforilando", c: false },
-                { t: "Activa quinasas", c: false },
-                { t: "Degrada glucógeno", c: false },
-                { t: "Activa a la glucógeno sintasa hepática", c: true }
-            ],
-            exp: "La insulina activa la fosfatasa PP1, que desfosforila y activa la GS."
-        },
-        {
-            id: 182,
-            q: "La adrenalina activa glucogenólisis mediante:",
-            opts: [
-                { t: "Tirosina-quinasa", c: false },
-                { t: "GMPc", c: false },
-                { t: "Ca2+", c: false },
-                { t: "PP1", c: false },
-                { t: "GPCR -> AMPc -> PKA", c: true }
-            ],
-            exp: " Cascada de señalización clásica."
-        },
-        {
-            id: 183,
-            q: "¿Qué hormona se libera en respuesta a la hipoglucemia?",
-            opts: [
-                { t: "Insulina", c: false },
-                { t: "Somatostatina", c: false },
-                { t: "Leptina", c: false },
-                { t: "Tiroxina", c: false },
-                { t: "Glucagón", c: true }
-            ],
-            exp: "Estimula la producción hepática de glucosa."
-        },
-        {
-            id: 184,
-            q: "¿Qué hormona activa la gluconeogénesis?",
-            opts: [
-                { t: "Insulina", c: false },
-                { t: "Leptina", c: false },
-                { t: "Tiroxina", c: false },
-                { t: "Adrenalina", c: false },
-                { t: "Glucagón", c: true }
-            ],
-            exp: "Aumenta la transcripción de PEPCK y activa FBPasa-2."
-        },
-        {
-            id: 185,
-            q: "¿Cuál de estas asociaciones es incorrecta?",
-            opts: [
-                { t: "Glucagón -> gluconeogénesis -> H", c: false },
-                { t: "Adrenalina -> glucogenolisis -> H y M", c: false },
-                { t: "Insulina -> captación glucosa -> M", c: false },
-                { t: "Insulina -> síntesis glucógeno -> H y M", c: false },
-                { t: "Glucagón -> cetogénesis -> Músculo", c: true }
-            ],
-            exp: "El glucagón actúa en Hígado y Adiposo, no en músculo. Además, la cetogénesis es hepática."
-        },
-        {
-            id: 186,
-            q: "En el metabolismo del glucógeno hepático el glucagón:",
-            opts: [
-                { t: "Activa sintasa", c: false },
-                { t: "Inhibe fosforilasa", c: false },
-                { t: "Inhibe quinasas", c: false },
-                { t: "Degrada muscular", c: false },
-                { t: "Inhibe a la PP1 (via inhibidor)", c: true }
-            ],
-            exp: "Impide que la fosfatasa revierta la acción de la PKA."
-        },
-        {
-            id: 187,
-            q: "En hipoglucemia, el glucógeno muscular no restaura la glucemia porque:",
-            opts: [
-                { t: "Glucagón inhibe", c: false },
-                { t: "Adrenalina no estimula", c: false },
-                { t: "AMPc solo hepático", c: false },
-                { t: "Sí pasa", c: false },
-                { t: "Falta Glucosa-6-Fosfatasa", c: true }
-            ],
-            exp: "El músculo carece de la enzima para liberar glucosa a sangre."
-        },
-        {
-            id: 188,
-            q: "¿Qué enzima es clave en la gluconeogénesis (inicio)?",
-            opts: [
-                { t: "Hexocinasa", c: false },
-                { t: "Glucógeno sintasa", c: false },
-                { t: "PFK-1", c: false },
-                { t: "G6Pasa", c: false },
-                { t: "Piruvato carboxilasa", c: true }
-            ],
-            exp: "Convierte piruvato en oxalacetato."
-        },
-        {
-            id: 189,
-            q: "En la formación de glucosa a partir de piruvato se necesita:",
-            opts: [
-                { t: "8 ATP", c: false },
-                { t: "4 ATP", c: false },
-                { t: "2 ATP", c: false },
-                { t: "10 ATP", c: false },
-                { t: "6 ATP (4 ATP + 2 GTP)", c: true }
-            ],
-            exp: "Coste energético de la gluconeogénesis."
-        },
-        {
-            id: 190,
-            q: "¿Qué moléculas intervienen en el paso de piruvato a fosfoenolpiruvato?",
-            opts: [
-                { t: "Oxalacetato", c: false },
-                { t: "Succinato", c: false },
-                { t: "Biotina con ATP", c: false },
-                { t: "Todas", c: false },
-                { t: "Oxalacetato y Biotina", c: true }
-            ],
-            exp: "Requiere carboxilación a oxalacetato (biotina) y luego descarboxilación."
-        },
-        {
-            id: 191,
-            q: "La enzima piruvato carboxilasa es esencial para:",
-            opts: [
-                { t: "Oxidación", c: false },
-                { t: "Lactato", c: false },
-                { t: "Lactato a piruvato", c: false },
-                { t: "PEP a piruvato", c: false },
-                { t: "Iniciar la gluconeogénesis", c: true }
-            ],
-            exp: "Paso de rodeo de la piruvato quinasa."
-        },
-        {
-            id: 192,
-            q: "El oxalacetato para atravesar la membrana mitocondrial debe transformarse en:",
-            opts: [
-                { t: "Piruvato", c: false },
-                { t: "Lactato", c: false },
-                { t: "Malonato", c: false },
-                { t: "Fumarato", c: false },
-                { t: "Malato", c: true }
-            ],
-            exp: " Lanzadera de malato-aspartato."
-        },
-        {
-            id: 193,
-            q: "PEP carboxiquinasa (PEPCK) es inhibida por:",
-            opts: [
-                { t: "ATP", c: false },
-                { t: "Citrato", c: false },
-                { t: "Alanina", c: false },
-                { t: "NADH", c: false },
-                { t: "ADP", c: true }
-            ],
-            exp: "Señal de baja energía inhibe la vía anabólica costosa."
-        },
-        {
-            id: 194,
-            q: "Piruvato carboxilasa se activa por:",
-            opts: [
-                { t: "ADP", c: false },
-                { t: "AMP", c: false },
-                { t: "Citrato", c: false },
-                { t: "F-2,6-BP", c: false },
-                { t: "Acetil-CoA", c: true }
-            ],
-            exp: "El Acetil-CoA indica necesidad de oxalacetato (para Krebs o Gluconeogénesis)."
-        },
-        {
-            id: 195,
-            q: "¿Qué reacción es un paso de la gluconeogénesis?",
-            opts: [
-                { t: "Transaminación", c: false },
-                { t: "Citrato sintasa", c: false },
-                { t: "Degradación Leucina", c: false },
-                { t: "Lisina", c: false },
-                { t: "Piruvato + ATP + CO2 -> Oxalacetato", c: true }
-            ],
-            exp: "Reacción de la piruvato carboxilasa."
-        },
-        {
-            id: 196,
-            q: "El ciclo de Rapoport-Luebering (2,3-BPG):",
-            opts: [
-                { t: "En hepatocito", c: false },
-                { t: "Genera 2,3-BPG", c: false },
-                { t: "Solo en hígado", c: false },
-                { t: "A y C", c: false },
-                { t: "En eritrocito y genera 2,3-BPG", c: true }
-            ],
-            exp: "Vía exclusiva del eritrocito para regular afinidad Hb."
-        },
-        {
-            id: 197,
-            q: "El ciclo de Rapoport-Luebering es:",
-            opts: [
-                { t: "Lipolítica", c: false },
-                { t: "Síntesis grasas", c: false },
-                { t: "Producción Hb", c: false },
-                { t: "Ninguna", c: false },
-                { t: "Una desviación de la vía glucolítica", c: true }
-            ],
-            exp: "Bypasea la reacción de la PGK (sin ganar ATP)."
-        },
-        {
-            id: 198,
-            q: "¿Qué órgano NO necesita insulina para captar glucosa?",
-            opts: [
-                { t: "Adiposo", c: false },
-                { t: "Corazón", c: false },
-                { t: "Músculo", c: false },
-                { t: "Hipófisis", c: false },
-                { t: "Eritrocitos (y Cerebro)", c: true }
-            ],
-            exp: "Usan GLUT-1 o GLUT-2/3 (independientes de insulina)."
-        },
-        {
-            id: 199,
-            q: "La entrada de glucosa en las células del cerebro viene determinada por:",
-            opts: [
-                { t: "Insulina", c: false },
-                { t: "Adenilato ciclasa", c: false },
-                { t: "Glucagón", c: false },
-                { t: "A y B", c: false },
-                { t: "El gradiente de concentración", c: true }
-            ],
-            exp: "Difusión facilitada constitutiva."
-        },
-        {
-            id: 200,
-            q: "¿Qué transportador de glucosa es insulino-dependiente?",
-            opts: [
-                { t: "GLUT-1", c: false },
-                { t: "GLUT-2", c: false },
-                { t: "GLUT-3", c: false },
-                { t: "GLUT-5", c: false },
-                { t: "GLUT-4", c: true }
-            ],
-            exp: "Se trasloca a la membrana en músculo y adiposo."
-        }
-    ];
 
-    const letters = ['A', 'B', 'C', 'D', 'E'];
-    let score = 0;
+    <div class="container" id="quiz-container"></div>
 
-    // Función de mezcla (Fisher-Yates)
-    function shuffle(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-    }
+    <button class="btn-reset" onclick="location.reload()">Reiniciar Examen</button>
 
-    function initQuiz() {
-        const container = document.getElementById('quiz-container');
-        document.getElementById('total').innerText = questionsDB.length;
 
-        questionsDB.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            
-            // Título
-            const title = document.createElement('div');
-            title.className = 'question-text';
-            title.innerText = `${item.id}. ${item.q}`;
-            card.appendChild(title);
 
-            // Contenedor de opciones
-            const optsContainer = document.createElement('div');
-            optsContainer.className = 'options-grid';
+    <script>
 
-            // Mezclar opciones
-            const mixedOpts = shuffle([...item.opts]);
+        // BASE DE DATOS: PREGUNTAS 151-200
 
-            mixedOpts.forEach((opt, idx) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
+        const questionsDB = [
+
+            {id:151, q:"El Ca2+ en músculo sobre el complejo PDH (Piruvato Deshidrogenasa):", opts:{a:"Inhibe fosfatasa", b:"Activa quinasa", c:"No tiene efecto", d:"Solo en hígado", e:"Activa fosfatasa -> PDH activa"}, ans:"e", note:"El Ca2+ (señal de contracción) activa la fosfatasa para desfosforilar y activar la PDH, produciendo energía."},
+
+            {id:152, q:"¿Qué enzima convierte la glucosa en glucosa-6-fosfato?", opts:{a:"Glucógeno sintasa", b:"Fosfofructocinasa-1", c:"Glucosa-6-fosfatasa", d:"Glucógeno fosforilasa", e:"Hexocinasa"}, ans:"e", note:"Primera reacción de la glucólisis (gasto de ATP)."},
+
+            {id:153, q:"La glucoquinasa tiene importancia ya que cataliza la fosforilación:", opts:{a:"De la glucosa en ayuno", b:"De fructosa", c:"Cuando falta hexoquinasa", d:"En diabetes", e:"De la glucosa en la hiperglucemia alimenticia"}, ans:"e", note:"Tiene baja afinidad (alta Km), actuando solo cuando la glucosa es alta."},
+
+            {id:154, q:"Indica qué afirmación es INCORRECTA en relación a la glucoquinasa:", opts:{a:"Tiene Km mayor que otras", b:"Muestra inhibición por la glucosa 6P", c:"Es una transferasa", d:"En hígado y páncreas", e:"Es inhibida por ATP"}, ans:"b", note:"A diferencia de la hexoquinasa, la glucoquinasa NO se inhibe por su producto (G6P)."},
+
+            {id:155, q:"¿Qué enzima convierte el piruvato en lactato en condiciones anaerobias?", opts:{a:"PDH", b:"Citrato sintasa", c:"PFK-1", d:"Piruvato quinasa", e:"Lactato deshidrogenasa (LDH)"}, ans:"e", note:"Regenera NAD+ para mantener la glucólisis."},
+
+            {id:156, q:"¿Por qué se forma lactato en la glucólisis anaerobia?", opts:{a:"Para oxidar piruvato", b:"Para regenerar al NAD+ e impedir el bloqueo de la glucólisis", c:"Para oxidar NADH", d:"A y C", e:"B y C"}, ans:"e", note:"Esencial para que la GAP-deshidrogenasa siga funcionando sin oxígeno."},
+
+            {id:157, q:"¿Qué coenzima es clave en la conversión de piruvato a lactato?", opts:{a:"NAD+", b:"FADH2", c:"CoA", d:"PLP", e:"NADH"}, ans:"e", note:"El NADH cede sus electrones al piruvato."},
+
+            {id:158, q:"¿Qué ruta metabólica produce ATP sin oxígeno?", opts:{a:"Beta-oxidación", b:"Krebs", c:"Fosforilación oxidativa", d:"Vía pentosas", e:"Glucólisis anaerobia"}, ans:"e", note:"Producción neta de 2 ATP por glucosa."},
+
+            {id:159, q:"¿Qué enzima NO interviene en la glucólisis?", opts:{a:"Glucoquinasa", b:"PFK-1", c:"Triosa isomerasa", d:"Gliceraldehído-3-P-DH", e:"Piruvato carboxilasa"}, ans:"e", note:"La Piruvato Carboxilasa es la primera enzima de la Gluconeogénesis."},
+
+            {id:160, q:"¿En qué etapa de la glucólisis hay fosforilación a nivel de sustrato?", opts:{a:"F6P a F1,6BP", b:"2-PG a PEP", c:"F1,6BP a triosas", d:"GAP a 1,3BPG", e:"Ácido 1,3 bifosfoglicérico a 3-fosfoglicérico"}, ans:"e", note:"Generación directa de ATP por la Fosfoglicerato quinasa."},
+
+            {id:161, q:"Pasos de fosforilación a nivel de sustrato:", opts:{a:"Glucosa a G6P", b:"F6P a F1,6BP", c:"GAP a DHAP", d:"...", e:"1-3 bifosfoglicerato a 3 fosfoglicerato (y PEP a Piruvato)"}, ans:"e", note:"Son los dos pasos donde se gana ATP."},
+
+            {id:162, q:"¿Cuáles son enzimas regulables en la glucólisis?", opts:{a:"Piruvato quinasa", b:"Fosfogliceratoquinasa", c:"Fosfoglucomutasa", d:"Glucoquinasa", e:"A y D (y PFK-1)"}, ans:"e", note:"Las tres irreversibles: HK/GK, PFK-1, PK."},
+
+            {id:163, q:"¿Cuál es el principal inhibidor alostérico de la fosfofructocinasa-1 (PFK-1)?", opts:{a:"ADP", b:"AMP", c:"NADH", d:"Citrato", e:"ATP"}, ans:"e", note:"El ATP actúa como señal de alta energía, inhibiendo la vía."},
+
+            {id:164, q:"¿Cuál es el efecto del ATP sobre la PFK-1?", opts:{a:"Activa", b:"Sin efecto", c:"Activa gluconeogénesis", d:"Desfosforila", e:"La inhibe"}, ans:"e", note:"Reduce la afinidad de la enzima por la fructosa-6-P."},
+
+            {id:165, q:"En músculo, el H+ elevado (acidosis) durante ejercicio intenso sobre PFK-1:", opts:{a:"Activa", b:"No afecta", c:"...", d:"...", e:"Inhibe"}, ans:"e", note:"Previene el daño por acidosis láctica excesiva."},
+
+            {id:166, q:"La PFK-1 hepática está activada por:", opts:{a:"ATP", b:"Citrato", c:"H+", d:"Alanina", e:"Fructosa-2,6-bisfosfato"}, ans:"e", note:"Es el activador alostérico más potente."},
+
+            {id:167, q:"La piruvato quinasa se activa por (Feed-forward):", opts:{a:"Citrato", b:"Alanina", c:"ATP", d:"NADH", e:"Fructosa-1,6-bisfosfato"}, ans:"e", note:"Activación por el producto de la PFK-1 para coordinar la vía."},
+
+            {id:168, q:"La alanina sobre la piruvato quinasa:", opts:{a:"Activa", b:"No afecta", c:"Activa en hígado", d:"Inhibe músculo", e:"Inhibe"}, ans:"e", note:"La alanina (que viene del piruvato) señala abundancia de precursores, inhibiendo la glucólisis."},
+
+            {id:169, q:"¿Qué enzima se inhibe ante la bajada del pH celular?", opts:{a:"Glucógeno fosforilasa", b:"PDH", c:"PEPCK", d:"Piruvato quinasa", e:"Fosfofructoquinasa 1 muscular"}, ans:"e", note:"Mecanismo de protección contra la acidosis."},
+
+            {id:170, q:"Fructosa-2,6-BP en hígado:", opts:{a:"Activa FBPasa-1", b:"Inhibe PFK-1", c:"No afecta", d:"Activa piruvato carboxilasa", e:"Activa PFK-1"}, ans:"e", note:"Señal de glucosa abundante que acelera la glucólisis."},
+
+            {id:171, q:"Respecto al regulador F-2,6-BP es cierto que:", opts:{a:"Producto de modo fosfatasa", b:"Síntesis por glucagón", c:"Activa FBPasa", d:"Actúa en músculo", e:"Facilita la glucólisis"}, ans:"e", note:"Al activar PFK-1 e inhibir FBPasa-1."},
+
+            {id:172, q:"El regulador hepático que coordina glucólisis/gluconeogénesis es:", opts:{a:"Glucógeno sintasa", b:"Piruvato carboxilasa", c:"LDH", d:"HK II", e:"Enzima bifuncional PFK-2/FBPasa-2"}, ans:"e", note:"Controla los niveles de F-2,6-BP."},
+
+            {id:173, q:"La insulina pone a la enzima bifuncional en modo:", opts:{a:"Fosfatasa", b:"Hidrolasa", c:"Liasa", d:"Isomerasa", e:"Kinasa (Quinasa)"}, ans:"e", note:"Desfosforila la enzima bifuncional, activando el dominio PFK-2."},
+
+            {id:174, q:"Tras la ingesta, la insulina favorecerá:", opts:{a:"Fosforilación PFK-1", b:"Actividad FBPasa-2", c:"Conversión F26BP a F6P", d:"B y C", e:"La actividad fosfofructoquinasa (PFK-2) de la enzima bifuncional"}, ans:"e", note:"Aumentando F-2,6-BP y la glucólisis."},
+
+            {id:175, q:"El glucagón, vía PKA, sobre la piruvato quinasa hepática:", opts:{a:"Activa fosforilando", b:"Activa desfosforilando", c:"No afecta", d:"...", e:"Inhibe por fosforilación"}, ans:"e", note:"Frena la glucólisis hepática en ayuno."},
+
+            {id:176, q:"La fructosa 1,6 bifosfato activa a la enzima:", opts:{a:"Piruvato carboxilasa", b:"PEPCK", c:"B y C", d:"Falsas", e:"Piruvato quinasa"}, ans:"e", note:"Activación anterógrada."},
+
+            {id:177, q:"En la glucogenogénesis:", opts:{a:"Genera glucosa", b:"Interviene fosforilasa", c:"A y C", d:"...", e:"La forma metabólicamente activada de la glucosa es la UDP-glucosa"}, ans:"e", note:"Donante de glucosa para la síntesis."},
+
+            {id:178, q:"La enzima que transfiere residuos de glucosa al polímero de glucógeno es:", opts:{a:"Transferasa", b:"Fosforilasa", c:"Fosfatasa", d:"Glucogenina", e:"Glucógeno sintasa"}, ans:"e", note:"Forma enlaces alfa 1-4."},
+
+            {id:179, q:"Por degradación completa de una molécula de glucógeno se obtiene:", opts:{a:"Solo G6P", b:"Solo glucosa", c:"G1P, G6P y Glucosa", d:"G6P y Glucosa", e:"Glucosa-1-fosfato y en menor proporción glucosa (de las ramas)"}, ans:"e", note:"90% G1P, 10% Glucosa libre (enzima desramificante)."},
+
+            {id:180, q:"La glucógeno sintasa (GS) existe en dos formas. Es FALSA:", opts:{a:"Máxima actividad forma I", b:"Forma D activa con G6P", c:"Transformación reversible (Ciclo)", d:"Fosfatasa separa fosfórico", e:"Paso de I a D catalizado por una kinasa (VER NOTA: Se considera C como la falsa en contexto estricto de reversibilidad)"}, ans:"c", note:"Son dos reacciones distintas (quinasa y fosfatasa), no una reacción reversible."},
+
+            {id:181, q:"En el metabolismo del glucógeno la insulina:", opts:{a:"Inhibe PP1", b:"Inhibe fosforilasa fosforilando", c:"Activa quinasas", d:"Degrada glucógeno", e:"Activa a la glucógeno sintasa hepática al desfosforilarla"}, ans:"e", note:"La insulina activa la fosfatasa PP1, que desfosforila y activa la GS."},
+
+            {id:182, q:"La adrenalina/glucagón activan glucogenólisis mediante...", opts:{a:"Tirosina-quinasa", b:"GMPc", c:"Ca2+", d:"PP1", e:"GPCR -> AMPc -> PKA -> fosforilasa quinasa -> fosforilasa a"}, ans:"e", note:"Cascada de señalización clásica."},
+
+            {id:183, q:"¿Qué hormona se libera en respuesta a la hipoglucemia?", opts:{a:"Insulina", b:"Somatostatina", c:"Leptina", d:"Tiroxina", e:"Glucagón"}, ans:"e", note:"Estimula la producción hepática de glucosa."},
+
+            {id:184, q:"¿Qué hormona activa la gluconeogénesis?", opts:{a:"Insulina", b:"Leptina", c:"Tiroxina", d:"Adrenalina", e:"Glucagón"}, ans:"e", note:"Aumenta la transcripción de PEPCK y activa FBPasa-2."},
+
+            {id:185, q:"¿Cuál de estas asociaciones es incorrecta (M: músculo; H: hígado)?", opts:{a:"Glucagón -> cetogénesis -> M (Falso, M no hace cetogénesis)", b:"Glucagón -> gluconeogénesis -> H", c:"Adrenalina -> glucogenolisis -> H y M", d:"Insulina -> captación glucosa -> M", e:"Insulina -> síntesis glucógeno -> H y M"}, ans:"a", note:"El glucagón actúa en Hígado y Adiposo, no en músculo. Además, la cetogénesis es hepática."},
+
+            {id:186, q:"En el metabolismo del glucógeno el glucagón:", opts:{a:"Activa sintasa", b:"Inhibe fosforilasa", c:"Inhibe quinasas", d:"Degrada muscular", e:"Inhibe a la PP1 al activar a su inhibidor por fosforilación"}, ans:"e", note:"Impide que la fosfatasa revierta la acción de la PKA."},
+
+            {id:187, q:"En hipoglucemia, el glucógeno muscular no restaura la glucemia porque:", opts:{a:"Glucagón inhibe", b:"Adrenalina no estimula", c:"AMPc solo hepático", d:"Sí pasa", e:"Falta Glucosa-6-Fosfatasa (G6P no sale)"}, ans:"e", note:"El músculo carece de la enzima para liberar glucosa a sangre."},
+
+            {id:188, q:"¿Qué enzima es clave en la gluconeogénesis (inicio)?", opts:{a:"Hexocinasa", b:"Glucógeno sintasa", c:"PFK-1", d:"G6Pasa", e:"Piruvato carboxilasa"}, ans:"e", note:"Convierte piruvato en oxalacetato."},
+
+            {id:189, q:"En la formación de glucosa a partir de piruvato se necesita:", opts:{a:"8 ATP", b:"4 ATP", c:"2 ATP", d:"10 ATP", e:"6 ATP (4 ATP + 2 GTP)"}, ans:"e", note:"Coste energético de la gluconeogénesis."},
+
+            {id:190, q:"¿Qué moléculas intervienen en el paso de piruvato a fosfoenolpiruvato?", opts:{a:"Oxalacetato", b:"Succinato", c:"Biotina con ATP", d:"Todas", e:"Son ciertas A y C"}, ans:"e", note:"Requiere carboxilación a oxalacetato (biotina) y luego descarboxilación."},
+
+            {id:191, q:"La enzima piruvato carboxilasa es esencial para:", opts:{a:"Oxidación", b:"Lactato", c:"Lactato a piruvato", d:"PEP a piruvato", e:"Iniciar la gluconeogénesis"}, ans:"e", note:"Paso de rodeo de la piruvato quinasa."},
+
+            {id:192, q:"El oxalacetato para atravesar la membrana mitocondrial debe transformarse en:", opts:{a:"Piruvato", b:"Lactato", c:"Malonato", d:"Fumarato", e:"Malato"}, ans:"e", note:"Lanzadera de malato-aspartato."},
+
+            {id:193, q:"PEP carboxiquinasa (PEPCK) es inhibida por:", opts:{a:"ATP", b:"Citrato", c:"Alanina", d:"NADH", e:"ADP"}, ans:"e", note:"Señal de baja energía inhibe la vía anabólica costosa."},
+
+            {id:194, q:"Piruvato carboxilasa se activa por:", opts:{a:"ADP", b:"AMP", c:"Citrato", d:"F-2,6-BP", e:"Acetil-CoA"}, ans:"e", note:"El Acetil-CoA indica necesidad de oxalacetato (para Krebs o Gluconeogénesis)."},
+
+            {id:195, q:"¿Qué reacción es un paso de la gluconeogénesis?", opts:{a:"Transaminación", b:"Citrato sintasa", c:"Degradación Leucina", d:"Lisina", e:"Piruvato + ATP + CO2 -> Oxalacetato + ADP"}, ans:"e", note:"Reacción de la piruvato carboxilasa."},
+
+            {id:196, q:"El ciclo de Rapoport-Luebering (2,3-BPG):", opts:{a:"En hepatocito", b:"En hematíe", c:"Genera 2,3-BPG", d:"A y C", e:"B y C son ciertas"}, ans:"e", note:"Vía exclusiva del eritrocito para regular afinidad Hb."},
+
+            {id:197, q:"El ciclo de Rapoport-Luebering es:", opts:{a:"Lipolítica", b:"Síntesis grasas", c:"Producción Hb", d:"Ninguna", e:"Una desviación de la vía glucolítica"}, ans:"e", note:"Bypasea la reacción de la PGK (sin ganar ATP)."},
+
+            {id:198, q:"¿Qué órgano NO necesita insulina para captar glucosa?", opts:{a:"Adiposo", b:"Corazón", c:"Leucocitos", d:"Hipófisis", e:"Eritrocitos (y Cerebro, Hígado)"}, ans:"e", note:"Usan GLUT-1 o GLUT-2 (independientes de insulina)."},
+
+            {id:199, q:"La entrada de glucosa en las células del cerebro viene determinada por:", opts:{a:"Insulina", b:"Adenilato ciclasa", c:"Glucagón", d:"A y B", e:"El gradiente de concentración (GLUT-1/3)"}, ans:"e", note:"Difusión facilitada constitutiva."},
+
+            {id:200, q:"¿Qué transportador de glucosa es insulino-dependiente?", opts:{a:"GLUT-1", b:"GLUT-2", c:"GLUT-3", d:"GLUT-4", e:"GLUT-5"}, ans:"d", note:"Se trasloca a la membrana en músculo y adiposo."}
+
+        ];
+
+
+
+        const quizContainer = document.getElementById('quiz-container');
+
+        const scoreSpan = document.getElementById('score');
+
+        
+
+        let score = 0;
+
+        let answeredQuestions = 0;
+
+
+
+        function renderQuiz() {
+
+            questionsDB.forEach((q) => {
+
+                const card = document.createElement('div');
+
+                card.className = 'card';
+
                 
-                // Guardamos la respuesta correcta en el dataset (NO visible, solo lógica)
-                btn.dataset.isCorrect = opt.c;
 
-                btn.innerHTML = `<span class="letter">${letters[idx]})</span> ${opt.t}`;
-                
-                btn.onclick = () => handleAnswer(btn, card, opt.c, item.exp);
-                
-                optsContainer.appendChild(btn);
+                const title = document.createElement('div');
+
+                title.className = 'question-text';
+
+                title.textContent = `${q.id}. ${q.q}`;
+
+                card.appendChild(title);
+
+
+
+                const grid = document.createElement('div');
+
+                grid.className = 'options-grid';
+
+
+
+                Object.keys(q.opts).forEach(key => {
+
+                    const btn = document.createElement('button');
+
+                    btn.className = 'option-btn';
+
+                    btn.innerHTML = `<strong>${key.toUpperCase()})</strong> ${q.opts[key]}`;
+
+                    
+
+                    btn.onclick = () => checkAnswer(card, key, q.ans, q.note, btn);
+
+                    
+
+                    grid.appendChild(btn);
+
+                });
+
+                card.appendChild(grid);
+
+
+
+                const feedback = document.createElement('div');
+
+                feedback.className = 'feedback';
+
+                feedback.innerHTML = `<strong>Correcta: ${q.ans.toUpperCase()}</strong><br>${q.note}`;
+
+                card.appendChild(feedback);
+
+
+
+                quizContainer.appendChild(card);
+
             });
 
-            card.appendChild(optsContainer);
-
-            // Explicación
-            const expDiv = document.createElement('div');
-            expDiv.className = 'explanation';
-            // Clean up explanation tags
-            let cleanExp = item.exp;
-            if (item.exp.includes("[Image")) {
-                 cleanExp = item.exp.replace(/\[Image.*?\]/g, "");
-            }
-            expDiv.innerHTML = `<strong>Explicación:</strong> ${cleanExp}`;
-            card.appendChild(expDiv);
-
-            container.appendChild(card);
-        });
-    }
-
-    function handleAnswer(clickedBtn, card, isCorrect, explanation) {
-        // Bloquear todos los botones de esta tarjeta
-        const allBtns = card.querySelectorAll('.option-btn');
-        allBtns.forEach(b => b.classList.add('disabled'));
-
-        if (isCorrect) {
-            clickedBtn.classList.add('correct');
-            score++;
-            document.getElementById('score').innerText = score;
-        } else {
-            clickedBtn.classList.add('incorrect');
-            // Buscar la correcta y marcarla en verde (usando el dataset, infalible)
-            const correctBtn = Array.from(allBtns).find(b => b.dataset.isCorrect === "true");
-            if (correctBtn) correctBtn.classList.add('correct');
         }
 
-        card.querySelector('.explanation').style.display = 'block';
-    }
 
-    // Iniciar
-    initQuiz();
 
-</script>
+        function checkAnswer(card, selected, correct, note, btn) {
+
+            if(card.classList.contains('answered')) return;
+
+            
+
+            card.classList.add('answered');
+
+            const allBtns = card.querySelectorAll('.option-btn');
+
+            
+
+            if(selected === correct) {
+
+                score++;
+
+                btn.classList.add('correct');
+
+                card.classList.add('correct');
+
+            } else {
+
+                btn.classList.add('incorrect');
+
+                card.classList.add('incorrect');
+
+                allBtns.forEach(b => {
+
+                    if(b.innerHTML.includes(`<strong>${correct.toUpperCase()})`)) {
+
+                        b.classList.add('correct');
+
+                    }
+
+                });
+
+            }
+
+
+
+            scoreSpan.textContent = score;
+
+            card.querySelector('.feedback').style.display = 'block';
+
+        }
+
+
+
+        renderQuiz();
+
+    </script>
+
 </body>
+
 </html>
