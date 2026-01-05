@@ -184,4 +184,70 @@
 
         function renderQuiz() {
             questionsDB.forEach((q) => {
-                const card = do
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                const title = document.createElement('div');
+                title.className = 'question-text';
+                title.textContent = `${q.id}. ${q.q}`;
+                card.appendChild(title);
+
+                const grid = document.createElement('div');
+                grid.className = 'options-grid';
+
+                // barajamos las opciones
+                const entries = Object.entries(q.opts);
+                shuffleArray(entries);
+
+                for (const [key, value] of entries) {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerHTML = `<strong>${key.toUpperCase()})</strong> ${value}`;
+                    
+                    btn.onclick = () => checkAnswer(card, key, q.ans, q.note, btn);
+                    
+                    grid.appendChild(btn);
+                }
+                card.appendChild(grid);
+
+                const feedback = document.createElement('div');
+                feedback.className = 'feedback';
+                feedback.innerHTML = `<strong>Respuesta Correcta: ${q.ans.toUpperCase()}</strong><br>${q.note}`;
+                card.appendChild(feedback);
+
+                quizContainer.appendChild(card);
+            });
+        }
+
+        function checkAnswer(card, selected, correct, note, btn) {
+            if(card.classList.contains('answered')) return;
+            
+            card.classList.add('answered');
+            answeredCount++;
+
+            const allBtns = card.querySelectorAll('.option-btn');
+            
+            if(selected === correct) {
+                score++;
+                btn.classList.add('correct');
+                card.classList.add('correct');
+            } else {
+                btn.classList.add('incorrect');
+                card.classList.add('incorrect');
+                allBtns.forEach(b => {
+                    if(b.innerHTML.includes(`<strong>${correct.toUpperCase()})`)) {
+                        b.classList.add('correct');
+                    }
+                });
+            }
+
+            allBtns.forEach(b => b.classList.add('disabled'));
+
+            scoreSpan.textContent = score;
+            card.querySelector('.feedback').style.display = 'block';
+        }
+
+        renderQuiz();
+    </script>
+</body>
+</html>
