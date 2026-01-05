@@ -50,8 +50,6 @@
         .option-btn:hover:not(.disabled) {
             background-color: #e2e6ea;
         }
-        
-        /* Estilos de corrección */
         .option-btn.correct {
             background-color: #d4edda;
             border-color: #c3e6cb;
@@ -65,8 +63,8 @@
         .option-btn.disabled {
             cursor: default;
             opacity: 0.9;
+            pointer-events: none;
         }
-
         .reset-btn {
             display: block;
             width: 100%;
@@ -83,20 +81,28 @@
         .reset-btn:hover {
             background-color: #2980b9;
         }
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            font-size: 0.9em;
+            display: none;
+        }
     </style>
 </head>
 <body>
 
     <h1>Bloque IV Bioquímica - Álvaro Condón</h1>
-    <div id="quiz-container">
-        </div>
-    <button class="reset-btn" onclick="location.reload()">Reiniciar Test (Barajar Opciones)</button>
+    <div id="quiz-container"></div>
+    <button class="reset-btn" onclick="renderQuiz()">Reiniciar Test (Barajar Opciones)</button>
 
 <script>
-    // Base de datos de preguntas extraídas y corregidas
+    // Base de datos de preguntas: he añadido una explicación breve a cada una
     const questions = [
         {
             text: "Cuál de estas enzimas no tiene correctamente asignado el número de la clasificación de Linneo:",
+            explanation: "Las hidroxilasas son oxidorreductasas (clase 1), no hidrolasas (clase 3).",
             options: [
                 { text: "Fosfoglucomutasa -> 5", correct: false },
                 { text: "ALT -> 2", correct: false },
@@ -107,6 +113,7 @@
         },
         {
             text: "A qué referencia la expresión matemática (V = Vmax [S] / (Km + [S])):",
+            explanation: "Es la ecuación de Michaelis-Menten, que describe cinética enzimática hiperbólica de muchas enzimas de una sola subunidad.",
             options: [
                 { text: "A la ecuación de Michaelis-Menten", correct: true },
                 { text: "A la ecuación de Henderson- Hasselbach", correct: false },
@@ -117,6 +124,7 @@
         },
         {
             text: "La expresión α= 1 + [I] / KI en cinética enzimática explica:",
+            explanation: "α cuantifica cuánto se modifican Km y/o Vmax en presencia de un inhibidor en función de su concentración y afinidad (Ki).",
             options: [
                 { text: "Todas son ciertas", correct: true },
                 { text: "La modificación que experimenta Km y/o Vmáx en presencia de inhibidor enzimático", correct: false },
@@ -127,6 +135,7 @@
         },
         {
             text: "Dos rectas que representan una cinética enzimática en ausencia y en presencia de inhibidor se cortan en un mismo punto en el eje de las X. El inhibidor es:",
+            explanation: "Si el corte en X (−1/Km) es el mismo, Km no cambia y quien cambia es Vmax → inhibición no competitiva clásica.",
             options: [
                 { text: "No competitivo", correct: true },
                 { text: "Competitivo", correct: false },
@@ -137,6 +146,7 @@
         },
         {
             text: "Dos rectas representan la cinética enzimática en ausencia y en presencia del inhibidor. Se cortan en un mismo punto en el eje de las Y. El inhibidor es:",
+            explanation: "Si el corte en Y (1/Vmax) es igual, Vmax no cambia y aumenta Km → inhibición competitiva.",
             options: [
                 { text: "Competitivo", correct: true },
                 { text: "Mixto", correct: false },
@@ -147,6 +157,7 @@
         },
         {
             text: "Cuál de estas afirmaciones es incorrecta respecto a la quimiotripsina:",
+            explanation: "La quimiotripsina realiza un ataque nucleófilo (no electrófilo) desde el OH de la serina sobre el carbono carbonilo del sustrato.",
             options: [
                 { text: "La triada catalítica del centro activo es serina, histidina, aspartato", correct: false },
                 { text: "Es una serín proteasa", correct: false },
@@ -157,6 +168,7 @@
         },
         {
             text: "Cuál de estas asociaciones es incorrecta respecto al mecanismo de acción de las coenzimas:",
+            explanation: "NADP+ actúa por transferencia de ion hidruro, no mediante semirreducción formando radical libre estable.",
             options: [
                 { text: "TPP-> ion iluro", correct: false },
                 { text: "CoA-> enlace tioléster", correct: false },
@@ -167,6 +179,7 @@
         },
         {
             text: "Indica qué asociación no es correcta entre vitamina, coenzima que deriva de ella y patología que origina su carencia:",
+            explanation: "La vitamina B5 se relaciona con la CoA, pero su déficit no produce beri-beri (eso es típico de B1).",
             options: [
                 { text: "Vit. B6-> PLP ->anemia microcítica", correct: false },
                 { text: "Vit. B1->TPP -> Síndrome de Wernicke-Korsakov", correct: false },
@@ -176,7 +189,8 @@
             ]
         },
         {
-            text: "Indica que asociación no es correcta entre vitamina, coenzima derivada y patología que origina su carencia (Repetida variante):",
+            text: "Indica que asociación no es correcta entre vitamina, coenzima derivada y patología que origina su carencia:",
+            explanation: "El síndrome de Wernicke-Korsakoff se asocia a déficit de tiamina (B1), no de B6/PLP.",
             options: [
                 { text: "Vit B12 > 5’-desoxiadenosilcobalamina > anemia megaloblástica", correct: false },
                 { text: "Vit B1 > TPP > beri-beri", correct: false },
@@ -187,6 +201,7 @@
         },
         {
             text: "Qué función atribuida a la coenzima no es la correcta:",
+            explanation: "THB (tetrahidrobiopterina) participa en hidroxilaciones, no en transporte de grupos metilo; eso corresponde a SAM.",
             options: [
                 { text: "THB > transporte de metilos", correct: true },
                 { text: "THF > transporte de restos monocarbonados", correct: false },
@@ -197,6 +212,7 @@
         },
         {
             text: "Cuál de estas siglas está incorrectamente traducida:",
+            explanation: "TPP es tiamina pirofosfato, no “trifosfato de fosfonucleósido”.",
             options: [
                 { text: "THF : ácido tetrahidrofólico", correct: false },
                 { text: "NAD: nicotinamida adenina dinucleótido", correct: false },
@@ -207,6 +223,7 @@
         },
         {
             text: "El atrapamiento de folatos hace referencia a una deficiencia vitamínica:",
+            explanation: "Sin B12 no se puede regenerar THF desde N5-metil-THF, quedando los folatos atrapados en esa forma.",
             options: [
                 { text: "Déficit de cobalamina (B12)", correct: true },
                 { text: "Déficit de tiamina", correct: false },
@@ -217,6 +234,7 @@
         },
         {
             text: "Una enzima:",
+            explanation: "Una enzima acelera la reacción disminuyendo la energía de activación, pero no cambia el balance energético global.",
             options: [
                 { text: "Modifica la velocidad de la reacción", correct: true },
                 { text: "Afecta al balance energético de la reacción", correct: false },
@@ -227,6 +245,7 @@
         },
         {
             text: "El sitio alostérico de una enzima:",
+            explanation: "No todas las enzimas tienen sitio alostérico y éste no coincide con el centro activo ni solo une activadores.",
             options: [
                 { text: "Todas son falsas", correct: true },
                 { text: "Está presente en todas las enzimas", correct: false },
@@ -237,6 +256,7 @@
         },
         {
             text: "La influencia de los catalizadores sobre la velocidad de las reacciones se debe a que:",
+            explanation: "Un catalizador disminuye la energía de activación, haciendo más rápida la reacción sin alterar ΔG.",
             options: [
                 { text: "Disminuyen la energía de activación de las reacciones", correct: true },
                 { text: "Convierten en exotérmicas a las reacciones endotérmicas", correct: false },
@@ -247,6 +267,7 @@
         },
         {
             text: "La concentración de sustrato con la que se consigue saturar a la mitad de la enzima presente en una reacción, coincide en su valor numérico con el de:",
+            explanation: "Por definición, Km es la concentración de sustrato a la cual se alcanza la mitad de Vmax.",
             options: [
                 { text: "La Km de la reacción que se considera", correct: true },
                 { text: "La Vmax de la reacción que se considera", correct: false },
@@ -257,6 +278,7 @@
         },
         {
             text: "Un inhibidor competitivo de carácter reversible:",
+            explanation: "Compitiendo por el centro activo aumenta la pendiente en Lineweaver-Burk (KM aparente mayor) sin alterar Vmax.",
             options: [
                 { text: "A mayor concentración de inhibidor, mayor pendiente de la recta de Lineweaver-Burk", correct: true },
                 { text: "Altera la Vmax de la reacción", correct: false },
@@ -267,6 +289,7 @@
         },
         {
             text: "Cuál de estas afirmaciones es cierta en relación con el NADP+:",
+            explanation: "NADP+ es la forma oxidada del coenzima; cuando acepta hidruro se convierte en NADPH.",
             options: [
                 { text: "Es la forma oxidada del coenzima", correct: true },
                 { text: "Es la forma activa del coenzima", correct: false },
@@ -277,6 +300,7 @@
         },
         {
             text: "Cuál de estos coenzimas interviene en procesos redox:",
+            explanation: "Los coenzimas nicotínicos NAD+/NADP+ transportan equivalentes reductores (H−).",
             options: [
                 { text: "NAD+/NADP+", correct: true },
                 { text: "THF", correct: false },
@@ -287,6 +311,7 @@
         },
         {
             text: "Cuál de estos coenzimas es vitamínico:",
+            explanation: "NADP+ deriva de niacina (vitamina B3), por eso se considera coenzima vitamínico.",
             options: [
                 { text: "NADP+", correct: true },
                 { text: "Ácido lipoico", correct: false },
@@ -297,6 +322,7 @@
         },
         {
             text: "Cuál de estas asociaciones es incorrecta:",
+            explanation: "PLP no contiene anillo de nicotinamida; ese anillo pertenece a NAD+/NADP+.",
             options: [
                 { text: "PLP-> anillo nicotinamida", correct: true },
                 { text: "Biotina-> anillo imidazol", correct: false },
@@ -307,6 +333,7 @@
         },
         {
             text: "El mecanismo de acción conlleva la formación de una base de Schiff en:",
+            explanation: "PLP forma un enlace de tipo base de Schiff con el grupo amino del aminoácido en reacciones de transaminación.",
             options: [
                 { text: "PLP", correct: true },
                 { text: "Biotina", correct: false },
@@ -317,6 +344,7 @@
         },
         {
             text: "Qué asociación es incorrecta respecto a la contribución del aminoácido a la función/propiedad de la proteína:",
+            explanation: "Enzimáticamente el nucleófilo clásico suele ser serina, cisteína o histidina, no lisina en la mayoría de casos típicos de catalisis nucleófila.",
             options: [
                 { text: "Lisina -> ataque nucleófilo al sustrato", correct: true },
                 { text: "Aspartato -> carácter ácido de la proteína", correct: false },
@@ -326,7 +354,8 @@
             ]
         },
         {
-            text: "Cuál de estas afirmaciones es incorrecta respecto a las serín proteasas (Repetida):",
+            text: "Cuál de estas afirmaciones es incorrecta respecto a las serín proteasas:",
+            explanation: "En la mayoría de serín proteasas la triada es Ser-His-Asp, no Ser-His-Glu.",
             options: [
                 { text: "La triada catalítica del centro activo es serina, histidina, glutamato", correct: true },
                 { text: "Rompen enlaces peptídicos", correct: false },
@@ -336,7 +365,8 @@
             ]
         },
         {
-            text: "Cuál de estas asociaciones es incorrecta respecto al mecanismo de acción de las coenzimas (Repetida):",
+            text: "Cuál de estas asociaciones es incorrecta respecto al mecanismo de acción de las coenzimas:",
+            explanation: "THF transporta unidades monocarbonadas, no forma bases de Schiff; eso es característico de PLP.",
             options: [
                 { text: "THF-> formación base de Schiff", correct: true },
                 { text: "CoA-> enlace tioléster", correct: false },
@@ -347,6 +377,7 @@
         },
         {
             text: "Dos rectas representan la cinética enzimática en ausencia y en presencia de inhibidor. Se cortan en el eje X. Cuál de las siguientes afirmaciones es correcta:",
+            explanation: "Si el corte en X es el mismo, Km no cambia, pero Vmax sí se ve modificada por el inhibidor.",
             options: [
                 { text: "La Vmax de esta enzima varía en presencia de inhibidor", correct: true },
                 { text: "La recta A representa la cinética del inhibidor", correct: false },
@@ -357,6 +388,7 @@
         },
         {
             text: "El mecanismo de acción conlleva el transporte de un ión hidruro en:",
+            explanation: "NAD+/NADP+ aceptan o ceden un ión hidruro (H−) en las reacciones redox.",
             options: [
                 { text: "NAD+/NADP+", correct: true },
                 { text: "CoQ10", correct: false },
@@ -367,6 +399,7 @@
         },
         {
             text: "El mecanismo de acción conlleva una rotura hemolítica dentro del coenzima en:",
+            explanation: "En coenzima B12 se produce una rotura homolítica del enlace C–Co generando radicales.",
             options: [
                 { text: "Coenzima.B12", correct: true },
                 { text: "Biotina", correct: false },
@@ -377,6 +410,7 @@
         },
         {
             text: "Durante el transporte de hidrógeno se forman radicales en el paso intermedio en:",
+            explanation: "La coenzima Q (ubiquinona) puede existir como radical semiquinona en el transporte electrónico mitocondrial.",
             options: [
                 { text: "CoQ10", correct: true },
                 { text: "Vit. C", correct: false },
@@ -387,6 +421,7 @@
         },
         {
             text: "El déficit de formas monocarbonadas a expensas del acúmulo de N5-metil-THF:",
+            explanation: "En el atrapamiento de folatos hay acúmulo de N5-metil-THF con déficit funcional de otras formas monocarbonadas.",
             options: [
                 { text: "Todas son ciertas", correct: true },
                 { text: "Se debe a un exceso de vit.B12", correct: false },
@@ -397,6 +432,7 @@
         },
         {
             text: "Cuál de estos átomos está en condiciones de provocar un ataque electrófilo sobre el sustrato:",
+            explanation: "Los centros metálicos pueden actuar como ácidos de Lewis realizando ataques electrófilos.",
             options: [
                 { text: "Un metal de transición", correct: true },
                 { text: "Un nitrógeno cuaternario", correct: false },
@@ -407,6 +443,7 @@
         },
         {
             text: "El acoplamiento inducido hace referencia a:",
+            explanation: "El modelo de acoplamiento inducido describe cómo la enzima cambia de conformación tras unirse el sustrato.",
             options: [
                 { text: "Un modelo de encaje entre enzima y sustrato", correct: true },
                 { text: "El orden de actuación de las enzimas", correct: false },
@@ -417,6 +454,7 @@
         },
         {
             text: "Las enzimas influyen en la cinética de la reacción que catalizan porque:",
+            explanation: "Disminuyen la energía de activación, aumentando la velocidad pero sin cambiar el equilibrio final.",
             options: [
                 { text: "Aumentan la velocidad de la reacción al disminuir la energía de activación", correct: true },
                 { text: "Disminuyen la velocidad de la reacción al aumentar la energía de activación", correct: false },
@@ -427,6 +465,7 @@
         },
         {
             text: "Respecto a KM es falso que:",
+            explanation: "Km tiene unidades de concentración (M), no de tiempo (s).",
             options: [
                 { text: "Viene expresada en segundos", correct: true },
                 { text: "Es la constante de Michaelis", correct: false },
@@ -437,6 +476,7 @@
         },
         {
             text: "Cuando hablamos de KM o vmax aparente es falso que:",
+            explanation: "α es un factor de inhibición, no un grado de disociación del sustrato.",
             options: [
                 { text: "El factor α es el grado de disociación del sustrato", correct: true },
                 { text: "Es la modificación que experimentan KM o vmax en presencia de un inhibidor enzimático", correct: false },
@@ -447,6 +487,7 @@
         },
         {
             text: "La representación gráfica de Lineweaver-Burck es la de una ecuación y=ax+b, donde:",
+            explanation: "En la doble recíproca, la pendiente es KM/Vmax, por eso a = KM/Vmax.",
             options: [
                 { text: "a es la pendiente de la recta = KM / vmax", correct: true },
                 { text: "a es la pendiente de la recta = KM x vmax", correct: false },
@@ -457,6 +498,7 @@
         },
         {
             text: "Un inhibidor competitivo de carácter reversible:",
+            explanation: "En este tipo, Vmax no cambia y se modifica KM (aumenta). Las otras opciones describen justo eso.",
             options: [
                 { text: "Todas son ciertas", correct: true },
                 { text: "No afecta a la Vmax de la reacción enzimática", correct: false },
@@ -467,6 +509,7 @@
         },
         {
             text: "Es falso en relación con la lisozima que:",
+            explanation: "La lisozima es una hidrolasa (clase 3), no una oxidorreductasa (clase 1).",
             options: [
                 { text: "Es una enzima del tipo 1 de la clasificación de Linneo", correct: true },
                 { text: "Hidroliza enlaces glucosídicos", correct: false },
@@ -477,6 +520,7 @@
         },
         {
             text: "Las serín proteasas presentan una triada catalítica en el centro activo constituida por:",
+            explanation: "La triada clásica es Ser-His-Asp, fundamental para la catálisis.",
             options: [
                 { text: "Serina, histidina y aspartato", correct: true },
                 { text: "Serina, histidina y tirosina", correct: false },
@@ -487,6 +531,7 @@
         },
         {
             text: "Cuál de estas asociaciones es incorrecta:",
+            explanation: "El ácido lipoico no es la vitamina B12; B12 es cobalamina.",
             options: [
                 { text: "Ácido lipoico-> vitamina B12", correct: true },
                 { text: "TPP->vitamina B1", correct: false },
@@ -497,6 +542,7 @@
         },
         {
             text: "Cuál de estos coenzimas no interviene en procesos redox:",
+            explanation: "SAM transfiere grupos metilo, no participa como tal en reacciones redox clásicas.",
             options: [
                 { text: "S-adenosilmetionina", correct: true },
                 { text: "Ácido lipoico", correct: false },
@@ -507,6 +553,7 @@
         },
         {
             text: "Cuál de estos coenzimas es nucleotídico:",
+            explanation: "NADP+ contiene nucleótidos (adenina + ribosa + fosfatos).",
             options: [
                 { text: "NADP+", correct: true },
                 { text: "PLP", correct: false },
@@ -517,6 +564,7 @@
         },
         {
             text: "Cuál de estas asociaciones es incorrecta (Estructura anillo):",
+            explanation: "PLP no tiene anillos tetrapirrólicos; éstos son propios del hemo o clorofila.",
             options: [
                 { text: "PLP-> anillos tetrapirrólicos", correct: true },
                 { text: "Biotina-> anillo imidazol", correct: false },
@@ -527,6 +575,7 @@
         },
         {
             text: "Cuál de estas asociaciones es incorrecta (Mecanismo):",
+            explanation: "PLP no transporta hidruro; su mecanismo es vía base de Schiff con el aminoácido.",
             options: [
                 { text: "PLP-> transporte de un ión hidruro", correct: true },
                 { text: "Biotina-> formación carboxibiotina", correct: false },
@@ -537,6 +586,7 @@
         },
         {
             text: "Cuál de estas asociaciones es incorrecta (Siglas):",
+            explanation: "THF es tetrahidrofólico, no tetrahidroflavina.",
             options: [
                 { text: "THF-> tetrahidroflavina", correct: true },
                 { text: "TPP-> tiamín pirofosfato", correct: false },
@@ -547,6 +597,7 @@
         },
         {
             text: "Qué parte de su estructura es coincidente entre la proteína transportadora de grupos acilo (ACP) y el CoA:",
+            explanation: "Ambos comparten un brazo de fosfopanteteína que lleva el grupo acilo.",
             options: [
                 { text: "Un resto de fosfopanteteína", correct: true },
                 { text: "Un anillo imidazol", correct: false },
@@ -557,6 +608,7 @@
         },
         {
             text: "El TPP interviene en las siguientes vías metabólicas:",
+            explanation: "TPP participa en descarboxilaciones oxidativas, vía de las pentosas y en el complejo piruvato deshidrogenasa.",
             options: [
                 { text: "Todas son ciertas", correct: true },
                 { text: "Vía de las pentosas fosfato", correct: false },
@@ -567,6 +619,7 @@
         },
         {
             text: "En las reacciones de transaminación se forma una base de Schiff entre:",
+            explanation: "La base de Schiff se forma entre el grupo aldehído del PLP y el amino α del aminoácido.",
             options: [
                 { text: "El grupo aldehido del coenzima y el amino en posición α del aminoácido", correct: true },
                 { text: "El grupo amino del coenzima y el carboxilo en posición α del aminoácido", correct: false },
@@ -576,7 +629,8 @@
             ]
         },
         {
-            text: "Qué es falso respecto al atrapamiento de folatos (Repetida):",
+            text: "Qué es falso respecto al atrapamiento de folatos:",
+            explanation: "No se debe a déficit de vitamina C; se relaciona con déficit de B12 y acumulación de N5-metil-THF.",
             options: [
                 { text: "Carencia de vit. C", correct: true },
                 { text: "Acúmulo de homocisteína", correct: false },
@@ -586,7 +640,8 @@
             ]
         },
         {
-            text: "Cuál de estas afirmaciones es cierta en relación con el NADP+ (Repetida):",
+            text: "Cuál de estas afirmaciones es cierta en relación con el NADP+:",
+            explanation: "NADP+ es un coenzima nicotínico derivado de niacina (vitamina B3).",
             options: [
                 { text: "Es un coenzima nicotínico", correct: true },
                 { text: "Es la forma activa del coenzima", correct: false },
@@ -597,6 +652,7 @@
         },
         {
             text: "Cuando una enzima se fosforila, ¿ qué mecanismo de la regulación de la actividad enzimática está en juego ?",
+            explanation: "La fosforilación es una modificación covalente reversible que cambia la actividad de la enzima.",
             options: [
                 { text: "Modificación covalente", correct: true },
                 { text: "Regulación alostérica", correct: false },
@@ -607,6 +663,7 @@
         },
         {
             text: "Cuál de estos coenzimas no es vitamínico:",
+            explanation: "La lipoamida deriva del ácido lipoico, que se sintetiza en el organismo; no es una vitamina clásica.",
             options: [
                 { text: "Lipoamida", correct: true },
                 { text: "PLP", correct: false },
@@ -617,6 +674,7 @@
         },
         {
             text: "El coenzima cuyo mecanismo de acción consiste en formar una base de Schiff con el sustrato es:",
+            explanation: "PLP forma una base de Schiff con el aminoácido en reacciones de transaminación y otras.",
             options: [
                 { text: "Fosfato de piridoxal (PLP)", correct: true },
                 { text: "Metilcobalamina", correct: false },
@@ -626,7 +684,8 @@
             ]
         },
         {
-            text: "Qué es falso respecto al atrapamiento de folatos (Repetida variante):",
+            text: "Qué es falso respecto al atrapamiento de folatos (variante):",
+            explanation: "De nuevo, la vitamina implicada no es la C sino la B12.",
             options: [
                 { text: "Carencia de vitamina C", correct: true },
                 { text: "Acúmulo de homocisteína", correct: false },
@@ -637,6 +696,7 @@
         },
         {
             text: "Cuál de estas asociaciones no hace referencia a un coenzima de óxidorreducción:",
+            explanation: "DHF/THF son coenzimas de transferencia de unidades C1, no coenzimas redox típicos.",
             options: [
                 { text: "DHF; THF; folato", correct: true },
                 { text: "NAD+; NADH(H+); coenzimas nicotínicos", correct: false },
@@ -647,6 +707,7 @@
         },
         {
             text: "Cuál de estos coenzimas funciona como grupo prostético de la enzima:",
+            explanation: "FMN/FAD suelen ir fuertemente unidos a su enzima (flavoproteínas), actuando como grupos prostéticos.",
             options: [
                 { text: "FMN/FAD", correct: true },
                 { text: "NADP+", correct: false },
@@ -657,6 +718,7 @@
         },
         {
             text: "Si dos rectas que representan la cinética enzimática en ausencia y en presencia de inhibidor se cortan en un mismo punto en el eje X es verdad que:",
+            explanation: "En el no competitivo puro Km no varía y Vmax disminuye.",
             options: [
                 { text: "El inhibidor es de tipo no competitivo", correct: true },
                 { text: "El punto de corte en el eje de las Y es -1/aKM", correct: false },
@@ -665,7 +727,8 @@
             ]
         },
         {
-            text: "Respecto a la estructura de la coenzima, cuál de estas asociaciones es incorrecta (Repetida):",
+            text: "Respecto a la estructura de la coenzima, cuál de estas asociaciones es incorrecta:",
+            explanation: "PLP no contiene anillos tetrapirrólicos (propios del hemo).",
             options: [
                 { text: "PLP ---> Anillos tetrapirrólicos", correct: true },
                 { text: "FMN/FAD ---> Anillo isoaloxacina", correct: false },
@@ -674,7 +737,8 @@
             ]
         },
         {
-            text: "A qué hace referencia la expresión matemática V0 = Vmax [S] / (KM + [S]) (Repetida):",
+            text: "A qué hace referencia la expresión matemática V0 = Vmax [S] / (KM + [S]):",
+            explanation: "De nuevo es la ecuación de Michaelis-Menten para cinética clásica.",
             options: [
                 { text: "A la ecuación de Michaelis-Menten", correct: true },
                 { text: "A la ecuación de Lineweaver-Burk", correct: false },
@@ -683,7 +747,8 @@
             ]
         },
         {
-            text: "Indica qué asociación no es correcta entre vitamina, coenzima derivada y patología que origina su carencia (Repetida variante 3):",
+            text: "Indica qué asociación no es correcta entre vitamina, coenzima derivada y patología que origina su carencia:",
+            explanation: "El síndrome de Wernicke-Korsakoff se debe a B1, no a déficit de B6/PLP.",
             options: [
                 { text: "Vit. B1  TPP  beri-beri", correct: false },
                 { text: "Vit. B6  PLP  síndrome de Wernicke-Korsakoff", correct: true },
@@ -692,7 +757,8 @@
             ]
         },
         {
-            text: "Cuál de estas afirmaciones es incorrecta respecto a las serín proteasas (Repetida variante):",
+            text: "Cuál de estas afirmaciones es incorrecta respecto a las serín proteasas:",
+            explanation: "La triada es Ser-His-Asp, no Ser-His-Glu.",
             options: [
                 { text: "La triada catalítica del centro activo es serina, histidina, glutamato", correct: true },
                 { text: "En el sitio catalítico se produce un ataque nucleófilo sobre el sustrato", correct: false },
@@ -702,6 +768,7 @@
         },
         {
             text: "Cuando hablamos de Km o vmax aparente qué es incorrecto:",
+            explanation: "La variación se debe al inhibidor (α), no a grados de disociación del sustrato.",
             options: [
                 { text: "Que existe una variación en dichos parámetros cinéticos debido al grado de disociación α del sustrato", correct: true },
                 { text: "Que la KM o vmax característicos de la enzima se modifican en presencia de un inhibidor enzimático", correct: false },
@@ -710,7 +777,8 @@
             ]
         },
         {
-            text: "Cuál de estas asociaciones es incorrecta respecto al mecanismo de acción de las coenzimas (Repetida variante):",
+            text: "Cuál de estas asociaciones es incorrecta respecto al mecanismo de acción de las coenzimas:",
+            explanation: "THF no forma bases de Schiff; eso es función de PLP.",
             options: [
                 { text: "THF  formación base de Schiff", correct: true },
                 { text: "TPP  formación del ión iluro", correct: false },
@@ -719,7 +787,8 @@
             ]
         },
         {
-            text: "A qué hace referencia la expresión matemática (Repetida):",
+            text: "A qué hace referencia la expresión matemática V = Vmax [S] / (Km + [S]):",
+            explanation: "Otra vez, se refiere a la ecuación de Michaelis-Menten.",
             options: [
                 { text: "A la ecuación de Michaelis-Menten", correct: true },
                 { text: "a la ecuación de Henderson-Hasselbach", correct: false },
@@ -729,7 +798,8 @@
             ]
         },
         {
-            text: "Cuál de estas asociaciones es incorrecta respecto al mecanismo de acción de los coenzimas (Repetida variante):",
+            text: "Cuál de estas asociaciones es incorrecta respecto al mecanismo de acción de los coenzimas:",
+            explanation: "TPP forma un carbanión estabilizado (iluro), no transporta hidruro.",
             options: [
                 { text: "TPP → ión hidruro", correct: true },
                 { text: "CoA → enlace tioléster", correct: false },
@@ -739,7 +809,8 @@
             ]
         },
         {
-            text: "Indica qué asociación no es correcta entre vitamina, coenzima derivado y patología que origina su carencia (Repetida variante 4):",
+            text: "Indica qué asociación no es correcta entre vitamina, coenzima derivado y patología que origina su carencia:",
+            explanation: "La B12 se relaciona con anemia megaloblástica, no con Wernicke-Korsakoff.",
             options: [
                 { text: "Vit. B12 → 5’-desoxiadenosilcobalamina →síndrome de Wernicke- Korsakov", correct: true },
                 { text: "Vit. B1 → TPP → Beri-beri", correct: false },
@@ -750,6 +821,7 @@
         },
         {
             text: "Según la clasificación de Linneo una hidroxilasa es una:",
+            explanation: "Hidroxilasa cataliza reacciones redox: oxidorreductasa (clase 1).",
             options: [
                 { text: "1. Oxidorreductasa", correct: true },
                 { text: "2. Transferasa", correct: false },
@@ -760,6 +832,7 @@
         },
         {
             text: "Qué es la Km:",
+            explanation: "Km es constante de Michaelis, concentración de sustrato a 1/2 Vmax y refleja afinidad (inversa).",
             options: [
                 { text: "Todas son correctas", correct: true },
                 { text: "Es la constante de Michaelis", correct: false },
@@ -770,6 +843,7 @@
         },
         {
             text: "Indica qué afirmación es incorrecta:",
+            explanation: "Los inhibidores irreversibles dependen del tiempo de exposición: cuanto más tiempo, mayor inactivación.",
             options: [
                 { text: "Si la KESI es igual a la KEI entonces la unión de S a E no afecta al de I", correct: false },
                 { text: "Si la KEI es igual a infinito entonces I no se puede combinar con E, solo con ES", correct: false },
@@ -779,6 +853,7 @@
         },
         {
             text: "En una inhibición no competitiva (INC), selecciona la afirmación correcta:",
+            explanation: "En la no competitiva pura el inhibidor se une igual a E y ES (KESI = KEI).",
             options: [
                 { text: "KESI = KEI", correct: true },
                 { text: "En presencia de un INC la Km aumenta", correct: false },
@@ -788,6 +863,7 @@
         },
         {
             text: "Identifica la afirmación incorrecta:",
+            explanation: "Una cinética hiperbólica implica saturabilidad; no es propia de procesos estrictamente no saturables.",
             options: [
                 { text: "Cinéticas hiperbólicas implican procesos no saturables", correct: true },
                 { text: "En las cinéticas de pre-equilibrio rápido (E) es semejante a la (S) y suelen ser raras en procesos bioquímicos", correct: false },
@@ -797,6 +873,7 @@
         },
         {
             text: "En el proceso de transaminación interviene:",
+            explanation: "En transaminación PLP se convierte en PMP (fosfato de piridoxamina); ambas formas participan.",
             options: [
                 { text: "Fosfato de piridoxal (B)", correct: false },
                 { text: "Fosfato de piridoxamina (C)", correct: false },
@@ -807,6 +884,7 @@
         },
         {
             text: "Indique qué enzimas participan en la transdesaminación:",
+            explanation: "La transdesaminación implica transaminasas y una glutamato deshidrogenasa/oxidasa.",
             options: [
                 { text: "La transaminasa glutámica", correct: false },
                 { text: "La glutámico oxidasa", correct: false },
@@ -848,35 +926,43 @@
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.textContent = opt.text;
-                
-                btn.onclick = () => checkAnswer(btn, opt.correct, optionsList);
+                btn.dataset.correct = opt.correct ? 'true' : 'false';
+
+                btn.onclick = () => checkAnswer(btn, optionsList, feedbackDiv);
 
                 optionsList.appendChild(btn);
             });
 
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'feedback';
+            feedbackDiv.textContent = q.explanation;
+
             questionDiv.appendChild(title);
             questionDiv.appendChild(optionsList);
+            questionDiv.appendChild(feedbackDiv);
             quizContainer.appendChild(questionDiv);
         });
     }
 
-    function checkAnswer(btn, isCorrect, optionsList) {
+    function checkAnswer(btn, optionsList, feedbackDiv) {
         const buttons = optionsList.querySelectorAll('.option-btn');
         buttons.forEach(b => {
             b.classList.add('disabled');
             b.onclick = null;
+            if (b.dataset.correct === 'true') {
+                b.classList.add('correct');
+            }
         });
 
-        if (isCorrect) {
-            btn.classList.add('correct');
-        } else {
+        if (btn.dataset.correct !== 'true') {
             btn.classList.add('incorrect');
         }
+
+        feedbackDiv.style.display = 'block';
     }
 
     // Iniciar
     renderQuiz();
-
 </script>
 
 </body>
