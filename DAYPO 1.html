@@ -83,6 +83,14 @@
         button#reset:hover {
             background-color: #004494;
         }
+        .feedback {
+            margin-top: 12px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-size: 0.9em;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -96,20 +104,22 @@
     <div id="quiz-area"></div>
 
 <script>
-    // Base de datos de preguntas extraída y corregida
+    // Base de datos de preguntas (sin pistas) + explicación breve
     const questions = [
         {
             text: "1. El suero fisiológico es una solución:",
+            explanation: "El suero fisiológico es una disolución de NaCl al 0,9% (~0,154 M) con una osmolaridad cercana a 0,308 Osm, similar a la del plasma ⇒ es isotónica.",
             options: [
                 { text: "Isotónica con el plasma", correct: true },
-                { text: "0,32 M (32 mmoles/L) (Falso, es 0.154M)", correct: false },
-                { text: "9,5g/L de ClK (Falso, es NaCl)", correct: false },
-                { text: "0,16 osmolar respecto al medio interno (Falso, es aprox 0.308 Osm)", correct: false },
-                { text: "Que lisaría hematíes en suspensión", correct: false }
+                { text: "0,32 M de NaCl", correct: false },
+                { text: "9,5 g/L de KCl", correct: false },
+                { text: "0,16 osmolar respecto al medio interno", correct: false },
+                { text: "Hipotónica para los hematíes", correct: false }
             ]
         },
         {
-            text: "2. Respecto al método Lowry, el Folin-Ciocalteu tiene un pico de absorción a:",
+            text: "2. Respecto al método Lowry, el reactivo de Folin-Ciocalteu tiene un pico de absorción a:",
+            explanation: "En el método de Lowry, el Folin-Ciocalteu reducido presenta un máximo de absorción alrededor de 750 nm.",
             options: [
                 { text: "750 nm", correct: true },
                 { text: "280 nm", correct: false },
@@ -119,17 +129,19 @@
             ]
         },
         {
-            text: "3. El β-mercaptoetanol en la técnica western blotting permite:",
+            text: "3. El β-mercaptoetanol en la técnica de western blotting permite:",
+            explanation: "El β-mercaptoetanol es un agente reductor que rompe puentes disulfuro, ayudando a desnaturalizar las proteínas.",
             options: [
-                { text: "Romper puente disulfuro en dichas proteínas", correct: true },
-                { text: "Cargar negativamente las proteínas a separar (Esto lo hace el SDS)", correct: false },
-                { text: "Bloquear la membrana de transferencia evitando reacciones inespecíficas en la misma", correct: false },
-                { text: "Facilitar la unión de Ac específicos a la proteína buscada", correct: false },
-                { text: "Permitir el revelado de la banda a estudiar mediante quimioluminiscencia", correct: false }
+                { text: "Romper los puentes disulfuro de las proteínas", correct: true },
+                { text: "Cargar negativamente las proteínas a separar", correct: false },
+                { text: "Bloquear la membrana de transferencia", correct: false },
+                { text: "Facilitar la unión del anticuerpo secundario", correct: false },
+                { text: "Generar la señal de quimioluminiscencia", correct: false }
             ]
         },
         {
             text: "4. Una centrifugación isopícnica separa las partículas en función de su:",
+            explanation: "En una centrifugación isopícnica cada partícula migra hasta la zona donde la densidad del medio coincide con su propia densidad.",
             options: [
                 { text: "Densidad", correct: true },
                 { text: "Forma", correct: false },
@@ -139,57 +151,63 @@
             ]
         },
         {
-            text: "5. Una disolución que contiene 2 mEq-g/ml de ClNa, tiene en litro:",
+            text: "5. Una disolución que contiene 2 Eq-g/L de NaCl tiene en un litro:",
+            explanation: "Si hay 2 equivalentes-gramo por litro de NaCl, eso equivale a 2 moles, 2000 mmol y una normalidad de 2 N.",
             options: [
-                { text: "todas son ciertas", correct: true },
-                { text: "2 mol de ClNa", correct: false },
-                { text: "2 Eq-g de ClNa", correct: false },
-                { text: "2000 mmol de ClNa", correct: false },
-                { text: "2 N de Cl Na", correct: false }
+                { text: "Todas las afirmaciones son correctas", correct: true },
+                { text: "2 moles de NaCl", correct: false },
+                { text: "2 Eq-g de NaCl", correct: false },
+                { text: "2000 mmol de NaCl", correct: false },
+                { text: "2 N de NaCl", correct: false }
             ]
         },
         {
             text: "6. ¿Qué cantidad de agua hay que añadir para que una solución de acetato sódico y glucosa presente una osmolalidad de 0,45 y contenga 0,2 moles de sal y 0,5 moles de glucosa?",
+            explanation: "Cada mol de acetato aporta 2 osmoles y la glucosa 1; en total 0,2×2 + 0,5×1 = 0,9 osmoles. Para una osmolalidad de 0,45 Osm/kg se necesitan 0,9 / 0,45 ≈ 2 kg de agua.",
             options: [
                 { text: "2 kg de agua", correct: true },
-                { text: "1kg de agua", correct: false },
-                { text: "1l de agua", correct: false },
+                { text: "1 kg de agua", correct: false },
+                { text: "1 L de agua", correct: false },
                 { text: "2 L de agua", correct: false },
                 { text: "2 moles de agua", correct: false }
             ]
         },
         {
             text: "9. No es cierto que en la técnica western blotting:",
+            explanation: "En SDS-PAGE las proteínas se cargan negativamente por el SDS y migran hacia el polo positivo; no se requiere carga positiva.",
             options: [
-                { text: "Las proteínas deben estar cargadas positivamente para ser arrastradas a través del gel (Falso, el SDS las carga negativamente)", correct: true },
-                { text: "La SDS-PAGE es un tipo de electroforesis requerida para separar previamente proteínas", correct: false },
-                { text: "Se obtengan bandas de separación en función del peso molecular de las proteínas", correct: false },
-                { text: "Las bandas proteicas tengan que ser transferidas desde el gel a una membrana", correct: false },
-                { text: "Permitirá identificar proteínas mediante su hibridación con un anticuerpo específico", correct: false }
+                { text: "Las proteínas deben estar cargadas positivamente para migrar por el gel", correct: true },
+                { text: "La SDS-PAGE se emplea para separar previamente las proteínas", correct: false },
+                { text: "Se obtienen bandas en función del peso molecular", correct: false },
+                { text: "Las bandas se transfieren desde el gel a una membrana", correct: false },
+                { text: "Se identifican proteínas mediante anticuerpos específicos", correct: false }
             ]
         },
         {
             text: "10. Respecto al método de Lowry, señala la respuesta incorrecta:",
+            explanation: "Las reacciones del método de Lowry requieren un medio básico; no un medio ácido.",
             options: [
-                { text: "Las dos partes del método necesitan un medio ácido para producirse, que proporciona el Reactivo de Lowry (Falso, es medio básico/alcalino)", correct: true },
-                { text: "Es un método espectrofotométrico de valoración cuantitativo de las proteínas", correct: false },
-                { text: "La estructura tridimensional de la proteína se despliega para dejar expuestos resíduos fenólicos de tirosina", correct: false },
-                { text: "En contacto con los resíduos fenólicos el reactivo de Folin-Ciocalteu se reduce pasando de amarillo a azul (pico de absorción a 750 nm)", correct: false },
-                { text: "Se requiere Cu2+ que al unirse al nitrógeno amido del enlace peptídico despliega la proteína", correct: false }
+                { text: "Las dos etapas del método requieren un medio ácido para producirse", correct: true },
+                { text: "Es un método espectrofotométrico cuantitativo de proteínas", correct: false },
+                { text: "La proteína se despliega exponiendo residuos fenólicos de tirosina", correct: false },
+                { text: "El reactivo de Folin-Ciocalteu se reduce pasando a color azul", correct: false },
+                { text: "Se requiere Cu2+ que se une al nitrógeno del enlace peptídico", correct: false }
             ]
         },
         {
-            text: "11. De las siguientes respuestas señala lo que equivale una concentración 0.2 M H2SO4:",
+            text: "11. De las siguientes respuestas, señale a qué equivale una concentración 0,2 M de H2SO4:",
+            explanation: "El H2SO4 aporta 2 protones por molécula, por lo que 0,2 M corresponde a 0,4 N.",
             options: [
-                { text: "0.4 N (H2SO4 tiene 2 H+, N = M * 2)", correct: true },
-                { text: "0’1 mol/litro", correct: false },
-                { text: "0’1 N", correct: false },
-                { text: "0.2 eq.g/litro", correct: false },
-                { text: "0.2 N", correct: false }
+                { text: "0,4 N", correct: true },
+                { text: "0,1 mol/L", correct: false },
+                { text: "0,1 N", correct: false },
+                { text: "0,2 Eq-g/L", correct: false },
+                { text: "0,2 N", correct: false }
             ]
         },
         {
-            text: "12. La normalidad de una solución 0,5M de H2SO4 es:",
+            text: "12. La normalidad de una solución 0,5 M de H2SO4 es:",
+            explanation: "Cada mol de H2SO4 aporta 2 equivalentes de H+, por tanto 0,5 M × 2 = 1 N.",
             options: [
                 { text: "1 Normal", correct: true },
                 { text: "2 Normal", correct: false },
@@ -199,7 +217,8 @@
             ]
         },
         {
-            text: "14. Calcule la molaridad y la normalidad de una disolución en la que ha disuelto 80 g de NaOH (pm 40) en agua y el volumen final es de 500 ml:",
+            text: "14. Calcule la molaridad y la normalidad de una disolución en la que se disuelven 80 g de NaOH (PM 40) en agua hasta 500 ml:",
+            explanation: "80 g / 40 g·mol⁻¹ = 2 moles en 0,5 L ⇒ 4 M. NaOH aporta 1 equivalente por mol ⇒ 4 N.",
             options: [
                 { text: "4 M y 4 N", correct: true },
                 { text: "2 M y 2 N", correct: false },
@@ -209,111 +228,123 @@
             ]
         },
         {
-            text: "15. Al disolver un soluto en agua pura la presión de vapor de la disolución:",
+            text: "15. Al disolver un soluto en agua pura, la presión de vapor de la disolución:",
+            explanation: "Según la ley de Raoult, la presencia de soluto no volátil disminuye la presión de vapor del disolvente.",
             options: [
-                { text: "Disminuye respecto a la del agua (Descenso crioscópico / Ley de Raoult)", correct: true },
-                { text: "Aumenta respecto a la del agua", correct: false },
-                { text: "No se afecta respecto a la del agua", correct: false },
+                { text: "Disminuye respecto a la del agua pura", correct: true },
+                { text: "Aumenta respecto a la del agua pura", correct: false },
+                { text: "No se modifica", correct: false },
                 { text: "Es independiente de la concentración de soluto", correct: false },
-                { text: "Depende de la naturaleza del soluto (Propiedad coligativa, depende del número de partículas)", correct: false }
+                { text: "Depende solo de la naturaleza química del soluto", correct: false }
             ]
         },
         {
-            text: "16. Respecto al plasma, el suero fisiológico (ClNa 9,5g/L, 0,16M) es isotónico por lo que:",
+            text: "16. Respecto al plasma, el suero fisiológico (NaCl 9,5 g/L, 0,16 M) es isotónico, por lo que:",
+            explanation: "Al disociarse en Na+ y Cl−, la solución 0,16 M de NaCl tiene una osmolaridad ~0,32 Osm, similar a la del plasma.",
             options: [
-                { text: "Presentan igual concentración osmolar, 0,32osM (aprox)", correct: true },
-                { text: "Presentan igual concentración molar, 0,16M", correct: false },
-                { text: "Presentan igual concentración osmolar, 0,16osM", correct: false },
-                { text: "Lisaría a los hematíes contenidos en suspensión", correct: false },
-                { text: "Los iones Cl- y Na+ atravesarían la membrana del hematíe", correct: false }
+                { text: "Ambos presentan una concentración osmolar cercana a 0,32 Osm", correct: true },
+                { text: "Ambos presentan igual concentración molar, 0,16 M", correct: false },
+                { text: "Presentan una concentración osmolar de 0,16 Osm", correct: false },
+                { text: "Provocaría lisis de los hematíes", correct: false },
+                { text: "Los iones Na+ y Cl− atraviesan libremente la membrana del hematíe", correct: false }
             ]
         },
         {
             text: "17. La degradación de Edman se emplea:",
+            explanation: "La degradación de Edman identifica secuencialmente los residuos del extremo amino-terminal, permitiendo determinar la secuencia de un péptido.",
             options: [
-                { text: "B, C y D son ciertas", correct: true },
-                { text: "En el análisis de la estructura secundaria de las proteínas", correct: false },
-                { text: "En el análisis de la secuencia de aminoácidos", correct: false },
-                { text: "Separa secuencialmente el extremo amino terminal", correct: false },
-                { text: "Se puede llevar a cabo varias veces con el mismo péptido", correct: false }
+                { text: "Para analizar la secuencia de aminoácidos de un péptido", correct: true },
+                { text: "Para estudiar la estructura secundaria de las proteínas", correct: false },
+                { text: "Para separar proteínas según su peso molecular", correct: false },
+                { text: "Exclusivamente en proteínas de membrana", correct: false },
+                { text: "Solo permite un ciclo de reacción por molécula", correct: false }
             ]
         },
         {
             text: "18. Una solución 0,3 M de un soluto no electrolítico que difunde a través de la membrana del hematíe es:",
+            explanation: "Si el soluto puede atravesar la membrana, tiende a entrar en el hematíe y arrastra agua ⇒ el medio es efectivamente hipotónico para la célula.",
             options: [
-                { text: "Hipotónica con el hematíe (Porque el soluto entra y arrastra agua)", correct: true },
-                { text: "Hipertónica respecto el hematíe", correct: false },
-                { text: "Una modalidad del suero fisiológico", correct: false },
-                { text: "Isotónica con el hematíe (Isosmótica pero no isotónica)", correct: false }
+                { text: "Hipotónica con el hematíe", correct: true },
+                { text: "Hipertónica respecto al hematíe", correct: false },
+                { text: "Una variante del suero fisiológico", correct: false },
+                { text: "Isotónica con el hematíe", correct: false }
             ]
         },
         {
-            text: "19. Una solución de HCl tiene una concentración de 3.26 x 10-2 M ¿Cuál es el pH de esta solución?",
+            text: "19. Una solución de HCl tiene una concentración de 3,26 × 10⁻² M. ¿Cuál es su pH?",
+            explanation: "Para un ácido fuerte monoácido: [H⁺] ≈ 3,26×10⁻² M ⇒ pH = −log(3,26×10⁻²) ≈ 1,49.",
             options: [
                 { text: "1,49", correct: true },
                 { text: "12,5", correct: false },
-                { text: "2", correct: false },
+                { text: "2,0", correct: false },
                 { text: "3,3", correct: false }
             ]
         },
         {
             text: "18 (bis). El SDS en la técnica de western blotting permite:",
+            explanation: "El SDS es un detergente aniónico que desnaturaliza las proteínas y las carga negativamente para su separación por tamaño.",
             options: [
                 { text: "Cargar negativamente las proteínas a separar", correct: true },
-                { text: "Romper puentes disulfuro en dichas proteínas", correct: false },
-                { text: "Bloquea la membrana de transferencia evitando reacciones inespecíficas en la misma", correct: false },
-                { text: "Facilitar la union de Ac específicos a la proteína buscada", correct: false },
-                { text: "Permitir el revelado de la banda a estudiar en la quimioluminiscencia", correct: false }
+                { text: "Romper específicamente puentes disulfuro", correct: false },
+                { text: "Bloquear la membrana de transferencia", correct: false },
+                { text: "Unir directamente el anticuerpo a la proteína", correct: false },
+                { text: "Producir la señal de revelado", correct: false }
             ]
         },
         {
-            text: "19 (bis). En un aislamiento de ácidos nucleicos, señale el compuesto que se usa para su precipitación y su posterior separación:",
+            text: "19 (bis). En un aislamiento de ácidos nucleicos, señale el compuesto que se usa para su precipitación y posterior separación:",
+            explanation: "El etanol frío disminuye la solubilidad de los ácidos nucleicos, permitiendo su precipitación y recuperación.",
             options: [
                 { text: "Etanol absoluto", correct: true },
-                { text: "Dodecilsulfato sódico SDS", correct: false },
+                { text: "Dodecilsulfato sódico (SDS)", correct: false },
                 { text: "Cloroformo", correct: false },
                 { text: "Alcohol isoamílico", correct: false },
                 { text: "Fenol tamponado", correct: false }
             ]
         },
         {
-            text: "20. Respecto al método de Lowry, señala la respuesta correcta:",
+            text: "20. Respecto al método de Lowry, señale la respuesta correcta:",
+            explanation: "La intensidad del color azul formado sigue la ley de Lambert-Beer y es proporcional a la concentración de proteínas.",
             options: [
-                { text: "La intensidad del color azul obtenido es proporcional a la concentración de proteínas según la ley de Lambert-Beer", correct: true },
-                { text: "Es un método espectrofotométrico de valoración cuantitativa de ácidos nucleicos (Falso, es proteínas)", correct: false },
-                { text: "En contacto con el Cu2, el reactivo de Folin-Ciocalteau se oxida pasando de amarillo a azul (Falso, se reduce)", correct: false },
-                { text: "Las reacciones que ocurren en el método necesitan un medio ácido para producirse (Falso, básico)", correct: false },
-                { text: "Se requiere Fe3+ que al unirse al nitrógeno amido del enlace peptídico despliega la proteína (Falso, es Cu2+)", correct: false }
+                { text: "La intensidad del color azul es proporcional a la concentración de proteínas", correct: true },
+                { text: "Es un método cuantitativo de ácidos nucleicos", correct: false },
+                { text: "El reactivo de Folin-Ciocalteu se oxida al generar el color azul", correct: false },
+                { text: "Las reacciones del método requieren un medio ácido", correct: false },
+                { text: "Se utiliza Fe³⁺ para desplegar la proteína", correct: false }
             ]
         },
         {
-            text: "21. Para el aislamiento de ácidos nucleicos, señale qué producto es usado para solubilizar las membranas y para desnaturalizar proteínas:",
+            text: "21. Para el aislamiento de ácidos nucleicos, señale qué producto se usa para solubilizar membranas y desnaturalizar proteínas:",
+            explanation: "El SDS es un detergente aniónico que rompe membranas y desnaturaliza proteínas, liberando los ácidos nucleicos.",
             options: [
                 { text: "Dodecilsulfato sódico (SDS)", correct: true },
                 { text: "Cloroformo", correct: false },
                 { text: "Fenol tamponado", correct: false },
-                { text: "Etanol absoluto a -30ºC", correct: false },
+                { text: "Etanol absoluto a -30 ºC", correct: false },
                 { text: "Alcohol isoamílico", correct: false }
             ]
         },
         {
-            text: "22. En la técnica de western blotting qué no es correcto:",
+            text: "22. En la técnica de western blotting, ¿qué afirmación NO es correcta?",
+            explanation: "La membrana se bloquea con proteínas como leche o BSA, no con SDS.",
             options: [
-                { text: "Bloquea la membrana con SDS para evitar reacciones inespecíficas (Falso, se bloquea con leche o BSA)", correct: true },
-                { text: "Separa previamente proteínas mediante electroforesis SDS-PAGE", correct: false },
-                { text: "Transfiere dichas proteínas a una membrana", correct: false },
-                { text: "Se hibrida con anticuerpos primarios que se fijan específicamente a la proteína buscada", correct: false },
-                { text: "Se hibrida con anticuerpos secundarios que mediante quimioluminiscencia evidencian la proteína a estudiar", correct: false }
+                { text: "Se bloquea la membrana con SDS para evitar uniones inespecíficas", correct: true },
+                { text: "Se separan previamente las proteínas mediante SDS-PAGE", correct: false },
+                { text: "Las proteínas se transfieren desde el gel a una membrana", correct: false },
+                { text: "Se utilizan anticuerpos primarios específicos para la proteína diana", correct: false },
+                { text: "Los anticuerpos secundarios permiten visualizar la proteína mediante señal", correct: false }
             ]
         }
     ];
 
     function shuffle(array) {
         let currentIndex = array.length, randomIndex;
-        while (currentIndex != 0) {
+        while (currentIndex !== 0) {
             randomIndex = Math.floor(Math.random() * currentIndex);
             currentIndex--;
-            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            [array[currentIndex], array[randomIndex]] = [
+                array[randomIndex], array[currentIndex]
+            ];
         }
         return array;
     }
@@ -322,22 +353,19 @@
         const quizArea = document.getElementById('quiz-area');
         quizArea.innerHTML = ""; // Limpiar
 
-        questions.forEach((q, index) => {
-            // Crear contenedor de pregunta
+        questions.forEach(q => {
             const qContainer = document.createElement('div');
             qContainer.className = 'question-container';
 
-            // Título de la pregunta
             const qTitle = document.createElement('div');
             qTitle.className = 'question-title';
             qTitle.textContent = q.text;
             qContainer.appendChild(qTitle);
 
-            // Lista de opciones
             const optList = document.createElement('ul');
             optList.className = 'options-list';
 
-            // Barajar opciones (clonamos para no alterar el original)
+            // barajamos una copia de las opciones
             const shuffledOptions = shuffle([...q.options]);
 
             shuffledOptions.forEach(opt => {
@@ -348,37 +376,43 @@
                 btn.className = 'option-btn';
                 btn.textContent = opt.text;
                 
-                // Evento click
-                btn.onclick = () => checkAnswer(btn, opt.correct, optList);
+                btn.onclick = () => checkAnswer(btn, opt.correct, optList, feedbackDiv);
 
                 li.appendChild(btn);
                 optList.appendChild(li);
             });
 
             qContainer.appendChild(optList);
+
+            // área de explicación / feedback
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'feedback';
+            feedbackDiv.textContent = q.explanation;
+            qContainer.appendChild(feedbackDiv);
+
             quizArea.appendChild(qContainer);
         });
     }
 
-    function checkAnswer(btn, isCorrect, list) {
-        // Deshabilitar todos los botones de esta pregunta
+    function checkAnswer(btn, isCorrect, list, feedbackDiv) {
         const buttons = list.querySelectorAll('.option-btn');
         buttons.forEach(b => {
             b.classList.add('disabled');
             b.onclick = null;
         });
 
-        // Marcar el seleccionado
         if (isCorrect) {
             btn.classList.add('correct');
         } else {
             btn.classList.add('incorrect');
         }
+
+        // mostrar explicación
+        feedbackDiv.style.display = 'block';
     }
 
-    // Renderizar al inicio
+    // Render inicial
     renderQuiz();
-
 </script>
 
 </body>
