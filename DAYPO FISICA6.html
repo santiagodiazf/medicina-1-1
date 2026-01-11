@@ -3,490 +3,952 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Bioelectricidad y RM - Modo Estudio</title>
+    <title>Quiz de Biofísica y Fisiología</title>
     <style>
-        :root {
-            --primary: #8e44ad;
-            --light-bg: #f4ecf7;
-            --correct: #d4edda;
-            --correct-text: #155724;
-            --incorrect: #f8d7da;
-            --incorrect-text: #721c24;
-        }
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #fdfdfd;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
             color: #333;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            line-height: 1.6;
         }
-        header {
+        h1 {
             text-align: center;
-            margin-bottom: 40px;
-            padding: 30px;
-            background: linear-gradient(135deg, #8e44ad, #9b59b6);
-            color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        h1 { margin: 0; font-size: 2em; }
-        .subtitle { font-size: 1em; opacity: 0.9; margin-top: 10px; }
-
-        .question-card {
-            background: white;
-            padding: 25px;
-            margin-bottom: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border-left: 5px solid var(--primary);
-        }
-        .q-text {
-            font-weight: 700;
-            font-size: 1.1em;
-            margin-bottom: 20px;
             color: #2c3e50;
         }
-        .options-list {
-            list-style: none;
-            padding: 0;
-        }
-        .option {
-            padding: 15px;
-            background-color: #f8f9fa;
-            border: 2px solid #e9ecef;
+        .question-card {
+            background: white;
             border-radius: 8px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .option:hover:not(.disabled) {
-            background-color: var(--light-bg);
-            border-color: #d2b4de;
-            transform: translateX(5px);
-        }
-
-        /* Estados de validación */
-        .option.correct {
-            background-color: var(--correct);
-            border-color: #c3e6cb;
-            color: var(--correct-text);
-            font-weight: 600;
-        }
-        .option.correct::after {
-            content: "✓";
-            position: absolute;
-            right: 15px;
+        .question-text {
             font-weight: bold;
-        }
-        .option.incorrect {
-            background-color: var(--incorrect);
-            border-color: #f5c6cb;
-            color: var(--incorrect-text);
-            opacity: 0.8;
-        }
-        .option.incorrect::after {
-            content: "✕";
-            position: absolute;
-            right: 15px;
-            font-weight: bold;
-        }
-        .disabled {
-            pointer-events: none;
-            cursor: default;
-        }
-
-        /* Caja de Explicación */
-        .explanation {
-            display: none;
-            margin-top: 15px;
-            padding: 15px;
-            background-color: #eafaf1;
-            border-top: 3px solid #2ecc71;
-            border-radius: 0 0 8px 8px;
-            font-size: 0.95em;
-            color: #27ae60;
-            animation: slideDown 0.3s ease-out;
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .btn-reset {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
             font-size: 1.1em;
-            cursor: pointer;
-            margin: 40px 0;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            transition: background 0.3s;
+            margin-bottom: 15px;
         }
-        .btn-reset:hover { background-color: #71368a; }
-
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-btn {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            background: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            font-size: 1em;
+        }
+        .option-btn:hover:not(:disabled) {
+            background-color: #f0f8ff;
+            border-color: #3498db;
+        }
+        .option-btn:disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+        /* Estilos para feedback */
+        .correct {
+            background-color: #d4edda !important;
+            border-color: #28a745 !important;
+            color: #155724;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #721c24;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e8f4fd;
+            border-left: 4px solid #3498db;
+            display: none; /* Oculto por defecto */
+        }
+        .explanation.visible {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>Test Bioelectricidad y RM</h1>
-    <div class="subtitle">FM Shark Crew | Modo Estudio Interactivo</div>
-</header>
-
-<div id="quiz-container"></div>
-
-<button class="btn-reset" onclick="window.scrollTo(0,0); location.reload()">⟳ Reiniciar Test</button>
+    <h1>Quiz de Práctica</h1>
+    <div id="quiz-container">
+        </div>
 
 <script>
-    /* Base de datos procesada:
-       - 'correctIndex' indica la posición correcta (0, 1, 2, 3) en el array 'options'.
-       - He limpiado las opciones tipo "a y b" para que tengan sentido al barajarse.
-    */
+    // Banco de preguntas extraídas y corregidas
     const quizData = [
         {
-            q: "Según la distribución de los iones de Na+ a ambos lados de la membrana celular:",
-            options: ["Tienen tendencia a entrar debido a ambos potenciales (membrana y equilibrio)", "Tienen tendencia a salir debido al potencial de membrana", "Tienen tendencia a salir debido al potencial de equilibrio", "Tienen tendencia a salir debido a la concentración"],
-            correctIndex: 0,
-            expl: "Tanto el gradiente de concentración como el gradiente eléctrico favorecen la entrada masiva de sodio al interior celular."
+            question: "En la cúspide del potencial de acción, el potencial de membrana vale +30mV. Sabiendo que el potencial de equilibrio del sodio es +60mV, ¿qué ocurre?",
+            options: [
+                "El sodio se encuentra en equilibrio.",
+                "El sodio tiende a entrar.",
+                "El potasio tiende a entrar.",
+                "El potasio está en equilibrio."
+            ],
+            correct: "El sodio tiende a entrar.",
+            explanation: "Aunque el interior es positivo (+30mV), el potencial de equilibrio del Na+ es aún más positivo (+60mV), por lo que la fuerza electromotriz sigue empujando al sodio hacia adentro."
         },
         {
-            q: "Según la distribución de los iones de K+ a ambos lados de la membrana celular:",
-            options: ["Tienen tendencia a entrar debido al potencial de equilibrio y salir por el de membrana", "Tienen tendencia a salir debido al potencial de equilibrio y entrar por el de membrana", "Tienen tendencia a entrar debido a ambos", "Tienen tendencia a salir debido a ambos"],
-            correctIndex: 0,
-            expl: "El potasio está muy concentrado dentro (tiende a salir por difusión/equilibrio), pero el interior negativo lo atrae (tiende a entrar por potencial eléctrico/membrana)."
+            question: "La mayor velocidad de conducción que presentan las fibras mielínicas es debida a:",
+            options: [
+                "A la mayor longitud de estas fibras.",
+                "A la existencia de un menor número de cargas susceptibles de ser transportadas.",
+                "A la existencia de un mayor número de cargas susceptibles de ser transportadas.",
+                "A una disminución de la resistencia intracelular."
+            ],
+            correct: "A la existencia de un menor número de cargas susceptibles de ser transportadas.",
+            explanation: "La mielina disminuye la capacitancia de la membrana (menos cargas a neutralizar), permitiendo que el potencial cambie más rápido (conducción saltatoria)."
         },
         {
-            q: "La mayor velocidad de conducción que presentan las fibras mielínicas es debida a:",
-            options: ["La conducción saltatoria y menor capacitancia", "A la mayor longitud de estas fibras", "A la existencia de un mayor número de cargas transportadas", "A una disminución de la resistencia intracelular"],
-            correctIndex: 0,
-            expl: "La mielina aísla el axón, obligando a la corriente a 'saltar' de un nodo de Ranvier a otro, aumentando drásticamente la velocidad."
+            question: "Mediante el transporte activo (Bomba Na/K):",
+            options: [
+                "Se extrae K+ del interior y se introduce Na+.",
+                "Se extrae Na+ y se introduce K+.",
+                "Se extrae Cl- y se introduce K+.",
+                "Se detecta la actividad eléctrica del cerebro."
+            ],
+            correct: "Se extrae Na+ y se introduce K+.",
+            explanation: "La bomba Na+/K+ ATPasa saca 3 iones de Sodio (Na+) e introduce 2 de Potasio (K+) contra gradiente, consumiendo ATP."
         },
         {
-            q: "En la cúspide del potencial de acción (+30mV), el potencial de equilibrio del sodio es +60mV y el del potasio -90mV, por lo que:",
-            options: ["El sodio sigue tendiendo a entrar y el potasio a salir fuertemente", "El sodio se encuentra en equilibrio", "El potasio tiende a entrar", "Ambos están en equilibrio"],
-            correctIndex: 0,
-            expl: "A +30mV, el sodio aún no ha alcanzado su potencial de equilibrio (+60mV), por lo que sigue entrando algo, y el potasio tiene una fuerza electromotriz enorme para salir."
+            question: "En el estado de reposo existe una diferencia de potencial de unos -90mV, estando:",
+            options: [
+                "El exterior cargado negativamente respecto al interior.",
+                "El interior cargado negativamente respecto al exterior.",
+                "El interior cargado positivamente respecto al exterior.",
+                "Ambos neutros."
+            ],
+            correct: "El interior cargado negativamente respecto al exterior.",
+            explanation: "El potencial de reposo negativo indica que el interior de la célula es más negativo que el exterior."
         },
         {
-            q: "En los nervios mielínicos:",
-            options: ["Se consigue un avance más rápido del impulso nervioso", "La carga transportada es mayor que en el nervio desnudo", "Hay una transmisión continua a lo largo de toda la fibra", "La velocidad es menor"],
-            correctIndex: 0,
-            expl: "La conducción es saltatoria (no continua) y mucho más rápida que en fibras amielínicas."
+            question: "¿Cuándo se inicia la sístole ventricular en el ECG?",
+            options: [
+                "Al final de la onda P.",
+                "Al inicio de la onda P.",
+                "Al final de la onda T.",
+                "Al final de la onda R (o pico del complejo QRS)."
+            ],
+            correct: "Al final de la onda R (o pico del complejo QRS).",
+            explanation: "El complejo QRS marca la despolarización ventricular, que desencadena la contracción (sístole) ventricular inmediatamente después."
         },
         {
-            q: "La transmisión de la información de unos órganos a otros es un fenómeno de tipo:",
-            options: ["Eléctrico", "Termodinámico", "Ondulatorio puro", "Mecánico"],
-            correctIndex: 0,
-            expl: "La base de la comunicación nerviosa son los potenciales eléctricos."
+            question: "En el periodo refractario absoluto:",
+            options: [
+                "Se produce el impulso con un umbral superior al normal.",
+                "Se produce el impulso con un umbral igual al normal.",
+                "Se produce el impulso con un umbral inferior al normal.",
+                "No se puede iniciar el impulso de acción."
+            ],
+            correct: "No se puede iniciar el impulso de acción.",
+            explanation: "Durante el periodo refractario absoluto, los canales de sodio están inactivados y es imposible generar un nuevo potencial de acción, sin importar la intensidad del estímulo."
         },
         {
-            q: "La transmisión del impulso nervioso tiene su base en la existencia de:",
-            options: ["Diferencia de concentraciones de iones a ambos lados de la membrana", "Diferentes temperaturas a ambos lados", "Electrodos colocados sobre el organismo", "Radionúclidos"],
-            correctIndex: 0,
-            expl: "El gradiente electroquímico (Na+, K+, Cl-) es la 'batería' que permite generar impulsos."
+            question: "El mantenimiento de la diferencia de concentraciones entre el fluido extracelular y el intracelular es debido principalmente a:",
+            options: [
+                "Difusión simple.",
+                "Difusión por gradiente eléctrico.",
+                "Bombeo activo de sodio.",
+                "Osmosis."
+            ],
+            correct: "Bombeo activo de sodio.",
+            explanation: "Aunque hay difusión, es el transporte activo (gasto de energía) el que mantiene los gradientes de concentración contra la tendencia natural a igualarse."
         },
         {
-            q: "Si la variación de energía potencial que experimenta un ion al salir de la célula es positiva:",
-            options: ["El ion tiene tendencia a entrar en la misma", "El ion tiene tendencia a salir", "El sistema está en equilibrio", "No hay flujo neto"],
-            correctIndex: 0,
-            expl: "En termodinámica, los sistemas tienden a minimizar su energía potencial. Si salir aumenta la energía (variación positiva), el ion prefiere quedarse dentro o entrar."
+            question: "El complejo QRS en un electrocardiograma se asocia con:",
+            options: [
+                "El inicio de la contracción auricular.",
+                "El final de la contracción ventricular.",
+                "El inicio de la contracción ventricular (despolarización).",
+                "El final de la contracción auricular."
+            ],
+            correct: "El inicio de la contracción ventricular (despolarización).",
+            explanation: "El QRS representa la despolarización de los ventrículos, lo que lleva mecánicamente a su contracción."
         },
         {
-            q: "En el estado de reposo existe una diferencia de potencial de unos -90mV, estando:",
-            options: ["El interior cargado negativamente respecto al exterior", "El exterior cargado negativamente respecto al interior", "El interior cargado positivamente", "Ambos neutros"],
-            correctIndex: 0,
-            expl: "El potencial de reposo es negativo (-70 a -90mV), indicando que el interior es más negativo que el exterior."
+            question: "La onda P se asocia con:",
+            options: [
+                "Despolarización auricular.",
+                "Repolarización auricular.",
+                "Despolarización ventricular.",
+                "Contracción ventricular."
+            ],
+            correct: "Despolarización auricular.",
+            explanation: "La onda P representa la actividad eléctrica (despolarización) de las aurículas."
         },
         {
-            q: "Mediante el transporte activo (Bomba Na/K):",
-            options: ["Se extrae Na+ y se introduce K+ contra gradiente", "Se extrae K+ del interior y se introduce Na+", "Se extrae Cl- y se introduce K+", "Se igualan las concentraciones"],
-            correctIndex: 0,
-            expl: "La bomba gasta ATP para sacar 3 Na+ y meter 2 K+, manteniendo los gradientes vitales."
+            question: "El ritmo cerebral alfa, típico de la relajación, se caracteriza por frecuencias de:",
+            options: [
+                "8 - 13 Hz.",
+                "14 - 30 Hz.",
+                "4 - 7 Hz.",
+                "Menos de 3,5 Hz."
+            ],
+            correct: "8 - 13 Hz.",
+            explanation: "Las ondas Alfa (8-13 Hz) aparecen en estados de vigilia relajada, especialmente al cerrar los ojos."
         },
         {
-            q: "El potencial de acción consiste en:",
-            options: ["Los cambios rápidos y transitorios del potencial de membrana tras un estímulo", "La diferencia de potencial estable en reposo", "El registro de la actividad del corazón", "La tensión del tubo de rayos X"],
-            correctIndex: 0,
-            expl: "Es una despolarización rápida seguida de repolarización que viaja por la membrana."
+            question: "La velocidad estándar de inscripción del papel en un electrocardiograma es de:",
+            options: [
+                "5 mm/s.",
+                "10 mm/s.",
+                "25 mm/s.",
+                "50 mm/s."
+            ],
+            correct: "25 mm/s.",
+            explanation: "Es la calibración estándar internacional para permitir mediciones de tiempo precisas."
         },
         {
-            q: "En las células excitables, cuando llega un estímulo umbral:",
-            options: ["Se producen variaciones en la permeabilidad de la membrana (se abren canales)", "Aumenta la impermeabilidad", "El potencial permanece inalterable", "Se cierran todos los canales"],
-            correctIndex: 0,
-            expl: "El estímulo abre canales de Sodio voltaje-dependientes, cambiando la permeabilidad y despolarizando la célula."
+            question: "En Resonancia Magnética, el tiempo de relajación longitudinal T1 se define como el tiempo para que la magnetización en el eje Z recupere:",
+            options: [
+                "El 100% inicial.",
+                "El 63% de su valor de equilibrio.",
+                "El 50% de su valor.",
+                "El 37% de su valor."
+            ],
+            correct: "El 63% de su valor de equilibrio.",
+            explanation: "T1 es una constante de tiempo exponencial; tras un tiempo T1, se ha recuperado aprox. el 63% de la magnetización longitudinal."
         },
         {
-            q: "La tendencia de los iones a entrar o salir de la célula viene dada por:",
-            options: ["La diferencia entre el potencial de membrana y el potencial de equilibrio del ion", "Solo el potencial de membrana", "Solo el potencial de equilibrio", "El momento magnético"],
-            correctIndex: 0,
-            expl: "Es la fuerza electromotriz neta (Vm - Eion)."
+            question: "En Resonancia Magnética, la grasa aparece en imágenes potenciadas en T1 como:",
+            options: [
+                "Hiperintensa (Blanca).",
+                "Hipointensa (Negra).",
+                "Isointensa (Gris).",
+                "Invisible."
+            ],
+            correct: "Hiperintensa (Blanca).",
+            explanation: "La grasa tiene un T1 corto, por lo que recupera rápido su magnetización y da una señal fuerte (blanca) en imágenes T1."
         },
         {
-            q: "La variación de la tensión que tiene lugar cuando se sobrepasan el potencial umbral se denomina:",
-            options: ["Potencial de acción", "Potencial de equilibrio", "Potencial de membrana", "Potencial generador"],
-            correctIndex: 0,
-            expl: "Si se supera el umbral, se dispara la ley del 'todo o nada', generando un Potencial de Acción."
+            question: "El contraste fundamental utilizado en RM es:",
+            options: [
+                "Sulfato de bario.",
+                "Gadolinio (quelatos).",
+                "Óxido de hierro.",
+                "Compuestos yodados."
+            ],
+            correct: "Gadolinio (quelatos).",
+            explanation: "El Gadolinio es paramagnético y altera los tiempos de relajación T1 y T2 de los tejidos cercanos."
         },
         {
-            q: "En el periodo refractario absoluto, se produce el impulso de acción con valor umbral:",
-            options: ["No se puede iniciar ningún impulso de acción", "Superior al normal", "Igual al normal", "Inferior al normal"],
-            correctIndex: 0,
-            expl: "Los canales de Na+ están inactivados, es imposible generar otro disparo sin importar la fuerza del estímulo."
+            question: "Es una contraindicación absoluta para realizar una RM:",
+            options: [
+                "Portar marcapasos (no compatible).",
+                "Tener alergia al yodo.",
+                "Ser menor de 18 años.",
+                "Haber sufrido numerosas exploraciones radiológicas."
+            ],
+            correct: "Portar marcapasos (no compatible).",
+            explanation: "Los campos magnéticos fuertes pueden mover el marcapasos o alterar su funcionamiento electrónico, poniendo en riesgo la vida."
         },
         {
-            q: "En el periodo refractario relativo:",
-            options: ["Se puede producir un impulso pero con un estímulo superior al normal", "No se puede iniciar impulso", "El umbral es inferior al normal", "El umbral es igual"],
-            correctIndex: 0,
-            expl: "La célula está hiperpolarizada; es posible disparar, pero cuesta más (se necesita un estímulo más fuerte)."
+            question: "El objetivo principal del campo magnético estático B0 en una RM es:",
+            options: [
+                "Generar un pulso de excitación.",
+                "Detectar la señal.",
+                "Que los espines nucleares se orienten (precesión) en relación al campo.",
+                "Variar el campo magnético en el eje Z."
+            ],
+            correct: "Que los espines nucleares se orienten (precesión) en relación al campo.",
+            explanation: "B0 alinea los momentos magnéticos de los protones, creando la magnetización neta necesaria para el estudio."
         },
         {
-            q: "El potencial generador desencadena impulsos potenciales de acción que transmiten información modulada en:",
-            options: ["Frecuencia", "Amplitud", "Fase", "Intensidad de corriente"],
-            correctIndex: 0,
-            expl: "El sistema nervioso codifica la intensidad del estímulo mediante la frecuencia de disparo (más estímulo = más disparos por segundo), no por la altura del pico."
+            question: "La transmisión de la información de unos órganos a otros mediante el sistema nervioso es un fenómeno de tipo:",
+            options: [
+                "Termodinámico.",
+                "Eléctrico (Electroquímico).",
+                "Ondulatorio mecánico.",
+                "Magnético."
+            ],
+            correct: "Eléctrico (Electroquímico).",
+            explanation: "Se basa en el flujo de iones (electricidad) a través de las membranas celulares."
         },
         {
-            q: "Si un receptor tónico detecta un estímulo y este adquiere un valor estacionario:",
-            options: ["El potencial generador se mantiene (adaptación lenta)", "El potencial desaparece", "No existe potencial", "Se hace oscilante"],
-            correctIndex: 0,
-            expl: "Los receptores tónicos siguen disparando mientras dure el estímulo (ej. dolor), a diferencia de los fásicos."
+            question: "En las células excitables, cuando llega un estímulo umbral:",
+            options: [
+                "Aumenta la impermeabilidad de la membrana.",
+                "El potencial de membrana permanece inalterable.",
+                "Se producen variaciones en la permeabilidad de la membrana.",
+                "Se contraen selectivamente las fibras antes del impulso."
+            ],
+            correct: "Se producen variaciones en la permeabilidad de la membrana.",
+            explanation: "El estímulo abre canales iónicos dependientes de voltaje (cambia la permeabilidad), iniciando el potencial de acción."
         },
         {
-            q: "Si un receptor fásico detecta un estímulo estacionario:",
-            options: ["El potencial generador desaparece o disminuye rápidamente (adaptación rápida)", "El potencial se mantiene constante", "Aumenta progresivamente", "Se invierte"],
-            correctIndex: 0,
-            expl: "Los receptores fásicos (ej. tacto, olor) solo avisan al inicio y final del estímulo; se adaptan rápido."
+            question: "Si un receptor TÓNICO detecta un estímulo y este adquiere un valor estacionario:",
+            options: [
+                "El potencial generador desaparece inmediatamente.",
+                "El potencial generador se mantiene (o decae muy lentamente) mientras dure el estímulo.",
+                "El potencial generador desaparece.",
+                "No existe potencial."
+            ],
+            correct: "El potencial generador se mantiene (o decae muy lentamente) mientras dure el estímulo.",
+            explanation: "Los receptores tónicos se adaptan poco o nada, informando continuamente sobre la presencia del estímulo."
         },
         {
-            q: "A partir de un valor umbral del potencial de membrana, la permeabilidad de la membrana para el sodio:",
-            options: ["Aumenta drásticamente (retroalimentación positiva)", "Disminuye", "Se hace constante", "Es independiente"],
-            correctIndex: 0,
-            expl: "Ciclo de Hodgkin: la despolarización abre canales de Na+, entra Na+, despolariza más, abre más canales..."
-        },
-        {
-            q: "Un aumento del diámetro del axón se traduce en:",
-            options: ["Aumento de la velocidad de conducción", "Disminución de la velocidad", "Independencia de la velocidad", "Mayor resistencia interna"],
-            correctIndex: 0,
-            expl: "Mayor diámetro reduce la resistencia interna al flujo de iones, acelerando la conducción (como en el axón gigante del calamar)."
-        },
-        {
-            q: "¿Cuándo se inicia la sístole ventricular en el ECG?",
-            options: ["Al final del complejo QRS (inicio segmento ST)", "Al final de la onda P", "Al final de la onda T", "En la onda U"],
-            correctIndex: 0,
-            expl: "El QRS representa la despolarización eléctrica; la contracción mecánica (sístole) comienza justo después de completarse la despolarización."
-        },
-        {
-            q: "La electromiografía es el proceso de registrar la actividad eléctrica del:",
-            options: ["Músculo esquelético", "Corazón", "Cerebro", "Estómago"],
-            correctIndex: 0,
-            expl: "EMG = Músculo. ECG = Corazón. EEG = Cerebro."
-        },
-        {
-            q: "El complejo QRS en un electrocardiograma se asocia con:",
-            options: ["Despolarización ventricular", "Repolarización auricular", "Despolarización auricular", "Repolarización ventricular"],
-            correctIndex: 0,
-            expl: "Es el evento eléctrico principal que dispara la contracción de los ventrículos."
-        },
-        {
-            q: "La onda P se asocia con:",
-            options: ["Despolarización auricular", "Despolarización ventricular", "Repolarización ventricular", "Sístole ventricular"],
-            correctIndex: 0,
-            expl: "Marca el inicio del ciclo cardíaco con la activación de las aurículas."
-        },
-        {
-            q: "La onda T se asocia con:",
-            options: ["Repolarización ventricular", "Despolarización auricular", "Despolarización ventricular", "Repolarización auricular"],
-            correctIndex: 0,
-            expl: "Es la recuperación eléctrica de los ventrículos antes del siguiente latido."
-        },
-        {
-            q: "El ritmo cerebral de atención o alerta (ojos abiertos) se caracteriza por ondas:",
-            options: ["Beta", "Alfa", "Theta", "Delta"],
-            correctIndex: 0,
-            expl: "Beta (>13Hz) indica actividad mental activa. Alfa es relajación (ojos cerrados)."
-        },
-        {
-            q: "En la derivación III del electrocardiograma se mide la diferencia de potencial entre:",
-            options: ["Brazo izquierdo y pierna izquierda", "Brazo derecho y brazo izquierdo", "Brazo derecho y pierna izquierda", "Brazo derecho y pierna derecha"],
-            correctIndex: 0,
-            expl: "Triángulo de Einthoven: DI (BD-BI), DII (BD-PI), DIII (BI-PI)."
-        },
-        {
-            q: "La velocidad estándar de inscripción del papel milimetrado en el ECG es:",
-            options: ["25 mm/s", "50 mm/s", "10 mm/s", "5 mm/s"],
-            correctIndex: 0,
-            expl: "Es el estándar mundial. A esta velocidad, 1 cuadradito pequeño = 0.04 segundos."
-        },
-        {
-            q: "El objetivo principal del campo magnético estático B0 en RM es:",
-            options: ["Que los spines de los núcleos de hidrógeno se orienten y precesen", "Generar un pulso de excitación", "Producir gradientes", "Detectar la señal"],
-            correctIndex: 0,
-            expl: "B0 alinea los momentos magnéticos nucleares creando una magnetización neta longitudinal."
-        },
-        {
-            q: "El pulso de Radiofrecuencia (RF) en RM:",
-            options: ["Hace que disminuya la magnetización longitudinal y aparezca transversal", "Aumenta la magnetización longitudinal", "Detiene la precesión", "Enfría los imanes"],
-            correctIndex: 0,
-            expl: "La RF aporta energía (excitación), volcando los spines al plano transversal (resonancia)."
-        },
-        {
-            q: "La constante giromagnética:",
-            options: ["Es específica para cada núcleo y relaciona frecuencia y campo", "Depende de la temperatura", "Es igual para todos los isótopos", "Depende del voltaje"],
-            correctIndex: 0,
-            expl: "Ecuación de Larmor: Frecuencia = Constante Giromagnética × Campo Magnético (B0)."
-        },
-        {
-            q: "Para realizar estudios de RM, los núcleos deben tener:",
-            options: ["Espín neto distinto de cero (número impar de protones o neutrones)", "Número par de nucleones", "Carga neutra", "Alta radiactividad"],
-            correctIndex: 0,
-            expl: "Solo los núcleos con espín (como el Hidrógeno-1) pueden interactuar con campos magnéticos."
-        },
-        {
-            q: "¿Con cuál de estos nucleidos NO se podrán realizar estudios de RM?",
-            options: ["16 O (8 protones, 8 neutrones)", "1 H", "31 P", "23 Na"],
-            correctIndex: 0,
-            expl: "El Oxígeno-16 tiene número par de protones y neutrones, su espín neto es cero (no resuena)."
-        },
-        {
-            q: "Entre los tiempos de relajación T1 (longitudinal) y T2 (transversal) se verifica que:",
-            options: ["T1 es mayor que T2", "T1 es menor que T2", "T1 es igual a T2", "No tienen relación"],
-            correctIndex: 0,
-            expl: "La relajación T2 (spin-spin) es siempre mucho más rápida que la recuperación T1 (spin-red)."
-        },
-        {
-            q: "Llamamos Tiempo de Eco (TE) a:",
-            options: ["El tiempo desde el pulso de excitación hasta que se recoge la señal (eco)", "El tiempo entre dos pulsos de RF", "La duración del pulso", "El tiempo de relajación"],
-            correctIndex: 0,
-            expl: "Es el momento exacto en que escuchamos la señal que nos devuelve el tejido."
-        },
-        {
-            q: "El tiempo de relajación T1 es el tiempo para recuperar:",
-            options: ["El 63% de la magnetización longitudinal inicial", "El 37% de la transversal", "El 100% de la señal", "El 50% de la energía"],
-            correctIndex: 0,
-            expl: "Definición matemática de la constante de tiempo exponencial T1."
-        },
-        {
-            q: "El tiempo de relajación T2 es el tiempo para que la magnetización transversal decaiga al:",
-            options: ["37% de su valor inicial", "63% de su valor", "50% de su valor", "0%"],
-            correctIndex: 0,
-            expl: "En T2, la señal se pierde (decae). Al tiempo T2 queda 1/e (aprox 37%) de la señal."
-        },
-        {
-            q: "Es contraindicación absoluta para realizar una RM:",
-            options: ["Portar marcapasos antiguo o clips ferromagnéticos cerebrales", "Tener alergia al yodo", "Ser menor de 18 años", "Estar en ayunas"],
-            correctIndex: 0,
-            expl: "El fuerte campo magnético puede mover metales o averiar electrónica vital. La alergia al yodo afecta al TAC, no a la RM (gadolinio)."
-        },
-        {
-            q: "En una imagen ponderada en T1, el agua y líquidos (LCR) aparecen:",
-            options: ["Negros (hipointensos)", "Blancos (hiperintensos)", "Grises", "Brillantes"],
-            correctIndex: 0,
-            expl: "El agua tiene un T1 muy largo (tarda en recuperar), por lo que da poca señal en T1 y se ve negra."
-        },
-        {
-            q: "En una imagen ponderada en T2, el agua y líquidos (LCR) aparecen:",
-            options: ["Blancos (hiperintensos)", "Negros (hipointensos)", "Grises oscuros", "Invisibles"],
-            correctIndex: 0,
-            expl: "El agua tiene un T2 largo (mantiene señal mucho tiempo), por lo que brilla en imágenes T2 (el 'líquido brilla')."
-        },
-        {
-            q: "La grasa en T1 suele aparecer:",
-            options: ["Blanca (hiperintensa)", "Negra", "Gris oscura", "Transparente"],
-            correctIndex: 0,
-            expl: "La grasa tiene un T1 corto (recupera rápido), por lo que da mucha señal y se ve blanca en T1."
-        },
-        {
-            q: "¿Quién tiene los bíceps más grandes de la clase? (Pregunta broma del original)",
-            options: ["Bartel", "Nadie", "El profesor", "Yo"],
-            correctIndex: 0,
-            expl: "Esta es una pregunta interna del grupo Shark Crew."
+            question: "En la derivación III del electrocardiograma se mide la diferencia de potencial entre:",
+            options: [
+                "Brazo derecho y brazo izquierdo.",
+                "Brazo derecho y pierna izquierda.",
+                "Brazo izquierdo y pierna izquierda.",
+                "Brazo izquierdo y pierna derecha."
+            ],
+            correct: "Brazo izquierdo y pierna izquierda.",
+            explanation: "El triángulo de Einthoven define DIII como la diferencia entre la pierna izquierda (+) y el brazo izquierdo (-)."
         }
+    {
+        question: "El potencial generador desencadena impulsos (potenciales de acción) que transmiten información modulada en:",
+        options: [
+            "Amplitud.",
+            "Frecuencia.",
+            "No existe modulación.",
+            "Los potenciales de acción no transmiten información."
+        ],
+        correct: "Frecuencia.",
+        explanation: "El sistema nervioso codifica la intensidad del estímulo mediante la frecuencia de disparo de los potenciales de acción, no por su tamaño (que es constante)."
+    },
+    {
+        question: "La facilidad con la que se propaga el impulso nervioso depende de:",
+        options: [
+            "La facilidad con que se mueven las cargas (resistencia).",
+            "La cantidad de cargas que hay que transportar (capacitancia).",
+            "La modulación de impulsos.",
+            "a y b."
+        ],
+        correct: "a y b.",
+        explanation: "La velocidad depende de la constante de tiempo y espacio, determinadas por la resistencia y la capacitancia de la membrana y el axoplasma."
+    },
+    {
+        question: "Si un receptor TÓNICO detecta un estímulo y este adquiere un valor estacionario:",
+        options: [
+            "El potencial generador desaparece.",
+            "El potencial generador también se hace estacionario (se mantiene).",
+            "No existe potencial.",
+            "Se hace deslizante."
+        ],
+        correct: "El potencial generador también se hace estacionario (se mantiene).",
+        explanation: "Los receptores tónicos son de adaptación lenta; siguen disparando mientras dure el estímulo."
+    },
+    {
+        question: "Si un receptor FÁSICO detecta un estímulo y este adquiere un valor estacionario:",
+        options: [
+            "El potencial generador desaparece aunque el estímulo permanezca.",
+            "El potencial se hace estacionario.",
+            "No existe.",
+            "Se hace deslizante."
+        ],
+        correct: "El potencial generador desaparece aunque el estímulo permanezca.",
+        explanation: "Los receptores fásicos son de adaptación rápida; solo responden a los cambios de intensidad, silenciándose si el estímulo es constante."
+    },
+    {
+        question: "A partir de un valor umbral del potencial de membrana, la permeabilidad de la membrana para el sodio:",
+        options: [
+            "Se hace constante.",
+            "Disminuye.",
+            "Depende del propio potencial (feedback positivo).",
+            "Es independiente del potencial."
+        ],
+        correct: "Depende del propio potencial (feedback positivo).",
+        explanation: "Es el ciclo de Hodgkin-Huxley: la despolarización abre canales de Na+, lo que causa más despolarización, abriendo más canales."
+    },
+    {
+        question: "La diferencia entre el potencial actual y el potencial de reposo/estacionario ante un estímulo sub-umbral se denomina:",
+        options: [
+            "Potencial de Acción.",
+            "Potencial de Equilibrio.",
+            "Potencial Generador (o electrotónico).",
+            "Potencial Transitorio."
+        ],
+        correct: "Potencial Generador (o electrotónico).",
+        explanation: "Es una respuesta graduada local que no se propaga activamente como el potencial de acción."
+    },
+    {
+        question: "El potencial generador se diferencia del potencial de acción en que:",
+        options: [
+            "No se propaga regenerativamente a larga distancia.",
+            "Su amplitud depende del estímulo (graduado).",
+            "No sigue la ley del 'todo o nada'.",
+            "Las tres anteriores."
+        ],
+        correct: "Las tres anteriores.",
+        explanation: "El potencial generador es una señal analógica/graduada local, mientras que el de acción es digital/todo-o-nada y propagado."
+    },
+    {
+        question: "Un aumento del diámetro del axón se traduce en:",
+        options: [
+            "Disminución de la velocidad.",
+            "Aumento de la velocidad de conducción.",
+            "El diámetro es independiente de la velocidad.",
+            "Depende del número de células de Schwann."
+        ],
+        correct: "Aumento de la velocidad de conducción.",
+        explanation: "A mayor diámetro, menor resistencia interna al flujo de corriente, lo que acelera la conducción."
+    },
+    {
+        question: "A la variación de la tensión que tiene lugar cuando se ha sobrepasado el valor umbral se denomina:",
+        options: [
+            "Potencial de equilibrio.",
+            "Impulso o Potencial de Acción.",
+            "Potencial de membrana.",
+            "Potencial local."
+        ],
+        correct: "Impulso o Potencial de Acción.",
+        explanation: "Superar el umbral desencadena inevitablemente el potencial de acción."
+    },
+    {
+        question: "Cuando la célula está en reposo (no recibe estímulo), las corrientes netas de sodio y potasio se consideran:",
+        options: [
+            "Mayores para el potasio.",
+            "Mayores para el sodio.",
+            "Iguales (en equilibrio dinámico gracias a la bomba).",
+            "Menores para el potasio."
+        ],
+        correct: "Iguales (en equilibrio dinámico gracias a la bomba).",
+        explanation: "Aunque las permeabilidades son distintas, en estado estacionario la bomba compensa las fugas de ambos, manteniendo el potencial estable."
+    },
+    
+    // --- FISICA CARDIACA Y ECG ---
+    {
+        question: "¿Cuándo se inicia la sístole ventricular?",
+        options: [
+            "Al final de la onda P.",
+            "Al inicio de la onda P.",
+            "Al final de la onda R (pico del QRS).",
+            "Al final de la onda T."
+        ],
+        correct: "Al final de la onda R (pico del QRS).",
+        explanation: "La despolarización ventricular (QRS) desencadena inmediatamente la contracción mecánica (sístole)."
+    },
+    {
+        question: "La contracción ventricular tiene lugar eléctricamente durante:",
+        options: [
+            "La onda P.",
+            "Desde el inicio del QRS hasta el final de la onda T.",
+            "Solo en la onda T.",
+            "En las ondas P y T."
+        ],
+        correct: "Desde el inicio del QRS hasta el final de la onda T.",
+        explanation: "Abarca todo el periodo desde que se despolarizan (QRS) hasta que terminan de repolarizarse (final de T)."
+    },
+    {
+        question: "La electromiografía es el proceso de registrar la actividad eléctrica del:",
+        options: [
+            "Miocardio.",
+            "Corazón.",
+            "Cerebro.",
+            "Músculo esquelético."
+        ],
+        correct: "Músculo esquelético.",
+        explanation: "El EMG mide la actividad de las unidades motoras musculares."
+    },
+    {
+        question: "En la electrocardiografía, el potencial eléctrico que medimos en la superficie es:",
+        options: [
+            "Los pequeños dipolos individuales.",
+            "La proyección del vector dipolo eléctrico cardiaco en una dirección determinada.",
+            "Las corrientes de fuga.",
+            "El voltaje de la membrana celular."
+        ],
+        correct: "La proyección del vector dipolo eléctrico cardiaco en una dirección determinada.",
+        explanation: "Cada derivación (I, II, III...) es como una cámara que mira el vector suma del corazón desde un ángulo diferente."
+    },
+    {
+        question: "El complejo QRS en un electrocardiograma se asocia con:",
+        options: [
+            "Inicio de contracción auricular.",
+            "Despolarización ventricular (inicio contracción).",
+            "Final de contracción ventricular.",
+            "Repolarización auricular."
+        ],
+        correct: "Despolarización ventricular (inicio contracción).",
+        explanation: "Es el evento eléctrico más grande, correspondiente a la activación de los ventrículos."
+    },
+    {
+        question: "La onda P se asocia con:",
+        options: [
+            "Despolarización auricular.",
+            "Repolarización auricular.",
+            "Despolarización ventricular.",
+            "Contracción ventricular."
+        ],
+        correct: "Despolarización auricular.",
+        explanation: "Representa la activación eléctrica de las aurículas iniciada en el nodo sinusal."
+    },
+    {
+        question: "El ritmo cerebral de ATENCIÓN o alerta se caracteriza por ondas:",
+        options: [
+            "Alfa.",
+            "Beta.",
+            "Theta.",
+            "Delta."
+        ],
+        correct: "Beta.",
+        explanation: "Las ondas Beta (>13 Hz) aparecen cuando estamos despiertos, alerta y realizando actividad mental."
+    },
+    {
+        question: "Un electrocardiógrafo es fundamentalmente un:",
+        options: [
+            "Galvanómetro.",
+            "Óhmetro.",
+            "Gaussímetro.",
+            "Célula fotoeléctrica."
+        ],
+        correct: "Galvanómetro.",
+        explanation: "Es un instrumento muy sensible capaz de medir corrientes eléctricas muy pequeñas (diferencias de potencial)."
+    },
+    {
+        question: "¿En qué localización se coloca el electrodo de TIERRA (negro) en el ECG estándar?",
+        options: [
+            "Brazo derecho.",
+            "Brazo izquierdo.",
+            "Tobillo/Pierna derecha.",
+            "Tobillo/Pierna izquierda."
+        ],
+        correct: "Tobillo/Pierna derecha.",
+        explanation: "Por convención: Rojo (Brazo Dcho), Amarillo (Brazo Izq), Verde (Pierna Izq), Negro (Pierna Dcha - Tierra)."
+    },
+    {
+        question: "En la derivación III del ECG se representa la diferencia de potencial entre:",
+        options: [
+            "Brazo derecho y brazo izquierdo.",
+            "Brazo izquierdo y pierna izquierda.",
+            "Brazo derecho y pierna izquierda.",
+            "Brazo izquierdo y pierna derecha."
+        ],
+        correct: "Brazo izquierdo y pierna izquierda.",
+        explanation: "DIII = Pierna Izquierda (+) - Brazo Izquierdo (-)."
+    },
+    {
+        question: "La velocidad estándar de inscripción del papel electrocardiográfico es:",
+        options: [
+            "5 mm/s.",
+            "10 mm/s.",
+            "25 mm/s.",
+            "50 mm/s."
+        ],
+        correct: "25 mm/s.",
+        explanation: "Esto hace que cada cuadradito pequeño (1mm) equivalga a 0.04 segundos."
+    },
+    {
+        question: "El ritmo cerebral ALFA, típico de la relajación con ojos cerrados, tiene una frecuencia de:",
+        options: [
+            "8 - 13 Hz.",
+            "14 - 30 Hz.",
+            "4 - 7 Hz.",
+            "< 3.5 Hz."
+        ],
+        correct: "8 - 13 Hz.",
+        explanation: "Es el ritmo dominante en el lóbulo occipital durante la vigilia relajada."
+    },
+    {
+        question: "La intensidad de las ondas del electroencefalograma (EEG) se miden en:",
+        options: [
+            "Voltios.",
+            "Milivoltios.",
+            "Microvoltios.",
+            "Nanovoltios."
+        ],
+        correct: "Microvoltios.",
+        explanation: "Son señales extremadamente débiles que requieren mucha amplificación (a diferencia del ECG que es mV)."
+    },
+    {
+        question: "Para la obtención del electromiograma (EMG) de precisión se utilizan electrodos de:",
+        options: [
+            "Superficie.",
+            "Aguja coaxial.",
+            "Aguja simple.",
+            "Parche."
+        ],
+        correct: "Aguja coaxial.",
+        explanation: "Permiten registrar la actividad de unidades motoras individuales o fibras musculares específicas."
+    },
+    {
+        question: "El aumento de la fuerza muscular mediante el aumento de la frecuencia de descarga se llama:",
+        options: [
+            "Reclutamiento espacial.",
+            "Reclutamiento temporal (sumación temporal).",
+            "Refuerzo periférico.",
+            "Tétanos."
+        ],
+        correct: "Reclutamiento temporal (sumación temporal).",
+        explanation: "Al disparar más rápido, las contracciones se suman antes de que el músculo se relaje."
+    },
+    {
+        question: "La frecuencia de las ondas del electromiograma (sonido al audificarlo):",
+        options: [
+            "Infrasonidos.",
+            "Sonidos audibles.",
+            "Ultrasonidos.",
+            "Hipersonidos."
+        ],
+        correct: "Sonidos audibles.",
+        explanation: "Las frecuencias de descarga muscular caen dentro del rango auditivo humano (aprox. 20-500Hz), sonando como un traqueteo."
+    },
+
+    // --- RESONANCIA MAGNÉTICA (RM) ---
+    {
+        question: "El objetivo principal del campo magnético estático (B0) de una RM es:",
+        options: [
+            "Producir una variación del campo magnético.",
+            "Que los espines (núcleos de H) se orienten y precesen en relación al campo.",
+            "Generar un pulso de excitación.",
+            "Detectar una señal."
+        ],
+        correct: "Que los espines (núcleos de H) se orienten y precesen en relación al campo.",
+        explanation: "B0 crea la magnetización neta longitudinal necesaria para empezar el estudio."
+    },
+    {
+        question: "El objetivo principal del pulso de Radiofrecuencia (RF) es:",
+        options: [
+            "Alinear los protones.",
+            "Generar un pulso de excitación (resonancia).",
+            "Detectar la señal.",
+            "Enfriar el imán."
+        ],
+        correct: "Generar un pulso de excitación (resonancia).",
+        explanation: "El pulso RF aporta energía a la frecuencia de Larmor para sacar los protones del equilibrio."
+    },
+    {
+        question: "El pulso de RF en una instalación de RM provoca que:",
+        options: [
+            "Disminuya la magnetización longitudinal (Eje Z).",
+            "Aparezca una magnetización transversal (Plano XY).",
+            "Los núcleos entren en fase.",
+            "Todas las anteriores (a y b principalmente)."
+        ],
+        correct: "Todas las anteriores (a y b principalmente).",
+        explanation: "Vuelca la magnetización del eje longitudinal al plano transversal."
+    },
+    {
+        question: "El objetivo de la bobina receptora (antena) es:",
+        options: [
+            "Emitir radiación X.",
+            "Detectar la señal de relajación (eco) emitida por los protones.",
+            "Generar el campo magnético principal.",
+            "Mover al paciente."
+        ],
+        correct: "Detectar la señal de relajación (eco) emitida por los protones.",
+        explanation: "Por inducción de Faraday, la magnetización transversal en movimiento induce una corriente en la bobina."
+    },
+    {
+        question: "La constante giromagnética:",
+        options: [
+            "Depende del cociente carga/masa del núcleo.",
+            "Es igual para todos los elementos.",
+            "Es proporcional a la frecuencia de Larmor.",
+            "a y c."
+        ],
+        correct: "a y c.",
+        explanation: "Es una propiedad intrínseca del núcleo (relación carga/masa) y define su frecuencia de precesión."
+    },
+    {
+        question: "Para realizar estudios de RM, los nucleidos deben tener:",
+        options: [
+            "Número par de protones y neutrones.",
+            "Número impar de nucleones (protones o neutrones).",
+            "Spin neto igual a cero.",
+            "Carga neutra."
+        ],
+        correct: "Número impar de nucleones (protones o neutrones).",
+        explanation: "Solo los núcleos con spin neto distinto de cero (impares) tienen momento magnético observable."
+    },
+    {
+        question: "¿Con cuál de estos nucleidos NO se pueden realizar estudios de RM?",
+        options: [
+            "1 H (Hidrógeno).",
+            "16 O (Oxígeno-16).",
+            "31 P (Fósforo).",
+            "23 Na (Sodio)."
+        ],
+        correct: "16 O (Oxígeno-16).",
+        explanation: "El O-16 tiene 8 protones y 8 neutrones (ambos pares), por lo que su spin es cero y es magnéticamente inerte."
+    },
+    {
+        question: "Para que los núcleos presenten fenómenos de resonancia, el vector momento angular J (Spin) debe ser:",
+        options: [
+            "Mayor que 0 (Distinto de 0).",
+            "Igual a 0.",
+            "Negativo.",
+            "Infinito."
+        ],
+        correct: "Mayor que 0 (Distinto de 0).",
+        explanation: "Sin spin (giro), no hay momento magnético y no interactúan con el campo magnético."
+    },
+    {
+        question: "Entre los tiempos de relajación T1 (Spin-Red) y T2 (Spin-Spin) siempre se verifica que:",
+        options: [
+            "T1 es mayor que T2.",
+            "T1 es igual a T2.",
+            "T1 es menor que T2.",
+            "No tienen relación."
+        ],
+        correct: "T1 es mayor que T2.",
+        explanation: "La pérdida de coherencia (T2) siempre ocurre más rápido o igual que la recuperación de energía (T1). T2 nunca puede ser mayor que T1."
+    },
+    {
+        question: "La mayor o menor facilidad que encuentran los núcleos en ceder su energía al medio (red cristalina) se denomina:",
+        options: [
+            "Relajación Longitudinal (T1).",
+            "Relajación Transversal (T2).",
+            "Precesión.",
+            "Excitación."
+        ],
+        correct: "Relajación Longitudinal (T1).",
+        explanation: "T1 mide cuánto tarda el sistema en devolver la energía absorbida al entorno térmico."
+    },
+    {
+        question: "La frecuencia de resonancia (Frecuencia de Larmor) depende de:",
+        options: [
+            "La temperatura.",
+            "La intensidad del campo magnético (B0) y la constante giromagnética.",
+            "La densidad del agua.",
+            "El voltaje de la bobina."
+        ],
+        correct: "La intensidad del campo magnético (B0) y la constante giromagnética.",
+        explanation: "Según la ecuación de Larmor: ω = γ · B0."
+    },
+    {
+        question: "Llamamos Tiempo de Eco (TE) a:",
+        options: [
+            "Duración del pulso RF.",
+            "El tiempo entre el pulso de excitación y la recogida de la señal (pico del eco).",
+            "Diferencia entre T1 y T2.",
+            "El tiempo de repetición."
+        ],
+        correct: "El tiempo entre el pulso de excitación y la recogida de la señal (pico del eco).",
+        explanation: "Es un parámetro ajustable que determina cuánto influye el T2 en el contraste de la imagen."
+    },
+    {
+        question: "El tiempo de relajación longitudinal T1 se define como el tiempo para recuperar:",
+        options: [
+            "El 100% de la magnetización.",
+            "El 63% de la magnetización longitudinal inicial.",
+            "El 50%.",
+            "El 37%."
+        ],
+        correct: "El 63% de la magnetización longitudinal inicial.",
+        explanation: "Es la constante de tiempo de crecimiento exponencial (1 - 1/e)."
+    },
+    {
+        question: "El tiempo de relajación transversal T2 se define como el tiempo para que la magnetización transversal decaiga al:",
+        options: [
+            "100%.",
+            "63%.",
+            "50%.",
+            "37% de su valor inicial."
+        ],
+        correct: "37% de su valor inicial.",
+        explanation: "Es la constante de tiempo de decaimiento exponencial (1/e)."
+    },
+    {
+        question: "T2 (relajación spin-spin) depende fundamentalmente de:",
+        options: [
+            "La pérdida de coherencia de fase entre los protones.",
+            "La cesión de energía al medio.",
+            "La temperatura.",
+            "El diámetro del imán."
+        ],
+        correct: "La pérdida de coherencia de fase entre los protones.",
+        explanation: "Los campos magnéticos locales de los núcleos vecinos hacen que unos giren más rápido y otros más lento, desfástandose."
+    },
+    {
+        question: "La bobina (o antena) de una RM tiene por misión:",
+        options: [
+            "Solo emitir RF.",
+            "Solo recibir señal.",
+            "Emitir el pulso de RF y captar las señales (a veces son la misma bobina, a veces distintas).",
+            "Generar el campo B0."
+        ],
+        correct: "Emitir el pulso de RF y captar las señales (a veces son la misma bobina, a veces distintas).",
+        explanation: "Actúan como transmisores para excitar y receptores para escuchar el eco."
+    },
+    {
+        question: "Es una contraindicación absoluta para RM:",
+        options: [
+            "Alergia al yodo (no se usa yodo en RM).",
+            "Portar marcapasos cardiaco (no compatible).",
+            "Claustrofobia leve.",
+            "Prótesis de titanio modernas."
+        ],
+        correct: "Portar marcapasos cardiaco (no compatible).",
+        explanation: "Riesgo vital por alteración electrónica o desplazamiento."
+    },
+    {
+        question: "El contraste fundamental utilizado en RM es:",
+        options: [
+            "Gadolinio (paramagnético).",
+            "Yodo.",
+            "Bario.",
+            "Tecnecio."
+        ],
+        correct: "Gadolinio (paramagnético).",
+        explanation: "El Gadolinio acorta el T1 de los tejidos donde se acumula, haciéndolos brillar en imágenes T1."
+    },
+    {
+        question: "En imágenes T1, el agua y los líquidos (LCR) aparecen:",
+        options: [
+            "Blancos (Hiperintensos).",
+            "Negros / Gris oscuro (Hipointensos).",
+            "Isointensos.",
+            "Brillantes."
+        ],
+        correct: "Negros / Gris oscuro (Hipointensos).",
+        explanation: "El agua tiene un T1 muy largo, por lo que tarda en recuperar señal y se ve oscura en T1 (pero blanca en T2)."
+    },
+    {
+        question: "En imágenes T2, el agua y los líquidos aparecen:",
+        options: [
+            "Blancos (Hiperintensos).",
+            "Negros.",
+            "Gris oscuro.",
+            "Invisibles."
+        ],
+        correct: "Blancos (Hiperintensos).",
+        explanation: "El agua tiene un T2 largo, por lo que mantiene la señal transversal mucho tiempo, apareciendo brillante en T2."
+    },
+    {
+        question: "La grasa en T1 aparece:",
+        options: [
+            "Blanca (Hiperintensa).",
+            "Negra.",
+            "Gris.",
+            "Azul."
+        ],
+        correct: "Blanca (Hiperintensa).",
+        explanation: "La grasa tiene un T1 corto (recupera rápido), dando mucha señal."
+    },
+    {
+        question: "Los huesos corticales (calcio) y el aire suelen aparecer en RM como:",
+        options: [
+            "Muy blancos.",
+            "Negros (Ausencia de señal).",
+            "Grises.",
+            "Variables."
+        ],
+        correct: "Negros (Ausencia de señal).",
+        explanation: "Tienen muy pocos protones móviles o T2 extremadamente cortos, por lo que no dan señal detectable."
+    },
+    {
+        question: "NO es una ventaja de la RM:",
+        options: [
+            "Posibilidad de estudio en cualquier plano.",
+            "No usa radiación ionizante.",
+            "Excelente contraste de partes blandas.",
+            "La economía de sus instalaciones."
+        ],
+        correct: "La economía de sus instalaciones.",
+        explanation: "La RM es una tecnología muy costosa de instalar y mantener en comparación con Rayos X o Eco."
+    },
+    {
+        question: "Si la variación de energía potencial al SALIR un ion positivo es POSITIVA (cuesta trabajo salir):",
+        options: [
+            "El ion tiene tendencia a salir.",
+            "El ion tiene tendencia a entrar.",
+            "Está en equilibrio.",
+            "No se puede saber."
+        ],
+        correct: "El ion tiene tendencia a entrar.",
+        explanation: "Si delta U > 0 al salir, significa que el sistema prefiere energéticamente que el ion esté dentro."
+    }
+];
     ];
 
+    // Función para mezclar un array (Fisher-Yates Shuffle)
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
         }
+        return array;
     }
 
+    const container = document.getElementById('quiz-container');
+
     function renderQuiz() {
-        const container = document.getElementById('quiz-container');
-        container.innerHTML = '';
-
-        // Mezclar preguntas
-        let shuffledData = [...quizData];
-        shuffleArray(shuffledData);
-
-        shuffledData.forEach((item, index) => {
+        quizData.forEach((item, index) => {
+            // Crear tarjeta de pregunta
             const card = document.createElement('div');
             card.className = 'question-card';
 
-            const title = document.createElement('div');
-            title.className = 'q-text';
-            title.innerText = `${index + 1}. ${item.q}`;
-            card.appendChild(title);
+            // Título de la pregunta
+            const questionTitle = document.createElement('div');
+            questionTitle.className = 'question-text';
+            questionTitle.textContent = `${index + 1}. ${item.question}`;
+            card.appendChild(questionTitle);
 
-            // Preparar opciones
-            let opts = item.options.map((optText, i) => ({
-                text: optText,
-                isCorrect: i === item.correctIndex
+            // Contenedor de opciones
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options-container';
+
+            // Preparamos las opciones mezcladas
+            // Guardamos el texto y si es correcta o no
+            let optionsObj = item.options.map(opt => ({
+                text: opt,
+                isCorrect: opt === item.correct
             }));
             
             // Mezclar opciones
-            shuffleArray(opts);
+            optionsObj = shuffleArray(optionsObj);
 
-            const ul = document.createElement('ul');
-            ul.className = 'options-list';
-
-            opts.forEach(opt => {
-                const li = document.createElement('li');
-                li.className = 'option';
-                li.innerText = opt.text;
+            // Generar botones
+            optionsObj.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt.text;
                 
-                li.onclick = () => {
-                    if (card.classList.contains('answered')) return;
-                    card.classList.add('answered');
+                btn.onclick = () => {
+                    // Deshabilitar todos los botones de esta pregunta
+                    const allBtns = optionsDiv.querySelectorAll('.option-btn');
+                    allBtns.forEach(b => b.disabled = true);
 
-                    // Bloquear opciones
-                    const allOptions = ul.querySelectorAll('.option');
-                    allOptions.forEach(o => o.classList.add('disabled'));
-
+                    // Verificar respuesta
                     if (opt.isCorrect) {
-                        li.classList.add('correct');
+                        btn.classList.add('correct');
                     } else {
-                        li.classList.add('incorrect');
-                        // Buscar correcta
-                        opts.forEach((o, idx) => {
-                            if (o.isCorrect) allOptions[idx].classList.add('correct');
+                        btn.classList.add('incorrect');
+                        // Buscar y marcar la correcta visualmente
+                        allBtns.forEach(b => {
+                            if (b.textContent === item.correct) {
+                                b.classList.add('correct');
+                            }
                         });
                     }
 
                     // Mostrar explicación
-                    const exp = document.createElement('div');
-                    exp.className = 'explanation';
-                    exp.innerHTML = `<strong>Explicación:</strong> ${item.expl}`;
-                    exp.style.display = 'block';
-                    card.appendChild(exp);
+                    explanationDiv.classList.add('visible');
                 };
 
-                ul.appendChild(li);
+                optionsDiv.appendChild(btn);
             });
 
-            card.appendChild(ul);
+            card.appendChild(optionsDiv);
+
+            // Crear div de explicación
+            const explanationDiv = document.createElement('div');
+            explanationDiv.className = 'explanation';
+            explanationDiv.innerHTML = `<strong>Explicación:</strong> ${item.explanation}`;
+            card.appendChild(explanationDiv);
+
             container.appendChild(card);
         });
     }
 
-    // Iniciar
-    window.onload = renderQuiz;
+    // Inicializar
+    renderQuiz();
+
 </script>
 
 </body>
