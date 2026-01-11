@@ -1,45 +1,47 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Completo Protección Radiológica</title>
-    <style>
-        :root { --primary: #2c3e50; --accent: #3498db; --success: #27ae60; --error: #c0392b; --bg: #f4f6f7; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: #333; max-width: 900px; margin: 0 auto; padding: 20px; line-height: 1.6; }
-        h1 { text-align: center; color: var(--primary); margin-bottom: 20px; font-size: 1.8em; }
-        .controls { text-align: center; margin-bottom: 20px; padding: 10px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .stat-box { display: inline-block; margin: 0 15px; font-weight: bold; font-size: 1.1em; }
-        .quiz-container { display: flex; flex-direction: column; gap: 15px; }
-        .question-card { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-left: 5px solid var(--accent); }
-        .question-text { font-size: 1.1em; font-weight: 600; margin-bottom: 15px; color: var(--primary); }
-        .options-grid { display: grid; gap: 8px; }
-        .option-btn { padding: 10px 15px; border: 1px solid #ddd; background: #fff; border-radius: 6px; cursor: pointer; text-align: left; font-size: 0.95em; transition: all 0.2s; width: 100%; }
-        .option-btn:hover:not(:disabled) { background-color: #f0f4f8; border-color: var(--accent); }
-        .option-btn.correct { background-color: #d4edda; border-color: var(--success); color: var(--success); font-weight: bold; }
-        .option-btn.incorrect { background-color: #f8d7da; border-color: var(--error); color: var(--error); opacity: 0.7; }
-        .feedback { margin-top: 15px; padding: 15px; border-radius: 6px; display: none; font-size: 0.95em; background-color: #f8f9fa; border: 1px solid #eee; }
-        .feedback.show { display: block; animation: fadeIn 0.3s; }
-        .feedback strong { display: block; margin-bottom: 5px; }
-        .reload-btn { display: block; margin: 40px auto; padding: 15px 30px; background-color: var(--accent); color: white; border: none; border-radius: 50px; font-size: 1.1em; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background 0.3s; }
-        .reload-btn:hover { background-color: #2980b9; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Completo Protección Radiológica</title>
+
+<style>
+:root {
+  --primary:#2c3e50; --accent:#3498db; --success:#27ae60;
+  --error:#c0392b; --bg:#f4f6f7;
+}
+body {
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  background:var(--bg); max-width:900px; margin:auto; padding:20px;
+}
+.question-card {
+  background:white; border-radius:8px; padding:20px;
+  box-shadow:0 2px 5px rgba(0,0,0,.1);
+  border-left:5px solid var(--accent);
+}
+.question-text {
+  font-size:1.1em; font-weight:600; margin-bottom:15px;
+}
+.options-grid { display:grid; gap:8px; }
+.option-btn {
+  padding:10px; border:1px solid #ddd; border-radius:6px;
+  cursor:pointer; background:#fff; text-align:left;
+}
+.option-btn.correct { background:#d4edda; color:#155724; }
+.option-btn.incorrect { background:#f8d7da; color:#721c24; }
+.feedback { margin-top:10px; display:none; }
+.feedback.show { display:block; }
+</style>
 </head>
+
 <body>
 
-    <h1>Quiz de Protección Radiológica y Física Médica</h1>
-    
-    <div class="controls">
-        <span class="stat-box">Preguntas: <span id="total-count">0</span></span>
-        <span class="stat-box" style="color: var(--success)">Aciertos: <span id="score-count">0</span></span>
-    </div>
+<h1>Quiz de Protección Radiológica y Física Médica</h1>
 
-    <div id="quiz-container" class="quiz-container">Loading...</div>
-    <button class="reload-btn" onclick="location.reload()">🔄 Reordenar Opciones / Reiniciar</button>
+<div id="quiz-container"></div>
 
-    <script>
-        const quizData = [
+<script>
+const quizData =  [
             { id: 1, question: "¿Cual de las siguientes parejas “tipo de radiación Ionizante/composición” es INCORRECTA?", options: ["Radiación alfa / Núcleos de Helio", "Radiación beta negativa / electrones", "Radiación beta positiva / protones", "Radiación X / fotones"], correct: 2, explanation: "La radiación beta positiva está formada por positrones, no por protones." },
     { id: 2, question: "De las siguientes características, ¿cuál NO es propia de los RX?", options: ["Poseen carga negativa", "Son capaces de ionizar gases", "Pueden producir fluorescencia", "Se propagan en línea recta a la velocidad de la luz"], correct: 0, explanation: "Los rayos X son fotones (energía electromagnética), no tienen carga ni masa." },
     { id: 3, question: "¿Cuándo será más penetrante una radiación ionizante?", options: ["Cuanto menor sea la energía de la radiación", "Cuanto mayor sea la carga y la masa de la radiación", "Cuanto menor sea la capa hemireductora del absorbente", "Cuanto menor sea el coeficiente de atenuación del lineal del absorbente"], correct: 3, explanation: "Un coeficiente de atenuación bajo significa que el material opone poca resistencia, por lo que la radiación penetra más." },
@@ -54,20 +56,15 @@
     { id: 12, question: "¿Qué ocurre al aumentar la diferencia de potencial ánodo-cátodo en tubo de RX?", options: ["Aumenta la energía máxima de la radiación producida", "Aumenta la intensidad de la radiación producida", "Disminuye la energía máxima de la radiación producida", "Son correctas a y b"], correct: 0, explanation: "Mientras que los kV (potencial) determinan la energía máxima y calidad del haz, los mA (intensidad) determinan la cantidad de radiación" },
     { id: 13, question: "¿Qué tienen en común los elementos isótopos?", options: ["El peso atómico", "El número de electrones", "El numero de neutrones", "La posición en la tabla periódica "], correct: 3, explanation: "Tienen el mismo número atómico (Z) pero diferente masa." },
     { id: 14, question: "¿Qué tienen en común los elementos isótonos?", options: ["El peso atómico", "El numero de electrones", "El número de Neutrones", "La posición en la tabla periódica"], correct: 2, explanation: "Isóto-N-os = Mismos Neutrones." },
-    { id: 15, question: `¿A qué tipo de desintegración corresponde la siguiente reacción?
-<p>Ecuación:</p>
-
-<!-- En modo bloque (centrado) -->
-\[
-{}^{A}_{Z}X \;\longrightarrow\; {}^{0}_{1}n \;+\; {}^{A-1}_{Z}X \;?
-\]
-
-<!-- O en línea:
-<span>\(\,{}^{A}_{Z}X \to {}^{0}_{1}n + {}^{A-1}_{Z}X\,\)</span>
--->
+    {
+  id: 15,
+  question: `¿A qué tipo de desintegración corresponde la siguiente reacción?<br><br>
+    <div style="text-align:center; font-size:1.2em; margin:10px 0;">
+      <sup>A</sup><sub>Z</sub>X → <sup>0</sup><sub>1</sub>n + <sup>A-1</sup><sub>Z</sub>X
+    </div>`,
   options: ["Emisión gamma", "Captura electrónica", "Emisión de neutrones", "Desintegración beta"],
   correct: 2,
-  explanation: "N."
+  explanation: "Corresponde a una emisión de neutrones: A disminuye en 1 y Z se mantiene."
 },
     { id: 16, question: "Si un núcleo sufre una desintegración beta:", options: ["El núcleo resultante será un isóbaro del precursor", "El núcleo resultante será un isótono del precursor", "El núcleo resultante será un isótopo del precursor", "El núcleo resultante será un isómero del precursor"], correct: 0, explanation: "El número másico A no cambia, por lo tanto son isóbaros." },
     { id: 17, question: "Si un núcleo sufre una desintegración por captura electrónica:", options: ["El núcleo resultante será un isóbaro del precursor", "El núcleo resultante será un isótono del precursor", "El núcleo resultante será un isótopo del precursor", "El núcleo resultante será un isómero del precursor"], correct: 0, explanation: "A no cambia, Z disminuye en 1. Son isóbaros." },
