@@ -54,12 +54,35 @@
     { id: 12, question: "¿Qué ocurre al aumentar la diferencia de potencial ánodo-cátodo en tubo de RX?", options: ["Aumenta la energía máxima de la radiación producida", "Aumenta la intensidad de la radiación producida", "Disminuye la energía máxima de la radiación producida", "Son correctas a y b"], correct: 0, explanation: "Mientras que los kV (potencial) determinan la energía máxima y calidad del haz, los mA (intensidad) determinan la cantidad de radiación" },
     { id: 13, question: "¿Qué tienen en común los elementos isótopos?", options: ["El peso atómico", "El número de electrones", "El numero de neutrones", "La posición en la tabla periódica "], correct: 3, explanation: "Tienen el mismo número atómico (Z) pero diferente masa." },
     { id: 14, question: "¿Qué tienen en común los elementos isótonos?", options: ["El peso atómico", "El numero de electrones", "El número de Neutrones", "La posición en la tabla periódica"], correct: 2, explanation: "Isóto-N-os = Mismos Neutrones." },
-    {
-  id: 15,
-  question: `¿A qué tipo de desintegración corresponde la siguiente reacción?<br><br>
-    <div style="text-align:center; font-size:1.2em; margin:10px 0;">
-      <sup>A</sup><sub>Z</sub>X → <sup>0</sup><sub>1</sub>n + <sup>A-1</sup><sub>Z</sub>X
-    </div>`,
+    { id: 15, question: `¿A qué tipo de desintegración corresponde la siguiente reacción?
+    <!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Ecuación nuclear</title>
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+<p>Ecuación:</p>
+
+<!-- En modo bloque (centrado) -->
+\[
+{}^{A}_{Z}X \;\longrightarrow\; {}^{0}_{1}n \;+\; {}^{A-1}_{Z}X \;?
+\]
+
+<!-- O en línea:
+<span>\(\,{}^{A}_{Z}X \to {}^{0}_{1}n + {}^{A-1}_{Z}X\,\)</span>
+-->
+</body>
+</html>
   options: ["Emisión gamma", "Captura electrónica", "Emisión de neutrones", "Desintegración beta"],
   correct: 2,
   explanation: "N."
