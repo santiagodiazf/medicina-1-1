@@ -81,7 +81,20 @@ const quizData =  [
     { id: 29, question: "El filtrado del haz de un tubo de RX se emplea para:", options: ["Evitar que aparezcan electrones en el exterior", "Aumentar la producción de fotones", "Disminuir el porcentaje de fotones de baja energía", "Atenuar los fotones de alta energía"], correct: 2, explanation: "Elimina la radiación blanda que no contribuye a la imagen y daña al paciente." },
     { id: 30, question: "¿Se puede propagar la luz y el sonido en el vacío?", options: ["Ambos se pueden transmitir", "Ninguno se puede transmitir", "La luz sí, el sonido no", "La luz no, el sonido sí"], correct: 2, explanation: "La luz es una onda electromagnética, el sonido es mecánico." },
     { id: 31, question: "Cuando se utiliza un sistema de ultrasonidos en diagnóstico, la sonda emisora-receptora se suele untar de una especie de gel con objeto de:", options: ["Que se desplace mejor sobre el paciente", "Acoplar las impedancias acústicas", "Enfriar la sonda", "Que existe una gran discontinuidad de impedancias"], correct: 1, explanation: "Evita la reflexión total del sonido en la interfase aire-piel." },
-    { id: 32, question: "En la desintegración Beta negativa (Z+1):", options: ["Aparece un protón reemplazando a un neutrón y los núcleos son isóbaros", "El núcleo residual queda siempre en su estado fundamental", "Aparece un neutrón reemplazando a un protón", "No es cierta ninguna de las anteriores"], correct: 0, explanation: "Un neutrón se transforma en protón, Z aumenta en 1." },
+    { id: 32,
+  question: `En la desintegración 
+    <div style="display:inline-block; margin-left:6px;">
+      <sup>A</sup><sub>Z</sub>X → <sup>A</sup><sub>Z+1</sub>Y + β<sup>−</sup> + antineutrino
+    </div>:`,
+  options: [
+    "Aparece un protón reemplazando a un neutrón y los núcleos son isóbaros",
+    "El núcleo residual queda siempre en su estado fundamental",
+    "Aparece un neutrón reemplazando a un protón",
+    "No es cierta ninguna de las anteriores"
+  ],
+  correct: 0,
+  explanation: "La reacción mostrada es una desintegración beta negativa ($\beta^-$). En este proceso, un neutrón dentro del núcleo inestable se transforma en un protón, emitiendo un electrón (la partícula beta) y un antineutrino."
+},
     { id: 33, question: "La probabilidad de que se produzca una interacción de tipo fotoeléctrico:", options: ["Es mayor para electrones muy ligados y para materiales de Z alto", "Es menor para electrones muy ligados", "Aumenta fuertemente a medida que aumenta la energía de los fotones", "Es mayor para neutrones que para fotones"], correct: 0, explanation: "Depende de Z^3." },
     { id: 34, question: "El número de capas hemireductoras mínimo necesario para que tras un blindaje la intensidad de un haz de fotones se vea reducida a menos de la décima parte del valor inicial es:", options: ["5", "4", "3", "2"], correct: 1, explanation: "2^3=8 (12.5%), 2^4=16 (6.25%). Se necesitan 4." },
     { id: 35, question: "En la definición de dosis equivalente interviene el factor de calidad Q, que está relacionado con:", options: ["El medio absorbente", "El número de ionizaciones que produce la radiación por unidad de recorrido (LET)", "El tiempo que se tarda en impartir una cierta dosis", "La actividad de una fuente radiactiva"], correct: 1, explanation: "Refleja el daño biológico relativo de cada tipo de radiación." },
