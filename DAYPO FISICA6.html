@@ -863,7 +863,284 @@
         correct: "El ion tiene tendencia a entrar.",
         explanation: "Si delta U > 0 al salir, significa que el sistema prefiere energéticamente que el ion esté dentro."
     }
-];
+    const quizData = [
+    // --- PREGUNTAS 71 - 95 (Biofísica, Iones y RM Avanzada) ---
+
+    {
+        question: "En Resonancia Magnética, los vasos sanguíneos con flujo rápido suelen aparecer en secuencias estándar (Spin Eco) como:",
+        options: [
+            "Fuertemente contrastados (blancos).",
+            "Con ausencia de señal (negros/vacío de flujo).",
+            "No aparecen por tener densidad igual al músculo.",
+            "Rojos."
+        ],
+        correct: "Con ausencia de señal (negros/vacío de flujo).",
+        explanation: "Debido al fenómeno de 'vacío de flujo' (flow void), la sangre que recibe el pulso de excitación se mueve fuera del corte antes de que se lea la señal, apareciendo negra."
+    },
+    {
+        question: "Según la distribución de los iones Cloro (Cl-) a ambos lados de la membrana, estos presentan:",
+        options: [
+            "Tendencia a entrar debido al potencial de equilibrio.",
+            "Tendencia a salir debido al potencial de membrana (el interior negativo los repele).",
+            "Están en equilibrio pasivo (Potencial de Nernst cercano al de reposo).",
+            "b y c suelen ser correctas dependiendo de la célula."
+        ],
+        correct: "b y c suelen ser correctas dependiendo de la célula.",
+        explanation: "El Cl- es negativo. El interior celular negativo (-70mV) lo repele (fuerza eléctrica hacia fuera), equilibrando casi exactamente su tendencia química a entrar."
+    },
+    {
+        question: "En la fase de sueño REM (Rapid Eye Movement), hay un predominio de ondas:",
+        options: [
+            "Ondas Alfa (relajación).",
+            "Ondas Delta (sueño profundo).",
+            "Ondas Beta (actividad similar a la vigilia).",
+            "Ondas Theta puras."
+        ],
+        correct: "Ondas Beta (actividad similar a la vigilia).",
+        explanation: "El sueño REM se llama 'sueño paradójico' porque la actividad eléctrica cerebral es rápida y desincronizada (Beta), muy parecida a estar despierto."
+    },
+    {
+        question: "Si el incremento de energía potencial que tiene lugar cuando sale un mol de ión NEGATIVO a través de la membrana es POSITIVO (cuesta energía salir), se verifica que:",
+        options: [
+            "El ión tendrá tendencia a salir.",
+            "El ión tendrá tendencia a entrar en la célula.",
+            "El sistema está en equilibrio.",
+            "El incremento no puede ser positivo."
+        ],
+        correct: "El ión tendrá tendencia a entrar en la célula.",
+        explanation: "Termodinámica: Si salir aumenta la energía del sistema (es una 'cuesta arriba'), el ión tiende espontáneamente a ir hacia el estado de menor energía (entrar)."
+    },
+    {
+        question: "Si el incremento de energía potencial que tiene lugar cuando sale un mol de ión NEGATIVO a través de la membrana es NEGATIVO (libera energía al salir), se verifica que:",
+        options: [
+            "El ión tendrá tendencia a salir de la misma.",
+            "El ión tendrá tendencia a entrar.",
+            "El sistema estará en equilibrio.",
+            "Ninguna es correcta."
+        ],
+        correct: "El ión tendrá tendencia a salir de la misma.",
+        explanation: "Si el cambio de energía es negativo (es una 'cuesta abajo'), el proceso es espontáneo: el ión sale naturalmente."
+    },
+    {
+        question: "Si el incremento de energía potencial que tiene lugar cuando sale un mol de ión POSITIVO a través de la membrana es POSITIVO, se verifica que:",
+        options: [
+            "El ión tendrá tendencia a entrar en la misma.",
+            "El ión tendrá tendencia a salir.",
+            "El sistema está en equilibrio.",
+            "Es imposible."
+        ],
+        correct: "El ión tendrá tendencia a entrar en la misma.",
+        explanation: "Igual que antes: si cuesta energía salir (delta positivo), la tendencia natural es quedarse dentro o entrar."
+    },
+    {
+        question: "La onda T en un electrocardiograma se asocia con:",
+        options: [
+            "El inicio de la contracción auricular.",
+            "Repolarización ventricular.",
+            "Despolarización ventricular.",
+            "Repolarización auricular."
+        ],
+        correct: "Repolarización ventricular.",
+        explanation: "La onda T representa la recuperación eléctrica (repolarización) de los ventrículos antes del siguiente latido."
+    },
+    {
+        question: "Una disminución del diámetro del axón se traduce en el impulso nervioso en:",
+        options: [
+            "Aumento de la velocidad.",
+            "Disminución de la velocidad.",
+            "La velocidad no cambia.",
+            "Aumento de la amplitud."
+        ],
+        correct: "Disminución de la velocidad.",
+        explanation: "A menor diámetro, mayor resistencia interna al flujo de corriente, lo que hace la conducción más lenta."
+    },
+    {
+        question: "La tendencia neta de los iones a entrar o salir de la célula viene dada por:",
+        options: [
+            "Solo el gradiente químico.",
+            "Solo el gradiente eléctrico.",
+            "El potencial electroquímico (suma de a y b).",
+            "La temperatura."
+        ],
+        correct: "El potencial electroquímico (suma de a y b).",
+        explanation: "La fuerza motriz real es la combinación de la diferencia de concentración y la diferencia de carga eléctrica."
+    },
+    {
+        question: "La frecuencia de repetición de los pulsos (frecuencia de disparo neuronal) depende del valor del:",
+        options: [
+            "Potencial de acción.",
+            "Potencial de equilibrio.",
+            "Potencial generador.",
+            "Potencial de Nernst."
+        ],
+        correct: "Potencial generador.",
+        explanation: "Cuanto mayor sea la amplitud del potencial generador (estímulo más fuerte), mayor será la frecuencia de disparo de los potenciales de acción."
+    },
+    {
+        question: "Para que los núcleos NO presenten fenómenos de Resonancia Magnética:",
+        options: [
+            "El vector momento magnético debe ser distinto de cero.",
+            "El número de nucleones debe ser impar.",
+            "El vector momento angular (spin) y magnético deben ser igual a cero.",
+            "Deben tener carga positiva."
+        ],
+        correct: "El vector momento angular (spin) y magnético deben ser igual a cero.",
+        explanation: "Si el spin es cero (núcleos par-par como el Carbono-12 o el Oxígeno-16), no interactúan con el campo magnético y no hay resonancia."
+    },
+    {
+        question: "Cuando un núcleo con spin es colocado bajo la acción de un campo magnético externo, el vector momento angular J:",
+        options: [
+            "Se alinea perfectamente estático con el campo.",
+            "Realiza un movimiento de precesión (como una peonza).",
+            "Se anula.",
+            "Adopta orientaciones arbitrarias."
+        ],
+        correct: "Realiza un movimiento de precesión (como una peonza).",
+        explanation: "El campo magnético ejerce un torque sobre el núcleo, haciéndolo precesar a la frecuencia de Larmor."
+    },
+    {
+        question: "¿Qué ocurre en los nervios mielínicos?",
+        options: [
+            "Se consigue un avance más rápido del impulso nervioso (conducción saltatoria).",
+            "Aumenta el consumo de energía.",
+            "La conducción es continua.",
+            "La membrana es permeable en toda su longitud."
+        ],
+        correct: "Se consigue un avance más rápido del impulso nervioso (conducción saltatoria).",
+        explanation: "La mielina aísla el axón, forzando al potencial de acción a 'saltar' de un nodo de Ranvier al siguiente."
+    },
+    {
+        question: "Según la distribución de los iones de K+ (Potasio) a ambos lados de la membrana:",
+        options: [
+            "Tienen tendencia a entrar debido a la concentración.",
+            "Tienen tendencia a salir debido a la concentración (gradiente químico).",
+            "Tienen tendencia a salir debido al potencial eléctrico.",
+            "Están totalmente inmóviles."
+        ],
+        correct: "Tienen tendencia a salir debido a la concentración (gradiente químico).",
+        explanation: "Hay mucho K+ dentro y poco fuera. Su tendencia química es salir, aunque el potencial eléctrico negativo del interior intenta retenerlo."
+    },
+    {
+        question: "El potencial de acción se propaga sin decremento, esto significa que:",
+        options: [
+            "Su amplitud disminuye con la distancia.",
+            "Su amplitud es constante a lo largo de toda la fibra.",
+            "Su duración disminuye con la distancia.",
+            "Depende de la intensidad del estímulo."
+        ],
+        correct: "Su amplitud es constante a lo largo de toda la fibra.",
+        explanation: "El PA es regenerativo 'todo o nada'; siempre mantiene su tamaño máximo (ej. +30mV) mientras viaja."
+    },
+    {
+        question: "La frecuencia de Larmor es proporcional a:",
+        options: [
+            "La masa del paciente.",
+            "La intensidad del campo magnético B0.",
+            "La temperatura de la sala.",
+            "La duración del examen."
+        ],
+        correct: "La intensidad del campo magnético B0.",
+        explanation: "Ecuación: ω = γ · B0. Si duplicas el campo magnético, duplicas la frecuencia de resonancia."
+    },
+    {
+        question: "¿Qué afirmación es correcta sobre el periodo refractario RELATIVO?",
+        options: [
+            "Es imposible generar un potencial de acción.",
+            "Se puede generar un impulso, pero se necesita un estímulo umbral superior al normal.",
+            "El umbral es inferior al normal.",
+            "Los canales de sodio están totalmente inactivados."
+        ],
+        correct: "Se puede generar un impulso, pero se necesita un estímulo umbral superior al normal.",
+        explanation: "Durante este periodo, algunos canales de Na+ se han recuperado, pero la célula está hiperpolarizada (K+ saliendo), por lo que cuesta más excitarla."
+    },
+    {
+        question: "La transmisión del impulso nervioso tiene su base biofísica en:",
+        options: [
+            "Flujo de electrones libres.",
+            "Diferencia de concentraciones de iones a ambos lados de la membrana.",
+            "Reacciones nucleares.",
+            "Campos magnéticos endógenos."
+        ],
+        correct: "Diferencia de concentraciones de iones a ambos lados de la membrana.",
+        explanation: "La separación de iones (Na+, K+, Cl-, Ca++) crea los gradientes electroquímicos necesarios para la señalización."
+    },
+    {
+        question: "En el electrocardiograma, la onda P representa:",
+        options: [
+            "La contracción ventricular.",
+            "La despolarización de las aurículas.",
+            "La repolarización ventricular.",
+            "El retraso en el nodo AV."
+        ],
+        correct: "La despolarización de las aurículas.",
+        explanation: "Es la primera onda del ciclo, marcando la activación eléctrica auricular."
+    },
+    {
+        question: "Si un ion tiene un potencial de equilibrio de -90mV y el potencial de membrana es -70mV, la fuerza impulsora neta tiende a:",
+        options: [
+            "Mover el potencial de membrana hacia -90mV (Salida de K+ o entrada de Cl-).",
+            "Mover el potencial hacia 0mV.",
+            "No hay fuerza impulsora.",
+            "Despolarizar la célula."
+        ],
+        correct: "Mover el potencial de membrana hacia -90mV (Salida de K+ o entrada de Cl-).",
+        explanation: "El sistema siempre intenta llevar el potencial de membrana hacia el potencial de equilibrio del ion permeable."
+    },
+    {
+        question: "El 'Spin' en Resonancia Magnética es una propiedad intrínseca de la materia que se asemeja a:",
+        options: [
+            "La masa.",
+            "La carga eléctrica.",
+            "Un momento angular intrínseco (giro sobre sí mismo).",
+            "La temperatura."
+        ],
+        correct: "Un momento angular intrínseco (giro sobre sí mismo).",
+        explanation: "Los núcleos atómicos rotan sobre su propio eje, lo que, al tener carga, genera un pequeño campo magnético."
+    },
+    {
+        question: "En una sinapsis química, la llegada del potencial de acción al terminal presináptico provoca la entrada de:",
+        options: [
+            "Sodio (Na+).",
+            "Potasio (K+).",
+            "Calcio (Ca++).",
+            "Cloro (Cl-)."
+        ],
+        correct: "Calcio (Ca++).",
+        explanation: "La entrada de Calcio a través de canales dependientes de voltaje es el disparador para la liberación de neurotransmisores."
+    },
+    {
+        question: "El tiempo de relajación T2 es siempre:",
+        options: [
+            "Mayor que T1.",
+            "Igual a T1.",
+            "Menor o igual que T1.",
+            "Independiente de B0."
+        ],
+        correct: "Menor o igual que T1.",
+        explanation: "Los espines pierden coherencia (T2) mucho más rápido de lo que recuperan su energía longitudinal (T1)."
+    },
+    {
+        question: "La repolarización de la neurona (bajada del potencial hacia el reposo) se debe principalmente a:",
+        options: [
+            "Entrada de Na+.",
+            "Salida de K+.",
+            "Entrada de Cl-.",
+            "Bomba Na/K."
+        ],
+        correct: "Salida de K+.",
+        explanation: "Tras el pico del potencial de acción, los canales de Na+ se cierran y los de K+ se abren, permitiendo que el potasio salga y vuelva a negativizar el interior."
+    },
+    {
+        question: "En un ECG normal, el segmento ST (entre S y T) debe ser:",
+        options: [
+            "Isoeléctrico (línea plana).",
+            "Elevado.",
+            "Deprimido.",
+            "Vertical."
+        ],
+        correct: "Isoeléctrico (línea plana).",
+        explanation: "Representa el periodo en el que todo el ventrículo está despolarizado; desviaciones aquí indican isquemia o infarto."
+    }
     ];
 
     // Función para mezclar un array (Fisher-Yates Shuffle)
