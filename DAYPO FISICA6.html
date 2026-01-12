@@ -87,7 +87,7 @@
         </div>
 
 <script>
-    // Banco de preguntas extraídas y corregidas
+    // Banco de preguntas corregido y unificado
     const quizData = [
         {
             question: "En la cúspide del potencial de acción, el potencial de membrana vale +30mV. Sabiendo que el potencial de equilibrio del sodio es +60mV, ¿qué ocurre?",
@@ -308,839 +308,832 @@
             ],
             correct: "Brazo izquierdo y pierna izquierda.",
             explanation: "El triángulo de Einthoven define DIII como la diferencia entre la pierna izquierda (+) y el brazo izquierdo (-)."
+        },
+        {
+            question: "El potencial generador desencadena impulsos (potenciales de acción) que transmiten información modulada en:",
+            options: [
+                "Amplitud.",
+                "Frecuencia.",
+                "No existe modulación.",
+                "Los potenciales de acción no transmiten información."
+            ],
+            correct: "Frecuencia.",
+            explanation: "El sistema nervioso codifica la intensidad del estímulo mediante la frecuencia de disparo de los potenciales de acción, no por su tamaño (que es constante)."
+        },
+        {
+            question: "La facilidad con la que se propaga el impulso nervioso depende de:",
+            options: [
+                "La facilidad con que se mueven las cargas (resistencia).",
+                "La cantidad de cargas que hay que transportar (capacitancia).",
+                "La modulación de impulsos.",
+                "a y b."
+            ],
+            correct: "a y b.",
+            explanation: "La velocidad depende de la constante de tiempo y espacio, determinadas por la resistencia y la capacitancia de la membrana y el axoplasma."
+        },
+        {
+            question: "Si un receptor TÓNICO detecta un estímulo y este adquiere un valor estacionario:",
+            options: [
+                "El potencial generador desaparece.",
+                "El potencial generador también se hace estacionario (se mantiene).",
+                "No existe potencial.",
+                "Se hace deslizante."
+            ],
+            correct: "El potencial generador también se hace estacionario (se mantiene).",
+            explanation: "Los receptores tónicos son de adaptación lenta; siguen disparando mientras dure el estímulo."
+        },
+        {
+            question: "Si un receptor FÁSICO detecta un estímulo y este adquiere un valor estacionario:",
+            options: [
+                "El potencial generador desaparece aunque el estímulo permanezca.",
+                "El potencial se hace estacionario.",
+                "No existe.",
+                "Se hace deslizante."
+            ],
+            correct: "El potencial generador desaparece aunque el estímulo permanezca.",
+            explanation: "Los receptores fásicos son de adaptación rápida; solo responden a los cambios de intensidad, silenciándose si el estímulo es constante."
+        },
+        {
+            question: "A partir de un valor umbral del potencial de membrana, la permeabilidad de la membrana para el sodio:",
+            options: [
+                "Se hace constante.",
+                "Disminuye.",
+                "Depende del propio potencial (feedback positivo).",
+                "Es independiente del potencial."
+            ],
+            correct: "Depende del propio potencial (feedback positivo).",
+            explanation: "Es el ciclo de Hodgkin-Huxley: la despolarización abre canales de Na+, lo que causa más despolarización, abriendo más canales."
+        },
+        {
+            question: "La diferencia entre el potencial actual y el potencial de reposo/estacionario ante un estímulo sub-umbral se denomina:",
+            options: [
+                "Potencial de Acción.",
+                "Potencial de Equilibrio.",
+                "Potencial Generador (o electrotónico).",
+                "Potencial Transitorio."
+            ],
+            correct: "Potencial Generador (o electrotónico).",
+            explanation: "Es una respuesta graduada local que no se propaga activamente como el potencial de acción."
+        },
+        {
+            question: "El potencial generador se diferencia del potencial de acción en que:",
+            options: [
+                "No se propaga regenerativamente a larga distancia.",
+                "Su amplitud depende del estímulo (graduado).",
+                "No sigue la ley del 'todo o nada'.",
+                "Las tres anteriores."
+            ],
+            correct: "Las tres anteriores.",
+            explanation: "El potencial generador es una señal analógica/graduada local, mientras que el de acción es digital/todo-o-nada y propagado."
+        },
+        {
+            question: "Un aumento del diámetro del axón se traduce en:",
+            options: [
+                "Disminución de la velocidad.",
+                "Aumento de la velocidad de conducción.",
+                "El diámetro es independiente de la velocidad.",
+                "Depende del número de células de Schwann."
+            ],
+            correct: "Aumento de la velocidad de conducción.",
+            explanation: "A mayor diámetro, menor resistencia interna al flujo de corriente, lo que acelera la conducción."
+        },
+        {
+            question: "A la variación de la tensión que tiene lugar cuando se ha sobrepasado el valor umbral se denomina:",
+            options: [
+                "Potencial de equilibrio.",
+                "Impulso o Potencial de Acción.",
+                "Potencial de membrana.",
+                "Potencial local."
+            ],
+            correct: "Impulso o Potencial de Acción.",
+            explanation: "Superar el umbral desencadena inevitablemente el potencial de acción."
+        },
+        {
+            question: "Cuando la célula está en reposo (no recibe estímulo), las corrientes netas de sodio y potasio se consideran:",
+            options: [
+                "Mayores para el potasio.",
+                "Mayores para el sodio.",
+                "Iguales (en equilibrio dinámico gracias a la bomba).",
+                "Menores para el potasio."
+            ],
+            correct: "Iguales (en equilibrio dinámico gracias a la bomba).",
+            explanation: "Aunque las permeabilidades son distintas, en estado estacionario la bomba compensa las fugas de ambos, manteniendo el potencial estable."
+        },
+        {
+            question: "¿Cuándo se inicia la sístole ventricular?",
+            options: [
+                "Al final de la onda P.",
+                "Al inicio de la onda P.",
+                "Al final de la onda R (pico del QRS).",
+                "Al final de la onda T."
+            ],
+            correct: "Al final de la onda R (pico del QRS).",
+            explanation: "La despolarización ventricular (QRS) desencadena inmediatamente la contracción mecánica (sístole)."
+        },
+        {
+            question: "La contracción ventricular tiene lugar eléctricamente durante:",
+            options: [
+                "La onda P.",
+                "Desde el inicio del QRS hasta el final de la onda T.",
+                "Solo en la onda T.",
+                "En las ondas P y T."
+            ],
+            correct: "Desde el inicio del QRS hasta el final de la onda T.",
+            explanation: "Abarca todo el periodo desde que se despolarizan (QRS) hasta que terminan de repolarizarse (final de T)."
+        },
+        {
+            question: "La electromiografía es el proceso de registrar la actividad eléctrica del:",
+            options: [
+                "Miocardio.",
+                "Corazón.",
+                "Cerebro.",
+                "Músculo esquelético."
+            ],
+            correct: "Músculo esquelético.",
+            explanation: "El EMG mide la actividad de las unidades motoras musculares."
+        },
+        {
+            question: "En la electrocardiografía, el potencial eléctrico que medimos en la superficie es:",
+            options: [
+                "Los pequeños dipolos individuales.",
+                "La proyección del vector dipolo eléctrico cardiaco en una dirección determinada.",
+                "Las corrientes de fuga.",
+                "El voltaje de la membrana celular."
+            ],
+            correct: "La proyección del vector dipolo eléctrico cardiaco en una dirección determinada.",
+            explanation: "Cada derivación (I, II, III...) es como una cámara que mira el vector suma del corazón desde un ángulo diferente."
+        },
+        {
+            question: "El complejo QRS en un electrocardiograma se asocia con:",
+            options: [
+                "Inicio de contracción auricular.",
+                "Despolarización ventricular (inicio contracción).",
+                "Final de contracción ventricular.",
+                "Repolarización auricular."
+            ],
+            correct: "Despolarización ventricular (inicio contracción).",
+            explanation: "Es el evento eléctrico más grande, correspondiente a la activación de los ventrículos."
+        },
+        {
+            question: "La onda P se asocia con:",
+            options: [
+                "Despolarización auricular.",
+                "Repolarización auricular.",
+                "Despolarización ventricular.",
+                "Contracción ventricular."
+            ],
+            correct: "Despolarización auricular.",
+            explanation: "Representa la activación eléctrica de las aurículas iniciada en el nodo sinusal."
+        },
+        {
+            question: "El ritmo cerebral de ATENCIÓN o alerta se caracteriza por ondas:",
+            options: [
+                "Alfa.",
+                "Beta.",
+                "Theta.",
+                "Delta."
+            ],
+            correct: "Beta.",
+            explanation: "Las ondas Beta (>13 Hz) aparecen cuando estamos despiertos, alerta y realizando actividad mental."
+        },
+        {
+            question: "Un electrocardiógrafo es fundamentalmente un:",
+            options: [
+                "Galvanómetro.",
+                "Óhmetro.",
+                "Gaussímetro.",
+                "Célula fotoeléctrica."
+            ],
+            correct: "Galvanómetro.",
+            explanation: "Es un instrumento muy sensible capaz de medir corrientes eléctricas muy pequeñas (diferencias de potencial)."
+        },
+        {
+            question: "¿En qué localización se coloca el electrodo de TIERRA (negro) en el ECG estándar?",
+            options: [
+                "Brazo derecho.",
+                "Brazo izquierdo.",
+                "Tobillo/Pierna derecha.",
+                "Tobillo/Pierna izquierda."
+            ],
+            correct: "Tobillo/Pierna derecha.",
+            explanation: "Por convención: Rojo (Brazo Dcho), Amarillo (Brazo Izq), Verde (Pierna Izq), Negro (Pierna Dcha - Tierra)."
+        },
+        {
+            question: "En la derivación III del ECG se representa la diferencia de potencial entre:",
+            options: [
+                "Brazo derecho y brazo izquierdo.",
+                "Brazo izquierdo y pierna izquierda.",
+                "Brazo derecho y pierna izquierda.",
+                "Brazo izquierdo y pierna derecha."
+            ],
+            correct: "Brazo izquierdo y pierna izquierda.",
+            explanation: "DIII = Pierna Izquierda (+) - Brazo Izquierdo (-)."
+        },
+        {
+            question: "La velocidad estándar de inscripción del papel electrocardiográfico es:",
+            options: [
+                "5 mm/s.",
+                "10 mm/s.",
+                "25 mm/s.",
+                "50 mm/s."
+            ],
+            correct: "25 mm/s.",
+            explanation: "Esto hace que cada cuadradito pequeño (1mm) equivalga a 0.04 segundos."
+        },
+        {
+            question: "El ritmo cerebral ALFA, típico de la relajación con ojos cerrados, tiene una frecuencia de:",
+            options: [
+                "8 - 13 Hz.",
+                "14 - 30 Hz.",
+                "4 - 7 Hz.",
+                "< 3.5 Hz."
+            ],
+            correct: "8 - 13 Hz.",
+            explanation: "Es el ritmo dominante en el lóbulo occipital durante la vigilia relajada."
+        },
+        {
+            question: "La intensidad de las ondas del electroencefalograma (EEG) se miden en:",
+            options: [
+                "Voltios.",
+                "Milivoltios.",
+                "Microvoltios.",
+                "Nanovoltios."
+            ],
+            correct: "Microvoltios.",
+            explanation: "Son señales extremadamente débiles que requieren mucha amplificación (a diferencia del ECG que es mV)."
+        },
+        {
+            question: "Para la obtención del electromiograma (EMG) de precisión se utilizan electrodos de:",
+            options: [
+                "Superficie.",
+                "Aguja coaxial.",
+                "Aguja simple.",
+                "Parche."
+            ],
+            correct: "Aguja coaxial.",
+            explanation: "Permiten registrar la actividad de unidades motoras individuales o fibras musculares específicas."
+        },
+        {
+            question: "El aumento de la fuerza muscular mediante el aumento de la frecuencia de descarga se llama:",
+            options: [
+                "Reclutamiento espacial.",
+                "Reclutamiento temporal (sumación temporal).",
+                "Refuerzo periférico.",
+                "Tétanos."
+            ],
+            correct: "Reclutamiento temporal (sumación temporal).",
+            explanation: "Al disparar más rápido, las contracciones se suman antes de que el músculo se relaje."
+        },
+        {
+            question: "La frecuencia de las ondas del electromiograma (sonido al audificarlo):",
+            options: [
+                "Infrasonidos.",
+                "Sonidos audibles.",
+                "Ultrasonidos.",
+                "Hipersonidos."
+            ],
+            correct: "Sonidos audibles.",
+            explanation: "Las frecuencias de descarga muscular caen dentro del rango auditivo humano (aprox. 20-500Hz), sonando como un traqueteo."
+        },
+        {
+            question: "El objetivo principal del campo magnético estático (B0) de una RM es:",
+            options: [
+                "Producir una variación del campo magnético.",
+                "Que los espines (núcleos de H) se orienten y precesen en relación al campo.",
+                "Generar un pulso de excitación.",
+                "Detectar una señal."
+            ],
+            correct: "Que los espines (núcleos de H) se orienten y precesen en relación al campo.",
+            explanation: "B0 crea la magnetización neta longitudinal necesaria para empezar el estudio."
+        },
+        {
+            question: "El objetivo principal del pulso de Radiofrecuencia (RF) es:",
+            options: [
+                "Alinear los protones.",
+                "Generar un pulso de excitación (resonancia).",
+                "Detectar la señal.",
+                "Enfriar el imán."
+            ],
+            correct: "Generar un pulso de excitación (resonancia).",
+            explanation: "El pulso RF aporta energía a la frecuencia de Larmor para sacar los protones del equilibrio."
+        },
+        {
+            question: "El pulso de RF en una instalación de RM provoca que:",
+            options: [
+                "Disminuya la magnetización longitudinal (Eje Z).",
+                "Aparezca una magnetización transversal (Plano XY).",
+                "Los núcleos entren en fase.",
+                "Todas las anteriores (a y b principalmente)."
+            ],
+            correct: "Todas las anteriores (a y b principalmente).",
+            explanation: "Vuelca la magnetización del eje longitudinal al plano transversal."
+        },
+        {
+            question: "El objetivo de la bobina receptora (antena) es:",
+            options: [
+                "Emitir radiación X.",
+                "Detectar la señal de relajación (eco) emitida por los protones.",
+                "Generar el campo magnético principal.",
+                "Mover al paciente."
+            ],
+            correct: "Detectar la señal de relajación (eco) emitida por los protones.",
+            explanation: "Por inducción de Faraday, la magnetización transversal en movimiento induce una corriente en la bobina."
+        },
+        {
+            question: "La constante giromagnética:",
+            options: [
+                "Depende del cociente carga/masa del núcleo.",
+                "Es igual para todos los elementos.",
+                "Es proporcional a la frecuencia de Larmor.",
+                "a y c."
+            ],
+            correct: "a y c.",
+            explanation: "Es una propiedad intrínseca del núcleo (relación carga/masa) y define su frecuencia de precesión."
+        },
+        {
+            question: "Para realizar estudios de RM, los nucleidos deben tener:",
+            options: [
+                "Número par de protones y neutrones.",
+                "Número impar de nucleones (protones o neutrones).",
+                "Spin neto igual a cero.",
+                "Carga neutra."
+            ],
+            correct: "Número impar de nucleones (protones o neutrones).",
+            explanation: "Solo los núcleos con spin neto distinto de cero (impares) tienen momento magnético observable."
+        },
+        {
+            question: "¿Con cuál de estos nucleidos NO se pueden realizar estudios de RM?",
+            options: [
+                "1 H (Hidrógeno).",
+                "16 O (Oxígeno-16).",
+                "31 P (Fósforo).",
+                "23 Na (Sodio)."
+            ],
+            correct: "16 O (Oxígeno-16).",
+            explanation: "El O-16 tiene 8 protones y 8 neutrones (ambos pares), por lo que su spin es cero y es magnéticamente inerte."
+        },
+        {
+            question: "Para que los núcleos presenten fenómenos de resonancia, el vector momento angular J (Spin) debe ser:",
+            options: [
+                "Mayor que 0 (Distinto de 0).",
+                "Igual a 0.",
+                "Negativo.",
+                "Infinito."
+            ],
+            correct: "Mayor que 0 (Distinto de 0).",
+            explanation: "Sin spin (giro), no hay momento magnético y no interactúan con el campo magnético."
+        },
+        {
+            question: "Entre los tiempos de relajación T1 (Spin-Red) y T2 (Spin-Spin) siempre se verifica que:",
+            options: [
+                "T1 es mayor que T2.",
+                "T1 es igual a T2.",
+                "T1 es menor que T2.",
+                "No tienen relación."
+            ],
+            correct: "T1 es mayor que T2.",
+            explanation: "La pérdida de coherencia (T2) siempre ocurre más rápido o igual que la recuperación de energía (T1). T2 nunca puede ser mayor que T1."
+        },
+        {
+            question: "La mayor o menor facilidad que encuentran los núcleos en ceder su energía al medio (red cristalina) se denomina:",
+            options: [
+                "Relajación Longitudinal (T1).",
+                "Relajación Transversal (T2).",
+                "Precesión.",
+                "Excitación."
+            ],
+            correct: "Relajación Longitudinal (T1).",
+            explanation: "T1 mide cuánto tarda el sistema en devolver la energía absorbida al entorno térmico."
+        },
+        {
+            question: "La frecuencia de resonancia (Frecuencia de Larmor) depende de:",
+            options: [
+                "La temperatura.",
+                "La intensidad del campo magnético (B0) y la constante giromagnética.",
+                "La densidad del agua.",
+                "El voltaje de la bobina."
+            ],
+            correct: "La intensidad del campo magnético (B0) y la constante giromagnética.",
+            explanation: "Según la ecuación de Larmor: ω = γ · B0."
+        },
+        {
+            question: "Llamamos Tiempo de Eco (TE) a:",
+            options: [
+                "Duración del pulso RF.",
+                "El tiempo entre el pulso de excitación y la recogida de la señal (pico del eco).",
+                "Diferencia entre T1 y T2.",
+                "El tiempo de repetición."
+            ],
+            correct: "El tiempo entre el pulso de excitación y la recogida de la señal (pico del eco).",
+            explanation: "Es un parámetro ajustable que determina cuánto influye el T2 en el contraste de la imagen."
+        },
+        {
+            question: "El tiempo de relajación longitudinal T1 se define como el tiempo para recuperar:",
+            options: [
+                "El 100% de la magnetización.",
+                "El 63% de la magnetización longitudinal inicial.",
+                "El 50%.",
+                "El 37%."
+            ],
+            correct: "El 63% de la magnetización longitudinal inicial.",
+            explanation: "Es la constante de tiempo de crecimiento exponencial (1 - 1/e)."
+        },
+        {
+            question: "El tiempo de relajación transversal T2 se define como el tiempo para que la magnetización transversal decaiga al:",
+            options: [
+                "100%.",
+                "63%.",
+                "50%.",
+                "37% de su valor inicial."
+            ],
+            correct: "37% de su valor inicial.",
+            explanation: "Es la constante de tiempo de decaimiento exponencial (1/e)."
+        },
+        {
+            question: "T2 (relajación spin-spin) depende fundamentalmente de:",
+            options: [
+                "La pérdida de coherencia de fase entre los protones.",
+                "La cesión de energía al medio.",
+                "La temperatura.",
+                "El diámetro del imán."
+            ],
+            correct: "La pérdida de coherencia de fase entre los protones.",
+            explanation: "Los campos magnéticos locales de los núcleos vecinos hacen que unos giren más rápido y otros más lento, desfástandose."
+        },
+        {
+            question: "La bobina (o antena) de una RM tiene por misión:",
+            options: [
+                "Solo emitir RF.",
+                "Solo recibir señal.",
+                "Emitir el pulso de RF y captar las señales (a veces son la misma bobina, a veces distintas).",
+                "Generar el campo B0."
+            ],
+            correct: "Emitir el pulso de RF y captar las señales (a veces son la misma bobina, a veces distintas).",
+            explanation: "Actúan como transmisores para excitar y receptores para escuchar el eco."
+        },
+        {
+            question: "Es una contraindicación absoluta para RM:",
+            options: [
+                "Alergia al yodo (no se usa yodo en RM).",
+                "Portar marcapasos cardiaco (no compatible).",
+                "Claustrofobia leve.",
+                "Prótesis de titanio modernas."
+            ],
+            correct: "Portar marcapasos cardiaco (no compatible).",
+            explanation: "Riesgo vital por alteración electrónica o desplazamiento."
+        },
+        {
+            question: "El contraste fundamental utilizado en RM es:",
+            options: [
+                "Gadolinio (paramagnético).",
+                "Yodo.",
+                "Bario.",
+                "Tecnecio."
+            ],
+            correct: "Gadolinio (paramagnético).",
+            explanation: "El Gadolinio acorta el T1 de los tejidos donde se acumula, haciéndolos brillar en imágenes T1."
+        },
+        {
+            question: "En imágenes T1, el agua y los líquidos (LCR) aparecen:",
+            options: [
+                "Blancos (Hiperintensos).",
+                "Negros / Gris oscuro (Hipointensos).",
+                "Isointensos.",
+                "Brillantes."
+            ],
+            correct: "Negros / Gris oscuro (Hipointensos).",
+            explanation: "El agua tiene un T1 muy largo, por lo que tarda en recuperar señal y se ve oscura en T1 (pero blanca en T2)."
+        },
+        {
+            question: "En imágenes T2, el agua y los líquidos aparecen:",
+            options: [
+                "Blancos (Hiperintensos).",
+                "Negros.",
+                "Gris oscuro.",
+                "Invisibles."
+            ],
+            correct: "Blancos (Hiperintensos).",
+            explanation: "El agua tiene un T2 largo, por lo que mantiene la señal transversal mucho tiempo, apareciendo brillante en T2."
+        },
+        {
+            question: "La grasa en T1 aparece:",
+            options: [
+                "Blanca (Hiperintensa).",
+                "Negra.",
+                "Gris.",
+                "Azul."
+            ],
+            correct: "Blanca (Hiperintensa).",
+            explanation: "La grasa tiene un T1 corto (recupera rápido), dando mucha señal."
+        },
+        {
+            question: "Los huesos corticales (calcio) y el aire suelen aparecer en RM como:",
+            options: [
+                "Muy blancos.",
+                "Negros (Ausencia de señal).",
+                "Grises.",
+                "Variables."
+            ],
+            correct: "Negros (Ausencia de señal).",
+            explanation: "Tienen muy pocos protones móviles o T2 extremadamente cortos, por lo que no dan señal detectable."
+        },
+        {
+            question: "NO es una ventaja de la RM:",
+            options: [
+                "Posibilidad de estudio en cualquier plano.",
+                "No usa radiación ionizante.",
+                "Excelente contraste de partes blandas.",
+                "La economía de sus instalaciones."
+            ],
+            correct: "La economía de sus instalaciones.",
+            explanation: "La RM es una tecnología muy costosa de instalar y mantener en comparación con Rayos X o Eco."
+        },
+        {
+            question: "Si la variación de energía potencial al SALIR un ion positivo es POSITIVA (cuesta trabajo salir):",
+            options: [
+                "El ion tiene tendencia a salir.",
+                "El ion tiene tendencia a entrar.",
+                "Está en equilibrio.",
+                "No se puede saber."
+            ],
+            correct: "El ion tiene tendencia a entrar.",
+            explanation: "Si delta U > 0 al salir, significa que el sistema prefiere energéticamente que el ion esté dentro."
+        },
+        {
+            question: "En Resonancia Magnética, los vasos sanguíneos con flujo rápido suelen aparecer en secuencias estándar (Spin Eco) como:",
+            options: [
+                "Fuertemente contrastados (blancos).",
+                "Con ausencia de señal (negros/vacío de flujo).",
+                "No aparecen por tener densidad igual al músculo.",
+                "Rojos."
+            ],
+            correct: "Con ausencia de señal (negros/vacío de flujo).",
+            explanation: "Debido al fenómeno de 'vacío de flujo' (flow void), la sangre que recibe el pulso de excitación se mueve fuera del corte antes de que se lea la señal, apareciendo negra."
+        },
+        {
+            question: "Según la distribución de los iones Cloro (Cl-) a ambos lados de la membrana, estos presentan:",
+            options: [
+                "Tendencia a entrar debido al potencial de equilibrio.",
+                "Tendencia a salir debido al potencial de membrana (el interior negativo los repele).",
+                "Están en equilibrio pasivo (Potencial de Nernst cercano al de reposo).",
+                "b y c suelen ser correctas dependiendo de la célula."
+            ],
+            correct: "b y c suelen ser correctas dependiendo de la célula.",
+            explanation: "El Cl- es negativo. El interior celular negativo (-70mV) lo repele (fuerza eléctrica hacia fuera), equilibrando casi exactamente su tendencia química a entrar."
+        },
+        {
+            question: "En la fase de sueño REM (Rapid Eye Movement), hay un predominio de ondas:",
+            options: [
+                "Ondas Alfa (relajación).",
+                "Ondas Delta (sueño profundo).",
+                "Ondas Beta (actividad similar a la vigilia).",
+                "Ondas Theta puras."
+            ],
+            correct: "Ondas Beta (actividad similar a la vigilia).",
+            explanation: "El sueño REM se llama 'sueño paradójico' porque la actividad eléctrica cerebral es rápida y desincronizada (Beta), muy parecida a estar despierto."
+        },
+        {
+            question: "Si el incremento de energía potencial que tiene lugar cuando sale un mol de ión NEGATIVO a través de la membrana es POSITIVO (cuesta energía salir), se verifica que:",
+            options: [
+                "El ión tendrá tendencia a salir.",
+                "El ión tendrá tendencia a entrar en la célula.",
+                "El sistema está en equilibrio.",
+                "El incremento no puede ser positivo."
+            ],
+            correct: "El ión tendrá tendencia a entrar en la célula.",
+            explanation: "Termodinámica: Si salir aumenta la energía del sistema (es una 'cuesta arriba'), el ión tiende espontáneamente a ir hacia el estado de menor energía (entrar)."
+        },
+        {
+            question: "Si el incremento de energía potencial que tiene lugar cuando sale un mol de ión NEGATIVO a través de la membrana es NEGATIVO (libera energía al salir), se verifica que:",
+            options: [
+                "El ión tendrá tendencia a salir de la misma.",
+                "El ión tendrá tendencia a entrar.",
+                "El sistema estará en equilibrio.",
+                "Ninguna es correcta."
+            ],
+            correct: "El ión tendrá tendencia a salir de la misma.",
+            explanation: "Si el cambio de energía es negativo (es una 'cuesta abajo'), el proceso es espontáneo: el ión sale naturalmente."
+        },
+        {
+            question: "Si el incremento de energía potencial que tiene lugar cuando sale un mol de ión POSITIVO a través de la membrana es POSITIVO, se verifica que:",
+            options: [
+                "El ión tendrá tendencia a entrar en la misma.",
+                "El ión tendrá tendencia a salir.",
+                "El sistema está en equilibrio.",
+                "Es imposible."
+            ],
+            correct: "El ión tendrá tendencia a entrar en la misma.",
+            explanation: "Igual que antes: si cuesta energía salir (delta positivo), la tendencia natural es quedarse dentro o entrar."
+        },
+        {
+            question: "La onda T en un electrocardiograma se asocia con:",
+            options: [
+                "El inicio de la contracción auricular.",
+                "Repolarización ventricular.",
+                "Despolarización ventricular.",
+                "Repolarización auricular."
+            ],
+            correct: "Repolarización ventricular.",
+            explanation: "La onda T representa la recuperación eléctrica (repolarización) de los ventrículos antes del siguiente latido."
+        },
+        {
+            question: "Una disminución del diámetro del axón se traduce en el impulso nervioso en:",
+            options: [
+                "Aumento de la velocidad.",
+                "Disminución de la velocidad.",
+                "La velocidad no cambia.",
+                "Aumento de la amplitud."
+            ],
+            correct: "Disminución de la velocidad.",
+            explanation: "A menor diámetro, mayor resistencia interna al flujo de corriente, lo que hace la conducción más lenta."
+        },
+        {
+            question: "La tendencia neta de los iones a entrar o salir de la célula viene dada por:",
+            options: [
+                "Solo el gradiente químico.",
+                "Solo el gradiente eléctrico.",
+                "El potencial electroquímico (suma de a y b).",
+                "La temperatura."
+            ],
+            correct: "El potencial electroquímico (suma de a y b).",
+            explanation: "La fuerza motriz real es la combinación de la diferencia de concentración y la diferencia de carga eléctrica."
+        },
+        {
+            question: "La frecuencia de repetición de los pulsos (frecuencia de disparo neuronal) depende del valor del:",
+            options: [
+                "Potencial de acción.",
+                "Potencial de equilibrio.",
+                "Potencial generador.",
+                "Potencial de Nernst."
+            ],
+            correct: "Potencial generador.",
+            explanation: "Cuanto mayor sea la amplitud del potencial generador (estímulo más fuerte), mayor será la frecuencia de disparo de los potenciales de acción."
+        },
+        {
+            question: "Para que los núcleos NO presenten fenómenos de Resonancia Magnética:",
+            options: [
+                "El vector momento magnético debe ser distinto de cero.",
+                "El número de nucleones debe ser impar.",
+                "El vector momento angular (spin) y magnético deben ser igual a cero.",
+                "Deben tener carga positiva."
+            ],
+            correct: "El vector momento angular (spin) y magnético deben ser igual a cero.",
+            explanation: "Si el spin es cero (núcleos par-par como el Carbono-12 o el Oxígeno-16), no interactúan con el campo magnético y no hay resonancia."
+        },
+        {
+            question: "Cuando un núcleo con spin es colocado bajo la acción de un campo magnético externo, el vector momento angular J:",
+            options: [
+                "Se alinea perfectamente estático con el campo.",
+                "Realiza un movimiento de precesión (como una peonza).",
+                "Se anula.",
+                "Adopta orientaciones arbitrarias."
+            ],
+            correct: "Realiza un movimiento de precesión (como una peonza).",
+            explanation: "El campo magnético ejerce un torque sobre el núcleo, haciéndolo precesar a la frecuencia de Larmor."
+        },
+        {
+            question: "¿Qué ocurre en los nervios mielínicos?",
+            options: [
+                "Se consigue un avance más rápido del impulso nervioso (conducción saltatoria).",
+                "Aumenta el consumo de energía.",
+                "La conducción es continua.",
+                "La membrana es permeable en toda su longitud."
+            ],
+            correct: "Se consigue un avance más rápido del impulso nervioso (conducción saltatoria).",
+            explanation: "La mielina aísla el axón, forzando al potencial de acción a 'saltar' de un nodo de Ranvier al siguiente."
+        },
+        {
+            question: "Según la distribución de los iones de K+ (Potasio) a ambos lados de la membrana:",
+            options: [
+                "Tienen tendencia a entrar debido a la concentración.",
+                "Tienen tendencia a salir debido a la concentración (gradiente químico).",
+                "Tienen tendencia a salir debido al potencial eléctrico.",
+                "Están totalmente inmóviles."
+            ],
+            correct: "Tienen tendencia a salir debido a la concentración (gradiente químico).",
+            explanation: "Hay mucho K+ dentro y poco fuera. Su tendencia química es salir, aunque el potencial eléctrico negativo del interior intenta retenerlo."
+        },
+        {
+            question: "El potencial de acción se propaga sin decremento, esto significa que:",
+            options: [
+                "Su amplitud disminuye con la distancia.",
+                "Su amplitud es constante a lo largo de toda la fibra.",
+                "Su duración disminuye con la distancia.",
+                "Depende de la intensidad del estímulo."
+            ],
+            correct: "Su amplitud es constante a lo largo de toda la fibra.",
+            explanation: "El PA es regenerativo 'todo o nada'; siempre mantiene su tamaño máximo (ej. +30mV) mientras viaja."
+        },
+        {
+            question: "La frecuencia de Larmor es proporcional a:",
+            options: [
+                "La masa del paciente.",
+                "La intensidad del campo magnético B0.",
+                "La temperatura de la sala.",
+                "La duración del examen."
+            ],
+            correct: "La intensidad del campo magnético B0.",
+            explanation: "Ecuación: ω = γ · B0. Si duplicas el campo magnético, duplicas la frecuencia de resonancia."
+        },
+        {
+            question: "¿Qué afirmación es correcta sobre el periodo refractario RELATIVO?",
+            options: [
+                "Es imposible generar un potencial de acción.",
+                "Se puede generar un impulso, pero se necesita un estímulo umbral superior al normal.",
+                "El umbral es inferior al normal.",
+                "Los canales de sodio están totalmente inactivados."
+            ],
+            correct: "Se puede generar un impulso, pero se necesita un estímulo umbral superior al normal.",
+            explanation: "Durante este periodo, algunos canales de Na+ se han recuperado, pero la célula está hiperpolarizada (K+ saliendo), por lo que cuesta más excitarla."
+        },
+        {
+            question: "La transmisión del impulso nervioso tiene su base biofísica en:",
+            options: [
+                "Flujo de electrones libres.",
+                "Diferencia de concentraciones de iones a ambos lados de la membrana.",
+                "Reacciones nucleares.",
+                "Campos magnéticos endógenos."
+            ],
+            correct: "Diferencia de concentraciones de iones a ambos lados de la membrana.",
+            explanation: "La separación de iones (Na+, K+, Cl-, Ca++) crea los gradientes electroquímicos necesarios para la señalización."
+        },
+        {
+            question: "En el electrocardiograma, la onda P representa:",
+            options: [
+                "La contracción ventricular.",
+                "La despolarización de las aurículas.",
+                "La repolarización ventricular.",
+                "El retraso en el nodo AV."
+            ],
+            correct: "La despolarización de las aurículas.",
+            explanation: "Es la primera onda del ciclo, marcando la activación eléctrica auricular."
+        },
+        {
+            question: "Si un ion tiene un potencial de equilibrio de -90mV y el potencial de membrana es -70mV, la fuerza impulsora neta tiende a:",
+            options: [
+                "Mover el potencial de membrana hacia -90mV (Salida de K+ o entrada de Cl-).",
+                "Mover el potencial hacia 0mV.",
+                "No hay fuerza impulsora.",
+                "Despolarizar la célula."
+            ],
+            correct: "Mover el potencial de membrana hacia -90mV (Salida de K+ o entrada de Cl-).",
+            explanation: "El sistema siempre intenta llevar el potencial de membrana hacia el potencial de equilibrio del ion permeable."
+        },
+        {
+            question: "El 'Spin' en Resonancia Magnética es una propiedad intrínseca de la materia que se asemeja a:",
+            options: [
+                "La masa.",
+                "La carga eléctrica.",
+                "Un momento angular intrínseco (giro sobre sí mismo).",
+                "La temperatura."
+            ],
+            correct: "Un momento angular intrínseco (giro sobre sí mismo).",
+            explanation: "Los núcleos atómicos rotan sobre su propio eje, lo que, al tener carga, genera un pequeño campo magnético."
+        },
+        {
+            question: "En una sinapsis química, la llegada del potencial de acción al terminal presináptico provoca la entrada de:",
+            options: [
+                "Sodio (Na+).",
+                "Potasio (K+).",
+                "Calcio (Ca++).",
+                "Cloro (Cl-)."
+            ],
+            correct: "Calcio (Ca++).",
+            explanation: "La entrada de Calcio a través de canales dependientes de voltaje es el disparador para la liberación de neurotransmisores."
+        },
+        {
+            question: "El tiempo de relajación T2 es siempre:",
+            options: [
+                "Mayor que T1.",
+                "Igual a T1.",
+                "Menor o igual que T1.",
+                "Independiente de B0."
+            ],
+            correct: "Menor o igual que T1.",
+            explanation: "Los espines pierden coherencia (T2) mucho más rápido de lo que recuperan su energía longitudinal (T1)."
+        },
+        {
+            question: "La repolarización de la neurona (bajada del potencial hacia el reposo) se debe principalmente a:",
+            options: [
+                "Entrada de Na+.",
+                "Salida de K+.",
+                "Entrada de Cl-.",
+                "Bomba Na/K."
+            ],
+            correct: "Salida de K+.",
+            explanation: "Tras el pico del potencial de acción, los canales de Na+ se cierran y los de K+ se abren, permitiendo que el potasio salga y vuelva a negativizar el interior."
+        },
+        {
+            question: "En un ECG normal, el segmento ST (entre S y T) debe ser:",
+            options: [
+                "Isoeléctrico (línea plana).",
+                "Elevado.",
+                "Deprimido.",
+                "Vertical."
+            ],
+            correct: "Isoeléctrico (línea plana).",
+            explanation: "Representa el periodo en el que todo el ventrículo está despolarizado; desviaciones aquí indican isquemia o infarto."
         }
-    {
-        question: "El potencial generador desencadena impulsos (potenciales de acción) que transmiten información modulada en:",
-        options: [
-            "Amplitud.",
-            "Frecuencia.",
-            "No existe modulación.",
-            "Los potenciales de acción no transmiten información."
-        ],
-        correct: "Frecuencia.",
-        explanation: "El sistema nervioso codifica la intensidad del estímulo mediante la frecuencia de disparo de los potenciales de acción, no por su tamaño (que es constante)."
-    },
-    {
-        question: "La facilidad con la que se propaga el impulso nervioso depende de:",
-        options: [
-            "La facilidad con que se mueven las cargas (resistencia).",
-            "La cantidad de cargas que hay que transportar (capacitancia).",
-            "La modulación de impulsos.",
-            "a y b."
-        ],
-        correct: "a y b.",
-        explanation: "La velocidad depende de la constante de tiempo y espacio, determinadas por la resistencia y la capacitancia de la membrana y el axoplasma."
-    },
-    {
-        question: "Si un receptor TÓNICO detecta un estímulo y este adquiere un valor estacionario:",
-        options: [
-            "El potencial generador desaparece.",
-            "El potencial generador también se hace estacionario (se mantiene).",
-            "No existe potencial.",
-            "Se hace deslizante."
-        ],
-        correct: "El potencial generador también se hace estacionario (se mantiene).",
-        explanation: "Los receptores tónicos son de adaptación lenta; siguen disparando mientras dure el estímulo."
-    },
-    {
-        question: "Si un receptor FÁSICO detecta un estímulo y este adquiere un valor estacionario:",
-        options: [
-            "El potencial generador desaparece aunque el estímulo permanezca.",
-            "El potencial se hace estacionario.",
-            "No existe.",
-            "Se hace deslizante."
-        ],
-        correct: "El potencial generador desaparece aunque el estímulo permanezca.",
-        explanation: "Los receptores fásicos son de adaptación rápida; solo responden a los cambios de intensidad, silenciándose si el estímulo es constante."
-    },
-    {
-        question: "A partir de un valor umbral del potencial de membrana, la permeabilidad de la membrana para el sodio:",
-        options: [
-            "Se hace constante.",
-            "Disminuye.",
-            "Depende del propio potencial (feedback positivo).",
-            "Es independiente del potencial."
-        ],
-        correct: "Depende del propio potencial (feedback positivo).",
-        explanation: "Es el ciclo de Hodgkin-Huxley: la despolarización abre canales de Na+, lo que causa más despolarización, abriendo más canales."
-    },
-    {
-        question: "La diferencia entre el potencial actual y el potencial de reposo/estacionario ante un estímulo sub-umbral se denomina:",
-        options: [
-            "Potencial de Acción.",
-            "Potencial de Equilibrio.",
-            "Potencial Generador (o electrotónico).",
-            "Potencial Transitorio."
-        ],
-        correct: "Potencial Generador (o electrotónico).",
-        explanation: "Es una respuesta graduada local que no se propaga activamente como el potencial de acción."
-    },
-    {
-        question: "El potencial generador se diferencia del potencial de acción en que:",
-        options: [
-            "No se propaga regenerativamente a larga distancia.",
-            "Su amplitud depende del estímulo (graduado).",
-            "No sigue la ley del 'todo o nada'.",
-            "Las tres anteriores."
-        ],
-        correct: "Las tres anteriores.",
-        explanation: "El potencial generador es una señal analógica/graduada local, mientras que el de acción es digital/todo-o-nada y propagado."
-    },
-    {
-        question: "Un aumento del diámetro del axón se traduce en:",
-        options: [
-            "Disminución de la velocidad.",
-            "Aumento de la velocidad de conducción.",
-            "El diámetro es independiente de la velocidad.",
-            "Depende del número de células de Schwann."
-        ],
-        correct: "Aumento de la velocidad de conducción.",
-        explanation: "A mayor diámetro, menor resistencia interna al flujo de corriente, lo que acelera la conducción."
-    },
-    {
-        question: "A la variación de la tensión que tiene lugar cuando se ha sobrepasado el valor umbral se denomina:",
-        options: [
-            "Potencial de equilibrio.",
-            "Impulso o Potencial de Acción.",
-            "Potencial de membrana.",
-            "Potencial local."
-        ],
-        correct: "Impulso o Potencial de Acción.",
-        explanation: "Superar el umbral desencadena inevitablemente el potencial de acción."
-    },
-    {
-        question: "Cuando la célula está en reposo (no recibe estímulo), las corrientes netas de sodio y potasio se consideran:",
-        options: [
-            "Mayores para el potasio.",
-            "Mayores para el sodio.",
-            "Iguales (en equilibrio dinámico gracias a la bomba).",
-            "Menores para el potasio."
-        ],
-        correct: "Iguales (en equilibrio dinámico gracias a la bomba).",
-        explanation: "Aunque las permeabilidades son distintas, en estado estacionario la bomba compensa las fugas de ambos, manteniendo el potencial estable."
-    },
-    
-    // --- FISICA CARDIACA Y ECG ---
-    {
-        question: "¿Cuándo se inicia la sístole ventricular?",
-        options: [
-            "Al final de la onda P.",
-            "Al inicio de la onda P.",
-            "Al final de la onda R (pico del QRS).",
-            "Al final de la onda T."
-        ],
-        correct: "Al final de la onda R (pico del QRS).",
-        explanation: "La despolarización ventricular (QRS) desencadena inmediatamente la contracción mecánica (sístole)."
-    },
-    {
-        question: "La contracción ventricular tiene lugar eléctricamente durante:",
-        options: [
-            "La onda P.",
-            "Desde el inicio del QRS hasta el final de la onda T.",
-            "Solo en la onda T.",
-            "En las ondas P y T."
-        ],
-        correct: "Desde el inicio del QRS hasta el final de la onda T.",
-        explanation: "Abarca todo el periodo desde que se despolarizan (QRS) hasta que terminan de repolarizarse (final de T)."
-    },
-    {
-        question: "La electromiografía es el proceso de registrar la actividad eléctrica del:",
-        options: [
-            "Miocardio.",
-            "Corazón.",
-            "Cerebro.",
-            "Músculo esquelético."
-        ],
-        correct: "Músculo esquelético.",
-        explanation: "El EMG mide la actividad de las unidades motoras musculares."
-    },
-    {
-        question: "En la electrocardiografía, el potencial eléctrico que medimos en la superficie es:",
-        options: [
-            "Los pequeños dipolos individuales.",
-            "La proyección del vector dipolo eléctrico cardiaco en una dirección determinada.",
-            "Las corrientes de fuga.",
-            "El voltaje de la membrana celular."
-        ],
-        correct: "La proyección del vector dipolo eléctrico cardiaco en una dirección determinada.",
-        explanation: "Cada derivación (I, II, III...) es como una cámara que mira el vector suma del corazón desde un ángulo diferente."
-    },
-    {
-        question: "El complejo QRS en un electrocardiograma se asocia con:",
-        options: [
-            "Inicio de contracción auricular.",
-            "Despolarización ventricular (inicio contracción).",
-            "Final de contracción ventricular.",
-            "Repolarización auricular."
-        ],
-        correct: "Despolarización ventricular (inicio contracción).",
-        explanation: "Es el evento eléctrico más grande, correspondiente a la activación de los ventrículos."
-    },
-    {
-        question: "La onda P se asocia con:",
-        options: [
-            "Despolarización auricular.",
-            "Repolarización auricular.",
-            "Despolarización ventricular.",
-            "Contracción ventricular."
-        ],
-        correct: "Despolarización auricular.",
-        explanation: "Representa la activación eléctrica de las aurículas iniciada en el nodo sinusal."
-    },
-    {
-        question: "El ritmo cerebral de ATENCIÓN o alerta se caracteriza por ondas:",
-        options: [
-            "Alfa.",
-            "Beta.",
-            "Theta.",
-            "Delta."
-        ],
-        correct: "Beta.",
-        explanation: "Las ondas Beta (>13 Hz) aparecen cuando estamos despiertos, alerta y realizando actividad mental."
-    },
-    {
-        question: "Un electrocardiógrafo es fundamentalmente un:",
-        options: [
-            "Galvanómetro.",
-            "Óhmetro.",
-            "Gaussímetro.",
-            "Célula fotoeléctrica."
-        ],
-        correct: "Galvanómetro.",
-        explanation: "Es un instrumento muy sensible capaz de medir corrientes eléctricas muy pequeñas (diferencias de potencial)."
-    },
-    {
-        question: "¿En qué localización se coloca el electrodo de TIERRA (negro) en el ECG estándar?",
-        options: [
-            "Brazo derecho.",
-            "Brazo izquierdo.",
-            "Tobillo/Pierna derecha.",
-            "Tobillo/Pierna izquierda."
-        ],
-        correct: "Tobillo/Pierna derecha.",
-        explanation: "Por convención: Rojo (Brazo Dcho), Amarillo (Brazo Izq), Verde (Pierna Izq), Negro (Pierna Dcha - Tierra)."
-    },
-    {
-        question: "En la derivación III del ECG se representa la diferencia de potencial entre:",
-        options: [
-            "Brazo derecho y brazo izquierdo.",
-            "Brazo izquierdo y pierna izquierda.",
-            "Brazo derecho y pierna izquierda.",
-            "Brazo izquierdo y pierna derecha."
-        ],
-        correct: "Brazo izquierdo y pierna izquierda.",
-        explanation: "DIII = Pierna Izquierda (+) - Brazo Izquierdo (-)."
-    },
-    {
-        question: "La velocidad estándar de inscripción del papel electrocardiográfico es:",
-        options: [
-            "5 mm/s.",
-            "10 mm/s.",
-            "25 mm/s.",
-            "50 mm/s."
-        ],
-        correct: "25 mm/s.",
-        explanation: "Esto hace que cada cuadradito pequeño (1mm) equivalga a 0.04 segundos."
-    },
-    {
-        question: "El ritmo cerebral ALFA, típico de la relajación con ojos cerrados, tiene una frecuencia de:",
-        options: [
-            "8 - 13 Hz.",
-            "14 - 30 Hz.",
-            "4 - 7 Hz.",
-            "< 3.5 Hz."
-        ],
-        correct: "8 - 13 Hz.",
-        explanation: "Es el ritmo dominante en el lóbulo occipital durante la vigilia relajada."
-    },
-    {
-        question: "La intensidad de las ondas del electroencefalograma (EEG) se miden en:",
-        options: [
-            "Voltios.",
-            "Milivoltios.",
-            "Microvoltios.",
-            "Nanovoltios."
-        ],
-        correct: "Microvoltios.",
-        explanation: "Son señales extremadamente débiles que requieren mucha amplificación (a diferencia del ECG que es mV)."
-    },
-    {
-        question: "Para la obtención del electromiograma (EMG) de precisión se utilizan electrodos de:",
-        options: [
-            "Superficie.",
-            "Aguja coaxial.",
-            "Aguja simple.",
-            "Parche."
-        ],
-        correct: "Aguja coaxial.",
-        explanation: "Permiten registrar la actividad de unidades motoras individuales o fibras musculares específicas."
-    },
-    {
-        question: "El aumento de la fuerza muscular mediante el aumento de la frecuencia de descarga se llama:",
-        options: [
-            "Reclutamiento espacial.",
-            "Reclutamiento temporal (sumación temporal).",
-            "Refuerzo periférico.",
-            "Tétanos."
-        ],
-        correct: "Reclutamiento temporal (sumación temporal).",
-        explanation: "Al disparar más rápido, las contracciones se suman antes de que el músculo se relaje."
-    },
-    {
-        question: "La frecuencia de las ondas del electromiograma (sonido al audificarlo):",
-        options: [
-            "Infrasonidos.",
-            "Sonidos audibles.",
-            "Ultrasonidos.",
-            "Hipersonidos."
-        ],
-        correct: "Sonidos audibles.",
-        explanation: "Las frecuencias de descarga muscular caen dentro del rango auditivo humano (aprox. 20-500Hz), sonando como un traqueteo."
-    },
-
-    // --- RESONANCIA MAGNÉTICA (RM) ---
-    {
-        question: "El objetivo principal del campo magnético estático (B0) de una RM es:",
-        options: [
-            "Producir una variación del campo magnético.",
-            "Que los espines (núcleos de H) se orienten y precesen en relación al campo.",
-            "Generar un pulso de excitación.",
-            "Detectar una señal."
-        ],
-        correct: "Que los espines (núcleos de H) se orienten y precesen en relación al campo.",
-        explanation: "B0 crea la magnetización neta longitudinal necesaria para empezar el estudio."
-    },
-    {
-        question: "El objetivo principal del pulso de Radiofrecuencia (RF) es:",
-        options: [
-            "Alinear los protones.",
-            "Generar un pulso de excitación (resonancia).",
-            "Detectar la señal.",
-            "Enfriar el imán."
-        ],
-        correct: "Generar un pulso de excitación (resonancia).",
-        explanation: "El pulso RF aporta energía a la frecuencia de Larmor para sacar los protones del equilibrio."
-    },
-    {
-        question: "El pulso de RF en una instalación de RM provoca que:",
-        options: [
-            "Disminuya la magnetización longitudinal (Eje Z).",
-            "Aparezca una magnetización transversal (Plano XY).",
-            "Los núcleos entren en fase.",
-            "Todas las anteriores (a y b principalmente)."
-        ],
-        correct: "Todas las anteriores (a y b principalmente).",
-        explanation: "Vuelca la magnetización del eje longitudinal al plano transversal."
-    },
-    {
-        question: "El objetivo de la bobina receptora (antena) es:",
-        options: [
-            "Emitir radiación X.",
-            "Detectar la señal de relajación (eco) emitida por los protones.",
-            "Generar el campo magnético principal.",
-            "Mover al paciente."
-        ],
-        correct: "Detectar la señal de relajación (eco) emitida por los protones.",
-        explanation: "Por inducción de Faraday, la magnetización transversal en movimiento induce una corriente en la bobina."
-    },
-    {
-        question: "La constante giromagnética:",
-        options: [
-            "Depende del cociente carga/masa del núcleo.",
-            "Es igual para todos los elementos.",
-            "Es proporcional a la frecuencia de Larmor.",
-            "a y c."
-        ],
-        correct: "a y c.",
-        explanation: "Es una propiedad intrínseca del núcleo (relación carga/masa) y define su frecuencia de precesión."
-    },
-    {
-        question: "Para realizar estudios de RM, los nucleidos deben tener:",
-        options: [
-            "Número par de protones y neutrones.",
-            "Número impar de nucleones (protones o neutrones).",
-            "Spin neto igual a cero.",
-            "Carga neutra."
-        ],
-        correct: "Número impar de nucleones (protones o neutrones).",
-        explanation: "Solo los núcleos con spin neto distinto de cero (impares) tienen momento magnético observable."
-    },
-    {
-        question: "¿Con cuál de estos nucleidos NO se pueden realizar estudios de RM?",
-        options: [
-            "1 H (Hidrógeno).",
-            "16 O (Oxígeno-16).",
-            "31 P (Fósforo).",
-            "23 Na (Sodio)."
-        ],
-        correct: "16 O (Oxígeno-16).",
-        explanation: "El O-16 tiene 8 protones y 8 neutrones (ambos pares), por lo que su spin es cero y es magnéticamente inerte."
-    },
-    {
-        question: "Para que los núcleos presenten fenómenos de resonancia, el vector momento angular J (Spin) debe ser:",
-        options: [
-            "Mayor que 0 (Distinto de 0).",
-            "Igual a 0.",
-            "Negativo.",
-            "Infinito."
-        ],
-        correct: "Mayor que 0 (Distinto de 0).",
-        explanation: "Sin spin (giro), no hay momento magnético y no interactúan con el campo magnético."
-    },
-    {
-        question: "Entre los tiempos de relajación T1 (Spin-Red) y T2 (Spin-Spin) siempre se verifica que:",
-        options: [
-            "T1 es mayor que T2.",
-            "T1 es igual a T2.",
-            "T1 es menor que T2.",
-            "No tienen relación."
-        ],
-        correct: "T1 es mayor que T2.",
-        explanation: "La pérdida de coherencia (T2) siempre ocurre más rápido o igual que la recuperación de energía (T1). T2 nunca puede ser mayor que T1."
-    },
-    {
-        question: "La mayor o menor facilidad que encuentran los núcleos en ceder su energía al medio (red cristalina) se denomina:",
-        options: [
-            "Relajación Longitudinal (T1).",
-            "Relajación Transversal (T2).",
-            "Precesión.",
-            "Excitación."
-        ],
-        correct: "Relajación Longitudinal (T1).",
-        explanation: "T1 mide cuánto tarda el sistema en devolver la energía absorbida al entorno térmico."
-    },
-    {
-        question: "La frecuencia de resonancia (Frecuencia de Larmor) depende de:",
-        options: [
-            "La temperatura.",
-            "La intensidad del campo magnético (B0) y la constante giromagnética.",
-            "La densidad del agua.",
-            "El voltaje de la bobina."
-        ],
-        correct: "La intensidad del campo magnético (B0) y la constante giromagnética.",
-        explanation: "Según la ecuación de Larmor: ω = γ · B0."
-    },
-    {
-        question: "Llamamos Tiempo de Eco (TE) a:",
-        options: [
-            "Duración del pulso RF.",
-            "El tiempo entre el pulso de excitación y la recogida de la señal (pico del eco).",
-            "Diferencia entre T1 y T2.",
-            "El tiempo de repetición."
-        ],
-        correct: "El tiempo entre el pulso de excitación y la recogida de la señal (pico del eco).",
-        explanation: "Es un parámetro ajustable que determina cuánto influye el T2 en el contraste de la imagen."
-    },
-    {
-        question: "El tiempo de relajación longitudinal T1 se define como el tiempo para recuperar:",
-        options: [
-            "El 100% de la magnetización.",
-            "El 63% de la magnetización longitudinal inicial.",
-            "El 50%.",
-            "El 37%."
-        ],
-        correct: "El 63% de la magnetización longitudinal inicial.",
-        explanation: "Es la constante de tiempo de crecimiento exponencial (1 - 1/e)."
-    },
-    {
-        question: "El tiempo de relajación transversal T2 se define como el tiempo para que la magnetización transversal decaiga al:",
-        options: [
-            "100%.",
-            "63%.",
-            "50%.",
-            "37% de su valor inicial."
-        ],
-        correct: "37% de su valor inicial.",
-        explanation: "Es la constante de tiempo de decaimiento exponencial (1/e)."
-    },
-    {
-        question: "T2 (relajación spin-spin) depende fundamentalmente de:",
-        options: [
-            "La pérdida de coherencia de fase entre los protones.",
-            "La cesión de energía al medio.",
-            "La temperatura.",
-            "El diámetro del imán."
-        ],
-        correct: "La pérdida de coherencia de fase entre los protones.",
-        explanation: "Los campos magnéticos locales de los núcleos vecinos hacen que unos giren más rápido y otros más lento, desfástandose."
-    },
-    {
-        question: "La bobina (o antena) de una RM tiene por misión:",
-        options: [
-            "Solo emitir RF.",
-            "Solo recibir señal.",
-            "Emitir el pulso de RF y captar las señales (a veces son la misma bobina, a veces distintas).",
-            "Generar el campo B0."
-        ],
-        correct: "Emitir el pulso de RF y captar las señales (a veces son la misma bobina, a veces distintas).",
-        explanation: "Actúan como transmisores para excitar y receptores para escuchar el eco."
-    },
-    {
-        question: "Es una contraindicación absoluta para RM:",
-        options: [
-            "Alergia al yodo (no se usa yodo en RM).",
-            "Portar marcapasos cardiaco (no compatible).",
-            "Claustrofobia leve.",
-            "Prótesis de titanio modernas."
-        ],
-        correct: "Portar marcapasos cardiaco (no compatible).",
-        explanation: "Riesgo vital por alteración electrónica o desplazamiento."
-    },
-    {
-        question: "El contraste fundamental utilizado en RM es:",
-        options: [
-            "Gadolinio (paramagnético).",
-            "Yodo.",
-            "Bario.",
-            "Tecnecio."
-        ],
-        correct: "Gadolinio (paramagnético).",
-        explanation: "El Gadolinio acorta el T1 de los tejidos donde se acumula, haciéndolos brillar en imágenes T1."
-    },
-    {
-        question: "En imágenes T1, el agua y los líquidos (LCR) aparecen:",
-        options: [
-            "Blancos (Hiperintensos).",
-            "Negros / Gris oscuro (Hipointensos).",
-            "Isointensos.",
-            "Brillantes."
-        ],
-        correct: "Negros / Gris oscuro (Hipointensos).",
-        explanation: "El agua tiene un T1 muy largo, por lo que tarda en recuperar señal y se ve oscura en T1 (pero blanca en T2)."
-    },
-    {
-        question: "En imágenes T2, el agua y los líquidos aparecen:",
-        options: [
-            "Blancos (Hiperintensos).",
-            "Negros.",
-            "Gris oscuro.",
-            "Invisibles."
-        ],
-        correct: "Blancos (Hiperintensos).",
-        explanation: "El agua tiene un T2 largo, por lo que mantiene la señal transversal mucho tiempo, apareciendo brillante en T2."
-    },
-    {
-        question: "La grasa en T1 aparece:",
-        options: [
-            "Blanca (Hiperintensa).",
-            "Negra.",
-            "Gris.",
-            "Azul."
-        ],
-        correct: "Blanca (Hiperintensa).",
-        explanation: "La grasa tiene un T1 corto (recupera rápido), dando mucha señal."
-    },
-    {
-        question: "Los huesos corticales (calcio) y el aire suelen aparecer en RM como:",
-        options: [
-            "Muy blancos.",
-            "Negros (Ausencia de señal).",
-            "Grises.",
-            "Variables."
-        ],
-        correct: "Negros (Ausencia de señal).",
-        explanation: "Tienen muy pocos protones móviles o T2 extremadamente cortos, por lo que no dan señal detectable."
-    },
-    {
-        question: "NO es una ventaja de la RM:",
-        options: [
-            "Posibilidad de estudio en cualquier plano.",
-            "No usa radiación ionizante.",
-            "Excelente contraste de partes blandas.",
-            "La economía de sus instalaciones."
-        ],
-        correct: "La economía de sus instalaciones.",
-        explanation: "La RM es una tecnología muy costosa de instalar y mantener en comparación con Rayos X o Eco."
-    },
-    {
-        question: "Si la variación de energía potencial al SALIR un ion positivo es POSITIVA (cuesta trabajo salir):",
-        options: [
-            "El ion tiene tendencia a salir.",
-            "El ion tiene tendencia a entrar.",
-            "Está en equilibrio.",
-            "No se puede saber."
-        ],
-        correct: "El ion tiene tendencia a entrar.",
-        explanation: "Si delta U > 0 al salir, significa que el sistema prefiere energéticamente que el ion esté dentro."
-    }
-    const quizData = [
-    // --- PREGUNTAS 71 - 95 (Biofísica, Iones y RM Avanzada) ---
-
-    {
-        question: "En Resonancia Magnética, los vasos sanguíneos con flujo rápido suelen aparecer en secuencias estándar (Spin Eco) como:",
-        options: [
-            "Fuertemente contrastados (blancos).",
-            "Con ausencia de señal (negros/vacío de flujo).",
-            "No aparecen por tener densidad igual al músculo.",
-            "Rojos."
-        ],
-        correct: "Con ausencia de señal (negros/vacío de flujo).",
-        explanation: "Debido al fenómeno de 'vacío de flujo' (flow void), la sangre que recibe el pulso de excitación se mueve fuera del corte antes de que se lea la señal, apareciendo negra."
-    },
-    {
-        question: "Según la distribución de los iones Cloro (Cl-) a ambos lados de la membrana, estos presentan:",
-        options: [
-            "Tendencia a entrar debido al potencial de equilibrio.",
-            "Tendencia a salir debido al potencial de membrana (el interior negativo los repele).",
-            "Están en equilibrio pasivo (Potencial de Nernst cercano al de reposo).",
-            "b y c suelen ser correctas dependiendo de la célula."
-        ],
-        correct: "b y c suelen ser correctas dependiendo de la célula.",
-        explanation: "El Cl- es negativo. El interior celular negativo (-70mV) lo repele (fuerza eléctrica hacia fuera), equilibrando casi exactamente su tendencia química a entrar."
-    },
-    {
-        question: "En la fase de sueño REM (Rapid Eye Movement), hay un predominio de ondas:",
-        options: [
-            "Ondas Alfa (relajación).",
-            "Ondas Delta (sueño profundo).",
-            "Ondas Beta (actividad similar a la vigilia).",
-            "Ondas Theta puras."
-        ],
-        correct: "Ondas Beta (actividad similar a la vigilia).",
-        explanation: "El sueño REM se llama 'sueño paradójico' porque la actividad eléctrica cerebral es rápida y desincronizada (Beta), muy parecida a estar despierto."
-    },
-    {
-        question: "Si el incremento de energía potencial que tiene lugar cuando sale un mol de ión NEGATIVO a través de la membrana es POSITIVO (cuesta energía salir), se verifica que:",
-        options: [
-            "El ión tendrá tendencia a salir.",
-            "El ión tendrá tendencia a entrar en la célula.",
-            "El sistema está en equilibrio.",
-            "El incremento no puede ser positivo."
-        ],
-        correct: "El ión tendrá tendencia a entrar en la célula.",
-        explanation: "Termodinámica: Si salir aumenta la energía del sistema (es una 'cuesta arriba'), el ión tiende espontáneamente a ir hacia el estado de menor energía (entrar)."
-    },
-    {
-        question: "Si el incremento de energía potencial que tiene lugar cuando sale un mol de ión NEGATIVO a través de la membrana es NEGATIVO (libera energía al salir), se verifica que:",
-        options: [
-            "El ión tendrá tendencia a salir de la misma.",
-            "El ión tendrá tendencia a entrar.",
-            "El sistema estará en equilibrio.",
-            "Ninguna es correcta."
-        ],
-        correct: "El ión tendrá tendencia a salir de la misma.",
-        explanation: "Si el cambio de energía es negativo (es una 'cuesta abajo'), el proceso es espontáneo: el ión sale naturalmente."
-    },
-    {
-        question: "Si el incremento de energía potencial que tiene lugar cuando sale un mol de ión POSITIVO a través de la membrana es POSITIVO, se verifica que:",
-        options: [
-            "El ión tendrá tendencia a entrar en la misma.",
-            "El ión tendrá tendencia a salir.",
-            "El sistema está en equilibrio.",
-            "Es imposible."
-        ],
-        correct: "El ión tendrá tendencia a entrar en la misma.",
-        explanation: "Igual que antes: si cuesta energía salir (delta positivo), la tendencia natural es quedarse dentro o entrar."
-    },
-    {
-        question: "La onda T en un electrocardiograma se asocia con:",
-        options: [
-            "El inicio de la contracción auricular.",
-            "Repolarización ventricular.",
-            "Despolarización ventricular.",
-            "Repolarización auricular."
-        ],
-        correct: "Repolarización ventricular.",
-        explanation: "La onda T representa la recuperación eléctrica (repolarización) de los ventrículos antes del siguiente latido."
-    },
-    {
-        question: "Una disminución del diámetro del axón se traduce en el impulso nervioso en:",
-        options: [
-            "Aumento de la velocidad.",
-            "Disminución de la velocidad.",
-            "La velocidad no cambia.",
-            "Aumento de la amplitud."
-        ],
-        correct: "Disminución de la velocidad.",
-        explanation: "A menor diámetro, mayor resistencia interna al flujo de corriente, lo que hace la conducción más lenta."
-    },
-    {
-        question: "La tendencia neta de los iones a entrar o salir de la célula viene dada por:",
-        options: [
-            "Solo el gradiente químico.",
-            "Solo el gradiente eléctrico.",
-            "El potencial electroquímico (suma de a y b).",
-            "La temperatura."
-        ],
-        correct: "El potencial electroquímico (suma de a y b).",
-        explanation: "La fuerza motriz real es la combinación de la diferencia de concentración y la diferencia de carga eléctrica."
-    },
-    {
-        question: "La frecuencia de repetición de los pulsos (frecuencia de disparo neuronal) depende del valor del:",
-        options: [
-            "Potencial de acción.",
-            "Potencial de equilibrio.",
-            "Potencial generador.",
-            "Potencial de Nernst."
-        ],
-        correct: "Potencial generador.",
-        explanation: "Cuanto mayor sea la amplitud del potencial generador (estímulo más fuerte), mayor será la frecuencia de disparo de los potenciales de acción."
-    },
-    {
-        question: "Para que los núcleos NO presenten fenómenos de Resonancia Magnética:",
-        options: [
-            "El vector momento magnético debe ser distinto de cero.",
-            "El número de nucleones debe ser impar.",
-            "El vector momento angular (spin) y magnético deben ser igual a cero.",
-            "Deben tener carga positiva."
-        ],
-        correct: "El vector momento angular (spin) y magnético deben ser igual a cero.",
-        explanation: "Si el spin es cero (núcleos par-par como el Carbono-12 o el Oxígeno-16), no interactúan con el campo magnético y no hay resonancia."
-    },
-    {
-        question: "Cuando un núcleo con spin es colocado bajo la acción de un campo magnético externo, el vector momento angular J:",
-        options: [
-            "Se alinea perfectamente estático con el campo.",
-            "Realiza un movimiento de precesión (como una peonza).",
-            "Se anula.",
-            "Adopta orientaciones arbitrarias."
-        ],
-        correct: "Realiza un movimiento de precesión (como una peonza).",
-        explanation: "El campo magnético ejerce un torque sobre el núcleo, haciéndolo precesar a la frecuencia de Larmor."
-    },
-    {
-        question: "¿Qué ocurre en los nervios mielínicos?",
-        options: [
-            "Se consigue un avance más rápido del impulso nervioso (conducción saltatoria).",
-            "Aumenta el consumo de energía.",
-            "La conducción es continua.",
-            "La membrana es permeable en toda su longitud."
-        ],
-        correct: "Se consigue un avance más rápido del impulso nervioso (conducción saltatoria).",
-        explanation: "La mielina aísla el axón, forzando al potencial de acción a 'saltar' de un nodo de Ranvier al siguiente."
-    },
-    {
-        question: "Según la distribución de los iones de K+ (Potasio) a ambos lados de la membrana:",
-        options: [
-            "Tienen tendencia a entrar debido a la concentración.",
-            "Tienen tendencia a salir debido a la concentración (gradiente químico).",
-            "Tienen tendencia a salir debido al potencial eléctrico.",
-            "Están totalmente inmóviles."
-        ],
-        correct: "Tienen tendencia a salir debido a la concentración (gradiente químico).",
-        explanation: "Hay mucho K+ dentro y poco fuera. Su tendencia química es salir, aunque el potencial eléctrico negativo del interior intenta retenerlo."
-    },
-    {
-        question: "El potencial de acción se propaga sin decremento, esto significa que:",
-        options: [
-            "Su amplitud disminuye con la distancia.",
-            "Su amplitud es constante a lo largo de toda la fibra.",
-            "Su duración disminuye con la distancia.",
-            "Depende de la intensidad del estímulo."
-        ],
-        correct: "Su amplitud es constante a lo largo de toda la fibra.",
-        explanation: "El PA es regenerativo 'todo o nada'; siempre mantiene su tamaño máximo (ej. +30mV) mientras viaja."
-    },
-    {
-        question: "La frecuencia de Larmor es proporcional a:",
-        options: [
-            "La masa del paciente.",
-            "La intensidad del campo magnético B0.",
-            "La temperatura de la sala.",
-            "La duración del examen."
-        ],
-        correct: "La intensidad del campo magnético B0.",
-        explanation: "Ecuación: ω = γ · B0. Si duplicas el campo magnético, duplicas la frecuencia de resonancia."
-    },
-    {
-        question: "¿Qué afirmación es correcta sobre el periodo refractario RELATIVO?",
-        options: [
-            "Es imposible generar un potencial de acción.",
-            "Se puede generar un impulso, pero se necesita un estímulo umbral superior al normal.",
-            "El umbral es inferior al normal.",
-            "Los canales de sodio están totalmente inactivados."
-        ],
-        correct: "Se puede generar un impulso, pero se necesita un estímulo umbral superior al normal.",
-        explanation: "Durante este periodo, algunos canales de Na+ se han recuperado, pero la célula está hiperpolarizada (K+ saliendo), por lo que cuesta más excitarla."
-    },
-    {
-        question: "La transmisión del impulso nervioso tiene su base biofísica en:",
-        options: [
-            "Flujo de electrones libres.",
-            "Diferencia de concentraciones de iones a ambos lados de la membrana.",
-            "Reacciones nucleares.",
-            "Campos magnéticos endógenos."
-        ],
-        correct: "Diferencia de concentraciones de iones a ambos lados de la membrana.",
-        explanation: "La separación de iones (Na+, K+, Cl-, Ca++) crea los gradientes electroquímicos necesarios para la señalización."
-    },
-    {
-        question: "En el electrocardiograma, la onda P representa:",
-        options: [
-            "La contracción ventricular.",
-            "La despolarización de las aurículas.",
-            "La repolarización ventricular.",
-            "El retraso en el nodo AV."
-        ],
-        correct: "La despolarización de las aurículas.",
-        explanation: "Es la primera onda del ciclo, marcando la activación eléctrica auricular."
-    },
-    {
-        question: "Si un ion tiene un potencial de equilibrio de -90mV y el potencial de membrana es -70mV, la fuerza impulsora neta tiende a:",
-        options: [
-            "Mover el potencial de membrana hacia -90mV (Salida de K+ o entrada de Cl-).",
-            "Mover el potencial hacia 0mV.",
-            "No hay fuerza impulsora.",
-            "Despolarizar la célula."
-        ],
-        correct: "Mover el potencial de membrana hacia -90mV (Salida de K+ o entrada de Cl-).",
-        explanation: "El sistema siempre intenta llevar el potencial de membrana hacia el potencial de equilibrio del ion permeable."
-    },
-    {
-        question: "El 'Spin' en Resonancia Magnética es una propiedad intrínseca de la materia que se asemeja a:",
-        options: [
-            "La masa.",
-            "La carga eléctrica.",
-            "Un momento angular intrínseco (giro sobre sí mismo).",
-            "La temperatura."
-        ],
-        correct: "Un momento angular intrínseco (giro sobre sí mismo).",
-        explanation: "Los núcleos atómicos rotan sobre su propio eje, lo que, al tener carga, genera un pequeño campo magnético."
-    },
-    {
-        question: "En una sinapsis química, la llegada del potencial de acción al terminal presináptico provoca la entrada de:",
-        options: [
-            "Sodio (Na+).",
-            "Potasio (K+).",
-            "Calcio (Ca++).",
-            "Cloro (Cl-)."
-        ],
-        correct: "Calcio (Ca++).",
-        explanation: "La entrada de Calcio a través de canales dependientes de voltaje es el disparador para la liberación de neurotransmisores."
-    },
-    {
-        question: "El tiempo de relajación T2 es siempre:",
-        options: [
-            "Mayor que T1.",
-            "Igual a T1.",
-            "Menor o igual que T1.",
-            "Independiente de B0."
-        ],
-        correct: "Menor o igual que T1.",
-        explanation: "Los espines pierden coherencia (T2) mucho más rápido de lo que recuperan su energía longitudinal (T1)."
-    },
-    {
-        question: "La repolarización de la neurona (bajada del potencial hacia el reposo) se debe principalmente a:",
-        options: [
-            "Entrada de Na+.",
-            "Salida de K+.",
-            "Entrada de Cl-.",
-            "Bomba Na/K."
-        ],
-        correct: "Salida de K+.",
-        explanation: "Tras el pico del potencial de acción, los canales de Na+ se cierran y los de K+ se abren, permitiendo que el potasio salga y vuelva a negativizar el interior."
-    },
-    {
-        question: "En un ECG normal, el segmento ST (entre S y T) debe ser:",
-        options: [
-            "Isoeléctrico (línea plana).",
-            "Elevado.",
-            "Deprimido.",
-            "Vertical."
-        ],
-        correct: "Isoeléctrico (línea plana).",
-        explanation: "Representa el periodo en el que todo el ventrículo está despolarizado; desviaciones aquí indican isquemia o infarto."
-    }
     ];
 
     // Función para mezclar un array (Fisher-Yates Shuffle)
@@ -1155,7 +1148,10 @@
     const container = document.getElementById('quiz-container');
 
     function renderQuiz() {
-        quizData.forEach((item, index) => {
+        // Mezclamos el orden de las preguntas también
+        const questions = shuffleArray([...quizData]);
+
+        questions.forEach((item, index) => {
             // Crear tarjeta de pregunta
             const card = document.createElement('div');
             card.className = 'question-card';
