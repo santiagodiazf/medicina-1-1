@@ -3,816 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Fluidos FM - Modo Estudio Interactivo</title>
+    <title>Test Biofísica: Fluidos y Hemodinámica</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
-            max-width: 800px;
+            background-color: #f8f9fa;
+            color: #212529;
+            max-width: 900px;
             margin: 0 auto;
             padding: 20px;
-            line-height: 1.6;
         }
-        header {
+        h1 {
             text-align: center;
-            margin-bottom: 40px;
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            color: #0d6efd;
+            margin-bottom: 10px;
         }
-        h1 { margin: 0; font-size: 2em; letter-spacing: 1px; }
-        .subtitle { font-size: 1em; opacity: 0.9; margin-top: 10px; }
-        
-        .card {
+        .intro-text {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #6c757d;
+        }
+        .counter {
+            text-align: center;
+            font-size: 1.1em;
+            color: #fff;
+            background-color: #0d6efd;
+            padding: 8px 15px;
+            border-radius: 20px;
+            width: fit-content;
+            margin: 0 auto 25px auto;
+            box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2);
+        }
+        .question-card {
             background: white;
-            margin-bottom: 25px;
+            border-radius: 10px;
             padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border-left: 5px solid #007bff;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 5px solid #dee2e6;
             transition: transform 0.2s;
         }
+        .question-card:hover {
+            border-left-color: #0d6efd;
+        }
         .question-text {
-            font-weight: 700;
+            font-weight: 600;
             font-size: 1.15em;
             margin-bottom: 20px;
-            color: #2c3e50;
+            color: #343a40;
         }
-        .options-list {
-            list-style: none;
-            padding: 0;
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
-        .option {
-            background: #f8f9fa;
+        .option-btn {
+            padding: 14px 18px;
             border: 2px solid #e9ecef;
-            padding: 15px;
-            margin-bottom: 10px;
+            background: #fff;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
+            text-align: left;
+            transition: all 0.2s;
+            font-size: 1em;
+            color: #495057;
         }
-        .option:hover:not(.disabled) {
-            background: #e2e6ea;
-            transform: translateX(5px);
-            border-color: #cbd3da;
+        .option-btn:hover:not(:disabled) {
+            background-color: #e7f1ff;
+            border-color: #0d6efd;
         }
-        
-        /* Estilos de Feedback */
-        .option.correct {
-            background-color: #d4edda;
-            border-color: #28a745;
-            color: #155724;
-            font-weight: 600;
-        }
-        .option.correct::after {
-            content: "✓";
-            float: right;
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-        .option.incorrect {
-            background-color: #f8d7da;
-            border-color: #dc3545;
-            color: #721c24;
+        .option-btn:disabled {
+            cursor: default;
             opacity: 0.7;
         }
-        .option.incorrect::after {
-            content: "✕";
-            float: right;
-            font-weight: bold;
-            font-size: 1.2em;
+        .correct {
+            background-color: #d1e7dd !important;
+            border-color: #198754 !important;
+            color: #0f5132 !important;
         }
-        .disabled {
-            pointer-events: none;
-            cursor: default;
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #842029 !important;
         }
-        
-        /* Caja de Explicación */
         .explanation {
-            display: none;
-            margin-top: 20px;
+            margin-top: 15px;
             padding: 15px;
-            background-color: #e7f5ff;
-            border-radius: 8px;
-            border-top: 3px solid #17a2b8;
-            color: #333;
+            background-color: #cff4fc;
+            border-left: 5px solid #0dcaf0;
+            border-radius: 4px;
+            display: none;
             font-size: 0.95em;
-            animation: slideDown 0.3s ease-out;
         }
-        .explanation strong {
-            color: #0c5460;
+        .explanation.visible {
             display: block;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            font-size: 0.8em;
+            animation: fadeIn 0.5s;
         }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-
-        #controls {
-            text-align: center;
-            margin: 50px 0;
-        }
-        button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.1em;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            transition: background 0.3s;
-        }
-        button:hover { background-color: #218838; }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>Test Fluidos FM</h1>
-    <div class="subtitle">SHARK CREW | Modo Estudio con Explicaciones</div>
-</header>
-
-<div id="quiz-container"></div>
-
-<div id="controls">
-    <button onclick="window.scrollTo(0,0); location.reload();">⟳ Reiniciar Test</button>
-</div>
+    <h1>Examen de Hemodinámica y Fluidos</h1>
+    <p class="intro-text">Bernouilli, Reynolds, Poiseuille y Circulación Sanguínea</p>
+    
+    <div id="counter" class="counter">Cargando preguntas...</div>
+    <div id="quiz-container"></div>
 
 <script>
-    /* DATOS DEL QUIZ
-       Las opciones están pre-mezcladas y 'correctIndex' indica cuál es la correcta
-       (0 = primera opcion, 1 = segunda, etc.)
-    */
     const quizData = [
-        {
-            q: "Cuando un fluido ideal pasa por un estrechamiento en una conducción:",
-            options: [
-                "su velocidad y presión aumenta.",
-                "aumenta su velocidad y disminuye su presión.",
-                "disminuye su velocidad y aumenta su presión.",
-                "su velocidad y presión disminuye."
-            ],
-            correctIndex: 1,
-            explanation: "Principio de Bernoulli: Para conservar la energía mecánica, si el fluido se acelera (aumenta energía cinética) al pasar por un sitio estrecho, su presión (energía potencial) debe disminuir."
-        },
-        {
-            q: "Si en un fluido ideal la velocidad de circulación disminuye de un punto A a otro B en un tubo de corriente:",
-            options: [
-                "necesariamente el diámetro en B es menor que en A.",
-                "el fluido se ha comprimido.",
-                "el fluido se ha expandido.",
-                "necesariamente el diámetro del tubo ha aumentado en B respecto a A."
-            ],
-            correctIndex: 3,
-            explanation: "Ecuación de Continuidad (A1·v1 = A2·v2): Si la velocidad baja, el área (y por tanto el diámetro) debe aumentar."
-        },
-        {
-            q: "En el torrente circulatorio la ecuación de continuidad:",
-            options: [
-                "se puede aplicar en cualquier instante.",
-                "se puede aplicar en promedio para intervalos de tiempo largos.",
-                "no se puede aplicar ya que la sangre es un líquido viscoso.",
-                "no se puede aplicar en los capilares."
-            ],
-            correctIndex: 1,
-            explanation: "La sangre tiene un flujo pulsátil (no estacionario). La continuidad estricta se cumple mejor analizando el flujo promedio en un ciclo cardiaco completo."
-        },
-        {
-            q: "La resistencia hidrodinámica para un fluido viscoso:",
-            options: [
-                "crece al aumentar el radio y la longitud de la tubería.",
-                "decrece al aumentar el radio y la longitud de la tubería.",
-                "crece al aumentar la longitud y decrece al aumentar el radio de la tubería.",
-                "crece al disminuir la longitud y aumenta al aumentar el radio de la tubería."
-            ],
-            correctIndex: 2,
-            explanation: "Ley de Poiseuille: R es proporcional a la Longitud (más largo = más resistencia) e inversamente proporcional al Radio a la cuarta potencia (más ancho = mucho menos resistencia)."
-        },
-        {
-            q: "Por la tubería de la figura circula un liquido viscoso, si progresivamente se aumenta el caudal, ¿dónde se producirá antes la transición de régimen laminar a turbulento? (conducto 1,2cm que se estrecha a 2mm)",
-            options: [
-                "en la parte A (ancha).",
-                "en la parte B (estrecha).",
-                "en ambas partes a la vez.",
-                "no aparecerá un régimen turbulento al ser un líquido viscoso."
-            ],
-            correctIndex: 1,
-            explanation: "El número de Reynolds (Re) aumenta si la velocidad aumenta. En la parte estrecha, la velocidad es mucho mayor. Aunque el diámetro es menor (lo que bajaría Re), la velocidad crece al cuadrado respecto al diámetro, dominando la ecuación. (Re es inversamente proporcional al diámetro para un MISMO caudal)."
-        },
-        {
-            q: "Para que llegue mas sangre a aquellos órganos que lo precisan:",
-            options: [
-                "disminuye la presión arterial y aumenta el ritmo cardiaco.",
-                "aumenta el radio de los vasos periféricos, la presión y el ritmo cardiaco.",
-                "disminuye el radio de los vasos periféricos para que disminuya la resistencia hemodinámica.",
-                "aumenta solo la presión arterial."
-            ],
-            correctIndex: 1,
-            explanation: "El cuerpo usa la vasodilatación (aumentar radio) para reducir resistencia localmente, y aumenta la presión/ritmo cardíaco para bombear más caudal."
-        },
-        {
-            q: "La distribución de velocidades en la sección de un vaso será:",
-            options: [
-                "máxima en la paredes y nula en el centro.",
-                "nula junto a las paredes y máxima en el centro.",
-                "igual en todos los puntos.",
-                "nula en todos los puntos de la sección."
-            ],
-            correctIndex: 1,
-            explanation: "Debido a la viscosidad y la condición de no deslizamiento, el fluido pegado a la pared no se mueve (v=0) y la velocidad aumenta hasta el centro (perfil parabólico)."
-        },
-        {
-            q: "¿Por qué la velocidad de la sangre es unas 800 veces mayor en la aorta que en los capilares?",
-            options: [
-                "por ser la sección de la aorta 800 veces mayor que la sección conjunta de los capilares.",
-                "la velocidad es la misma en la aorta que en los capilares.",
-                "la velocidad en la aorta es menor que en los capilares.",
-                "por ser la sección conjunta de todos los capilares 800 veces mayor que la de la aorta."
-            ],
-            correctIndex: 3,
-            explanation: "Aunque un capilar es fino, hay miles de millones. Su área de sección TRANSVERSAL TOTAL sumada es inmensa. Por continuidad (v = Caudal/AreaTotal), a mayor área total, menor velocidad."
-        },
-        {
-            q: "El coeficiente de viscosidad de la sangre:",
-            options: [
-                "es aproximadamente 1 Poise.",
-                "varía mucho en función del contenido en eritrocitos.",
-                "es generalmente 5 veces superior al del agua.",
-                "la b y la c."
-            ],
-            correctIndex: 3,
-            explanation: "La sangre es aprox 3-5 veces más viscosa que el agua y depende mucho del hematocrito (cantidad de células rojas)."
-        },
-        {
-            q: "Para una persona que está en posición horizontal, la presión arterial a nivel del cerebro:",
-            options: [
-                "es superior a la presión a nivel del corazón.",
-                "depende de la altura de la persona.",
-                "es inferior a la presión a nivel del corazón.",
-                "es igual a la presión a nivel del corazón."
-            ],
-            correctIndex: 3,
-            explanation: "Al estar tumbado, no hay diferencia de altura (h) contra la gravedad entre corazón y cabeza, por lo que la presión hidrostática es la misma."
-        },
-        {
-            q: "La tensión que soportan las paredes de los vasos:",
-            options: [
-                "es independiente de la presión sanguínea.",
-                "es directamente proporcional al radio de los vasos.",
-                "es directamente proporcional a la presión sanguínea.",
-                "la b y la c."
-            ],
-            correctIndex: 3,
-            explanation: "Ley de Laplace (T = P · r): La tensión en la pared aumenta si sube la presión interna o si aumenta el radio del vaso."
-        },
-        {
-            q: "Si la presión sanguínea a nivel del cerebro se anula:",
-            options: [
-                "la presión a nivel del corazón también se anulara.",
-                "se produciría una isquemia cerebral.",
-                "se produciría un infarto de miocardio.",
-                "la presión a nivel del cerebro nunca se puede anular."
-            ],
-            correctIndex: 1,
-            explanation: "Sin diferencia de presión, no hay flujo sanguíneo (caudal). Sin sangre, no llega oxígeno (isquemia)."
-        },
-        {
-            q: "La diferencia de presión entre dos puntos de un fluido situado a distintas alturas:",
-            options: [
-                "depende de la diferencia de altura entre ellos.",
-                "depende de la gravedad.",
-                "depende de la densidad del fluido.",
-                "depende de las tres anteriores."
-            ],
-            correctIndex: 3,
-            explanation: "Presión Hidrostática = densidad · gravedad · altura (P = ρ·g·h)."
-        },
-        {
-            q: "Se dice que un fluido es perfecto si:",
-            options: [
-                "es viscoso.",
-                "en su seno no se desarrollan fuerzas tangenciales.",
-                "no es viscoso.",
-                "la b y la c."
-            ],
-            correctIndex: 3,
-            explanation: "Un fluido ideal o perfecto es incompresible y no tiene viscosidad (rozamiento interno), por lo que no hay fuerzas tangenciales de fricción entre capas."
-        },
-        {
-            q: "Se define el flujo a través de una superficie como:",
-            options: [
-                "el volumen de fluido que atraviesa dicha superficie.",
-                "el volumen de fluido que atraviesa dicha superficie en la unidad de tiempo.",
-                "la velocidad del fluido por la superficie.",
-                "tiempo que tarda un fluido en atravesar la superficie."
-            ],
-            correctIndex: 1,
-            explanation: "El flujo o caudal (Q) se define como Volumen / Tiempo."
-        },
-        {
-            q: "En un fluido estacionario, el flujo a través de una superficie es:",
-            options: [
-                "proporcional a la velocidad del fluido.",
-                "proporcional a la superficie.",
-                "inversamente proporcional a la superficie.",
-                "la a y la b."
-            ],
-            correctIndex: 3,
-            explanation: "Caudal (Q) = Velocidad (v) · Superficie (S). Es proporcional a ambos."
-        },
-        {
-            q: "En un fluido real, el flujo entre dos secciones será:",
-            options: [
-                "proporcional al radio del conducto.",
-                "inversamente proporcional a la resistencia.",
-                "proporcional a la diferencia de presiones que exista entre dichas secciones.",
-                "las tres anteriores."
-            ],
-            correctIndex: 3,
-            explanation: "Analogía de la Ley de Ohm: Flujo = ΔPresión / Resistencia. Y la Resistencia depende del radio."
-        },
-        {
-            q: "El número de Reynolds en la aorta es del orden de 1200, esto implica que:",
-            options: [
-                "el flujo sanguíneo se anula.",
-                "el régimen circulatorio es siempre turbulento.",
-                "el régimen circulatorio es siempre laminar.",
-                "puede ser turbulento ya que los datos de Reynolds solo son exactos para tubos largos y rectos."
-            ],
-            correctIndex: 3,
-            explanation: "Aunque Re < 2000 suele ser laminar, la aorta es curva y el flujo es pulsátil, lo que favorece la aparición de turbulencias a números de Reynolds más bajos de lo teórico."
-        },
-        {
-            q: "Si hay un estrechamiento en un conducto sanguíneo se producirá:",
-            options: [
-                "una disminución de la presión de la sangre.",
-                "una disminución de la velocidad y un aumento de la presión.",
-                "un aumento de la velocidad de la sangre.",
-                "la a y la c."
-            ],
-            correctIndex: 3,
-            explanation: "Efecto Venturi (Bernoulli): Al estrecharse, la velocidad sube para mantener el caudal, y esto provoca que la presión baje."
-        },
-        {
-            q: "Cuando se produce una anomalía en la sección de un vaso sanguíneo:",
-            options: [
-                "el teorema de Bernouilli la empeora.",
-                "el teorema no influye en nada.",
-                "puede ayudar o no en función de la velocidad de la sangre.",
-                "el teorema de Bernouilli ayuda a corregirla."
-            ],
-            correctIndex: 0,
-            explanation: "Ejemplo: En una estenosis (estrechamiento), baja la presión (Bernoulli), lo que hace que el vaso tienda a cerrarse más (colapso), empeorando la situación."
-        },
-        {
-            q: "Según Reynolds la velocidad critica o característica es:",
-            options: [
-                "directamente proporcional a la viscosidad del líquido.",
-                "inversamente proporcional al diámetro del tubo.",
-                "inversamente proporcional a la densidad del líquido.",
-                "las tres anteriores."
-            ],
-            correctIndex: 3,
-            explanation: "Velocidad Crítica = (Re · Viscosidad) / (Densidad · Diámetro)."
-        },
-        {
-            q: "El esfigmomanómetro:",
-            options: [
-                "mide la resistencia hemodinámica.",
-                "mide la tasa de latidos del corazón.",
-                "mide la presión sistólica/diastólica.",
-                "mide el flujo sanguíneo turbulento."
-            ],
-            correctIndex: 2,
-            explanation: "Es el aparato (manguito) usado para medir la tensión arterial (máxima/sistólica y mínima/diastólica)."
-        },
-        {
-            q: "La resistencia hemodinámica (R):",
-            options: [
-                "depende de las características del fluido y del tubo.",
-                "depende únicamente de las características del fluido.",
-                "depende únicamente de las características del tubo por el que circula.",
-                "disminuye si aumenta el coeficiente de viscosidad del fluido."
-            ],
-            correctIndex: 0,
-            explanation: "Depende del fluido (viscosidad) y de la geometría del tubo (longitud y radio)."
-        },
-        {
-            q: "Para una persona que está de pie, la presión arterial a nivel del cerebro:",
-            options: [
-                "es igual a la presión a nivel del corazón.",
-                "es superior a la presión a nivel del corazón.",
-                "es inferior a la presión a nivel de corazón.",
-                "es independiente de la altura de la persona."
-            ],
-            correctIndex: 2,
-            explanation: "Al estar de pie, el corazón debe bombear 'hacia arriba' contra la gravedad. Se pierde presión hidrostática (ρgh) al subir."
-        },
-        {
-            q: "La velocidad de la sangre en los capilares es menor que en la aorta porque:",
-            options: [
-                "la superficie total de los capilares es mayor que la de la aorta.",
-                "por la ley de Laplace.",
-                "lo contrario que en a.",
-                "por el teorema de Bernouilli."
-            ],
-            correctIndex: 0,
-            explanation: "Reiteración: El área transversal total combinada de los lechos capilares es enorme, por lo que la velocidad disminuye drásticamente para permitir el intercambio de nutrientes."
-        },
-        {
-            q: "En la circulación sanguínea, ¿Cuánto debe ser el número de Reynolds para pasar de una región laminar a una turbulenta?",
-            options: [
-                "menor de 2000.",
-                "igual a 2000.",
-                "mayor de 2000.",
-                "la a y la c."
-            ],
-            correctIndex: 2,
-            explanation: "El valor crítico estándar suele citarse como Re > 2000 (a veces 3000 en física pura, pero en medicina se usa 2000 como referencia de turbulencia)."
-        },
-        {
-            q: "El régimen de circulación de un fluido será laminar si el numero de Reynolds es:",
-            options: [
-                "menor de 2000.",
-                "mayor de 2000.",
-                "mayor de 1200.",
-                "menor de 1200."
-            ],
-            correctIndex: 0,
-            explanation: "Por debajo de 2000, las fuerzas viscosas dominan y mantienen el fluido ordenado en láminas paralelas."
-        },
-        {
-            q: "La presión que ejerce un fluido sobre una superficie es:",
-            options: [
-                "una magnitud vectorial.",
-                "depende de las unidades empleadas.",
-                "es adimensional.",
-                "una magnitud escalar."
-            ],
-            correctIndex: 3,
-            explanation: "La presión se define en un punto y actúa en todas direcciones; no tiene una dirección única fija como un vector, es un escalar (Fuerza/Area)."
-        },
-        {
-            q: "La potencia generada por el corazón puede aumentar hasta:",
-            options: [
-                "2 veces.",
-                "Es siempre la misma.",
-                "5 veces.",
-                "7,5 veces."
-            ],
-            correctIndex: 2,
-            explanation: "Es la 'reserva cardíaca'. Durante el ejercicio intenso, el gasto cardíaco puede pasar de 5 L/min a 25 L/min."
-        },
-        {
-            q: "La presión hidrostática ejercida en un fluido depende de:",
-            options: [
-                "de la forma del recipiente.",
-                "las coordenadas del punto.",
-                "del color del fluido.",
-                "de la viscosidad."
-            ],
-            correctIndex: 1,
-            explanation: "Depende de la profundidad (coordenada vertical z o h). P = ρ·g·h."
-        },
-        {
-            q: "Si por una estenosis el radio disminuye a la mitad, la resistencia:",
-            options: [
-                "aumenta el doble.",
-                "disminuye 16 veces.",
-                "no cambia.",
-                "aumenta 16 veces."
-            ],
-            correctIndex: 3,
-            explanation: "La resistencia depende de 1/r^4. Si r pasa a ser 1/2, la resistencia es 1/(0.5)^4 = 1/0.0625 = 16 veces mayor."
-        },
-        {
-            q: "La unidades en el S.I del flujo son:",
-            options: [
-                "litros/minutos.",
-                "litros/segundos.",
-                "metros cúbicos/horas.",
-                "metros cúbicos/segundos."
-            ],
-            correctIndex: 3,
-            explanation: "Sistema Internacional: Volumen (m³) / Tiempo (s)."
-        },
-        {
-            q: "Según Reynolds, la velocidad característica es (opciones variantes):",
-            options: [
-                "inversamente proporcional a la densidad del liquido.",
-                "directamente proporcional al diámetro del tubo.",
-                "inversamente proporcional a la viscosidad del fluido.",
-                "ninguna de las anteriores."
-            ],
-            correctIndex: 0,
-            explanation: "Formula: v = (Re·η)/(ρ·D). Es inversamente proporcional a la densidad (ρ)."
-        },
-        {
-            q: "¿Qué instrumento usamos para medir la presión sanguínea?",
-            options: [
-                "espirómetro.",
-                "ecógrafo.",
-                "flujómetro.",
-                "esfigmomanómetro."
-            ],
-            correctIndex: 3,
-            explanation: "El tensiómetro clásico."
-        },
-        {
-            q: "La unidad de viscosidad en el S.I es:",
-            options: [
-                "Pascal * segundo (Poiseuille).",
-                "Pascal/litro.",
-                "Poise.",
-                "Metro/segundo."
-            ],
-            correctIndex: 0,
-            explanation: "El Poise es del sistema CGS. En el Sistema Internacional es Pa·s (a veces llamado Poiseuille)."
-        },
-        {
-            q: "En un vaso sanguíneo de 1 cm de diámetro, con sangre de 0,05 poise de viscosidad y densidad 1g/cm3, la velocidad critica resulta:",
-            options: [
-                "0,5 cm/s.",
-                "5 cm/s.",
-                "0,050 cm/s.",
-                "0,0050 cm/s."
-            ],
-            correctIndex: 1,
-            explanation: "Cálculo aproximado asumiendo Re crítico bajo (aprox 100 para este ejercicio específico de texto): v = (Re·η)/(ρ·D) = (100 · 0.05)/(1·1) = 5 cm/s. *Nota: El valor depende del Re crítico que el libro de texto considere para inicio de turbulencia.*"
-        },
-        {
-            q: "La suma de dos resistencia hidrodinámicas en serie es:",
-            options: [
-                "la suma geométrica.",
-                "igual a la inversa de la suma.",
-                "mayor que cada una de ellas por separada.",
-                "menor que cada una de ellas por separada."
-            ],
-            correctIndex: 2,
-            explanation: "En serie, las resistencias se suman (R_total = R1 + R2), por lo que el resultado siempre es mayor que las partes individuales."
-        },
-        {
-            q: "¿Dónde es mayor la caída de la presión hemodinámica?",
-            options: [
-                "en las arterias.",
-                "en los capilares (o arteriolas).",
-                "en las venas.",
-                "depende de la presión sanguínea."
-            ],
-            correctIndex: 1,
-            explanation: "Las arteriolas son los vasos de resistencia principales. Al tener gran resistencia, provocan la mayor caída de presión del sistema."
-        },
-        {
-            q: "Por un tubo circula un fluido real, señale la respuesta correcta.",
-            options: [
-                "La velocidad máxima se da en el centro del tubo.",
-                "La velocidad mínima se da en el centro del tubo.",
-                "La velocidad media es la mitad de la velocidad máxima.",
-                "La a) y la c)."
-            ],
-            correctIndex: 3,
-            explanation: "En flujo laminar: perfil parabólico con máximo en el centro y media = Vmax/2."
-        },
-        {
-            q: "El esfigmomanómetro se basa en:",
-            options: [
-                "Las tensiones superficiales de los músculos.",
-                "Las propiedades del flujo sanguíneo.",
-                "Las variaciones de presiones del mercurio.",
-                "Las propiedades eléctricas del corazón."
-            ],
-            correctIndex: 1,
-            explanation: "Se basa en detectar la transición de flujo laminar (silencioso) a turbulento (ruidos de Korotkoff) al comprimir la arteria."
-        },
-        {
-            q: "Al aumentar la viscosidad de un fluido:",
-            options: [
-                "Aumenta su velocidad crítica.",
-                "Disminuye su velocidad crítica.",
-                "El número de Reynolds aumenta.",
-                "El régimen de circulación siempre será laminar."
-            ],
-            correctIndex: 0,
-            explanation: "Si es más viscoso, 'cuesta más' desordenarlo, por lo que puede ir más rápido antes de volverse turbulento (v_critica es proporcional a viscosidad)."
-        },
-        {
-            q: "En un vaso sanguíneo se produce una estenosis reduciendo su radio a la mitad ¿Qué pasara con la velocidad de la sangre en ese punto?",
-            options: [
-                "Aumentará en 4 veces.",
-                "Disminuirá a la mitad.",
-                "Aumentará el doble.",
-                "Se mantendrá constante."
-            ],
-            correctIndex: 0,
-            explanation: "Area = π·r². Si r se reduce a la mitad (1/2), el Área se reduce a la cuarta parte (1/4). Para mantener el caudal, la velocidad debe multiplicarse por 4."
-        },
-        {
-            q: "Un fluído ideal:",
-            options: [
-                "Es compresible, su densidad no cambia y no tiene viscosidad.",
-                "Es incompresible, su densidad no cambia y no tiene viscosidad.",
-                "Es incompresible, su densidad cambia y es viscoso.",
-                "Es compresible, su densidad cambia y no tiene viscosidad."
-            ],
-            correctIndex: 1,
-            explanation: "Definición teórica: Densidad constante (incompresible) y sin fricción interna (no viscoso)."
-        },
-        {
-            q: "¿Qué es la viscosidad de un fluido?",
-            options: [
-                "Sólo aparece si el fluido es ideal.",
-                "Es la presión atmosférica.",
-                "Es la fuerza que ayuda al fluido a desplazarse mejor.",
-                "Es la fricción interna en el fluido."
-            ],
-            correctIndex: 3,
-            explanation: "Es la resistencia de las capas del fluido a deslizarse unas sobre otras (fricción molecular)."
-        },
-        {
-            q: "¿Cuándo se producirá turbulencias en un fluido?",
-            options: [
-                "Cuando la velocidad del fluido exceda de un cierto valor crítico.",
-                "Cuando el número de Reynolds sea inferior a 2000.",
-                "Cuando la masa del fluido exceda de un cierto valor crítico.",
-                "La a) y la c)."
-            ],
-            correctIndex: 0,
-            explanation: "La turbulencia aparece al superar la Velocidad Crítica (o superar el Reynolds crítico > 2000)."
-        },
-        {
-            q: "La tensión superficial:",
-            options: [
-                "Es una característica del líquido.",
-                "Da origen a fuerzas perpendiculares a la superficie.",
-                "La a y la c.",
-                "Da lugar a fuerzas que operan paralelas a la superficie."
-            ],
-            correctIndex: 2,
-            explanation: "Es una propiedad del líquido (a). En superficies curvas (como gotas), la resultante de la tensión superficial es una fuerza perpendicular hacia adentro (Ley de Laplace) (c)."
-        },
-        {
-            q: "La tensión superficial depende:",
-            options: [
-                "a y b son ciertas.",
-                "del liquido.",
-                "de la temperatura.",
-                "del medio."
-            ],
-            correctIndex: 0,
-            explanation: "Depende de la naturaleza química del líquido y disminuye al aumentar la temperatura."
-        },
-        {
-            q: "Cuando en una arteria aumenta el radio:",
-            options: [
-                "la tensión de sus paredes disminuye.",
-                "El vaso se abre hasta romperse.",
-                "El radio de la arteria se anula.",
-                "La tensión de sus paredes aumenta."
-            ],
-            correctIndex: 3,
-            explanation: "Laplace: Tensión = Presión · Radio. A mayor radio, mayor tensión en la pared (por eso los aneurismas tienden a romperse)."
-        },
-        {
-            q: "¿Qué efecto tiene incrementar la viscosidad de la sangre sobre el flujo sanguíneo de acuerdo con la Ley de Poiseuille?",
-            options: [
-                "Ninguno, la sangre no tiene viscosidad.",
-                "Hace que la resistencia hemodinámica sea mayor.",
-                "b y c son ciertas.",
-                "Para mantener un flujo constante deberá incrementarse la diferencia de presión."
-            ],
-            correctIndex: 2,
-            explanation: "Mayor viscosidad = Mayor Resistencia (b). Si R sube, hace falta más Presión para mover el mismo caudal (c)."
-        },
-        {
-            q: "La velocidad critica de un fluido será mas alta si:",
-            options: [
-                "La viscosidad del fluido aumenta.",
-                "La densidad del fluido aumenta.",
-                "El radio del tubo aumenta.",
-                "La viscosidad del fluido disminuye."
-            ],
-            correctIndex: 0,
-            explanation: "Es más difícil crear turbulencias en fluidos espesos (viscosos), por lo que soportan velocidades más altas manteniéndose laminares."
-        },
-        {
-            q: "¿Cuál de los siguientes casos actúa el fenómeno de capilaridad?",
-            options: [
-                "Al beber refresco de una pajita.",
-                "La circulacion de agua desde la raíz hasta las hojas.",
-                "Al extraer sangre con una jeringuilla.",
-                "a y c son correctas."
-            ],
-            correctIndex: 1,
-            explanation: "El ascenso de savia en plantas se debe en gran parte a la capilaridad (adhesión/cohesión) en los conductos finos del xilema."
-        },
-        {
-            q: "Un liquido moja a un solido cuando:",
-            options: [
-                "Las fuerzas de adherencia son mayores que las de cohesión.",
-                "Las fuerzas de cohesión son mayores que las de adherencia.",
-                "Solo depende de la presión atmosferica.",
-                "Es independiente de las fuerzas de cohesión y adherencia."
-            ],
-            correctIndex: 0,
-            explanation: "Si el líquido se pega más al sólido (adherencia) que a sí mismo (cohesión), se extiende y 'moja' la superficie."
-        }
+        { q: "Cuando un fluido ideal pasa por un estrechamiento en una conducción:", opts: ["su velocidad y presión aumenta", "su velocidad y presión disminuye", "aumenta su velocidad y disminuye su presión", "disminuye su velocidad y aumenta su presión"], a: "aumenta su velocidad y disminuye su presión" },
+        { q: "si un fluido ideal la velocidad de circulación disminuye de un punto A a otro B en un tubo de corriente:", opts: ["necesariamente el diámetro del tubo ha aumentado en B respecto a A", "necesariamente el diámetro en B es menor que en A", "el fluido se ha comprimido", "el fluido se ha expandido"], a: "necesariamente el diámetro del tubo ha aumentado en B respecto a A" },
+        { q: "en el torrente circulatorio la ecuación de continuidad:", opts: ["no se puede aplicar ya que la sangre es un líquido viscoso", "se puede aplicar en promedio para intervalos de tiempo largos", "no se puede aplicar en los capilares", "se puede aplicar en cualquier instante"], a: "se puede aplicar en promedio para intervalos de tiempo largos" },
+        { q: "la resistencia hidrodinámica para un fluido viscoso:", opts: ["crece al aumentar el radio y la longitud de la tubería", "crece al aumentar la longitud y decrece al aumentar el radio de la tubería", "decrece al aumentar el radio y la longitud de la tubería", "crece al disminuir la longitud y aumenta al aumentar el radio de la tubería"], a: "crece al aumentar la longitud y decrece al aumentar el radio de la tubería" },
+        { q: "por la tubería de la figura circula un liquido viscoso, si progresivamente se aumenta el caudal que circula, ¿en que parte se producirá antes la transición de régimen laminar a turbulento? (en la figura se observa un conducto de 1,2 cm de diámetro que se estrecha hasta 2mm):", opts: ["no aparecerá un régimen turbulento al ser un líquido viscoso", "en la parte B (estrecha)", "en la parte A (ancha)", "en ambas partes a la vez"], a: "en la parte B (estrecha)" },
+        { q: "para que llegue mas sangre a aquellos órganos que lo precisan:", opts: ["aumenta solo la presión arterial", "disminuye la presión arterial y aumenta el ritmo cardiaco", "aumenta el radio de los vasos periféricos, la presión y el ritmo cardiaco", "disminuye el radio de los vasos periféricos para que disminuya la resistencia hemodinámica"], a: "aumenta el radio de los vasos periféricos, la presión y el ritmo cardiaco" },
+        { q: "la distribución de velocidades en la sección de un vaso será:", opts: ["igual en todos los puntos", "nula en todos los puntos de la sección", "nula junto a las paredes y máxima en el centro", "máxima en la paredes y nula en el centro"], a: "nula junto a las paredes y máxima en el centro" },
+        { q: "¿por qué la velocidad de la sangre es unas 800 veces mayor en la aorta que en los capilares?", opts: ["por ser la sección de la aorta 800 veces mayor que la sección conjunta de los capilares", "por ser la sección conjunta de todos los capilares 800 veces mayor que la de la aorta", "la velocidad es la misma en la aorta que en los capilares", "la velocidad en la aorta es menor que en los capilares"], a: "por ser la sección conjunta de todos los capilares 800 veces mayor que la de la aorta" },
+        { q: "el coeficiente de viscosidad de la sangre:", opts: ["es aproximadamente 1 Poise", "es generalmente 5 veces superior al del agua", "varía mucho en función del contenido en eritrocitos", "la b y la c"], a: "la b y la c" },
+        { q: "para una persona que está en posición horizontal, la presión arterial a nivel del cerebro:", opts: ["es igual a la presión a nivel del corazón", "es inferior a la presión a nivel del corazón", "es superior a la presión a nivel del corazón", "depende de la altura de la persona"], a: "es igual a la presión a nivel del corazón" },
+        { q: "la tensión que soportan las paredes de los vasos:", opts: ["es directamente proporcional al radio de los vasos", "es independiente de la presión sanguínea", "es directamente proporcional a la presión sanguínea", "la a y la c"], a: "la a y la c" },
+        { q: "si la presión sanguínea a nivel del cerebro se anula:", opts: ["la presión a nivel del corazón también se anulara", "se produciría una isquemia cerebral", "se produciría un infarto de miocardio", "la presión a nivel del cerebro nunca se puede anular"], a: "se produciría una isquemia cerebral" },
+        { q: "la diferencia de presión entre dos puntos de un fluido situado a distintas alturas:", opts: ["depende de la diferencia de altura entre ellos", "depende de la gravedad", "depende de la densidad del fluido", "depende de las tres anteriores"], a: "depende de las tres anteriores" },
+        { q: "se dice que un fluido es perfecto si:", opts: ["en su seno no se desarrollan fuerzas tangenciales", "es viscoso", "no es viscoso", "la a y la c"], a: "la a y la c" },
+        { q: "se define el flujo a través de una superficie como:", opts: ["el volumen de fluido que atraviesa dicha superficie", "el volumen de fluido que atraviesa dicha superficie en la unidad de tiempo", "la velocidad del fluido por la superficie", "tiempo que tarda un fluido en atravesar la superficie"], a: "el volumen de fluido que atraviesa dicha superficie en la unidad de tiempo" },
+        { q: "en un fluido estacionario, el flujo a través de una superficie es:", opts: ["proporcional a la velocidad del fluido", "inversamente proporcional a la superficie", "proporcional a la superficie", "la a y la c"], a: "la a y la c" },
+        { q: "en un fluido real, el flujo entre dos secciones será:", opts: ["proporcional a la diferencia de presiones que exista entre dichas secciones", "inversamente proporcional a la resistencia", "proporcional al radio del conducto", "las tres anteriores"], a: "las tres anteriores" },
+        { q: "el número de Reynolds en la aorta es del orden de 1200, esto implica que:", opts: ["el régimen circulatorio es siempre laminar", "el régimen circulatorio es siempre turbulento", "puede ser turbulento ya que los datos de Reynolds solo son exactos para tubos largos y rectos", "el flujo sanguíneo se anula"], a: "puede ser turbulento ya que los datos de Reynolds solo son exactos para tubos largos y rectos" },
+        { q: "si hay un estrechamiento en un conducto sanguíneo se producirá:", opts: ["un aumento de la velocidad de la sangre", "una disminución de la presión de la sangre", "una disminución de la velocidad y un aumento de la presión", "la a y la b"], a: "la a y la b" },
+        { q: "cuando se produce una anomalía en la sección de un vaso sanguíneo:", opts: ["el teorema de Bernouilli ayuda a corregirla", "el teorema de Bernouilli la empeora", "el teorema no influye en nada", "puede ayudar o no en función de la velocidad de la sangre"], a: "el teorema de Bernouilli la empeora" },
+        { q: "según Reynolds la velocidad critica o característica es:", opts: ["inversamente proporcional al diámetro del tubo", "directamente proporcional a la viscosidad del líquido", "inversamente proporcional a la densidad del líquido", "las tres anteriores"], a: "las tres anteriores" },
+        { q: "el esfigmomanómetro:", opts: ["mide la presión sistólica/diastolita", "mide el flujo sanguíneo turbulento", "mide la tasa de latidos del corazón", "mide la resistencia hemodinámica"], a: "mide la presión sistólica/diastolita" },
+        { q: "la resistencia hemodinámica (R).", opts: ["depende únicamente de las características del fluido", "depende únicamente de las características del tubo por el que circula", "depende de las características del fluido y del tubo", "disminuye si aumenta el coeficiente de viscosidad del fluido"], a: "depende de las características del fluido y del tubo" },
+        { q: "para una persona que está de pie, la presión arterial a nivel del cerebro:", opts: ["es igual a la presión a nivel del corazón", "es inferior a la presión a nivel de corazón", "es superior a la presión a nivel del corazón", "es independiente de la altura de la persona"], a: "es inferior a la presión a nivel de corazón" },
+        { q: "la velocidad de la sangre en los capilares es menor que en la aorta porque:", opts: ["la superficie total de los capilares es mayor que la de la aorta", "lo contrario que en a", "por el teorema de Bernouilli", "por la ley de Laplace"], a: "la superficie total de los capilares es mayor que la de la aorta" },
+        { q: "en la circulación sanguínea, ¿Cuánto debe ser el número de Reynolds para pasar de una región laminar a una turbulenta?", opts: ["mayor de 2000", "menor de 2000", "igual a 2000", "la a y la c"], a: "mayor de 2000" },
+        { q: "El régimen de circulación de un fluido será laminar si el numero de Reynolds es:", opts: ["mayor de 2000", "menor de 2000", "mayor de 1200", "menor de 1200"], a: "menor de 2000" },
+        { q: "la presión que ejerce un fluido sobre una superficie es:", opts: ["una magnitud escalar", "una magnitud vectorial", "depende de las unidades empleadas", "es adimensional"], a: "una magnitud escalar" },
+        { q: "la potencia generada por el corazón puede aumentar hasta:", opts: ["2 veces", "5 veces", "7,5 veces", "Es siempre la misma"], a: "5 veces" },
+        { q: "la presión hidrostática ejercida en un fluido depende de:", opts: ["las coordenadas del punto", "de la forma del recipiente", "del color del fluido", "de la viscosidad"], a: "las coordenadas del punto" },
+        { q: "si por una estenosis el radio disminuye a la mitad, la resistencia:", opts: ["aumenta 16 veces", "disminuye 16 veces", "aumenta el doble", "no varía"], a: "aumenta 16 veces" },
+        { q: "la unidades en el S.I del flujo son:", opts: ["litros/minutos", "metros cúbicos/horas", "metros cúbicos/segundos", "litros/segundos"], a: "metros cúbicos/segundos" },
+        { q: "según Reynolds, la velocidad característica es:", opts: ["inversamente proporcional a la viscosidad del fluido", "directamente proporcional al diámetro del tubo", "inversamente proporcional a la densidad del liquido", "ninguna de las anteriores"], a: "inversamente proporcional a la densidad del liquido" },
+        { q: "¿Qué instrumento usamos para medir la presión sanguínea?", opts: ["esfigmomanómetro", "ecógrafo", "flujómetro", "espirómetro"], a: "esfigmomanómetro" },
+        { q: "la unidad de viscosidad en el S.I es:", opts: ["Poise", "Pascal * segundo (decapoise)", "Metro/segundo", "Pascal/litro"], a: "Pascal * segundo (decapoise)" },
+        { q: "en un vaso sanguíneo de 1 cm de diámetro, con sangre de 0,05 poise de viscosidad y densidad 1g/cm3, la velocidad critica resulta:", opts: ["0,0050 cm/s", "0,050 cm/s", "0,5 cm/s", "5 cm/s"], a: "5 cm/s" },
+        { q: "La suma de dos resistencia hidrodinámicas en serie es:", opts: ["mayor que cada una de ellas por separada", "la suma geométrica", "igual a la inversa de la suma", "menor que cada una de ellas por separada"], a: "mayor que cada una de ellas por separada" },
+        { q: "¿Dónde es mayor la caída de la presión hemodinámica?", opts: ["en las arterias", "en los capilares", "en las venas", "depende de la presión sanguínea"], a: "en los capilares" },
+        { q: "Por un tubo circula un fluido real, señale la respuesta correcta:", opts: ["La velocidad media es la mitad de la velocidad máxima", "La velocidad mínima se da en el centro del tubo", "La velocidad máxima se da en el centro del tubo", "La a) y la c)"], a: "La a) y la c)" },
+        { q: "El esfigmomanómetro se basa en:", opts: ["Las variaciones de presiones del mercurio", "Las propiedades eléctricas del corazón", "Las tensiones superficiales de los músculos", "Las propiedades del flujo sanguíneo"], a: "Las propiedades del flujo sanguíneo" },
+        { q: "Al aumentar la viscosidad de un fluido:", opts: ["El número de Reynolds aumenta", "Disminuye su velocidad crítica", "Aumenta su velocidad crítica", "El régimen de circulación siempre será laminar"], a: "Aumenta su velocidad crítica" },
+        { q: "En un vaso sanguíneo se produce una estenosis reduciendo su radio a la mitad ¿Qué pasara con la velocidad de la sangre en ese punto?", opts: ["Aumentará el doble", "Aumentará en 4 veces", "Disminuirá a la mitad", "Se mantendrá constante"], a: "Aumentará en 4 veces" },
+        { q: "Un fluído ideal:", opts: ["Es incompresible, su densidad cambia y es viscoso", "Es incompresible, su densidad no cambia y no tiene viscosidad", "Es compresible, su densidad no cambia y no tiene viscosidad", "Es compresible, su densidad cambia y no tiene viscosidad"], a: "Es incompresible, su densidad no cambia y no tiene viscosidad" },
+        { q: "¿Qué es la viscosidad de un fluido?", opts: ["Sólo aparece si el fluido es ideal", "Es la presión atmosférica", "Es la fricción interna en el fluido", "Es la fuerza que ayuda al flfluido a desplazarse mejor"], a: "Es la fricción interna en el fluido" },
+        { q: "¿Cuándo se producirá turbulencias en un fluido?", opts: ["Cuando la velocidad del fluido exceda de un cierto valor crítico", "Cuando la masa del fluido exceda de un cierto valor crítico", "Cuando el número de Reynolds sea inferior a 2000", "La a) y la c)"], a: "La a) y la c)" },
+        { q: "Cuando un fluido ideal pasa por un estrechamiento en una conducción (Repetida):", opts: ["Su velocidad y presión aumenta", "Su velocidad y presión disminuye", "Aumenta su velocidad y disminuye su presión", "Disminuye su velocidad y aumenta su presión"], a: "Aumenta su velocidad y disminuye su presión" },
+        { q: "Si en un fluido ideal la velocidad de circulación disminuye de un punto “A” a otro “B” en un tubo de corriente (Repetida):", opts: ["Necesariamente el diámetro del tubo ha aumentado en “B” respecto a “A”", "Necesariamente el diámetro del tubo “B” es menor que en “A”", "El fluido se ha comprimido", "El fluido se ha expandido"], a: "Necesariamente el diámetro del tubo ha aumentado en “B” respecto a “A”" },
+        { q: "En el torrente circulatorio la ecuación de continuidad (Repetida):", opts: ["No se puede aplicar, ya que la sangre es un líquido viscoso", "Se puede aplicar en promedio, para intervalos de tiempos largos", "No se puede aplicar en los capilares", "Se puede aplicar en cualquier instante"], a: "Se puede aplicar en promedio, para intervalos de tiempos largos" },
+        { q: "La resistencia hidrodinámica para un fluido viscoso (Repetida):", opts: ["Crece al aumentar el radio y la longitud de la tubería", "Crece al aumentar la longitud y decrece al aumentar el radio de la tubería", "Decrece al aumentar el radio y la longitud de la tubería", "Crece al disminuir la longitud y aumenta al aumentar el radio de la tubería"], a: "Crece al aumentar la longitud y decrece al aumentar el radio de la tubería" },
+        { q: "Para que llegue más sangre a aquellos órganos que lo precisan (Repetida):", opts: ["Aumenta sólo la presión arterial", "Disminuye la presión arterial y aumenta el ritmo cardiaco", "Aumenta la radio de los vasos periféricos, la presión y el ritmo cardiaco", "Disminuye la radio de los vasos periféricos para que disminuya la resistencia hemodinámica"], a: "Aumenta la radio de los vasos periféricos, la presión y el ritmo cardiaco" },
+        { q: "La tensión superficial:", opts: ["Es una característica del líquido", "Da origen a fuerzas perpendiculares a la superficie", "Da lugar a fuerzas que operan paralelas a la superficie", "La a y la c"], a: "La a y la c" },
+        { q: "la tensión superficial depende:", opts: ["del liquido", "del medio", "a y b son ciertas", "de la temperatura"], a: "a y b son ciertas" },
+        { q: "Cuando se produce una anomalía en la sección de un vaso sanguíneo:", opts: ["El teorema de Bernouilli ayuda a corregirla", "El teorema de Bernouilli no ayuda a corregirla", "Dicho teorema no influye en nada", "Puede ayudar a corregirla o no, dependiendo de la velocidad de la sangre"], a: "El teorema de Bernouilli no ayuda a corregirla" },
+        { q: "machuca:", opts: ["machuca", "machuca", "machuca", "machuca"], a: "machuca" },
+        { q: "Cuando en una arteria aumenta el radio:", opts: ["la tensión de sus paredes disminuye", "El vaso se abre hasta romperse", "La tensión de sus paredes aumenta", "El radio de la arteria se anula"], a: "La tensión de sus paredes aumenta" },
+        { q: "¿Qué efecto tiene incrementar la viscosidad de la sangre sobre el flujo sanguíneo de acuerdo con la Ley de Poiseuille?", opts: ["Ninguno, la sangre no tiene viscosidad", "Hace que la resistencia hemodinámica sea mayor", "Para mantener un flujo constante deberá incrementarse la diferencia de presión", "b y c son ciertas"], a: "b y c son ciertas" },
+        { q: "El esfingomanómetro se basa en:", opts: ["Las propiedades eléctricas del corazón", "La tensión superficial de los alveolos", "Las variaciones de presión del mercurio", "Las propiedades del flujo sanguíneo"], a: "Las propiedades del flujo sanguíneo" },
+        { q: "La velocidad critica de un fluido sera mas alta si:", opts: ["La viscosidad del fluido disminuye", "La viscosidad del fluido aumenta", "El radio del tubo aumenta", "La densidad del fluido aumenta"], a: "La viscosidad del fluido aumenta" },
+        { q: "¿Cuál de los siguientes casos actúa el fenómeno de capilaridad?", opts: ["Al beber refresco de una pajita", "La circulacion de agua desde la raíz hasta las hojas", "Al extraer sangre con una jeringuilla", "a y c son correctas"], a: "La circulacion de agua desde la raíz hasta las hojas" },
+        { q: "Un liquido moja a un solido cuando:", opts: ["Las fuerzas de cohesión son mayores que las de adherencia", "Solo depende de la presión atmosferica", "Es independiente de las fuerzas de cohesión y adherencia", "Las fuerzas de adherencia son mayores que las de cohesión"], a: "Las fuerzas de adherencia son mayores que las de cohesión" }
     ];
 
-    // Función para mezclar opciones al azar pero manteniendo el control de cuál es la correcta
-    function shuffleAndRender() {
-        // Mezclamos el orden de las preguntas para que no salgan siempre igual
-        let indicesPreguntas = Array.from(Array(quizData.length).keys());
-        indicesPreguntas.sort(() => Math.random() - 0.5);
+    // Función para mezclar opciones (Fisher-Yates)
+    function shuffleArray(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex != 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
 
-        const container = document.getElementById('quiz-container');
-        container.innerHTML = '';
+    const container = document.getElementById('quiz-container');
+    const counterDiv = document.getElementById('counter');
 
-        indicesPreguntas.forEach((indexReal, indexMostrado) => {
-            const item = quizData[indexReal];
-            
-            // Creamos un array de objetos temporal para mezclar las opciones de ESTA pregunta
-            // item.correctIndex nos dice cuál es la correcta en el array original
-            let opcionesMezcladas = item.options.map((txt, i) => ({
-                texto: txt,
-                esCorrecta: (i === item.correctIndex)
+    function renderQuiz() {
+        counterDiv.textContent = `Preguntas cargadas: ${quizData.length}`;
+
+        quizData.forEach((item, index) => {
+            // Tarjeta principal
+            const card = document.createElement('div');
+            card.className = 'question-card';
+
+            // Pregunta y título
+            const qHeader = document.createElement('div');
+            qHeader.style.color = '#adb5bd';
+            qHeader.style.fontSize = '0.9em';
+            qHeader.style.marginBottom = '5px';
+            qHeader.textContent = `Pregunta ${index + 1}`;
+            card.appendChild(qHeader);
+
+            const questionText = document.createElement('div');
+            questionText.className = 'question-text';
+            questionText.textContent = item.q;
+            card.appendChild(questionText);
+
+            // Contenedor de opciones
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options-container';
+
+            // Preparamos objetos {texto, esCorrecta}
+            let optionsObj = item.opts.map(opt => ({
+                text: opt,
+                isCorrect: opt === item.a
             }));
 
-            // Algoritmo Fisher-Yates para mezclar las opciones
-            for (let i = opcionesMezcladas.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [opcionesMezcladas[i], opcionesMezcladas[j]] = [opcionesMezcladas[j], opcionesMezcladas[i]];
-            }
+            // Barajamos las opciones
+            optionsObj = shuffleArray(optionsObj);
 
-            // Crear HTML de la tarjeta
-            const card = document.createElement('div');
-            card.className = 'card';
+            // Creamos los botones
+            optionsObj.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt.text;
 
-            const title = document.createElement('div');
-            title.className = 'question-text';
-            title.innerText = `${indexMostrado + 1}. ${item.q}`;
-            card.appendChild(title);
+                btn.onclick = () => {
+                    // Desactivar botones hermanos
+                    const siblings = optionsDiv.querySelectorAll('.option-btn');
+                    siblings.forEach(sibling => sibling.disabled = true);
 
-            const ul = document.createElement('ul');
-            ul.className = 'options-list';
-
-            // Renderizar las opciones ya mezcladas
-            opcionesMezcladas.forEach(opt => {
-                const li = document.createElement('li');
-                li.className = 'option';
-                li.innerText = opt.texto;
-
-                li.onclick = function() {
-                    // Evitar múltiples respuestas
-                    if (card.classList.contains('answered')) return;
-                    card.classList.add('answered');
-
-                    // Bloquear visualmente todas
-                    const allOpts = ul.querySelectorAll('.option');
-                    allOpts.forEach(o => o.classList.add('disabled'));
-
-                    if (opt.esCorrecta) {
-                        li.classList.add('correct');
+                    // Lógica de acierto/fallo
+                    if (opt.isCorrect) {
+                        btn.classList.add('correct');
                     } else {
-                        li.classList.add('incorrect');
-                        // Buscar la correcta para iluminarla
-                        opcionesMezcladas.forEach((o, idx) => {
-                            if (o.esCorrecta) {
-                                allOpts[idx].classList.add('correct');
+                        btn.classList.add('incorrect');
+                        // Buscar la correcta para resaltarla
+                        siblings.forEach(sibling => {
+                            if (sibling.textContent === item.a) {
+                                sibling.classList.add('correct');
                             }
                         });
                     }
-
+                    
                     // Mostrar explicación
-                    const expDiv = card.querySelector('.explanation');
-                    expDiv.style.display = 'block';
+                    explanationDiv.classList.add('visible');
                 };
-
-                ul.appendChild(li);
+                optionsDiv.appendChild(btn);
             });
 
-            card.appendChild(ul);
+            card.appendChild(optionsDiv);
 
-            // Añadir div de explicación oculto
-            const exp = document.createElement('div');
-            exp.className = 'explanation';
-            exp.innerHTML = `<strong>Explicación:</strong> ${item.explanation}`;
-            card.appendChild(exp);
+            // Caja de explicación
+            const explanationDiv = document.createElement('div');
+            explanationDiv.className = 'explanation';
+            explanationDiv.innerHTML = `<strong>Respuesta Correcta:</strong> ${item.a}`;
+            card.appendChild(explanationDiv);
 
             container.appendChild(card);
         });
     }
 
     // Iniciar
-    window.onload = shuffleAndRender;
-
+    renderQuiz();
 </script>
 
 </body>
