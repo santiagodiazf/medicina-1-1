@@ -109,7 +109,11 @@
         .diagram-placeholder {
             text-align: center;
             margin: 15px 0;
-            color: #6b7280;
+            padding: 10px;
+            background: #fff;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            color: #64748b;
             font-size: 0.9em;
         }
         @keyframes fadeIn {
@@ -126,12 +130,12 @@
     <div id="quiz-container"></div>
 
 <script>
-    // Banco de preguntas basado en tu texto y respuestas
+    // Banco de preguntas corregido
     const quizData = [
         // --- CASO 1 MIEMBRO INFERIOR ---
         { 
             caseTitle: "CASO CLÍNICO 1 (MI)", 
-            caseText: "Paciente de 75 años que sufre una artrosis de cadera de años de evolución. se interviene para colocar una prótesis total de cadera por vía posterior a través del músculo glúteo mayor.",
+            caseText: "Paciente de 75 años que sufre una artrosis de cadera de años de evolución. Se interviene para colocar una prótesis total de cadera por vía posterior a través del músculo glúteo mayor.",
             q: "1. ¿Cuál o cuáles de estas arterias habrá que ligar al abordar el cuello anatómico del fémur?", 
             opts: ["Circunflejas femoral lateral y medial", "Circunfleja femoral medial", "Obturatriz", "Femoral profunda", "Glútea inferior"], 
             a: "Circunflejas femoral lateral y medial",
@@ -147,7 +151,7 @@
         },
         { 
             caseTitle: "CASO CLÍNICO 1 (MI)",
-            caseText: "Tres años después en una revisión, se observa mediante TC que dos de los músculos de la cadera habían sido reemplazados por tejido adiposo. Se sospecha que el nervio glúteo superior podría haber sufrido daños durante la intervención y los músculos atrofiados habrían sido sustituidos por grasa. ¿cual de los siguientes músculos recibe su inervación del nervio glúteo superior?.",
+            caseText: "Tres años después en una revisión, se observa mediante TC que dos de los músculos de la cadera habían sido reemplazados por tejido adiposo. Se sospecha que el nervio glúteo superior podría haber sufrido daños durante la intervención y los músculos atrofiados habrían sido sustituidos por grasa.",
             q: "3. ¿Cuál de los siguientes músculos recibe su inervación del nervio glúteo superior?", 
             opts: ["Recto femoral", "Tensor de la fascia lata", "Glúteo mayor", "Piriforme", "Cuadrado Femoral"], 
             a: "Tensor de la fascia lata",
@@ -166,7 +170,7 @@
         { 
             caseTitle: "CASO CLÍNICO 2 (MI)",
             caseText: "Problema para desbloquear la rodilla en la flexión.",
-            q: "5. Además, durante la exploración física se observa que Xabi, tiene un problema para desbloquear la articulación de la rodilla en la flexión de la pierna. ¿cual de los siguientes músculos estará lesionado?", 
+            q: "5. Además, durante la exploración física se observa que Xabi tiene un problema para desbloquear la articulación de la rodilla en la flexión de la pierna. ¿Cuál de los siguientes músculos estará lesionado?", 
             opts: ["Poplíteo", "Recto Femoral", "Semimembranoso", "Sartorio", "Tensor de la Fascia Lata"], 
             a: "Poplíteo",
             exp: "El músculo poplíteo es el encargado de 'desbloquear' la rodilla rotando el fémur lateralmente sobre la tibia fija para iniciar la flexión."
@@ -174,7 +178,7 @@
         { 
             caseTitle: "CASO CLÍNICO 2 (MI)",
             caseText: "Síndrome patelofemoral con luxación lateral de la rótula.",
-            q: "6. Por si esto no fuera suficiente, el estudio radiológico pone de manifiesto un síndrome patelofemoral que se caracteriza por la luxación lateral de la rótula, lesión que se habrá causado probablemente al impactar sobre el suelo. ¿cual de los siguientes músculos rerá necesario reforzar más con la rehabilitación física, para prevenir futuras y reiteradas luxaciones?", 
+            q: "6. Por si esto no fuera suficiente, el estudio radiológico pone de manifiesto un síndrome patelofemoral que se caracteriza por la luxación lateral de la rótula. ¿Cuál de los siguientes músculos será necesario reforzar más con la rehabilitación física para prevenir futuras luxaciones?", 
             opts: ["Vasto medial", "Vasto lateral", "Ligamento rotuliano", "Vasto intermedio", "Recto femoral"], 
             a: "Vasto medial",
             exp: "El vasto medial (especialmente sus fibras oblicuas) tira de la rótula medialmente, contrarrestando la tendencia natural a la luxación lateral."
@@ -183,7 +187,8 @@
         // --- CASO 3 MIEMBRO INFERIOR ---
         { 
             caseTitle: "CASO CLÍNICO 3 (MI)",
-            caseText: "Tras un accidente de automovil, ingresa en el servicio de urgencias un varon de 35 años con el diagnóstico de fractura de pelvis y varias laceraciones profundas. La exploración física revela que la flexión dorsal y la inversión del pie izquierdo y la extensión del dedo gordo son muy débiles. Se ha perdido sensibilidad del dorso del pie, la piel de la planta y la cara lateral del pie. El reflejo rotuliano es normal. El pie se encuentra en eversión y flexión plantar.", 
+            caseText: "Tras un accidente de automóvil, ingresa en el servicio de urgencias un varón de 35 años con el diagnóstico de fractura de pelvis y varias laceraciones profundas. La exploración física revela que la flexión dorsal y la inversión del pie izquierdo y la extensión del dedo gordo son muy débiles. Se ha perdido sensibilidad del dorso del pie, la piel de la planta y la cara lateral del pie. El reflejo rotuliano es normal. El pie se encuentra en eversión y flexión plantar.", 
+            q: "7. ¿Qué estructura nerviosa está lesionada?",
             opts: ["Nervios espinales L5 y S1", "División peronea del nervio ciático", "El tronco Lumbosacro en la línea terminal", "Nervio tibial", "Ninguna de las anteriores"], 
             a: "El tronco Lumbosacro en la línea terminal",
             exp: "La afectación combinada de músculos peroneos (inversión/eversión alterada) y tibiales, con conservación del reflejo rotuliano (L4, femoral), apunta al tronco lumbosacro (L4-L5) que se une a S1."
@@ -237,7 +242,7 @@
             caseText: "Un hombre de 57 años recibe, en una pelea, una puñalada en la parte medial alta del muslo y fallece por exanguinación, en menos de 2 minutos.",
             q: "13. ¿Cuál fue la naturaleza de la lesión?", 
             opts: ["Sección Arteria Femoral en ligamento inguinal", "Lesión de vasos en vértice del triángulo femoral", "Sección vena femoral", "Sección circunfleja femoral medial", "Sección arteria Femoral profunda"], 
-            a: "Lesión de uno o varios vasos en el vértice del triángulo femoral",
+            a: "Lesión de vasos en vértice del triángulo femoral",
             exp: "El vértice del triángulo femoral contiene los grandes vasos femorales en una posición vulnerable antes de entrar en el conducto de los aductores."
         },
         { 
@@ -260,7 +265,7 @@
         // --- CASO 6 MIEMBRO INFERIOR ---
         { 
             caseTitle: "CASO CLÍNICO 6 (MI)",
-            caseText: "Varon de 47 años que en los últimos 3 meses ha adelgazado 10 kg. Como consecuencia utiliza un cinturón para ajustarse el pantalón y nota, desde entonces, un acorchamiento en la cara lateral del muslo.",
+            caseText: "Varón de 47 años que en los últimos 3 meses ha adelgazado 10 kg. Como consecuencia utiliza un cinturón para ajustarse el pantalón y nota, desde entonces, un acorchamiento en la cara lateral del muslo.",
             q: "16. ¿De qué nervio depende la sensibilidad de esa zona?", 
             opts: ["Femorocutaneo", "Obturador", "Femoral", "Safeno Externo", "Rama anterior del ciático"], 
             a: "Femorocutaneo",
@@ -286,7 +291,7 @@
         // --- CASO 7 MIEMBRO INFERIOR ---
         { 
             caseTitle: "CASO CLÍNICO 7 (MI)",
-            caseText: "Una Joven de 45 años ingresa en el hospital con dolor en la extremidad inferior durante los dos ultimos meses, con irradiación hacia un lugar que indico en cada pregunta corta. Tenemos que explorarla con el fin de determinar que raíz nerviosa puede estar alterada..",
+            caseText: "Una Joven de 45 años ingresa en el hospital con dolor en la extremidad inferior durante los dos últimos meses, con irradiación hacia un lugar que indico en cada pregunta corta. Tenemos que explorarla con el fin de determinar qué raíz nerviosa puede estar alterada.",
             q: "19. El dolor irradia hacia la parte interna de la pierna y del pie, y el reflejo rotuliano está alterado. ¿Qué raíz puede estar afectada?", 
             opts: ["L1", "L4", "L5-S2", "L2", "L3"], 
             a: "L4",
@@ -312,7 +317,7 @@
         // --- CASO 1 MIEMBRO SUPERIOR ---
         { 
             caseTitle: "CASO CLÍNICO 1 (MS)",
-            caseText: "Una mujer de 24 años de edad monta a caballo en un entrenamiento para una competición ecuestre.Cuando se aproxima a una valla de salto, el caballo se detiene brúscamente y lanza a la jinete al suelo, la cual cae violéntamente sobre el hombro y la cabeza produciendo una separación excesiva entre ambos. El plexo braquial se ve comprometido. ",
+            caseText: "Una mujer de 24 años de edad monta a caballo en un entrenamiento para una competición ecuestre. Cuando se aproxima a una valla de salto, el caballo se detiene bruscamente y lanza a la jinete al suelo, la cual cae violentamente sobre el hombro y la cabeza produciendo una separación excesiva entre ambos. El plexo braquial se ve comprometido.",
             q: "22. ¿Qué componentes del plexo braquial es más probable que se haya lesionado?", 
             opts: ["C5", "C6", "C8", "T1", "C5 y C6"], 
             a: "C5 y C6",
@@ -322,8 +327,8 @@
             caseTitle: "CASO CLÍNICO 1 (MS)",
             caseText: "(Continuación)",
             q: "23. ¿Qué déficit motor entre otros podría detectarse en la paciente?", 
-            opts: ["Aducción del Miembro Superior", "Rotación Interna", "Abdución del Miembro Superior", "Extensión del Antebrazo", "A y D son correctas"], 
-            a: "Abdución del Miembro Superior",
+            opts: ["Aducción del Miembro Superior", "Rotación Interna", "Abducción del Miembro Superior", "Extensión del Antebrazo", "A y D son correctas"], 
+            a: "Abducción del Miembro Superior",
             exp: "Al afectarse C5-C6, se paralizan el Deltoides y el Supraespinoso, impidiendo la abducción."
         },
         { 
@@ -338,7 +343,7 @@
         // --- CASO 2 MIEMBRO SUPERIOR ---
         { 
             caseTitle: "CASO CLÍNICO 2 (MS)",
-            caseText: "Una mujer de 28 años presenta una alteración de la sensibilidad de los dedos pulgal, índice y medio, además de la mitad radial del dedo anular. Está embarazada y trabaja como administrativa tecleando en el ordenador. Indica que los síntomas empezaron hace mucho tiempo como hormigueos nocturnos en los tres primeros dedos, cada vez mas intensos  y que se manifiestaban fundamentalmente por las noches. A la exploración física se observa atrofia de la musculatura de la heminencia tenar y el signo del Tinel en el tunel del carpo. La neurofisiológica indica alteración de la conducción nerviosa en el tunel carpiano. ",
+            caseText: "Una mujer de 28 años presenta una alteración de la sensibilidad de los dedos pulgar, índice y medio, además de la mitad radial del dedo anular. Está embarazada y trabaja como administrativa tecleando en el ordenador. Indica que los síntomas empezaron hace mucho tiempo como hormigueos nocturnos en los tres primeros dedos. A la exploración física se observa atrofia de la musculatura de la eminencia tenar y el signo del Tinel en el túnel del carpo.",
             q: "25. ¿Qué es el signo del Tinel?", 
             opts: ["A- Golpe sobre nervio mediano en túnel carpiano", "B- Golpe en nervio cubital en codo", "C- Maniobra de golpear cualquier nervio", "Manos en T", "A, B y C son correctas"], 
             a: "A, B y C son correctas",
@@ -364,11 +369,11 @@
         // --- CASO 3 MIEMBRO SUPERIOR ---
         { 
             caseTitle: "CASO CLÍNICO 3 (MS)",
-            caseText: "Un hombre de 55 años con diabetes mélitus presenta una contractura o semiflexión mantenida del dedo anular de la mano izquierda, que ha ido a más poco a poco. Refiere que su padre sufrió ese mismo trastorno hace muchos años. En la exploración física de la palma de la mano se identifica un nódulo.",
+            caseText: "Un hombre de 55 años con diabetes mellitus presenta una contractura o semiflexión mantenida del dedo anular de la mano izquierda. Refiere que su padre sufrió ese mismo trastorno. En la exploración física de la palma de la mano se identifica un nódulo.",
             q: "28. ¿Qué cuadro padece el paciente y a qué es debido?", 
             opts: ["Enfermedad de Dupuytren (músculos flexores)", "Lesión cubital canal Hunter", "Dupuytren (aponeurosis)", "Tumoración ósea", "Ninguna de las anteriores"], 
             a: "Ninguna de las anteriores",
-            exp: "Nota: Clínicamente es una Enfermedad de Dupuytren por fibrosis de la aponeurosis (opción C), pero la clave de respuestas indica 'Ninguna' (posiblemente por matices en la redacción de la opción C)."
+            exp: "Nota: Clínicamente es una Enfermedad de Dupuytren por fibrosis de la aponeurosis palmar."
         },
         { 
             caseTitle: "CASO CLÍNICO 3 (MS)",
@@ -390,7 +395,7 @@
         // --- CASO 4 MIEMBRO SUPERIOR ---
         { 
             caseTitle: "CASO CLÍNICO 4 (MS)",
-            caseText: "Una mujer de 55 años de edad resbala con el hielo y cae al suelo apoyándose con la mano derecha en extensión. Refiere dolor en el codo desde su caida. El codo se muestra tumefacto con acortamiento del antebrazo y prominencia del olécranon. La evaluación neurológica revela una disminución de la fuerza de oposición del pulgar y una disminución de la sensibilidad de las superficies palmares de las zonas laterales de los dedos medio y anular. La exploración radiológica muestra la siguiente imagen.",
+            caseText: "Una mujer de 55 años resbala con el hielo y cae apoyándose con la mano derecha en extensión. El codo se muestra tumefacto con acortamiento del antebrazo y prominencia del olécranon. La evaluación neurológica revela una disminución de la fuerza de oposición del pulgar y una disminución de la sensibilidad de las superficies palmares de los dedos medio y anular.",
             q: "31. ¿Qué cuadro presenta el paciente?", 
             opts: ["Fractura de cúbito", "Fractura-luxación de cúbito", "Luxación de cúbito y radio", "Fractura de cúbito y radio", "Ninguna"], 
             a: "Luxación de cúbito y radio",
@@ -408,7 +413,7 @@
         // --- CASO 5 MIEMBRO SUPERIOR ---
         { 
             caseTitle: "CASO CLÍNICO 5 (MS)",
-            caseText: "Durante un partido de rugby un taloneador de 21 años diestro es placado por detrás. En su caida, el brazo izquierdo en abdución choca contra el suelo. El jugador muestra evidentes signos de dolor en el hombro de ese lado. La exploraciópn física se identifica abdución ligera y rotación externa del miembro superior izquierdo, así como una tumefacción dura en la cara anterior del hombro. La exploración neurólógica muestra una imposibilidad motora de abducir el miembro superior y una reducción de la sensibilidad cutánea de la región central de la zona del músculo deltoides. El cuadro incluye la lesión de Bankart. La exploración radiológica muestra lo siguiente:",
+            caseText: "Durante un partido de rugby un jugador cae y el brazo izquierdo en abducción choca contra el suelo. En la exploración física se identifica abducción ligera y rotación externa del miembro superior izquierdo. La exploración neurológica muestra una imposibilidad motora de abducir el miembro superior y una reducción de la sensibilidad cutánea de la región del músculo deltoides. La exploración radiológica muestra lo siguiente:",
             q: "34. ¿Cuál es el diagnóstico?", 
             opts: ["Luxación posterior y desgarro ligamentos", "Luxación posterior y desgarro rodete", "Luxación anterior y desgarro supraespinoso", "Luxación anterior de la cabeza humeral y desgarro del rodete glenoideo", "Ninguna"], 
             a: "Luxación anterior de la cabeza humeral y desgarro del rodete glenoideo",
@@ -434,7 +439,7 @@
         // --- CASO 6 MIEMBRO SUPERIOR ---
         { 
             caseTitle: "CASO CLÍNICO 6 (MS)",
-            caseText: "Un jugador de padel de 47 años acude a la consulta refiriendo dolor en la región del epicondilo y en pequeña zona inmediatamente inferior al mismo del codo derecho dominante, que se exacerba durante los partidos y después de ellos. A la exploración clínica se observa que el dolor aumenta cuando se realizar una extensión de los dedos y de la mano contra resistencia.",
+            caseText: "Un jugador de padel refiere dolor en la región del epicóndilo del codo derecho. A la exploración clínica se observa que el dolor aumenta cuando se realizar una extensión de los dedos y de la mano contra resistencia.",
             q: "37. ¿Qué cuadro sufre el paciente?", 
             opts: ["Epitrocleitis", "Epicondilitis", "Lesión ligamentos externos", "Rotura fibras", "C o D"], 
             a: "Epicondilitis",
@@ -460,7 +465,7 @@
         // --- CASO 7 MIEMBRO SUPERIOR ---
         { 
             caseTitle: "CASO CLÍNICO 7 (MS)",
-            caseText: "Un hombre de 55 años refiere entumecimiento de la mano derecha dominante y torpeza en los movimientos finos de los dedos. Cuando era pequeño sufrió una fractura supracondílea de húmero derecho que dio lugar a un cúbito valgo. La exploración física muestra un grosor menor de la mano derecha en relación con la mano izquierda, menos perceptible en la región tenar, así como un déficit sensitivo de la región anterio y posterior interna de la mano, y un leve signo de "mano de garra". ",
+            caseText: "Un hombre de 55 años refiere entumecimiento de la mano derecha dominante y torpeza en los movimientos finos. Cuando era pequeño sufrió una fractura supracondílea que dio lugar a un cúbito valgo. La exploración física muestra atrofia de la mano y un leve signo de 'mano de garra'.",
             q: "40. ¿Cuál es el nervio afectado y la causa?", 
             opts: ["Mediano distendido en codo", "Cubital comprimido en Guyon", "Radial lesionado", "El nervio cubital distendido en su paso por el canal trocleoepitroclear", "Ninguna"], 
             a: "El nervio cubital distendido en su paso por el canal trocleoepitroclear",
@@ -508,28 +513,21 @@
                 currentCase = item.caseTitle;
                 const separator = document.createElement('div');
                 separator.className = "case-block";
-                separator.innerHTML = `<span class="case-title">${item.caseTitle}</span>${item.caseText}`;
-                container.appendChild(separator);
-
-                // Insertar diagramas contextuales al inicio de ciertos casos
+                
+                let diagramHTML = "";
+                // Lógica de diagramas visuales
                 if (item.caseTitle.includes("CASO CLÍNICO 1 (MI)")) {
-                    separator.innerHTML += `<div class='diagram-placeholder'></div>`;
+                   diagramHTML = "<div class='diagram-placeholder'>[Diagrama: Arterias de la cadera]</div>";
+                } else if (item.caseTitle.includes("CASO CLÍNICO 4 (MI)")) {
+                    diagramHTML = "<div class='diagram-placeholder'>[Diagrama: Ligamentos laterales del tobillo]</div>";
+                } else if (item.caseTitle.includes("CASO CLÍNICO 2 (MS)")) {
+                    diagramHTML = "<div class='diagram-placeholder'>[Diagrama: Anatomía del Túnel Carpiano]</div>";
+                } else if (item.caseTitle.includes("CASO CLÍNICO 5 (MS)")) {
+                     diagramHTML = "<div class='diagram-placeholder'>[Diagrama: Luxación de hombro]</div>";
                 }
-                if (item.caseTitle.includes("CASO CLÍNICO 4 (MI)")) {
-                    separator.innerHTML += `<div class='diagram-placeholder'>
 
-[Image of lateral ankle ligaments]
-</div>`;
-                }
-                if (item.caseTitle.includes("CASO CLÍNICO 2 (MS)")) {
-                    separator.innerHTML += `<div class='diagram-placeholder'>
-
-[Image of carpal tunnel anatomy]
-</div>`;
-                }
-                if (item.caseTitle.includes("CASO CLÍNICO 5 (MS)")) {
-                    separator.innerHTML += `<div class='diagram-placeholder'></div>`;
-                }
+                separator.innerHTML = `<span class="case-title">${item.caseTitle}</span>${item.caseText}${diagramHTML}`;
+                container.appendChild(separator);
             }
 
             // Tarjeta de pregunta
@@ -556,15 +554,18 @@
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.textContent = opt.text;
-
+                
                 btn.onclick = () => {
                     const siblings = optionsDiv.querySelectorAll('.option-btn');
                     siblings.forEach(sibling => sibling.disabled = true);
+                    
+                    const explanationDiv = card.querySelector('.explanation');
 
                     if (opt.isCorrect) {
                         btn.classList.add('correct');
                     } else {
                         btn.classList.add('incorrect');
+                        // Mostrar la correcta
                         siblings.forEach(sibling => {
                             if (sibling.textContent === item.a) {
                                 sibling.classList.add('correct');
