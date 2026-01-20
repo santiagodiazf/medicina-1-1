@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Biofísica Respiratoria</title>
+    <title>Test Biofísica: Fluidos y Hemodinámica</title>
     <style>
         :root {
-            --primary: #15803d; /* Verde bosque */
-            --primary-dark: #14532d;
-            --primary-light: #dcfce7;
-            --bg: #f0fdf4; /* Verde muy pálido de fondo */
-            --text: #1a1a1a;
+            --primary: #0284c7; /* Azul Oceano */
+            --primary-dark: #0369a1;
+            --primary-light: #e0f2fe;
+            --bg: #f0f9ff; /* Fondo muy claro azulado */
+            --text: #0f172a;
             --white: #ffffff;
-            --accent: #16a34a;
         }
 
         body {
@@ -26,14 +25,14 @@
 
         h1 {
             text-align: center;
-            color: var(--primary);
+            color: var(--primary-dark);
             margin-bottom: 10px;
         }
 
         .intro-text {
             text-align: center;
             margin-bottom: 30px;
-            color: #4b5563;
+            color: #64748b;
             font-style: italic;
         }
 
@@ -43,14 +42,13 @@
             padding: 25px;
             margin-bottom: 25px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border-left: 6px solid var(--primary-light);
+            border-left: 6px solid var(--primary);
             transition: transform 0.2s, box-shadow 0.2s;
             position: relative;
         }
 
         .question-card:hover {
-            border-left-color: var(--primary);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
         }
 
         /* --- Checkbox para Marcar --- */
@@ -62,7 +60,7 @@
             font-size: 0.9em;
             color: var(--primary);
             font-weight: bold;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid #bae6fd;
             padding-bottom: 10px;
         }
         .mark-container input {
@@ -77,7 +75,7 @@
 
         .question-header {
             font-size: 0.85em;
-            color: #166534;
+            color: #64748b;
             margin-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -87,22 +85,22 @@
         .question-text {
             font-weight: 600;
             font-size: 1.15em;
-            margin-bottom: 20px;
-            color: #1f2937;
+            margin-bottom: 15px;
+            color: #1e293b;
             line-height: 1.5;
         }
 
         /* Estilo para las etiquetas de imagen */
         .img-tag {
             display: block;
-            margin-top: 10px;
-            padding: 8px;
-            background-color: #f3f4f6;
-            border-left: 4px solid #9ca3af;
-            color: #4b5563;
+            margin-top: 12px;
+            padding: 10px;
+            background-color: #f1f5f9;
+            border-left: 4px solid #94a3b8;
+            color: #475569;
             font-size: 0.9em;
             font-style: italic;
-            font-weight: normal;
+            border-radius: 0 4px 4px 0;
         }
 
         .options-container {
@@ -113,20 +111,21 @@
 
         .option-btn {
             padding: 14px 18px;
-            border: 2px solid #e5e7eb;
+            border: 2px solid #e2e8f0;
             background: #fff;
             border-radius: 8px;
             cursor: pointer;
             text-align: left;
             transition: all 0.2s;
             font-size: 1em;
-            color: #374151;
+            color: #334155;
         }
 
         .option-btn:hover:not(:disabled) {
             background-color: var(--primary-light);
             border-color: var(--primary);
             color: var(--primary-dark);
+            transform: translateX(5px);
         }
 
         .option-btn:disabled {
@@ -150,11 +149,12 @@
         .explanation {
             margin-top: 15px;
             padding: 15px;
-            background-color: #f0fdf4;
-            border-left: 5px solid var(--primary);
+            background-color: #e0f2fe;
+            border-left: 5px solid #0ea5e9;
             border-radius: 4px;
             display: none;
             font-size: 0.95em;
+            color: #0c4a6e;
         }
 
         .explanation.visible {
@@ -196,16 +196,17 @@
             margin-top: 20px;
         }
         .restart-options button {
-            background: #059669;
+            background: #334155;
         }
-        .restart-options button:hover { background: #047857; }
+        .restart-options button:hover { background: #0f172a; }
+        .restart-options button:first-child { background: var(--primary); }
 
     </style>
 </head>
 <body>
 
-    <h1>Biofísica: Respiratorio y Superficies</h1>
-    <p class="intro-text">Tensión superficial, Surfactantes, Ventilación e Intercambio Gaseoso</p>
+    <h1>Examen de Hemodinámica y Fluidos</h1>
+    <p class="intro-text">Bernoulli, Reynolds, Poiseuille y Circulación Sanguínea</p>
     
     <div id="quiz-container"></div>
 
@@ -224,60 +225,69 @@
 
 <script>
     const quizData = [
-        { q: "1. El volumen residual pulmonar se estima en:", opts: ["30%", "10%", "20%", "5%"], a: "20%" },
-        { q: "2. El ángulo de conjunción para un líquido que moja es:", opts: ["Mayor de 90º", "Menor de 90º", "Igual a 90º", "Igual al ángulo de contacto"], a: "Menor de 90º" },
-        { q: "3. Según la ley de Laplace, cuando una burbuja crece, el radio aumenta y:", opts: ["La tensión superficial disminuye", "La presión aumenta", "La presión disminuye", "La tensión superficial aumenta"], a: "La presión disminuye" },
-        { q: "4. ¿Cuáles son los procesos involucrados en el intercambio gaseoso entre sangre y pulmones?", opts: ["Pandeo y vaciado", "Densidad y velocidad", "Difusión y ventilación", "Perfusión y ventilación"], a: "Perfusión y ventilación" },
-        { q: "5. La unidad de la tensión superficial en el S.I., es:", opts: ["Kg/s", "N.m/s", "N.m", "N/m"], a: "N/m" },
-        { q: "6. En la pared alveolar el O2 se difunde más rápidamente que el CO2 porque:", opts: ["La masa del primero es menor que la del segundo", "Es más reactivo", "La masa del primero es mayor que la del segundo", "La solubilidad del Oxígeno en la sangre es mayor que la del dióxido de carbono"], a: "La masa del primero es menor que la del segundo" },
-        { q: "7. Cuando disminuye la superficie de un líquido no surfactante, la tensión superficial:", opts: ["Se anula", "Permanece constante", "Disminuye", "Aumenta"], a: "Permanece constante" },
-        { q: "8. La presión parcial del oxígeno en el aire alveolar es:", opts: ["20 mm de Hg", "80 mm de Hg", "100 mm de Hg", "40 mm Hg"], a: "100 mm de Hg" },
-        { q: "9. En un pulmón normal, el 90% de su superficie corresponde a zonas con:", opts: ["Buena perfusión", "Buena ventilación", "Pobre ventilación", "La a) y b)"], a: "La a) y b)" },
-        { q: "10. El valor del cociente respiratorio es:", opts: ["1", "Menor que 1", "Mayor que 1", "0"], a: "Menor que 1" },
-        { q: "11. El Quimógrafo es un componente de:", opts: ["El fonendoscopio", "El espirómetro", "El esfigmomanómetro", "El estetoscopio"], a: "El espirómetro" },
-        { q: "12. En la pared alveolar el O2 difunde más rápido que el CO2 porque (Repetida):", opts: ["Su masa es menor", "Es más rápido", "Es más reactivo", "Es más soluble en sangre que el CO2"], a: "Su masa es menor" },
-        { q: "13. La presión alveolar es respecto a la atmosférica en la inspiración:", opts: ["3mm de Hg mayor", "3mm de Hg menor (aprox. -1 a -3 mmHg)", "Igual a la atmosférica", "Igual a la presión de CO2"], a: "3mm de Hg menor (aprox. -1 a -3 mmHg)" },
-        { q: "14. La compliancia del aparato respiratorio para el hombre en la zona de respiración normal es:", opts: ["0,01 l/cm agua", "0,1 l/cm agua", "0,01 l/mm de Hg", "0,1 mm de Hg"], a: "0,1 l/cm agua" },
-        { q: "15. Cuando disminuye la superficie de un líquido surfactante, la tensión superficial:", opts: ["Aumenta", "Disminuye", "Permanece constante", "Se anula"], a: "Disminuye" },
-        { q: "16. El modelo burbuja y membrana elástica del alveolo con tensión superficial constante:", opts: ["Utiliza la ecuación de Laplace", "Explica la fase de llenado", "Explica la fase de vaciado", "La a y b"], a: "Utiliza la ecuación de Laplace" },
-        { q: "17. En el modelo burbuja con el líquido surfactante disminuyendo la superficie:", opts: ["Las curvas V/P se desplazan hacia la derecha", "Las curvas V/P se desplazan hacia la izquierda (Mayor complianza)", "La tensión superficial es constante", "No se alteran las curvas V/P"], a: "Las curvas V/P se desplazan hacia la izquierda (Mayor complianza)" },
-        { q: "18. Un método de diagnóstico de enfermedades del sistema respiratorio es la obtención del:", opts: ["Electrocardiograma", "Balistocardiograma", "Espirograma", "Termograma"], a: "Espirograma" },
-        { q: "19. La embolia pulmonar, producirá una zona con:", opts: ["Pobre ventilación", "Buena perfusión", "Pobre perfusión", "Buena ventilación"], a: "Pobre perfusión" },
-        { q: "20. La perfusión es:", opts: ["Suministro de aire a la superficie alveolar", "Aumento de la presión pulmonar", "Suministro de sangre a los capilares pulmonares", "Expulsión de la sangre del corazón"], a: "Suministro de sangre a los capilares pulmonares" },
-        { q: "21. Se denomina capacidad funcional residual a:", opts: ["Volumen de aire expulsado por los pulmones en cada espiración", "Razón de O2 espirado y O2 inspirado", "Volumen de aire introducido en los pulmones en cada inspiración", "Volumen de aire retenido en los pulmones al final de cada espiración"], a: "Volumen de aire retenido en los pulmones al final de cada espiración" },
-        { q: "22. La proporcionalidad que existe entre la cantidad de O2 disuelta en la sangre y la presión parcial de O2 en la fase gaseosa se conoce como:", opts: ["Ley de la difusión", "Ley de Dalton de las presiones parciales", "Ley de Henry de la solubilidad de gases", "Perfusión"], a: "Ley de Henry de la solubilidad de gases" },
-        { q: "23. Se entiende por índice de refracción de un medio al cociente entre la velocidad de la luz en:", opts: ["El vacío y dicho medio", "El agua y dicho medio", "El aire y el agua", "El aire y el cuerpo humano"], a: "El vacío y dicho medio" },
-        { q: "24. La tensión superficial:", opts: ["Es una característica del líquido", "Da origen a fuerzas perpendiculares a la superficie", "Da lugar a fuerzas paralelas a la superficie", "a y c son ciertas"], a: "a y c son ciertas" },
-        { q: "25. La tensión superficial depende:", opts: ["Del líquido", "Del medio", "a y b son ciertas", "De la temperatura"], a: "a y b son ciertas" },
-        { q: "26. El cociente respiratorio relaciona:", opts: ["Valor calórico del O2 consumido con el volumen de carbónico eliminado", "Volúmenes de O2 consumidos con volúmenes de CO2 eliminados", "El volumen de O2 consumido con el valor calórico del CO2 excretado", "Los valores calóricos del O2 consumido con y del carbónico"], a: "Volúmenes de O2 consumidos con volúmenes de CO2 eliminados" },
-        { q: "27. La perfusión es (Repetida):", opts: ["Suministro de aire a la superficie alveolar", "Aumento de la presión pulmonar", "Suministro de sangre a los capilares pulmonares", "Expulsión de sangre del corazón"], a: "Suministro de sangre a los capilares pulmonares" },
-        { q: "28. Con un espirómetro no se podrá obtener:", opts: ["El volumen inspirado por los pulmones", "El volumen espirado por los pulmones", "La capacidad funcional residual de los pulmones", "a y b"], a: "La capacidad funcional residual de los pulmones" },
-        { q: "29. La proporcionalidad que existe entre la cantidad de O2 disuelta en sangre y la presión parcial de O2 en la fase gaseosa se conoce como:", opts: ["Ley de la difusión", "Ley de Dalton de las presiones parciales", "Ley de Henry de la solubilidad de los gases", "Perfusión"], a: "Ley de Henry de la solubilidad de los gases" },
-        { q: "30. El proceso que consiste en suministrar sangre a los capilares se denomina:", opts: ["Difusión", "Perfusión", "Ventilación", "Estenosis"], a: "Perfusión" },
-        { q: "31. La presión parcial del dióxido de carbono en el aire alveolar es de:", opts: ["40 mmHg", "20 mmHg", "80 mmHg", "100 mmHg"], a: "40 mmHg" },
-        { q: "32. En la ley de Jurin, una de las siguientes afirmaciones no es correcta:", opts: ["La altura es inversamente proporcional al radio", "La altura en el capilar es inversamente proporcional a la gravedad", "La altura en el capilar es inversamente proporcional a la densidad", "La altura en el capilar es inversamente proporcional a la tensión superficial"], a: "La altura en el capilar es inversamente proporcional a la tensión superficial" },
-        { q: "33. Respecto a la tensión interfacial se dice:", opts: ["Si es positiva, no hay humectación", "Si es positiva hay humectación (Coeficiente de extensión)", "Si es negativa, no hay humectación", "La b y la c son ciertas"], a: "Si es positiva hay humectación (Coeficiente de extensión)" },
-        { q: "34. En una embolia pulmonar (obstrucción, por un coágulo, de un vaso sanguíneo que suministra sangre a una parte del pulmón), se produce:", opts: ["Aumento de la ventilación", "Aumento de la difusión", "Engrosamiento de la pared alveolar", "Disminución de la perfusión"], a: "Disminución de la perfusión" },
-        { q: "35. La causa por la que la característica presión y volumen del pulmón presenta un ciclo de histéresis es:", opts: ["La ley de Hooke", "La tensión superficial del líquido surfactante que baña a los alvéolos", "El teorema de Bernoulli", "El ángulo de contacto"], a: "La tensión superficial del líquido surfactante que baña a los alvéolos" },
-        { q: "36. Los líquidos surfactantes son aquellos que:", opts: ["Recubren el alveolo", "Su tensión superficial se anula", "Varían su tensión superficial según el espacio que ocupen", "Su tensión superficial permanece constante"], a: "Varían su tensión superficial según el espacio que ocupen" },
-        { q: "37. Se denomina razón de intercambio respiratorio o cociente R respiratorio a:", opts: ["Razón de O2 que se expulsa y CO2 que entra en los pulmones", "Razón de CO2 que se expulsa y O2 que entra en los pulmones", "Volumen retenido al final de cada respiración", "Volumen total de O2 inspirado"], a: "Razón de CO2 que se expulsa y O2 que entra en los pulmones" },
-        { q: "38. La ventilación consiste en:", opts: ["Suministro de sangre a los capilares pulmonares", "Suministro de aire a la superficie alveolar", "Determinar el volumen de gas espirado", "Renovación periodica del aire alveolar : expiración mas inspiracion"], a: "Renovación periodica del aire alveolar : expiración mas inspiracion" },
-        { q: "39. En una pulmonía el área involucrada tendrá:", opts: ["Pobre perfusión", "Buena ventilación", "Mala ventilación", "La a y la c"], a: "Mala ventilación" },
-        { q: "40. Cuando aumenta la superficie de un liquido no surfactante la tensión superficial:", opts: ["Aumenta", "Disminuye", "Se anula", "Se mantiene constante"], a: "Se mantiene constante" },
-        { q: "41. Cuando aumenta la superficie de un liquido surfactante la tensión superficial:", opts: ["Aumenta (al disminuir concentración superficial)", "Disminuye", "Permanece constante", "Se anula"], a: "Aumenta (al disminuir concentración superficial)" },
-        { q: "42. El cociente R o razón de intercambio es:", opts: ["Razón entre CO2 expulsado y O2 introducido en los pulmones", "Razón entre O2 expulsado y CO2 introducido en los pulmones", "Generalmente inferior a 1", "La a y la c"], a: "La a y la c" },
-        { q: "43. El fenómeno de la capilaridad es una consecuencia de:", opts: ["La existencia de un ángulo de conjunción dependiente de la tensión interfacial", "El teorema de Laplace", "El teorema de Bernoulli", "La b y la c conjuntamente (Nota: en teoría debería ser a y b)"], a: "La existencia de un ángulo de conjunción dependiente de la tensión interfacial" },
-        { q: "44. El proceso general de intercambio de O2 y CO2 entre los alvéolos y la sangre se rige por:", opts: ["La ecuación de continuidad", "La ley de las presiones parciales de Dalton (y difusión)", "El teorema de Bernoulli", "La ley de Poiseuille"], a: "La ley de las presiones parciales de Dalton (y difusión)" },
-        { q: "45. Los líquidos surfactantes son aquellos que:", opts: ["Mojan a un sólido", "Varían su tensión superficial según el espacio que ocupan", "Su tensión superficial permanece constante", "Su tensión superficial se anula"], a: "Varían su tensión superficial según el espacio que ocupan" },
-        { q: "46. Cuando disminuye la superficie de un líquido no surfactante, la tensión superficial:", opts: ["Aumenta", "Disminuye", "Se mantiene constante", "Se anula"], a: "Se mantiene constante" },
-        { q: "47. Cuando la tensión interfacial es positiva:", opts: ["El sólido ejerce más fuerza que el líquido", "El líquido ejerce más fuerza que el sólido", "Ambos ejercen la misma fuerza", "Ninguna es correcta"], a: "El líquido ejerce más fuerza que el sólido" },
-        { q: "48. ¿Cuáles son los procesos involuntarios en el intercambio gaseoso entre sangre y pulmones?", opts: ["Perfusión y ventilación", "Pandeo y vaciado", "Densidad y velocidad", "Difusión y ventilación"], a: "Difusión y ventilación" },
-        { q: "49. ¿Qué dura más?", opts: ["Este test", "La vida universitaria de Machuka"], a: "La vida universitaria de Machuka" },
-        { q: "50. Tiene la doble nacionalidad:", opts: ["Bartelinho", "Mr bottle"], a: "Bartelinho" },
-        { q: "51. La mejor cerveza:", opts: ["Alhambra", "Cruzcampo", "Estrella Galicia"], a: "Estrella Galicia" }
+        { q: "Cuando un fluido ideal pasa por un estrechamiento en una conducción:", opts: ["su velocidad y presión aumenta", "su velocidad y presión disminuye", "aumenta su velocidad y disminuye su presión", "disminuye su velocidad y aumenta su presión"], a: "aumenta su velocidad y disminuye su presión" },
+        { q: "si un fluido ideal la velocidad de circulación disminuye de un punto A a otro B en un tubo de corriente:", opts: ["necesariamente el diámetro del tubo ha aumentado en B respecto a A", "necesariamente el diámetro en B es menor que en A", "el fluido se ha comprimido", "el fluido se ha expandido"], a: "necesariamente el diámetro del tubo ha aumentado en B respecto a A" },
+        { q: "en el torrente circulatorio la ecuación de continuidad:", opts: ["no se puede aplicar ya que la sangre es un líquido viscoso", "se puede aplicar en promedio para intervalos de tiempo largos", "no se puede aplicar en los capilares", "se puede aplicar en cualquier instante"], a: "se puede aplicar en promedio para intervalos de tiempo largos" },
+        { q: "la resistencia hidrodinámica para un fluido viscoso:", opts: ["crece al aumentar el radio y la longitud de la tubería", "crece al aumentar la longitud y decrece al aumentar el radio de la tubería", "decrece al aumentar el radio y la longitud de la tubería", "crece al disminuir la longitud y aumenta al aumentar el radio de la tubería"], a: "crece al aumentar la longitud y decrece al aumentar el radio de la tubería" },
+        { q: "por la tubería de la figura circula un liquido viscoso, si progresivamente se aumenta el caudal que circula, ¿en que parte se producirá antes la transición de régimen laminar a turbulento? (en la figura se observa un conducto de 1,2 cm de diámetro que se estrecha hasta 2mm):", opts: ["no aparecerá un régimen turbulento al ser un líquido viscoso", "en la parte B (estrecha)", "en la parte A (ancha)", "en ambas partes a la vez"], a: "en la parte B (estrecha)" },
+        { q: "para que llegue mas sangre a aquellos órganos que lo precisan:", opts: ["aumenta solo la presión arterial", "disminuye la presión arterial y aumenta el ritmo cardiaco", "aumenta el radio de los vasos periféricos, la presión y el ritmo cardiaco", "disminuye el radio de los vasos periféricos para que disminuya la resistencia hemodinámica"], a: "aumenta el radio de los vasos periféricos, la presión y el ritmo cardiaco" },
+        { q: "la distribución de velocidades en la sección de un vaso será:", opts: ["igual en todos los puntos", "nula en todos los puntos de la sección", "nula junto a las paredes y máxima en el centro", "máxima en la paredes y nula en el centro"], a: "nula junto a las paredes y máxima en el centro" },
+        { q: "¿por qué la velocidad de la sangre es unas 800 veces mayor en la aorta que en los capilares?", opts: ["por ser la sección de la aorta 800 veces mayor que la sección conjunta de los capilares", "por ser la sección conjunta de todos los capilares 800 veces mayor que la de la aorta", "la velocidad es la misma en la aorta que en los capilares", "la velocidad en la aorta es menor que en los capilares"], a: "por ser la sección conjunta de todos los capilares 800 veces mayor que la de la aorta" },
+        { q: "el coeficiente de viscosidad de la sangre:", opts: ["es aproximadamente 1 Poise", "es generalmente 5 veces superior al del agua", "varía mucho en función del contenido en eritrocitos", "la b y la c"], a: "la b y la c" },
+        { q: "para una persona que está en posición horizontal, la presión arterial a nivel del cerebro:", opts: ["es igual a la presión a nivel del corazón", "es inferior a la presión a nivel del corazón", "es superior a la presión a nivel del corazón", "depende de la altura de la persona"], a: "es igual a la presión a nivel del corazón" },
+        { q: "la tensión que soportan las paredes de los vasos:", opts: ["es directamente proporcional al radio de los vasos", "es independiente de la presión sanguínea", "es directamente proporcional a la presión sanguínea", "la a y la c"], a: "la a y la c" },
+        { q: "si la presión sanguínea a nivel del cerebro se anula:", opts: ["la presión a nivel del corazón también se anulara", "se produciría una isquemia cerebral", "se produciría un infarto de miocardio", "la presión a nivel del cerebro nunca se puede anular"], a: "se produciría una isquemia cerebral" },
+        { q: "la diferencia de presión entre dos puntos de un fluido situado a distintas alturas:", opts: ["depende de la diferencia de altura entre ellos", "depende de la gravedad", "depende de la densidad del fluido", "depende de las tres anteriores"], a: "depende de las tres anteriores" },
+        { q: "se dice que un fluido es perfecto si:", opts: ["en su seno no se desarrollan fuerzas tangenciales", "es viscoso", "no es viscoso", "la a y la c"], a: "la a y la c" },
+        { q: "se define el flujo a través de una superficie como:", opts: ["el volumen de fluido que atraviesa dicha superficie", "el volumen de fluido que atraviesa dicha superficie en la unidad de tiempo", "la velocidad del fluido por la superficie", "tiempo que tarda un fluido en atravesar la superficie"], a: "el volumen de fluido que atraviesa dicha superficie en la unidad de tiempo" },
+        { q: "en un fluido estacionario, el flujo a través de una superficie es:", opts: ["proporcional a la velocidad del fluido", "inversamente proporcional a la superficie", "proporcional a la superficie", "la a y la c"], a: "la a y la c" },
+        { q: "en un fluido real, el flujo entre dos secciones será:", opts: ["proporcional a la diferencia de presiones que exista entre dichas secciones", "inversamente proporcional a la resistencia", "proporcional al radio del conducto", "las tres anteriores"], a: "las tres anteriores" },
+        { q: "el número de Reynolds en la aorta es del orden de 1200, esto implica que:", opts: ["el régimen circulatorio es siempre laminar", "el régimen circulatorio es siempre turbulento", "puede ser turbulento ya que los datos de Reynolds solo son exactos para tubos largos y rectos", "el flujo sanguíneo se anula"], a: "puede ser turbulento ya que los datos de Reynolds solo son exactos para tubos largos y rectos" },
+        { q: "si hay un estrechamiento en un conducto sanguíneo se producirá:", opts: ["un aumento de la velocidad de la sangre", "una disminución de la presión de la sangre", "una disminución de la velocidad y un aumento de la presión", "la a y la b"], a: "la a y la b" },
+        { q: "cuando se produce una anomalía en la sección de un vaso sanguíneo:", opts: ["el teorema de Bernouilli ayuda a corregirla", "el teorema de Bernouilli la empeora", "el teorema no influye en nada", "puede ayudar o no en función de la velocidad de la sangre"], a: "el teorema de Bernouilli la empeora" },
+        { q: "según Reynolds la velocidad critica o característica es:", opts: ["inversamente proporcional al diámetro del tubo", "directamente proporcional a la viscosidad del líquido", "inversamente proporcional a la densidad del líquido", "las tres anteriores"], a: "las tres anteriores" },
+        { q: "el esfigmomanómetro:", opts: ["mide la presión sistólica/diastolita", "mide el flujo sanguíneo turbulento", "mide la tasa de latidos del corazón", "mide la resistencia hemodinámica"], a: "mide la presión sistólica/diastolita" },
+        { q: "la resistencia hemodinámica (R).", opts: ["depende únicamente de las características del fluido", "depende únicamente de las características del tubo por el que circula", "depende de las características del fluido y del tubo", "disminuye si aumenta el coeficiente de viscosidad del fluido"], a: "depende de las características del fluido y del tubo" },
+        { q: "para una persona que está de pie, la presión arterial a nivel del cerebro:", opts: ["es igual a la presión a nivel del corazón", "es inferior a la presión a nivel de corazón", "es superior a la presión a nivel del corazón", "es independiente de la altura de la persona"], a: "es inferior a la presión a nivel de corazón" },
+        { q: "la velocidad de la sangre en los capilares es menor que en la aorta porque:", opts: ["la superficie total de los capilares es mayor que la de la aorta", "lo contrario que en a", "por el teorema de Bernouilli", "por la ley de Laplace"], a: "la superficie total de los capilares es mayor que la de la aorta" },
+        { q: "en la circulación sanguínea, ¿Cuánto debe ser el número de Reynolds para pasar de una región laminar a una turbulenta?", opts: ["mayor de 2000", "menor de 2000", "igual a 2000", "la a y la c"], a: "mayor de 2000" },
+        { q: "El régimen de circulación de un fluido será laminar si el numero de Reynolds es:", opts: ["mayor de 2000", "menor de 2000", "mayor de 1200", "menor de 1200"], a: "menor de 2000" },
+        { q: "la presión que ejerce un fluido sobre una superficie es:", opts: ["una magnitud escalar", "una magnitud vectorial", "depende de las unidades empleadas", "es adimensional"], a: "una magnitud escalar" },
+        { q: "la potencia generada por el corazón puede aumentar hasta:", opts: ["2 veces", "5 veces", "7,5 veces", "Es siempre la misma"], a: "5 veces" },
+        { q: "la presión hidrostática ejercida en un fluido depende de:", opts: ["las coordenadas del punto", "de la forma del recipiente", "del color del fluido", "de la viscosidad"], a: "las coordenadas del punto" },
+        { q: "si por una estenosis el radio disminuye a la mitad, la resistencia:", opts: ["aumenta 16 veces", "disminuye 16 veces", "aumenta el doble", "no varía"], a: "aumenta 16 veces" },
+        { q: "la unidades en el S.I del flujo son:", opts: ["litros/minutos", "metros cúbicos/horas", "metros cúbicos/segundos", "litros/segundos"], a: "metros cúbicos/segundos" },
+        { q: "según Reynolds, la velocidad característica es:", opts: ["inversamente proporcional a la viscosidad del fluido", "directamente proporcional al diámetro del tubo", "inversamente proporcional a la densidad del liquido", "ninguna de las anteriores"], a: "inversamente proporcional a la densidad del liquido" },
+        { q: "¿Qué instrumento usamos para medir la presión sanguínea?", opts: ["esfigmomanómetro", "ecógrafo", "flujómetro", "espirómetro"], a: "esfigmomanómetro" },
+        { q: "la unidad de viscosidad en el S.I es:", opts: ["Poise", "Pascal * segundo (decapoise)", "Metro/segundo", "Pascal/litro"], a: "Pascal * segundo (decapoise)" },
+        { q: "en un vaso sanguíneo de 1 cm de diámetro, con sangre de 0,05 poise de viscosidad y densidad 1g/cm3, la velocidad critica resulta:", opts: ["0,0050 cm/s", "0,050 cm/s", "0,5 cm/s", "5 cm/s"], a: "5 cm/s" },
+        { q: "La suma de dos resistencia hidrodinámicas en serie es:", opts: ["mayor que cada una de ellas por separada", "la suma geométrica", "igual a la inversa de la suma", "menor que cada una de ellas por separada"], a: "mayor que cada una de ellas por separada" },
+        { q: "¿Dónde es mayor la caída de la presión hemodinámica?", opts: ["en las arterias", "en los capilares", "en las venas", "depende de la presión sanguínea"], a: "en los capilares" },
+        { q: "Por un tubo circula un fluido real, señale la respuesta correcta:", opts: ["La velocidad media es la mitad de la velocidad máxima", "La velocidad mínima se da en el centro del tubo", "La velocidad máxima se da en el centro del tubo", "La a) y la c)"], a: "La a) y la c)" },
+        { q: "El esfigmomanómetro se basa en:", opts: ["Las variaciones de presiones del mercurio", "Las propiedades eléctricas del corazón", "Las tensiones superficiales de los músculos", "Las propiedades del flujo sanguíneo"], a: "Las propiedades del flujo sanguíneo" },
+        { q: "Al aumentar la viscosidad de un fluido:", opts: ["El número de Reynolds aumenta", "Disminuye su velocidad crítica", "Aumenta su velocidad crítica", "El régimen de circulación siempre será laminar"], a: "Aumenta su velocidad crítica" },
+        { q: "En un vaso sanguíneo se produce una estenosis reduciendo su radio a la mitad ¿Qué pasara con la velocidad de la sangre en ese punto?", opts: ["Aumentará el doble", "Aumentará en 4 veces", "Disminuirá a la mitad", "Se mantendrá constante"], a: "Aumentará en 4 veces" },
+        { q: "Un fluído ideal:", opts: ["Es incompresible, su densidad cambia y es viscoso", "Es incompresible, su densidad no cambia y no tiene viscosidad", "Es compresible, su densidad no cambia y no tiene viscosidad", "Es compresible, su densidad cambia y no tiene viscosidad"], a: "Es incompresible, su densidad no cambia y no tiene viscosidad" },
+        { q: "¿Qué es la viscosidad de un fluido?", opts: ["Sólo aparece si el fluido es ideal", "Es la presión atmosférica", "Es la fricción interna en el fluido", "Es la fuerza que ayuda al flfluido a desplazarse mejor"], a: "Es la fricción interna en el fluido" },
+        { q: "¿Cuándo se producirá turbulencias en un fluido?", opts: ["Cuando la velocidad del fluido exceda de un cierto valor crítico", "Cuando la masa del fluido exceda de un cierto valor crítico", "Cuando el número de Reynolds sea inferior a 2000", "La a) y la c)"], a: "La a) y la c)" },
+        { q: "Cuando un fluido ideal pasa por un estrechamiento en una conducción (Repetida):", opts: ["Su velocidad y presión aumenta", "Su velocidad y presión disminuye", "Aumenta su velocidad y disminuye su presión", "Disminuye su velocidad y aumenta su presión"], a: "Aumenta su velocidad y disminuye su presión" },
+        { q: "Si en un fluido ideal la velocidad de circulación disminuye de un punto “A” a otro “B” en un tubo de corriente (Repetida):", opts: ["Necesariamente el diámetro del tubo ha aumentado en “B” respecto a “A”", "Necesariamente el diámetro del tubo “B” es menor que en “A”", "El fluido se ha comprimido", "El fluido se ha expandido"], a: "Necesariamente el diámetro del tubo ha aumentado en “B” respecto a “A”" },
+        { q: "En el torrente circulatorio la ecuación de continuidad (Repetida):", opts: ["No se puede aplicar, ya que la sangre es un líquido viscoso", "Se puede aplicar en promedio, para intervalos de tiempos largos", "No se puede aplicar en los capilares", "Se puede aplicar en cualquier instante"], a: "Se puede aplicar en promedio, para intervalos de tiempos largos" },
+        { q: "La resistencia hidrodinámica para un fluido viscoso (Repetida):", opts: ["Crece al aumentar el radio y la longitud de la tubería", "Crece al aumentar la longitud y decrece al aumentar el radio de la tubería", "Decrece al aumentar el radio y la longitud de la tubería", "Crece al disminuir la longitud y aumenta al aumentar el radio de la tubería"], a: "Crece al aumentar la longitud y decrece al aumentar el radio de la tubería" },
+        { q: "Para que llegue más sangre a aquellos órganos que lo precisan (Repetida):", opts: ["Aumenta sólo la presión arterial", "Disminuye la presión arterial y aumenta el ritmo cardiaco", "Aumenta la radio de los vasos periféricos, la presión y el ritmo cardiaco", "Disminuye la radio de los vasos periféricos para que disminuya la resistencia hemodinámica"], a: "Aumenta la radio de los vasos periféricos, la presión y el ritmo cardiaco" },
+        { q: "La tensión superficial:", opts: ["Es una característica del líquido", "Da origen a fuerzas perpendiculares a la superficie", "Da lugar a fuerzas que operan paralelas a la superficie", "La a y la c"], a: "La a y la c" },
+        { q: "la tensión superficial depende:", opts: ["del liquido", "del medio", "a y b son ciertas", "de la temperatura"], a: "a y b son ciertas" },
+        { q: "Cuando se produce una anomalía en la sección de un vaso sanguíneo:", opts: ["El teorema de Bernouilli ayuda a corregirla", "El teorema de Bernouilli no ayuda a corregirla", "Dicho teorema no influye en nada", "Puede ayudar a corregirla o no, dependiendo de la velocidad de la sangre"], a: "El teorema de Bernouilli no ayuda a corregirla" },
+        { q: "machuca:", opts: ["machuca", "machuca", "machuca", "machuca"], a: "machuca" },
+        { q: "Cuando en una arteria aumenta el radio:", opts: ["la tensión de sus paredes disminuye", "El vaso se abre hasta romperse", "La tensión de sus paredes aumenta", "El radio de la arteria se anula"], a: "La tensión de sus paredes aumenta" },
+        { q: "¿Qué efecto tiene incrementar la viscosidad de la sangre sobre el flujo sanguíneo de acuerdo con la Ley de Poiseuille?", opts: ["Ninguno, la sangre no tiene viscosidad", "Hace que la resistencia hemodinámica sea mayor", "Para mantener un flujo constante deberá incrementarse la diferencia de presión", "b y c son ciertas"], a: "b y c son ciertas" },
+        { q: "El esfingomanómetro se basa en:", opts: ["Las propiedades eléctricas del corazón", "La tensión superficial de los alveolos", "Las variaciones de presión del mercurio", "Las propiedades del flujo sanguíneo"], a: "Las propiedades del flujo sanguíneo" },
+        { q: "La velocidad critica de un fluido sera mas alta si:", opts: ["La viscosidad del fluido disminuye", "La viscosidad del fluido aumenta", "El radio del tubo aumenta", "La densidad del fluido aumenta"], a: "La viscosidad del fluido aumenta" },
+        { q: "¿Cuál de los siguientes casos actúa el fenómeno de capilaridad?", opts: ["Al beber refresco de una pajita", "La circulacion de agua desde la raíz hasta las hojas", "Al extraer sangre con una jeringuilla", "a y c son correctas"], a: "La circulacion de agua desde la raíz hasta las hojas" },
+        { q: "Un liquido moja a un solido cuando:", opts: ["Las fuerzas de cohesión son mayores que las de adherencia", "Solo depende de la presión atmosferica", "Es independiente de las fuerzas de cohesión y adherencia", "Las fuerzas de adherencia son mayores que las de cohesión"], a: "Las fuerzas de adherencia son mayores que las de cohesión" }
     ];
 
-    // --- ASIGNAR IDs ÚNICOS (IMPORTANTE PARA EL FILTRADO) ---
+    // --- ASIGNAR IDs ÚNICOS ---
     quizData.forEach((item, index) => {
         item.id = index;
     });
@@ -305,7 +315,7 @@
         document.getElementById("finish-btn").style.display = "inline-block";
 
         if(questionsToLoad.length === 0) {
-            container.innerHTML = "<p style='text-align:center; padding:20px; color:#6b7280;'>No hay preguntas para mostrar en esta selección.</p>";
+            container.innerHTML = "<p style='text-align:center; padding:20px; color:#64748b;'>No hay preguntas para mostrar en esta selección.</p>";
             return;
         }
 
@@ -344,20 +354,30 @@
             questionText.textContent = item.q;
 
             // --- Lógica de Diagramas ---
-            // Insertamos diagramas relevantes basados en el ID original de la pregunta
-            if (item.id === 0) { // Volumen residual
-                questionText.innerHTML += `<span class='img-tag'>
+            if (item.id === 0 || item.id === 47) { // Bernoulli / Estrechamiento
+                 questionText.innerHTML += `<span class='img-tag'>
 
-[Image of spirometry lung volumes chart]
+[Image of Bernoulli principle venturi effect diagram]
 </span>`;
-            } else if (item.id === 2 || item.id === 15) { // Laplace
-                questionText.innerHTML += `<span class='img-tag'></span>`;
-            } else if (item.id === 3 || item.id === 48) { // Intercambio/Difusión
-                questionText.innerHTML += `<span class='img-tag'></span>`;
-            } else if (item.id === 12) { // Presión alveolar
-                questionText.innerHTML += `<span class='img-tag'></span>`;
-            } else if (item.id === 34) { // Histéresis
+            } else if (item.id === 4 || item.id === 30 || item.id === 48) { // Resistencia / Poiseuille
                  questionText.innerHTML += `<span class='img-tag'></span>`;
+            } else if (item.id === 5 || item.id === 26 || item.id === 27) { // Laminar vs Turbulento / Reynolds
+                 questionText.innerHTML += `<span class='img-tag'>
+
+[Image of laminar vs turbulent flow diagram]
+</span>`;
+            } else if (item.id === 11 || item.id === 55) { // Tensión pared / Laplace / Aneurisma
+                 questionText.innerHTML += `<span class='img-tag'></span>`;
+            } else if (item.id === 64) { // Capilaridad
+                 questionText.innerHTML += `<span class='img-tag'>
+
+[Image of capillary action diagram]
+</span>`;
+            } else if (item.id === 6) { // Vasos periféricos / Presión
+                 questionText.innerHTML += `<span class='img-tag'>
+
+[Image of vasoconstriction and vasodilation]
+</span>`;
             }
 
             card.appendChild(questionText);
@@ -390,7 +410,7 @@
                         btn.classList.add('correct');
                     } else {
                         btn.classList.add('incorrect');
-                        failedQuestions.add(item.id); // Registrar fallo
+                        failedQuestions.add(item.id);
                         
                         allBtns.forEach(b => {
                             if (b.textContent === item.a) b.classList.add('correct');
