@@ -3,415 +3,526 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Prácticas de Bioquímica - Álvaro Condón</title>
+    <title>Test Prácticas de Bioquímica</title>
     <style>
+        :root {
+            --primary: #4f46e5; /* Índigo/Azul Profundo */
+            --primary-dark: #3730a3;
+            --primary-light: #e0e7ff;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --white: #ffffff;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f8;
-            color: #333;
-            max-width: 800px;
+            background-color: var(--bg);
+            color: var(--text);
+            max-width: 850px;
             margin: 0 auto;
             padding: 20px;
         }
+
         h1 {
-            color: #0056b3;
             text-align: center;
-            border-bottom: 2px solid #0056b3;
+            color: var(--primary);
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--primary-light);
+            padding-bottom: 15px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .question-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-left: 6px solid var(--primary);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+
+        .question-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- Checkbox para Marcar --- */
+        .mark-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: var(--primary);
+            font-weight: bold;
+            border-bottom: 1px solid #e2e8f0;
             padding-bottom: 10px;
         }
-        .question-container {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .question-title {
-            font-weight: bold;
-            font-size: 1.1em;
-            margin-bottom: 15px;
-        }
-        .options-list {
-            list-style: none;
-            padding: 0;
-        }
-        .option-item {
-            margin-bottom: 10px;
-        }
-        .option-btn {
-            display: block;
-            width: 100%;
-            text-align: left;
-            padding: 12px;
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+        .mark-container input {
+            margin-right: 8px;
+            transform: scale(1.3);
             cursor: pointer;
-            transition: background-color 0.2s;
+            accent-color: var(--primary);
+        }
+        .mark-container label {
+            cursor: pointer;
+        }
+
+        .question-header {
+            font-size: 0.85em;
+            color: #64748b;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-weight: 700;
+            font-size: 1.15em;
+            margin-bottom: 20px;
+            color: #0f172a;
+            line-height: 1.5;
+        }
+
+        /* Etiquetas para diagramas */
+        .img-tag {
+            display: block;
+            margin-top: 12px;
+            padding: 10px;
+            background-color: #f1f5f9;
+            border-left: 4px solid #94a3b8;
+            color: #475569;
+            font-size: 0.9em;
+            font-style: italic;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            background: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
             font-size: 1em;
+            color: #334155;
+            position: relative;
         }
-        .option-btn:hover:not(.disabled) {
-            background-color: #e2e6ea;
+
+        .option-btn:hover:not(:disabled) {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+            padding-left: 25px; /* Efecto de desplazamiento */
         }
-        .option-btn.correct {
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-            color: #155724;
-        }
-        .option-btn.incorrect {
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-            color: #721c24;
-        }
-        .option-btn.disabled {
+
+        .option-btn:disabled {
             cursor: default;
             opacity: 0.7;
         }
-        #controls {
-            text-align: center;
-            margin-bottom: 20px;
+
+        /* Estados de respuesta */
+        .correct {
+            background-color: #dcfce7 !important;
+            border-color: #22c55e !important;
+            color: #14532d !important;
+            font-weight: 600;
         }
-        button#reset {
-            padding: 10px 20px;
-            background-color: #0056b3;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1em;
-            cursor: pointer;
+
+        .incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #7f1d1d !important;
         }
-        button#reset:hover {
-            background-color: #004494;
-        }
-        .feedback {
-            margin-top: 12px;
-            padding: 10px;
-            background-color: #e9ecef;
-            border-radius: 4px;
-            font-size: 0.9em;
+
+        /* Caja de Explicación */
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #eef2ff;
+            border-left: 5px solid var(--primary);
+            border-radius: 6px;
             display: none;
+            font-size: 0.95em;
+            color: #312e81;
+            animation: slideDown 0.3s ease-out;
         }
+        .explanation.visible {
+            display: block;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Área de Controles --- */
+        #controls-area {
+            margin-top: 50px;
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--primary);
+        }
+
+        .action-btn {
+            background: var(--primary); color: white; border: none;
+            padding: 12px 25px; font-size: 1.05em; border-radius: 8px;
+            cursor: pointer; margin: 8px;
+            transition: background 0.3s, transform 0.2s;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .action-btn:hover { 
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .restart-options {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 25px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .restart-options button {
+            width: 100%;
+            background: #475569;
+        }
+        .restart-options button:hover { background: #334155; }
+        .restart-options button:first-child { background: var(--primary); }
+
     </style>
 </head>
 <body>
 
-    <h1>Test Prácticas BQ - Álvaro Condón</h1>
+    <h1>Prácticas de Bioquímica</h1>
+    <div style="text-align: center; color: #64748b; margin-bottom: 30px;">
+        Álvaro Condón | Métodos, Soluciones y Técnicas de Laboratorio
+    </div>
     
-    <div id="controls">
-        <button id="reset" onclick="renderQuiz()">Reiniciar Test (Barajar Respuestas)</button>
+    <div id="quiz-container"></div>
+
+    <div id="controls-area">
+        <button id="finish-btn" class="action-btn" onclick="showEndOptions()">🏁 Finalizar revisión</button>
+        
+        <div id="restart-menu" class="restart-options">
+            <h3>Resultados de la sesión</h3>
+            <p id="stats-summary"></p>
+            <button class="action-btn" onclick="restartQuiz('all')">🔄 Rehacer todo el test</button>
+            <button class="action-btn" onclick="restartQuiz('marked')">🔖 Repasar marcadas</button>
+            <button class="action-btn" onclick="restartQuiz('failed')">❌ Repasar falladas</button>
+            <button class="action-btn" onclick="restartQuiz('failed_marked')">⚠️ Falladas + Marcadas</button>
+        </div>
     </div>
 
-    <div id="quiz-area"></div>
-
 <script>
-    // Base de datos de preguntas (sin pistas) + explicación breve
-    const questions = [
-        {
-            text: "1. El suero fisiológico es una solución:",
-            explanation: "El suero fisiológico es una disolución de NaCl al 0,9% (~0,154 M) con una osmolaridad cercana a 0,308 Osm, similar a la del plasma ⇒ es isotónica.",
-            options: [
-                { text: "Isotónica con el plasma", correct: true },
-                { text: "0,32 M de NaCl", correct: false },
-                { text: "9,5 g/L de KCl", correct: false },
-                { text: "0,16 osmolar respecto al medio interno", correct: false },
-                { text: "Hipotónica para los hematíes", correct: false }
-            ]
+    // Datos convertidos al nuevo formato, conservando las explicaciones
+    const quizData = [
+        { 
+            q: "1. El suero fisiológico es una solución:", 
+            opts: ["Isotónica con el plasma", "0,32 M de NaCl", "9,5 g/L de KCl", "0,16 osmolar respecto al medio interno", "Hipotónica para los hematíes"], 
+            a: "Isotónica con el plasma", 
+            exp: "El suero fisiológico (NaCl 0,9%) tiene una osmolaridad de ~0,308 Osm, similar a la del plasma." 
         },
-        {
-            text: "2. Respecto al método Lowry, el reactivo de Folin-Ciocalteu tiene un pico de absorción a:",
-            explanation: "En el método de Lowry, el Folin-Ciocalteu reducido presenta un máximo de absorción alrededor de 750 nm.",
-            options: [
-                { text: "750 nm", correct: true },
-                { text: "280 nm", correct: false },
-                { text: "260 nm", correct: false },
-                { text: "340 nm", correct: false },
-                { text: "650 nm", correct: false }
-            ]
+        { 
+            q: "2. Respecto al método Lowry, el reactivo de Folin-Ciocalteu tiene un pico de absorción a:", 
+            opts: ["750 nm", "280 nm", "260 nm", "340 nm", "650 nm"], 
+            a: "750 nm", 
+            exp: "El complejo reducido de Folin-Ciocalteu presenta su máximo de absorción alrededor de 750 nm (rango visible)." 
         },
-        {
-            text: "3. El β-mercaptoetanol en la técnica de western blotting permite:",
-            explanation: "El β-mercaptoetanol es un agente reductor que rompe puentes disulfuro, ayudando a desnaturalizar las proteínas.",
-            options: [
-                { text: "Romper los puentes disulfuro de las proteínas", correct: true },
-                { text: "Cargar negativamente las proteínas a separar", correct: false },
-                { text: "Bloquear la membrana de transferencia", correct: false },
-                { text: "Facilitar la unión del anticuerpo secundario", correct: false },
-                { text: "Generar la señal de quimioluminiscencia", correct: false }
-            ]
+        { 
+            q: "3. El β-mercaptoetanol en la técnica de western blotting permite:", 
+            opts: ["Romper los puentes disulfuro de las proteínas", "Cargar negativamente las proteínas a separar", "Bloquear la membrana de transferencia", "Facilitar la unión del anticuerpo secundario", "Generar la señal de quimioluminiscencia"], 
+            a: "Romper los puentes disulfuro de las proteínas", 
+            exp: "Es un agente reductor fuerte que rompe los enlaces S-S (puentes disulfuro) para desnaturalizar la estructura terciaria/cuaternaria." 
         },
-        {
-            text: "4. Una centrifugación isopícnica separa las partículas en función de su:",
-            explanation: "En una centrifugación isopícnica cada partícula migra hasta la zona donde la densidad del medio coincide con su propia densidad.",
-            options: [
-                { text: "Densidad", correct: true },
-                { text: "Forma", correct: false },
-                { text: "Coeficiente de sedimentación", correct: false },
-                { text: "Masa", correct: false },
-                { text: "Tamaño", correct: false }
-            ]
+        { 
+            q: "4. Una centrifugación isopícnica separa las partículas en función de su:", 
+            opts: ["Densidad", "Forma", "Coeficiente de sedimentación", "Masa", "Tamaño"], 
+            a: "Densidad", 
+            exp: "Las partículas migran a través de un gradiente hasta detenerse en la posición donde la densidad del medio es igual a su propia densidad." 
         },
-        {
-            text: "5. Una disolución que contiene 2 Eq-g/L de NaCl tiene en un litro:",
-            explanation: "Si hay 2 equivalentes-gramo por litro de NaCl, eso equivale a 2 moles, 2000 mmol y una normalidad de 2 N.",
-            options: [
-                { text: "Todas las afirmaciones son correctas", correct: true },
-                { text: "2 moles de NaCl", correct: false },
-                { text: "2 Eq-g de NaCl", correct: false },
-                { text: "2000 mmol de NaCl", correct: false },
-                { text: "2 N de NaCl", correct: false }
-            ]
+        { 
+            q: "5. Una disolución que contiene 2 Eq-g/L de NaCl tiene en un litro:", 
+            opts: ["Todas las afirmaciones son correctas", "2 moles de NaCl", "2 Eq-g de NaCl", "2000 mmol de NaCl", "2 N de NaCl"], 
+            a: "Todas las afirmaciones son correctas", 
+            exp: "En NaCl, 1 mol = 1 Eq. Por tanto 2 Eq = 2 Moles = 2 Normal = 2000 mmol." 
         },
-        {
-            text: "6. ¿Qué cantidad de agua hay que añadir para que una solución de acetato sódico y glucosa presente una osmolalidad de 0,45 y contenga 0,2 moles de sal y 0,5 moles de glucosa?",
-            explanation: "Cada mol de acetato aporta 2 osmoles y la glucosa 1; en total 0,2×2 + 0,5×1 = 0,9 osmoles. Para una osmolalidad de 0,45 Osm/kg se necesitan 0,9 / 0,45 ≈ 2 kg de agua.",
-            options: [
-                { text: "2 kg de agua", correct: true },
-                { text: "1 kg de agua", correct: false },
-                { text: "1 L de agua", correct: false },
-                { text: "2 L de agua", correct: false },
-                { text: "2 moles de agua", correct: false }
-            ]
+        { 
+            q: "6. ¿Qué cantidad de agua hay que añadir para que una solución de acetato sódico y glucosa presente una osmolalidad de 0,45 y contenga 0,2 moles de sal y 0,5 moles de glucosa?", 
+            opts: ["2 kg de agua", "1 kg de agua", "1 L de agua", "2 L de agua", "2 moles de agua"], 
+            a: "2 kg de agua", 
+            exp: "Osmoles totales = (0,2 x 2 iones) + (0,5 glucosa) = 0,9 Osm. Para tener 0,45 Osm/kg, necesitamos 2 kg (0,9/2 = 0,45)." 
         },
-        {
-            text: "9. No es cierto que en la técnica western blotting:",
-            explanation: "En SDS-PAGE las proteínas se cargan negativamente por el SDS y migran hacia el polo positivo; no se requiere carga positiva.",
-            options: [
-                { text: "Las proteínas deben estar cargadas positivamente para migrar por el gel", correct: true },
-                { text: "La SDS-PAGE se emplea para separar previamente las proteínas", correct: false },
-                { text: "Se obtienen bandas en función del peso molecular", correct: false },
-                { text: "Las bandas se transfieren desde el gel a una membrana", correct: false },
-                { text: "Se identifican proteínas mediante anticuerpos específicos", correct: false }
-            ]
+        { 
+            q: "9. No es cierto que en la técnica western blotting:", 
+            opts: ["Las proteínas deben estar cargadas positivamente para migrar por el gel", "La SDS-PAGE se emplea para separar previamente las proteínas", "Se obtienen bandas en función del peso molecular", "Las bandas se transfieren desde el gel a una membrana", "Se identifican proteínas mediante anticuerpos específicos"], 
+            a: "Las proteínas deben estar cargadas positivamente para migrar por el gel", 
+            exp: "Falso. En SDS-PAGE, el SDS carga las proteínas NEGATIVAMENTE para que migren hacia el ánodo (+)." 
         },
-        {
-            text: "10. Respecto al método de Lowry, señala la respuesta incorrecta:",
-            explanation: "Las reacciones del método de Lowry requieren un medio básico; no un medio ácido.",
-            options: [
-                { text: "Las dos etapas del método requieren un medio ácido para producirse", correct: true },
-                { text: "Es un método espectrofotométrico cuantitativo de proteínas", correct: false },
-                { text: "La proteína se despliega exponiendo residuos fenólicos de tirosina", correct: false },
-                { text: "El reactivo de Folin-Ciocalteu se reduce pasando a color azul", correct: false },
-                { text: "Se requiere Cu2+ que se une al nitrógeno del enlace peptídico", correct: false }
-            ]
+        { 
+            q: "10. Respecto al método de Lowry, señala la respuesta incorrecta:", 
+            opts: ["Las dos etapas del método requieren un medio ácido para producirse", "Es un método espectrofotométrico cuantitativo de proteínas", "La proteína se despliega exponiendo residuos fenólicos de tirosina", "El reactivo de Folin-Ciocalteu se reduce pasando a color azul", "Se requiere Cu2+ que se une al nitrógeno del enlace peptídico"], 
+            a: "Las dos etapas del método requieren un medio ácido para producirse", 
+            exp: "Incorrecto. El método de Lowry requiere un medio básico (alcalino) para la reacción de Biuret inicial y la reducción del Folin." 
         },
-        {
-            text: "11. De las siguientes respuestas, señale a qué equivale una concentración 0,2 M de H2SO4:",
-            explanation: "El H2SO4 aporta 2 protones por molécula, por lo que 0,2 M corresponde a 0,4 N.",
-            options: [
-                { text: "0,4 N", correct: true },
-                { text: "0,1 mol/L", correct: false },
-                { text: "0,1 N", correct: false },
-                { text: "0,2 Eq-g/L", correct: false },
-                { text: "0,2 N", correct: false }
-            ]
+        { 
+            q: "11. De las siguientes respuestas, señale a qué equivale una concentración 0,2 M de H2SO4:", 
+            opts: ["0,4 N", "0,1 mol/L", "0,1 N", "0,2 Eq-g/L", "0,2 N"], 
+            a: "0,4 N", 
+            exp: "El H2SO4 libera 2 protones (H+). Normalidad = Molaridad x valencia (2). 0,2 x 2 = 0,4 N." 
         },
-        {
-            text: "12. La normalidad de una solución 0,5 M de H2SO4 es:",
-            explanation: "Cada mol de H2SO4 aporta 2 equivalentes de H+, por tanto 0,5 M × 2 = 1 N.",
-            options: [
-                { text: "1 Normal", correct: true },
-                { text: "2 Normal", correct: false },
-                { text: "0,5 Normal", correct: false },
-                { text: "Depende del pH", correct: false },
-                { text: "Ninguna es cierta", correct: false }
-            ]
+        { 
+            q: "12. La normalidad de una solución 0,5 M de H2SO4 es:", 
+            opts: ["1 Normal", "2 Normal", "0,5 Normal", "Depende del pH", "Ninguna es cierta"], 
+            a: "1 Normal", 
+            exp: "0,5 M x 2 H+ = 1 N." 
         },
-        {
-            text: "14. Calcule la molaridad y la normalidad de una disolución en la que se disuelven 80 g de NaOH (PM 40) en agua hasta 500 ml:",
-            explanation: "80 g / 40 g·mol⁻¹ = 2 moles en 0,5 L ⇒ 4 M. NaOH aporta 1 equivalente por mol ⇒ 4 N.",
-            options: [
-                { text: "4 M y 4 N", correct: true },
-                { text: "2 M y 2 N", correct: false },
-                { text: "2 M y 4 N", correct: false },
-                { text: "1 M y 2 N", correct: false },
-                { text: "4 M y 2 N", correct: false }
-            ]
+        { 
+            q: "14. Calcule la molaridad y la normalidad de una disolución en la que se disuelven 80 g de NaOH (PM 40) en agua hasta 500 ml:", 
+            opts: ["4 M y 4 N", "2 M y 2 N", "2 M y 4 N", "1 M y 2 N", "4 M y 2 N"], 
+            a: "4 M y 4 N", 
+            exp: "80g / 40PM = 2 moles. 2 moles en 0,5L = 4 M. Como NaOH tiene 1 OH-, N = M." 
         },
-        {
-            text: "15. Al disolver un soluto en agua pura, la presión de vapor de la disolución:",
-            explanation: "Según la ley de Raoult, la presencia de soluto no volátil disminuye la presión de vapor del disolvente.",
-            options: [
-                { text: "Disminuye respecto a la del agua pura", correct: true },
-                { text: "Aumenta respecto a la del agua pura", correct: false },
-                { text: "No se modifica", correct: false },
-                { text: "Es independiente de la concentración de soluto", correct: false },
-                { text: "Depende solo de la naturaleza química del soluto", correct: false }
-            ]
+        { 
+            q: "15. Al disolver un soluto en agua pura, la presión de vapor de la disolución:", 
+            opts: ["Disminuye respecto a la del agua pura", "Aumenta respecto a la del agua pura", "No se modifica", "Es independiente de la concentración de soluto", "Depende solo de la naturaleza química del soluto"], 
+            a: "Disminuye respecto a la del agua pura", 
+            exp: "Propiedad coligativa (Ley de Raoult): el soluto no volátil reduce la presión de vapor del disolvente." 
         },
-        {
-            text: "16. Respecto al plasma, el suero fisiológico (NaCl 9,5 g/L, 0,16 M) es isotónico, por lo que:",
-            explanation: "Al disociarse en Na+ y Cl−, la solución 0,16 M de NaCl tiene una osmolaridad ~0,32 Osm, similar a la del plasma.",
-            options: [
-                { text: "Ambos presentan una concentración osmolar cercana a 0,32 Osm", correct: true },
-                { text: "Ambos presentan igual concentración molar, 0,16 M", correct: false },
-                { text: "Presentan una concentración osmolar de 0,16 Osm", correct: false },
-                { text: "Provocaría lisis de los hematíes", correct: false },
-                { text: "Los iones Na+ y Cl− atraviesan libremente la membrana del hematíe", correct: false }
-            ]
+        { 
+            q: "16. Respecto al plasma, el suero fisiológico (NaCl 9,5 g/L, 0,16 M) es isotónico, por lo que:", 
+            opts: ["Ambos presentan una concentración osmolar cercana a 0,32 Osm", "Ambos presentan igual concentración molar, 0,16 M", "Presentan una concentración osmolar de 0,16 Osm", "Provocaría lisis de los hematíes", "Los iones Na+ y Cl− atraviesan libremente la membrana del hematíe"], 
+            a: "Ambos presentan una concentración osmolar cercana a 0,32 Osm", 
+            exp: "0,16 M de NaCl se disocia en 2 partículas (0,16 x 2 = 0,32 Osm), igualando la osmolaridad del plasma." 
         },
-        {
-            text: "17. La degradación de Edman se emplea:",
-            explanation: "La degradación de Edman identifica secuencialmente los residuos del extremo amino-terminal, permitiendo determinar la secuencia de un péptido.",
-            options: [
-                { text: "Para analizar la secuencia de aminoácidos de un péptido", correct: true },
-                { text: "Para estudiar la estructura secundaria de las proteínas", correct: false },
-                { text: "Para separar proteínas según su peso molecular", correct: false },
-                { text: "Exclusivamente en proteínas de membrana", correct: false },
-                { text: "Solo permite un ciclo de reacción por molécula", correct: false }
-            ]
+        { 
+            q: "17. La degradación de Edman se emplea:", 
+            opts: ["Para analizar la secuencia de aminoácidos de un péptido", "Para estudiar la estructura secundaria de las proteínas", "Para separar proteínas según su peso molecular", "Exclusivamente en proteínas de membrana", "Solo permite un ciclo de reacción por molécula"], 
+            a: "Para analizar la secuencia de aminoácidos de un péptido", 
+            exp: "Permite secuenciar aminoácidos desde el extremo N-terminal uno a uno." 
         },
-        {
-            text: "18. Una solución 0,3 M de un soluto no electrolítico que difunde a través de la membrana del hematíe es:",
-            explanation: "Si el soluto puede atravesar la membrana, tiende a entrar en el hematíe y arrastra agua ⇒ el medio es efectivamente hipotónico para la célula.",
-            options: [
-                { text: "Hipotónica con el hematíe", correct: true },
-                { text: "Hipertónica respecto al hematíe", correct: false },
-                { text: "Una variante del suero fisiológico", correct: false },
-                { text: "Isotónica con el hematíe", correct: false }
-            ]
+        { 
+            q: "18. Una solución 0,3 M de un soluto no electrolítico que difunde a través de la membrana del hematíe es:", 
+            opts: ["Hipotónica con el hematíe", "Hipertónica respecto al hematíe", "Una variante del suero fisiológico", "Isotónica con el hematíe"], 
+            a: "Hipotónica con el hematíe", 
+            exp: "Aunque sea isoosmótica (0,3 M vs 0,3 Osm del plasma), si el soluto entra libremente en la célula, arrastra agua consigo, comportándose funcionalmente como hipotónica (lisis)." 
         },
-        {
-            text: "19. Una solución de HCl tiene una concentración de 3,26 × 10⁻² M. ¿Cuál es su pH?",
-            explanation: "Para un ácido fuerte monoácido: [H⁺] ≈ 3,26×10⁻² M ⇒ pH = −log(3,26×10⁻²) ≈ 1,49.",
-            options: [
-                { text: "1,49", correct: true },
-                { text: "12,5", correct: false },
-                { text: "2,0", correct: false },
-                { text: "3,3", correct: false }
-            ]
+        { 
+            q: "19. Una solución de HCl tiene una concentración de 3,26 × 10⁻² M. ¿Cuál es su pH?", 
+            opts: ["1,49", "12,5", "2,0", "3,3"], 
+            a: "1,49", 
+            exp: "pH = -log[H+]. -log(0,0326) ≈ 1,486." 
         },
-        {
-            text: "18 (bis). El SDS en la técnica de western blotting permite:",
-            explanation: "El SDS es un detergente aniónico que desnaturaliza las proteínas y las carga negativamente para su separación por tamaño.",
-            options: [
-                { text: "Cargar negativamente las proteínas a separar", correct: true },
-                { text: "Romper específicamente puentes disulfuro", correct: false },
-                { text: "Bloquear la membrana de transferencia", correct: false },
-                { text: "Unir directamente el anticuerpo a la proteína", correct: false },
-                { text: "Producir la señal de revelado", correct: false }
-            ]
+        { 
+            q: "18 (bis). El SDS en la técnica de western blotting permite:", 
+            opts: ["Cargar negativamente las proteínas a separar", "Romper específicamente puentes disulfuro", "Bloquear la membrana de transferencia", "Unir directamente el anticuerpo a la proteína", "Producir la señal de revelado"], 
+            a: "Cargar negativamente las proteínas a separar", 
+            exp: "El SDS (Dodecil Sulfato Sódico) desnaturaliza y aporta carga negativa uniforme proporcional a la masa." 
         },
-        {
-            text: "19 (bis). En un aislamiento de ácidos nucleicos, señale el compuesto que se usa para su precipitación y posterior separación:",
-            explanation: "El etanol frío disminuye la solubilidad de los ácidos nucleicos, permitiendo su precipitación y recuperación.",
-            options: [
-                { text: "Etanol absoluto", correct: true },
-                { text: "Dodecilsulfato sódico (SDS)", correct: false },
-                { text: "Cloroformo", correct: false },
-                { text: "Alcohol isoamílico", correct: false },
-                { text: "Fenol tamponado", correct: false }
-            ]
+        { 
+            q: "19 (bis). En un aislamiento de ácidos nucleicos, señale el compuesto que se usa para su precipitación y posterior separación:", 
+            opts: ["Etanol absoluto", "Dodecilsulfato sódico (SDS)", "Cloroformo", "Alcohol isoamílico", "Fenol tamponado"], 
+            a: "Etanol absoluto", 
+            exp: "El etanol (frío) reduce la constante dieléctrica del agua, haciendo insolubles el ADN/ARN y precipitándolos." 
         },
-        {
-            text: "20. Respecto al método de Lowry, señale la respuesta correcta:",
-            explanation: "La intensidad del color azul formado sigue la ley de Lambert-Beer y es proporcional a la concentración de proteínas.",
-            options: [
-                { text: "La intensidad del color azul es proporcional a la concentración de proteínas", correct: true },
-                { text: "Es un método cuantitativo de ácidos nucleicos", correct: false },
-                { text: "El reactivo de Folin-Ciocalteu se oxida al generar el color azul", correct: false },
-                { text: "Las reacciones del método requieren un medio ácido", correct: false },
-                { text: "Se utiliza Fe³⁺ para desplegar la proteína", correct: false }
-            ]
+        { 
+            q: "20. Respecto al método de Lowry, señale la respuesta correcta:", 
+            opts: ["La intensidad del color azul es proporcional a la concentración de proteínas", "Es un método cuantitativo de ácidos nucleicos", "El reactivo de Folin-Ciocalteu se oxida al generar el color azul", "Las reacciones del método requieren un medio ácido", "Se utiliza Fe³⁺ para desplegar la proteína"], 
+            a: "La intensidad del color azul es proporcional a la concentración de proteínas", 
+            exp: "Sigue la ley de Lambert-Beer: a más proteína, más reducción de Folin, más color azul (750nm)." 
         },
-        {
-            text: "21. Para el aislamiento de ácidos nucleicos, señale qué producto se usa para solubilizar membranas y desnaturalizar proteínas:",
-            explanation: "El SDS es un detergente aniónico que rompe membranas y desnaturaliza proteínas, liberando los ácidos nucleicos.",
-            options: [
-                { text: "Dodecilsulfato sódico (SDS)", correct: true },
-                { text: "Cloroformo", correct: false },
-                { text: "Fenol tamponado", correct: false },
-                { text: "Etanol absoluto a -30 ºC", correct: false },
-                { text: "Alcohol isoamílico", correct: false }
-            ]
+        { 
+            q: "21. Para el aislamiento de ácidos nucleicos, señale qué producto se usa para solubilizar membranas y desnaturalizar proteínas:", 
+            opts: ["Dodecilsulfato sódico (SDS)", "Cloroformo", "Fenol tamponado", "Etanol absoluto a -30 ºC", "Alcohol isoamílico"], 
+            a: "Dodecilsulfato sódico (SDS)", 
+            exp: "El SDS es un detergente fuerte que rompe la bicapa lipídica y desnaturaliza las proteínas que protegen el ADN." 
         },
-        {
-            text: "22. En la técnica de western blotting, ¿qué afirmación NO es correcta?",
-            explanation: "La membrana se bloquea con proteínas como leche o BSA, no con SDS.",
-            options: [
-                { text: "Se bloquea la membrana con SDS para evitar uniones inespecíficas", correct: true },
-                { text: "Se separan previamente las proteínas mediante SDS-PAGE", correct: false },
-                { text: "Las proteínas se transfieren desde el gel a una membrana", correct: false },
-                { text: "Se utilizan anticuerpos primarios específicos para la proteína diana", correct: false },
-                { text: "Los anticuerpos secundarios permiten visualizar la proteína mediante señal", correct: false }
-            ]
+        { 
+            q: "22. En la técnica de western blotting, ¿qué afirmación NO es correcta?", 
+            opts: ["Se bloquea la membrana con SDS para evitar uniones inespecíficas", "Se separan previamente las proteínas mediante SDS-PAGE", "Las proteínas se transfieren desde el gel a una membrana", "Se utilizan anticuerpos primarios específicos para la proteína diana", "Los anticuerpos secundarios permiten visualizar la proteína mediante señal"], 
+            a: "Se bloquea la membrana con SDS para evitar uniones inespecíficas", 
+            exp: "Falso. El bloqueo se hace con proteínas inertes (leche descremada, BSA), NO con SDS (que lavaría las proteínas pegadas)." 
         }
     ];
 
-    function shuffle(array) {
+    // --- ASIGNAR IDs ÚNICOS ---
+    quizData.forEach((item, index) => {
+        item.id = index;
+    });
+
+    // --- GESTIÓN DE ESTADO ---
+    let markedQuestions = new Set();
+    let failedQuestions = new Set();
+
+    function shuffleArray(array) {
         let currentIndex = array.length, randomIndex;
         while (currentIndex !== 0) {
             randomIndex = Math.floor(Math.random() * currentIndex);
             currentIndex--;
-            [array[currentIndex], array[randomIndex]] = [
-                array[randomIndex], array[currentIndex]
-            ];
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
         }
         return array;
     }
 
-    function renderQuiz() {
-        const quizArea = document.getElementById('quiz-area');
-        quizArea.innerHTML = ""; // Limpiar
+    const container = document.getElementById('quiz-container');
 
-        questions.forEach(q => {
-            const qContainer = document.createElement('div');
-            qContainer.className = 'question-container';
+    // Función principal
+    function renderQuiz(questionsToLoad = quizData) {
+        container.innerHTML = "";
+        document.getElementById("restart-menu").style.display = "none";
+        document.getElementById("finish-btn").style.display = "inline-block";
 
-            const qTitle = document.createElement('div');
-            qTitle.className = 'question-title';
-            qTitle.textContent = q.text;
-            qContainer.appendChild(qTitle);
+        if(questionsToLoad.length === 0) {
+            container.innerHTML = "<p style='text-align:center; padding:20px; color:#64748b;'>No hay preguntas para mostrar en esta selección.</p>";
+            return;
+        }
 
-            const optList = document.createElement('ul');
-            optList.className = 'options-list';
+        questionsToLoad.forEach((item, displayIndex) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
 
-            // barajamos una copia de las opciones
-            const shuffledOptions = shuffle([...q.options]);
+            // Checkbox Marcar
+            const markContainer = document.createElement("div");
+            markContainer.className = "mark-container";
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = `mark-${item.id}`;
+            if(markedQuestions.has(item.id)) checkbox.checked = true;
 
-            shuffledOptions.forEach(opt => {
-                const li = document.createElement('li');
-                li.className = 'option-item';
-                
+            checkbox.onchange = (e) => {
+                if(e.target.checked) markedQuestions.add(item.id);
+                else markedQuestions.delete(item.id);
+            };
+
+            const label = document.createElement("label");
+            label.htmlFor = `mark-${item.id}`;
+            label.innerText = "Marcar para revisar";
+            markContainer.appendChild(checkbox);
+            markContainer.appendChild(label);
+            card.appendChild(markContainer);
+
+            // Pregunta
+            const header = document.createElement('div');
+            header.className = 'question-header';
+            header.textContent = `Pregunta ${item.id + 1}`; 
+            card.appendChild(header);
+
+            const questionText = document.createElement('div');
+            questionText.className = 'question-text';
+            questionText.textContent = item.q;
+            
+            // --- INSERCIÓN DE DIAGRAMAS ---
+            if (item.id === 0 || item.id === 15) { // Isotonía / Hematíes
+                questionText.innerHTML += `<span class='img-tag'>
+
+[Image of isotonic hypotonic hypertonic red blood cells]
+</span>`;
+            } else if (item.id === 6 || item.id === 21) { // Western Blot / SDS-PAGE
+                questionText.innerHTML += `<span class='img-tag'>
+
+[Image of Western Blotting workflow]
+</span>`;
+            } else if (item.id === 3) { // Centrifugación
+                questionText.innerHTML += `<span class='img-tag'></span>`;
+            } else if (item.id === 2) { // Mercaptoetanol
+                questionText.innerHTML += `<span class='img-tag'></span>`;
+            } else if (item.id === 13) { // Edman
+                questionText.innerHTML += `<span class='img-tag'></span>`;
+            } else if (item.id === 17) { // ADN Precipitación
+                questionText.innerHTML += `<span class='img-tag'></span>`;
+            }
+
+            card.appendChild(questionText);
+
+            // Opciones
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options-container';
+
+            let optionsObj = item.opts.map(opt => ({
+                text: opt,
+                isCorrect: opt === item.a
+            }));
+            optionsObj = shuffleArray(optionsObj);
+
+            // Explicación
+            const explanationDiv = document.createElement('div');
+            explanationDiv.className = 'explanation';
+            explanationDiv.innerHTML = `<strong>Explicación:</strong> ${item.exp}`;
+
+            optionsObj.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.textContent = opt.text;
-                
-                btn.onclick = () => checkAnswer(btn, opt.correct, optList, feedbackDiv);
 
-                li.appendChild(btn);
-                optList.appendChild(li);
+                btn.onclick = () => {
+                    const allBtns = optionsDiv.querySelectorAll('.option-btn');
+                    allBtns.forEach(b => b.disabled = true);
+
+                    if (opt.isCorrect) {
+                        btn.classList.add('correct');
+                    } else {
+                        btn.classList.add('incorrect');
+                        failedQuestions.add(item.id);
+                        
+                        allBtns.forEach(b => {
+                            if (b.textContent === item.a) b.classList.add('correct');
+                        });
+                    }
+                    explanationDiv.classList.add('visible');
+                };
+                optionsDiv.appendChild(btn);
             });
 
-            qContainer.appendChild(optList);
-
-            // área de explicación / feedback
-            const feedbackDiv = document.createElement('div');
-            feedbackDiv.className = 'feedback';
-            feedbackDiv.textContent = q.explanation;
-            qContainer.appendChild(feedbackDiv);
-
-            quizArea.appendChild(qContainer);
+            card.appendChild(optionsDiv);
+            card.appendChild(explanationDiv);
+            container.appendChild(card);
         });
     }
 
-    function checkAnswer(btn, isCorrect, list, feedbackDiv) {
-        const buttons = list.querySelectorAll('.option-btn');
-        buttons.forEach(b => {
-            b.classList.add('disabled');
-            b.onclick = null;
-        });
+    // --- Control Final ---
+    function showEndOptions() {
+        document.getElementById("finish-btn").style.display = "none";
+        document.getElementById("restart-menu").style.display = "flex";
+        document.getElementById("controls-area").scrollIntoView({behavior: "smooth"});
+        
+        document.getElementById("stats-summary").innerHTML = `
+            Preguntas marcadas: <strong>${markedQuestions.size}</strong><br>
+            Preguntas falladas en esta sesión: <strong>${failedQuestions.size}</strong>
+        `;
+    }
 
-        if (isCorrect) {
-            btn.classList.add('correct');
-        } else {
-            btn.classList.add('incorrect');
+    function restartQuiz(mode) {
+        let subset = [];
+        if (mode === 'all') subset = quizData;
+        else if (mode === 'marked') subset = quizData.filter(q => markedQuestions.has(q.id));
+        else if (mode === 'failed') subset = quizData.filter(q => failedQuestions.has(q.id));
+        else if (mode === 'failed_marked') subset = quizData.filter(q => failedQuestions.has(q.id) || markedQuestions.has(q.id));
+
+        if(mode !== 'all') failedQuestions.clear(); 
+        else {
+            failedQuestions.clear();
+            markedQuestions.clear();
         }
 
-        // mostrar explicación
-        feedbackDiv.style.display = 'block';
+        renderQuiz(subset);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Render inicial
     renderQuiz();
 </script>
 
