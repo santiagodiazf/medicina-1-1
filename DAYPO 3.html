@@ -100,10 +100,9 @@
 
     <h1>Test Bloque III: Biomoléculas</h1>
     <div id="quiz-container"></div>
-    <button id="reset-btn" onclick="renderQuiz()">Reiniciar Test (Barajar Opciones)</button>
+    <button id="reset-btn" onclick="renderQuiz()">Reiniciar Test (Barajar Preguntas y Opciones)</button>
 
 <script>
-    // Preguntas SIN pistas en las opciones y con explicación breve
     const questions = [
         {
             text: "En relación con la cadena lateral de un aminoácido y su polaridad, ¿qué es incorrecto?",
@@ -659,12 +658,14 @@
         }
     ];
 
-    // Barajar array (Fisher–Yates)
+    // Función de barajado corregida (Fisher-Yates)
     function shuffle(array) {
         let currentIndex = array.length, randomIndex;
         while (currentIndex !== 0) {
-            randomIndex = Math.floor(Math.random() * (currentIndex + 1));
+            // Se elige un índice aleatorio entre 0 y currentIndex - 1
+            randomIndex = Math.floor(Math.random() * currentIndex);
             currentIndex--;
+            // Se intercambian los elementos
             [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
         }
         return array;
@@ -674,18 +675,24 @@
         const container = document.getElementById('quiz-container');
         container.innerHTML = '';
 
-        questions.forEach((q, index) => {
+        // Creamos una copia de las preguntas para barajarlas
+        // Así el orden de las preguntas será aleatorio, pero saldrán TODAS.
+        const shuffledQuestions = shuffle([...questions]);
+
+        shuffledQuestions.forEach((q, index) => {
             const card = document.createElement('div');
             card.className = 'question-card';
 
             const title = document.createElement('div');
             title.className = 'question-title';
+            // Usamos index + 1 para enumerar (1, 2, 3...) aunque el orden sea aleatorio
             title.textContent = `${index + 1}. ${q.text}`;
             card.appendChild(title);
 
             const optionsList = document.createElement('ul');
             optionsList.className = 'options-list';
 
+            // Barajamos las opciones (respuestas)
             const shuffledOptions = shuffle([...q.options]);
 
             shuffledOptions.forEach(opt => {
