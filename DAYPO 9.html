@@ -5,381 +5,518 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Bloque IX: Nucleótidos y Pentosas</title>
     <style>
+        :root {
+            --primary: #db2777; /* Rosa Fucsia */
+            --primary-dark: #be185d;
+            --primary-light: #fce7f3;
+            --bg: #fdf2f8;
+            --text: #831843;
+            --white: #ffffff;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
-            max-width: 800px;
+            background-color: var(--bg);
+            color: var(--text);
+            max-width: 850px;
             margin: 0 auto;
             padding: 20px;
         }
+
         h1 {
-            color: #2c3e50;
             text-align: center;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 20px;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 15px;
+            display: inline-block;
+            width: 100%;
         }
+
         .question-card {
-            background-color: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-left: 6px solid var(--primary);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
         }
-        .question-text {
-            font-weight: 600;
-            font-size: 1.1em;
+
+        .question-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- Checkbox para Marcar --- */
+        .mark-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
             margin-bottom: 15px;
-            color: #2c3e50;
+            font-size: 0.9em;
+            color: var(--primary);
+            font-weight: bold;
+            border-bottom: 1px solid #fbcfe8;
+            padding-bottom: 10px;
         }
+        .mark-container input {
+            margin-right: 8px;
+            transform: scale(1.3);
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+        .mark-container label {
+            cursor: pointer;
+        }
+
+        .question-header {
+            font-size: 0.85em;
+            color: #be185d;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-weight: 700;
+            font-size: 1.15em;
+            margin-bottom: 20px;
+            color: #831843;
+            line-height: 1.5;
+        }
+
+        /* Etiquetas para diagramas */
+        .img-tag {
+            display: block;
+            margin-top: 15px;
+            padding: 12px;
+            background-color: #fce7f3;
+            border-left: 5px solid #db2777;
+            color: #9d174d;
+            font-size: 0.95em;
+            font-weight: 500;
+            border-radius: 0 6px 6px 0;
+        }
+
         .options-container {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
+
         .option-btn {
-            padding: 12px;
-            border: 2px solid #e1e4e8;
-            border-radius: 6px;
-            background-color: #fff;
-            text-align: left;
+            padding: 14px 18px;
+            border: 2px solid #e5e7eb;
+            background: #fff;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            text-align: left;
+            transition: all 0.2s;
             font-size: 1em;
-            color: #444;
-        }
-        .option-btn:hover:not(.disabled) {
-            background-color: #f1f8ff;
-            border-color: #3498db;
-        }
-        
-        /* Estilos de corrección */
-        .option-btn.correct {
-            background-color: #d4edda !important;
-            border-color: #28a745 !important;
-            color: #155724 !important;
-        }
-        .option-btn.incorrect {
-            background-color: #f8d7da !important;
-            border-color: #dc3545 !important;
-            color: #721c24 !important;
-        }
-        .disabled {
-            pointer-events: none;
-            opacity: 0.9;
+            color: #374151;
+            position: relative;
         }
 
-        .reset-btn {
-            display: block;
-            width: 100%;
+        .option-btn:hover:not(:disabled) {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+            padding-left: 25px; /* Efecto desplazamiento */
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        /* Estados de respuesta */
+        .correct {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #064e3b !important;
+            font-weight: 600;
+        }
+
+        .incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #7f1d1d !important;
+        }
+
+        /* Caja de Explicación */
+        .explanation {
+            margin-top: 20px;
             padding: 15px;
-            background-color: #3498db;
-            color: white;
-            border: none;
+            background-color: #fdf2f8;
+            border-left: 5px solid var(--primary);
             border-radius: 6px;
-            font-size: 1.2em;
-            cursor: pointer;
-            margin-top: 30px;
-            margin-bottom: 50px;
+            display: none;
+            font-size: 0.95em;
+            color: #831843;
+            animation: slideDown 0.3s ease-out;
         }
-        .reset-btn:hover {
-            background-color: #2980b9;
+        .explanation.visible {
+            display: block;
         }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Área de Controles --- */
+        #controls-area {
+            margin-top: 50px;
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--primary);
+        }
+
+        .action-btn {
+            background: var(--primary); color: white; border: none;
+            padding: 12px 25px; font-size: 1.05em; border-radius: 8px;
+            cursor: pointer; margin: 8px;
+            transition: background 0.3s, transform 0.2s;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .action-btn:hover { 
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .restart-options {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 25px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .restart-options button {
+            width: 100%;
+            background: #4b5563;
+        }
+        .restart-options button:hover { background: #1f2937; }
+        .restart-options button:first-child { background: var(--primary); }
+
     </style>
 </head>
 <body>
 
-    <h1>Bloque IX - Bioquímica (Alvaro Condón)</h1>
-    <p style="text-align:center; color:#666;">Nucleótidos y Ruta de las Pentosas Fosfato</p>
-
+    <h1>Bloque IX: Nucleótidos y Pentosas</h1>
+    <div style="text-align: center; color: #9d174d; margin-bottom: 30px;">
+        Álvaro Condón | Síntesis de Novo, Recuperación y Ruta de las Pentosas
+    </div>
+    
     <div id="quiz-container"></div>
 
-    <button class="reset-btn" onclick="location.reload()">Reiniciar Test (Barajar Preguntas y Respuestas)</button>
+    <div id="controls-area">
+        <button id="finish-btn" class="action-btn" onclick="showEndOptions()">🏁 Finalizar revisión</button>
+        
+        <div id="restart-menu" class="restart-options">
+            <h3>Resultados de la sesión</h3>
+            <p id="stats-summary"></p>
+            <button class="action-btn" onclick="restartQuiz('all')">🔄 Rehacer todo el test</button>
+            <button class="action-btn" onclick="restartQuiz('marked')">🔖 Repasar marcadas</button>
+            <button class="action-btn" onclick="restartQuiz('failed')">❌ Repasar falladas</button>
+            <button class="action-btn" onclick="restartQuiz('failed_marked')">⚠️ Falladas + Marcadas</button>
+        </div>
+    </div>
 
 <script>
-    // Base de datos de preguntas (Limpia de pistas, números fijos y duplicados)
     const quizData = [
-        {
-            question: "En la síntesis de nucleótidos de purina, son precursores:",
-            options: [
-                { text: "El ácido aspártico.", correct: false },
-                { text: "La glutamina.", correct: false },
-                { text: "La coenzima THB.", correct: false },
-                { text: "Ácido aspártico y Glutamina.", correct: true },
-                { text: "Todas son ciertas.", correct: false }
-            ]
+        { 
+            q: "En la síntesis de nucleótidos de purina, son precursores:", 
+            opts: ["El ácido aspártico.", "La glutamina.", "La coenzima THB.", "Ácido aspártico y Glutamina.", "Todas son ciertas."], 
+            a: "Ácido aspártico y Glutamina.", 
+            exp: "La purina se construye átomo a átomo. El N1 viene del aspartato, N3 y N9 de la glutamina, y carbonos y nitrógenos adicionales de la glicina, CO2 y N10-formil-THF." 
         },
-        {
-            question: "El producto final del catabolismo de los nucleótidos de purina es:",
-            options: [
-                { text: "Acetil-CoA.", correct: false },
-                { text: "Ácido úrico.", correct: true },
-                { text: "Ácido pirúvico.", correct: false },
-                { text: "Ácido oxálico.", correct: false },
-                { text: "Ácido púrico.", correct: false }
-            ]
+        { 
+            q: "El producto final del catabolismo de los nucleótidos de purina es:", 
+            opts: ["Acetil-CoA.", "Ácido úrico.", "Ácido pirúvico.", "Ácido oxálico.", "Ácido púrico."], 
+            a: "Ácido úrico.", 
+            exp: "En humanos, las purinas se degradan a xantina y finalmente a ácido úrico, que se excreta en la orina." 
         },
-        {
-            question: "En la síntesis de nucleótidos de pirimidina, son precursores:",
-            options: [
-                { text: "Aspartato.", correct: false },
-                { text: "Bicarbonato.", correct: false },
-                { text: "Glutamina.", correct: false },
-                { text: "Todas son ciertas.", correct: true },
-                { text: "Sólo son ciertas Aspartato y Glutamina.", correct: false }
-            ]
+        { 
+            q: "En la síntesis de nucleótidos de pirimidina, son precursores:", 
+            opts: ["Aspartato.", "Bicarbonato.", "Glutamina.", "Todas son ciertas.", "Sólo son ciertas Aspartato y Glutamina."], 
+            a: "Todas son ciertas.", 
+            exp: "El anillo se forma a partir de Carbamil-fosfato (hecho de Bicarbonato y Glutamina) y Aspartato." 
         },
-        {
-            question: "El fosfato de carbamilo interviene en la síntesis de:",
-            options: [
-                { text: "Ácido úrico.", correct: false },
-                { text: "Nucleótidos de pirimidina.", correct: true },
-                { text: "Nucleótidos de purina.", correct: false },
-                { text: "Creatina.", correct: false },
-                { text: "Ninguna es cierta.", correct: false }
-            ]
+        { 
+            q: "El fosfato de carbamilo interviene en la síntesis de:", 
+            opts: ["Ácido úrico.", "Nucleótidos de pirimidina.", "Nucleótidos de purina.", "Creatina.", "Ninguna es cierta."], 
+            a: "Nucleótidos de pirimidina.", 
+            exp: "Es la pieza inicial del anillo de pirimidina (formada por la CPS II citosólica)." 
         },
-        {
-            question: "El intermediario en la síntesis de los nucleótidos púricos es:",
-            options: [
-                { text: "AMP.", correct: false },
-                { text: "IMP.", correct: true },
-                { text: "OMP.", correct: false },
-                { text: "CMP.", correct: false },
-                { text: "GMP.", correct: false }
-            ]
+        { 
+            q: "El intermediario en la síntesis de los nucleótidos púricos es:", 
+            opts: ["AMP.", "IMP.", "OMP.", "CMP.", "GMP."], 
+            a: "IMP.", 
+            exp: "El Inosinato (IMP) es el primer nucleótido con el anillo purínico completo, precursor común de AMP y GMP." 
         },
-        {
-            question: "En el IMP, el carbono 6 de su base nitrogenada procede:",
-            options: [
-                { text: "De la glicina.", correct: false },
-                { text: "Del ácido aspártico.", correct: false },
-                { text: "Del dióxido de carbono.", correct: true },
-                { text: "Ninguna es cierta.", correct: false },
-                { text: "De la glicina y el ácido aspártico.", correct: false }
-            ]
+        { 
+            q: "En el IMP, el carbono 6 de su base nitrogenada procede:", 
+            opts: ["De la glicina.", "Del ácido aspártico.", "Del dióxido de carbono.", "Ninguna es cierta.", "De la glicina y el ácido aspártico."], 
+            a: "Del dióxido de carbono.", 
+            exp: "Proviene del CO2 (o bicarbonato) incorporado en la reacción de la AIR carboxilasa." 
         },
-        {
-            question: "El intermediario en la síntesis de los nucleótidos de pirimidina es:",
-            options: [
-                { text: "AMP.", correct: false },
-                { text: "IMP.", correct: false },
-                { text: "OMP.", correct: true },
-                { text: "CMP.", correct: false },
-                { text: "GMP.", correct: false }
-            ]
+        { 
+            q: "El intermediario en la síntesis de los nucleótidos de pirimidina es:", 
+            opts: ["AMP.", "IMP.", "OMP.", "CMP.", "GMP."], 
+            a: "OMP.", 
+            exp: "El Orotidin-monofosfato (OMP) es el primer nucleótido formado tras unir el orotato al PRPP." 
         },
-        {
-            question: "El producto final del catabolismo de los nucleótidos pririmidínicos es:",
-            options: [
-                { text: "Ácido úrico.", correct: false },
-                { text: "Beta-alanina.", correct: true },
-                { text: "Timina.", correct: false },
-                { text: "Uracilo.", correct: false },
-                { text: "Todas son ciertas.", correct: false }
-            ]
+        { 
+            q: "El producto final del catabolismo de los nucleótidos pririmidínicos es:", 
+            opts: ["Ácido úrico.", "Beta-alanina.", "Timina.", "Uracilo.", "Todas son ciertas."], 
+            a: "Beta-alanina.", 
+            exp: "La degradación de Citosina y Uracilo da Beta-alanina; la de Timina da Beta-aminoisobutirato." 
         },
-        {
-            question: "El adenilsuccinato se forma en la reacción entre el ácido aspártico y:",
-            options: [
-                { text: "AMP.", correct: false },
-                { text: "TMP.", correct: false },
-                { text: "GMP.", correct: false },
-                { text: "XMP.", correct: false },
-                { text: "IMP.", correct: true }
-            ]
+        { 
+            q: "El adenilsuccinato se forma en la reacción entre el ácido aspártico y:", 
+            opts: ["AMP.", "TMP.", "GMP.", "XMP.", "IMP."], 
+            a: "IMP.", 
+            exp: "Es el paso intermedio para convertir IMP en AMP, usando GTP como energía." 
         },
-        {
-            question: "La decarboxilación del orotidin-5´-fosfato (OMP) da lugar a:",
-            options: [
-                { text: "IMP.", correct: false },
-                { text: "CMP.", correct: false },
-                { text: "TMP.", correct: false },
-                { text: "UMP.", correct: true },
-                { text: "Ninguna es cierta.", correct: false }
-            ]
+        { 
+            q: "La decarboxilación del orotidin-5´-fosfato (OMP) da lugar a:", 
+            opts: ["IMP.", "CMP.", "TMP.", "UMP.", "Ninguna es cierta."], 
+            a: "UMP.", 
+            exp: "La OMP descarboxilasa convierte OMP en Uridilato (UMP), el precursor de todos los nucleótidos de pirimidina." 
         },
-        {
-            question: "¿Cuál es el precursor inmediato del ácido úrico?",
-            options: [
-                { text: "Hipoxantina.", correct: false },
-                { text: "Inosina.", correct: false },
-                { text: "Xantina.", correct: true },
-                { text: "Guanina.", correct: false },
-                { text: "Todas son falsas.", correct: false }
-            ]
+        { 
+            q: "¿Cuál es el precursor inmediato del ácido úrico?", 
+            opts: ["Hipoxantina.", "Inosina.", "Xantina.", "Guanina.", "Todas son falsas."], 
+            a: "Xantina.", 
+            exp: "La Xantina Oxidasa convierte Hipoxantina en Xantina, y luego Xantina en Ácido Úrico." 
         },
-        {
-            question: "¿Cuál de las siguientes sustancias es necesaria para que el dUMP se transforme en dTMP?",
-            options: [
-                { text: "ATP.", correct: false },
-                { text: "N5-N10 metilen THF.", correct: true },
-                { text: "FMN.", correct: false },
-                { text: "NADH.", correct: false },
-                { text: "Fosfato de piridoxal.", correct: false }
-            ]
+        { 
+            q: "¿Cuál de las siguientes sustancias es necesaria para que el dUMP se transforme en dTMP?", 
+            opts: ["ATP.", "N5-N10 metilen THF.", "FMN.", "NADH.", "Fosfato de piridoxal."], 
+            a: "N5-N10 metilen THF.", 
+            exp: "La timidilato sintasa usa N5-N10 metilen-THF para donar un grupo metilo al dUMP." 
         },
-        {
-            question: "La siguiente vía metabólica (imagen asumida: recuperación) se refiere a:",
-            options: [
-                { text: "Síntesis de novo de nucleótidos de purina.", correct: false },
-                { text: "Síntesis de novo de nucleótidos de pirimidina.", correct: false },
-                { text: "Vía de recuperación para sintetizar nucleótidos de purina.", correct: true },
-                { text: "Vía de recuperación para sintetizar nucleótidos de pirimidina.", correct: false },
-                { text: "Inicio de la degradación de nucleótidos de purina hasta ácido úrico.", correct: false }
-            ]
+        { 
+            q: "La siguiente vía metabólica (imagen asumida: recuperación) se refiere a:", 
+            opts: ["Síntesis de novo de nucleótidos de purina.", "Síntesis de novo de nucleótidos de pirimidina.", "Vía de recuperación para sintetizar nucleótidos de purina.", "Vía de recuperación para sintetizar nucleótidos de pirimidina.", "Inicio de la degradación de nucleótidos de purina hasta ácido úrico."], 
+            a: "Vía de recuperación para sintetizar nucleótidos de purina.", 
+            exp: "Las vías de recuperación (salvage) reciclan bases libres (Hipoxantina, Guanina) uniéndolas directamente al PRPP (enzima HGPRT)." 
         },
-        {
-            question: "Respecto a los nucleótidos de purina, ¿cuál de las respuestas es INCORRECTA?:",
-            options: [
-                { text: "Se requiere N-formil-THF para su síntesis.", correct: false },
-                { text: "Se requiere Asp, Gln y Gli para su síntesis.", correct: false },
-                { text: "El PRPP se incorpora una vez sintetizada la base nitrogenada.", correct: true },
-                { text: "En la síntesis ex novo el primer nucleótido sintetizado es el IMP.", correct: false },
-                { text: "El ácido úrico es el producto de la degradación.", correct: false }
-            ]
+        { 
+            q: "Respecto a los nucleótidos de purina, ¿cuál de las respuestas es INCORRECTA?:", 
+            opts: ["Se requiere N-formil-THF para su síntesis.", "Se requiere Asp, Gln y Gli para su síntesis.", "El PRPP se incorpora una vez sintetizada la base nitrogenada.", "En la síntesis ex novo el primer nucleótido sintetizado es el IMP.", "El ácido úrico es el producto de la degradación."], 
+            a: "El PRPP se incorpora una vez sintetizada la base nitrogenada.", 
+            exp: "Incorrecto. En la síntesis 'de novo' de purinas, el anillo se construye *sobre* el PRPP. (Construir la base y luego unirla al PRPP es característico de las pirimidinas o de la vía de recuperación)." 
         },
-        {
-            question: "En la biosíntesis de nucleótidos púricos, en primer lugar se formará:",
-            options: [
-                { text: "El anillo bencénico.", correct: false },
-                { text: "El anillo de imidazol.", correct: false },
-                { text: "El anillo indol.", correct: false },
-                { text: "El 5 fosforribosil-1 pirofosfato (PRPP).", correct: true },
-                { text: "La incorporación del aspartato.", correct: false }
-            ]
+        { 
+            q: "En la biosíntesis de nucleótidos púricos, en primer lugar se formará:", 
+            opts: ["El anillo bencénico.", "El anillo de imidazol.", "El anillo indol.", "El 5 fosforribosil-1 pirofosfato (PRPP).", "La incorporación del aspartato."], 
+            a: "El 5 fosforribosil-1 pirofosfato (PRPP).", 
+            exp: "Primero se activa la ribosa-5-P formando PRPP, que servirá de andamiaje." 
         },
-        {
-            question: "El nucleótido intermedio en la síntesis de pirimidinas es el:",
-            options: [
-                { text: "AMP.", correct: false },
-                { text: "GMP.", correct: false },
-                { text: "CTP.", correct: false },
-                { text: "IMP.", correct: false },
-                { text: "OMP.", correct: true }
-            ]
+        { 
+            q: "El nucleótido intermedio en la síntesis de pirimidinas es el:", 
+            opts: ["AMP.", "GMP.", "CTP.", "IMP.", "OMP."], 
+            a: "OMP.", 
+            exp: "El Orotidin-Monofosfato (OMP) es el primer nucleótido real de la vía." 
         },
-        {
-            question: "En la síntesis de DNA:",
-            options: [
-                { text: "Se necesitan deoxinucleótidos monofosfato para elongar la cadena.", correct: false },
-                { text: "No es necesario que haya un ácido nucleico que actúe como cebador.", correct: false },
-                { text: "El sentido de la elongación de la cadena es 3’→ 5’.", correct: false },
-                { text: "En eucariotas intervienen 3 RNA polimerasas en el proceso de inicio.", correct: false },
-                { text: "Las DNA polimerasas tienen actividad exonucleasa 3’→ 5’.", correct: true }
-            ]
+        { 
+            q: "En la síntesis de DNA:", 
+            opts: ["Se necesitan deoxinucleótidos monofosfato para elongar la cadena.", "No es necesario que haya un ácido nucleico que actúe como cebador.", "El sentido de la elongación de la cadena es 3’→ 5’.", "En eucariotas intervienen 3 RNA polimerasas en el proceso de inicio.", "Las DNA polimerasas tienen actividad exonucleasa 3’→ 5’."], 
+            a: "Las DNA polimerasas tienen actividad exonucleasa 3’→ 5’.", 
+            exp: "Esta es la actividad de corrección de pruebas (proofreading)." 
         },
-        {
-            question: "En la vía de las pentosas fosfato, las deshidrogenasas requieren:",
-            options: [
-                { text: "NAD+.", correct: false },
-                { text: "NADP+.", correct: true },
-                { text: "FAD.", correct: false },
-                { text: "FMN.", correct: false },
-                { text: "TPP.", correct: false }
-            ]
+        { 
+            q: "En la vía de las pentosas fosfato, las deshidrogenasas requieren:", 
+            opts: ["NAD+.", "NADP+.", "FAD.", "FMN.", "TPP."], 
+            a: "NADP+.", 
+            exp: "La Glucosa-6-P deshidrogenasa y la 6-fosfogluconato deshidrogenasa usan NADP+ para generar NADPH." 
         },
-        {
-            question: "En la vía de las pentosas fosfato:",
-            options: [
-                { text: "Se forma Acetil-CoA para la lipogénesis.", correct: false },
-                { text: "Se forma NADPH para la lipogénesis.", correct: true },
-                { text: "Se forma NADH para la cadena respiratoria.", correct: false },
-                { text: "Se oxida el NADH.", correct: false },
-                { text: "Se forma ATP para la glucogénesis.", correct: false }
-            ]
+        { 
+            q: "En la vía de las pentosas fosfato:", 
+            opts: ["Se forma Acetil-CoA para la lipogénesis.", "Se forma NADPH para la lipogénesis.", "Se forma NADH para la cadena respiratoria.", "Se oxida el NADH.", "Se forma ATP para la glucogénesis."], 
+            a: "Se forma NADPH para la lipogénesis.", 
+            exp: "El NADPH (poder reductor) es esencial para biosíntesis reductivas (ácidos grasos, colesterol)." 
         },
-        {
-            question: "Identifica qué afirmación es correcta. La ruta de las pentosas fosfato (HMP):",
-            options: [
-                { text: "Tiene entre sus funciones la provisión de NADH.", correct: false },
-                { text: "No afecta al balance de ATP.", correct: false },
-                { text: "Tiene localización mitocondrial y citosólica.", correct: false },
-                { text: "Produce CO2 a partir de glucosa-6P.", correct: true }
-            ]
+        { 
+            q: "Identifica qué afirmación es correcta. La ruta de las pentosas fosfato (HMP):", 
+            opts: ["Tiene entre sus funciones la provisión de NADH.", "No afecta al balance de ATP.", "Tiene localización mitocondrial y citosólica.", "Produce CO2 a partir de glucosa-6P."], 
+            a: "Produce CO2 a partir de glucosa-6P.", 
+            exp: "En la fase oxidativa, se pierde un carbono como CO2 al pasar de hexosa (C6) a pentosa (C5)." 
         },
-        {
-            question: "Identifica qué afirmación es correcta sobre el glutatión:",
-            options: [
-                { text: "El glutatión en su forma disulfido (GSSG) es el principal péptido antioxidante celular.", correct: false },
-                { text: "La actividad glutatión reductasa regenera los niveles de glutatión como GSH.", correct: true },
-                { text: "Un cociente GSH/GSSG bajo es indicativo de bajos niveles de estrés oxidativo.", correct: false },
-                { text: "El GSH es relevante en el mantenimiento del grupo tiol de la cisteína en su forma oxidada.", correct: false }
-            ]
+        { 
+            q: "Identifica qué afirmación es correcta sobre el glutatión:", 
+            opts: ["El glutatión en su forma disulfido (GSSG) es el principal péptido antioxidante celular.", "La actividad glutatión reductasa regenera los niveles de glutatión como GSH.", "Un cociente GSH/GSSG bajo es indicativo de bajos niveles de estrés oxidativo.", "El GSH es relevante en el mantenimiento del grupo tiol de la cisteína en su forma oxidada."], 
+            a: "La actividad glutatión reductasa regenera los niveles de glutatión como GSH.", 
+            exp: "La enzima utiliza NADPH (de la vía de las pentosas) para reducir el GSSG oxidado de nuevo a GSH funcional." 
         }
     ];
 
-    // Función para barajar array
+    // --- ASIGNAR IDs ÚNICOS ---
+    quizData.forEach((item, index) => {
+        item.id = index;
+    });
+
+    // --- GESTIÓN DE ESTADO ---
+    let markedQuestions = new Set();
+    let failedQuestions = new Set();
+
     function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
         }
         return array;
     }
 
-    // Renderizar cuestionario
-    function renderQuiz() {
-        const container = document.getElementById('quiz-container');
-        container.innerHTML = '';
+    const container = document.getElementById('quiz-container');
 
-        // 1. Barajar el orden de las preguntas
-        const shuffledQuestions = shuffleArray([...quizData]);
+    // Función principal
+    function renderQuiz(questionsToLoad = quizData) {
+        container.innerHTML = "";
+        document.getElementById("restart-menu").style.display = "none";
+        document.getElementById("finish-btn").style.display = "inline-block";
 
-        shuffledQuestions.forEach((item, index) => {
+        if(questionsToLoad.length === 0) {
+            container.innerHTML = "<p style='text-align:center; padding:20px; color:#6b7280;'>No hay preguntas para mostrar en esta selección.</p>";
+            return;
+        }
+
+        questionsToLoad.forEach((item, displayIndex) => {
             const card = document.createElement('div');
             card.className = 'question-card';
 
-            const title = document.createElement('div');
-            title.className = 'question-text';
-            // 2. Numerar dinámicamente según el nuevo orden
-            title.textContent = `${index + 1}. ${item.question}`;
-            card.appendChild(title);
+            // Checkbox Marcar
+            const markContainer = document.createElement("div");
+            markContainer.className = "mark-container";
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = `mark-${item.id}`;
+            if(markedQuestions.has(item.id)) checkbox.checked = true;
 
+            checkbox.onchange = (e) => {
+                if(e.target.checked) markedQuestions.add(item.id);
+                else markedQuestions.delete(item.id);
+            };
+
+            const label = document.createElement("label");
+            label.htmlFor = `mark-${item.id}`;
+            label.innerText = "Marcar para revisar";
+            markContainer.appendChild(checkbox);
+            markContainer.appendChild(label);
+            card.appendChild(markContainer);
+
+            // Pregunta
+            const header = document.createElement('div');
+            header.className = 'question-header';
+            header.textContent = `Pregunta ${item.id + 1}`; 
+            card.appendChild(header);
+
+            const questionText = document.createElement('div');
+            questionText.className = 'question-text';
+            questionText.textContent = item.q;
+
+            // --- INSERCIÓN DE DIAGRAMAS (Estratégica) ---
+            if (item.id === 0 || item.id === 14) { 
+                 questionText.innerHTML += `<span class='img-tag'></span>`;
+            } else if (item.id === 6 || item.id === 15) { 
+                 questionText.innerHTML += `<span class='img-tag'></span>`;
+            } else if (item.id === 12) { 
+                 questionText.innerHTML += `<span class='img-tag'></span>`;
+            } else if (item.id === 11) { 
+                 questionText.innerHTML += `<span class='img-tag'></span>`;
+            } else if (item.id === 17 || item.id === 19) { 
+                 questionText.innerHTML += `<span class='img-tag'>
+
+[Image of pentose phosphate pathway oxidative phase]
+</span>`;
+            }
+
+            card.appendChild(questionText);
+
+            // Opciones
             const optionsDiv = document.createElement('div');
             optionsDiv.className = 'options-container';
 
-            // 3. Barajar opciones
-            const currentOptions = shuffleArray([...item.options]);
+            let optionsObj = item.opts.map(opt => ({
+                text: opt,
+                isCorrect: opt === item.a
+            }));
+            optionsObj = shuffleArray(optionsObj);
 
-            currentOptions.forEach(opt => {
+            // Explicación
+            const explanationDiv = document.createElement('div');
+            explanationDiv.className = 'explanation';
+            explanationDiv.innerHTML = `<strong>Explicación:</strong> ${item.exp}`;
+
+            optionsObj.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.textContent = opt.text;
-                
-                // Guardar si es correcta en el elemento
-                btn.dataset.correct = opt.correct;
 
-                btn.onclick = () => checkAnswer(btn, optionsDiv);
+                btn.onclick = () => {
+                    const allBtns = optionsDiv.querySelectorAll('.option-btn');
+                    allBtns.forEach(b => b.disabled = true);
 
+                    if (opt.isCorrect) {
+                        btn.classList.add('correct');
+                    } else {
+                        btn.classList.add('incorrect');
+                        failedQuestions.add(item.id);
+                        
+                        allBtns.forEach(b => {
+                            if (b.textContent === item.a) b.classList.add('correct');
+                        });
+                    }
+                    explanationDiv.classList.add('visible');
+                };
                 optionsDiv.appendChild(btn);
             });
 
             card.appendChild(optionsDiv);
+            card.appendChild(explanationDiv);
             container.appendChild(card);
         });
     }
 
-    // Función de corrección
-    function checkAnswer(selectedBtn, container) {
-        const allBtns = container.querySelectorAll('.option-btn');
-        const isCorrect = selectedBtn.dataset.correct === 'true';
-
-        // Deshabilitar botones y mostrar colores
-        allBtns.forEach(btn => {
-            btn.classList.add('disabled');
-            if (btn.dataset.correct === 'true') {
-                btn.classList.add('correct');
-            }
-        });
-
-        // Si la elegida no era correcta, marcarla en rojo
-        if (!isCorrect) {
-            selectedBtn.classList.add('incorrect');
-        }
+    // --- Control Final ---
+    function showEndOptions() {
+        document.getElementById("finish-btn").style.display = "none";
+        document.getElementById("restart-menu").style.display = "flex";
+        document.getElementById("controls-area").scrollIntoView({behavior: "smooth"});
+        
+        document.getElementById("stats-summary").innerHTML = `
+            Preguntas marcadas: <strong>${markedQuestions.size}</strong><br>
+            Preguntas falladas en esta sesión: <strong>${failedQuestions.size}</strong>
+        `;
     }
 
-    // Iniciar
+    function restartQuiz(mode) {
+        let subset = [];
+        if (mode === 'all') subset = quizData;
+        else if (mode === 'marked') subset = quizData.filter(q => markedQuestions.has(q.id));
+        else if (mode === 'failed') subset = quizData.filter(q => failedQuestions.has(q.id));
+        else if (mode === 'failed_marked') subset = quizData.filter(q => failedQuestions.has(q.id) || markedQuestions.has(q.id));
+
+        if(mode !== 'all') failedQuestions.clear(); 
+        else {
+            failedQuestions.clear();
+            markedQuestions.clear();
+        }
+
+        renderQuiz(subset);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     renderQuiz();
 </script>
 
