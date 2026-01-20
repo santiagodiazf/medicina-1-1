@@ -3,728 +3,714 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Bloque III: Biomoléculas (UCA - Álvaro Condón)</title>
+    <title>Test Bloque III: Biomoléculas</title>
     <style>
+        :root {
+            --primary: #d97706; /* Ámbar/Naranja Molecular */
+            --primary-dark: #b45309;
+            --primary-light: #fef3c7;
+            --bg: #fffbeb;
+            --text: #1f2937;
+            --white: #ffffff;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f8;
-            color: #333;
-            max-width: 800px;
+            background-color: var(--bg);
+            color: var(--text);
+            max-width: 850px;
             margin: 0 auto;
             padding: 20px;
         }
+
         h1 {
-            color: #2c3e50;
             text-align: center;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 15px;
-        }
-        .question-card {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .question-title {
-            font-weight: 600;
-            margin-bottom: 15px;
-            font-size: 1.1em;
-            color: #2c3e50;
-        }
-        .options-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-        .option-item {
+            color: var(--primary-dark);
             margin-bottom: 10px;
-        }
-        .option-btn {
-            display: block;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 15px;
+            display: inline-block;
             width: 100%;
-            text-align: left;
-            padding: 12px 15px;
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
+        }
+
+        .question-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-left: 6px solid var(--primary);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+
+        .question-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- Checkbox para Marcar --- */
+        .mark-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: var(--primary);
+            font-weight: bold;
+            border-bottom: 1px solid #fde68a;
+            padding-bottom: 10px;
+        }
+        .mark-container input {
+            margin-right: 8px;
+            transform: scale(1.3);
             cursor: pointer;
+            accent-color: var(--primary);
+        }
+        .mark-container label {
+            cursor: pointer;
+        }
+
+        .question-header {
+            font-size: 0.85em;
+            color: #d97706;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-weight: 700;
+            font-size: 1.15em;
+            margin-bottom: 20px;
+            color: #111827;
+            line-height: 1.5;
+        }
+
+        /* Etiquetas para diagramas */
+        .img-tag {
+            display: block;
+            margin-top: 12px;
+            padding: 10px;
+            background-color: #fff7ed;
+            border-left: 4px solid #fdba74;
+            color: #9a3412;
+            font-size: 0.9em;
+            font-style: italic;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            padding: 14px 18px;
+            border: 2px solid #e5e7eb;
+            background: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
             transition: all 0.2s;
             font-size: 1em;
+            color: #374151;
+            position: relative;
         }
-        .option-btn:hover:not(.disabled) {
-            background-color: #e9ecef;
+
+        .option-btn:hover:not(:disabled) {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+            padding-left: 25px; /* Efecto desplazamiento */
         }
-        .option-btn.correct {
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-            color: #155724;
-        }
-        .option-btn.incorrect {
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-            color: #721c24;
-        }
-        .option-btn.disabled {
+
+        .option-btn:disabled {
             cursor: default;
-            pointer-events: none;
-            opacity: 0.9;
+            opacity: 0.7;
         }
-        #reset-btn {
-            display: block;
-            width: 100%;
+
+        /* Estados de respuesta */
+        .correct {
+            background-color: #d1fae5 !important;
+            border-color: #059669 !important;
+            color: #064e3b !important;
+            font-weight: 600;
+        }
+
+        .incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #7f1d1d !important;
+        }
+
+        /* Caja de Explicación */
+        .explanation {
+            margin-top: 20px;
             padding: 15px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.1em;
-            cursor: pointer;
-            margin-top: 30px;
-            margin-bottom: 40px;
-        }
-        #reset-btn:hover {
-            background-color: #2980b9;
-        }
-        .feedback {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #e9ecef;
-            border-radius: 5px;
-            font-size: 0.9em;
+            background-color: #fff7ed;
+            border-left: 5px solid var(--primary);
+            border-radius: 6px;
             display: none;
+            font-size: 0.95em;
+            color: #7c2d12;
+            animation: slideDown 0.3s ease-out;
         }
+        .explanation.visible {
+            display: block;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Área de Controles --- */
+        #controls-area {
+            margin-top: 50px;
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--primary);
+        }
+
+        .action-btn {
+            background: var(--primary); color: white; border: none;
+            padding: 12px 25px; font-size: 1.05em; border-radius: 8px;
+            cursor: pointer; margin: 8px;
+            transition: background 0.3s, transform 0.2s;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .action-btn:hover { 
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .restart-options {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 25px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .restart-options button {
+            width: 100%;
+            background: #4b5563;
+        }
+        .restart-options button:hover { background: #1f2937; }
+        .restart-options button:first-child { background: var(--primary); }
+
     </style>
 </head>
 <body>
 
-    <h1>Test Bloque III: Biomoléculas</h1>
+    <h1>Bloque III: Biomoléculas</h1>
+    <div style="text-align: center; color: #4b5563; margin-bottom: 30px;">
+        Álvaro Condón | Aminoácidos, Proteínas, Glúcidos y Lípidos
+    </div>
+    
     <div id="quiz-container"></div>
-    <button id="reset-btn" onclick="renderQuiz()">Reiniciar Test (Limpiar respuestas)</button>
+
+    <div id="controls-area">
+        <button id="finish-btn" class="action-btn" onclick="showEndOptions()">🏁 Finalizar revisión</button>
+        
+        <div id="restart-menu" class="restart-options">
+            <h3>Resultados de la sesión</h3>
+            <p id="stats-summary"></p>
+            <button class="action-btn" onclick="restartQuiz('all')">🔄 Rehacer todo el test</button>
+            <button class="action-btn" onclick="restartQuiz('marked')">🔖 Repasar marcadas</button>
+            <button class="action-btn" onclick="restartQuiz('failed')">❌ Repasar falladas</button>
+            <button class="action-btn" onclick="restartQuiz('failed_marked')">⚠️ Falladas + Marcadas</button>
+        </div>
+    </div>
 
 <script>
-    const questions = [
-        {
-            text: "En relación con la cadena lateral de un aminoácido y su polaridad, ¿qué es incorrecto?",
-            explanation: "La tirosina no tiene una cadena alifática apolar: es aromática y su grupo fenol con -OH le confiere carácter polar.",
-            options: [
-                { text: "Glutamato – carboxilo – polar", correct: false },
-                { text: "Serina – hidroxilo – polar", correct: false },
-                { text: "Cisteína – tiol – polar", correct: false },
-                { text: "Tirosina – cadena alifática – apolar", correct: true },
-                { text: "Lisina – grupo amino ε – polar", correct: false }
-            ]
+    // Datos convertidos al formato estándar
+    const quizData = [
+        { 
+            q: "En relación con la cadena lateral de un aminoácido y su polaridad, ¿qué es incorrecto?", 
+            opts: ["Glutamato – carboxilo – polar", "Serina – hidroxilo – polar", "Cisteína – tiol – polar", "Tirosina – cadena alifática – apolar", "Lisina – grupo amino ε – polar"], 
+            a: "Tirosina – cadena alifática – apolar", 
+            exp: "La tirosina NO es alifática, es aromática, y su grupo fenol (-OH) le confiere cierto carácter polar (aunque sea menos que otros)." 
         },
-        {
-            text: "Qué asociación es incorrecta respecto a la contribución del aminoácido a la función/propiedad de la proteína:",
-            explanation: "El glutamato es un aminoácido ácido, no básico; es el que da carácter ácido a muchas proteínas.",
-            options: [
-                { text: "Serina – ataque nucleófilo a los sustratos", correct: false },
-                { text: "Glutamato – carácter básico a la proteína", correct: true },
-                { text: "Cisteína – formación de puentes disulfuro", correct: false },
-                { text: "Tirosina – sitio fosforilable de la proteína", correct: false },
-                { text: "Lisina – unión por enlace éster-amida de grupos prostéticos", correct: false }
-            ]
+        { 
+            q: "Qué asociación es incorrecta respecto a la contribución del aminoácido a la función/propiedad de la proteína:", 
+            opts: ["Serina – ataque nucleófilo a los sustratos", "Glutamato – carácter básico a la proteína", "Cisteína – formación de puentes disulfuro", "Tirosina – sitio fosforilable de la proteína", "Lisina – unión por enlace éster-amida de grupos prostéticos"], 
+            a: "Glutamato – carácter básico a la proteína", 
+            exp: "El glutamato (ácido glutámico) es un aminoácido ácido (carga negativa), no básico." 
         },
-        {
-            text: "Respecto a los siguientes glúcidos, ¿cuál de estas afirmaciones es incorrecta?",
-            explanation: "El α-glicerofosfato no es un monosacárido puro, sino un derivado fosforilado del glicerol.",
-            options: [
-                { text: "Sedoheptulosa: cetosa de 7 carbonos", correct: false },
-                { text: "α-glicerofosfato: monosacárido de 3 carbonos", correct: true },
-                { text: "Lactosa: galactosa–glucosa (β 1-4)", correct: false },
-                { text: "Heparina: mucopolisacárido", correct: false },
-                { text: "Almidón: polímero de glucosa α 1-4 con ramificaciones α 1-6", correct: false }
-            ]
+        { 
+            q: "Respecto a los siguientes glúcidos, ¿cuál de estas afirmaciones es incorrecta?", 
+            opts: ["Sedoheptulosa: cetosa de 7 carbonos", "α-glicerofosfato: monosacárido de 3 carbonos", "Lactosa: galactosa–glucosa (β 1-4)", "Heparina: mucopolisacárido", "Almidón: polímero de glucosa α 1-4 con ramificaciones α 1-6"], 
+            a: "α-glicerofosfato: monosacárido de 3 carbonos", 
+            exp: "El α-glicerofosfato no es un azúcar puro, es un derivado fosforilado de un polialcohol (glicerol)." 
         },
-        {
-            text: "Respecto a los siguientes glúcidos, ¿cuál de estas afirmaciones es incorrecta?",
-            explanation: "El ácido hialurónico no es un monosacárido, sino un proteoglicano formado por unidades disacáridas repetidas.",
-            options: [
-                { text: "Xilulosa: cetosa de 5 carbonos", correct: false },
-                { text: "Gliceraldehído: aldosa de 3 carbonos", correct: false },
-                { text: "Lactosa: galactosa–glucosa (β 1-4)", correct: false },
-                { text: "Ácido hialurónico: monosacárido de 9 carbonos modificado", correct: true },
-                { text: "Heparina: mucopolisacárido", correct: false }
-            ]
+        { 
+            q: "Respecto a los siguientes glúcidos, ¿cuál de estas afirmaciones es incorrecta?", 
+            opts: ["Xilulosa: cetosa de 5 carbonos", "Gliceraldehído: aldosa de 3 carbonos", "Lactosa: galactosa–glucosa (β 1-4)", "Ácido hialurónico: monosacárido de 9 carbonos modificado", "Heparina: mucopolisacárido"], 
+            a: "Ácido hialurónico: monosacárido de 9 carbonos modificado", 
+            exp: "El ácido hialurónico es un glicosaminoglicano (polisacárido) de alto peso molecular, NO un monosacárido." 
         },
-        {
-            text: "Cuál de estas asociaciones es incorrecta entre sustancias y sus componentes:",
-            explanation: "Un triglicérido se forma a partir de glicerol, no de gliceraldehído.",
-            options: [
-                { text: "Lecitina: derivada del ácido fosfatídico", correct: false },
-                { text: "Esfingomielina: contiene ceramida", correct: false },
-                { text: "Triglicérido: formado a partir de gliceraldehído", correct: true },
-                { text: "Colesterol esterificado: contiene un ácido graso en posición 3", correct: false },
-                { text: "Cerebrósido: contiene glucosa u otros azúcares sencillos", correct: false }
-            ]
+        { 
+            q: "Cuál de estas asociaciones es incorrecta entre sustancias y sus componentes:", 
+            opts: ["Lecitina: derivada del ácido fosfatídico", "Esfingomielina: contiene ceramida", "Triglicérido: formado a partir de gliceraldehído", "Colesterol esterificado: contiene un ácido graso en posición 3", "Cerebrósido: contiene glucosa u otros azúcares sencillos"], 
+            a: "Triglicérido: formado a partir de gliceraldehído", 
+            exp: "El triglicérido se forma por esterificación de tres ácidos grasos con glicerol, no con gliceraldehído." 
         },
-        {
-            text: "Cuál es la composición del fosfolípido esfingomielina:",
-            explanation: "La esfingomielina es una ceramida (esfingosina + ácido graso) unida a fosfocolina.",
-            options: [
-                { text: "Ceramida + fosfato + colina", correct: true },
-                { text: "Glicerol + 2 ácidos grasos + fosfato + colina", correct: false },
-                { text: "Ácido fosfatídico + fosfato + colina", correct: false },
-                { text: "Esfingosina + fosfato + colina", correct: false },
-                { text: "Esfingosina + ácido graso + fosfato + glucosa", correct: false }
-            ]
+        { 
+            q: "Cuál es la composición del fosfolípido esfingomielina:", 
+            opts: ["Ceramida + fosfato + colina", "Glicerol + 2 ácidos grasos + fosfato + colina", "Ácido fosfatídico + fosfato + colina", "Esfingosina + fosfato + colina", "Esfingosina + ácido graso + fosfato + glucosa"], 
+            a: "Ceramida + fosfato + colina", 
+            exp: "Es una ceramida (esfingosina + ácido graso) unida a un grupo fosfocolina." 
         },
-        {
-            text: "Cuál de estas afirmaciones NO es correcta respecto al transporte a través de membranas biológicas:",
-            explanation: "GLUT4 transporta glucosa a favor de gradiente en músculo y tejido adiposo, no contra gradiente y no es el transportador típico de hígado/cerebro.",
-            options: [
-                { text: "La ATPasa Na+/K+ bombea Na+ contra gradiente hacia el exterior celular", correct: false },
-                { text: "AE-1 realiza un antiporte Cl-/HCO3- en la membrana del hematíe", correct: false },
-                { text: "El IP3 puede activar canales de Ca2+ del retículo endoplásmico", correct: false },
-                { text: "GLUT4 transporta glucosa contra gradiente en hígado y cerebro", correct: true },
-                { text: "SGLT realiza un simporte glucosa–Na+ en la membrana luminal del enterocito", correct: false }
-            ]
+        { 
+            q: "Cuál de estas afirmaciones NO es correcta respecto al transporte a través de membranas biológicas:", 
+            opts: ["La ATPasa Na+/K+ bombea Na+ contra gradiente hacia el exterior celular", "AE-1 realiza un antiporte Cl-/HCO3- en la membrana del hematíe", "El IP3 puede activar canales de Ca2+ del retículo endoplásmico", "GLUT4 transporta glucosa contra gradiente en hígado y cerebro", "SGLT realiza un simporte glucosa–Na+ en la membrana luminal del enterocito"], 
+            a: "GLUT4 transporta glucosa contra gradiente en hígado y cerebro", 
+            exp: "GLUT4 realiza transporte pasivo (difusión facilitada) a favor de gradiente y se encuentra en músculo/adiposo, no en hígado/cerebro." 
         },
-        {
-            text: "Con respecto a las proteínas, ¿cuál de las siguientes afirmaciones NO es cierta?",
-            explanation: "Los aminoácidos de las proteínas son del tipo L; no son todos D.",
-            options: [
-                { text: "Están constituidas por combinaciones de 20 α-aminoácidos", correct: false },
-                { text: "Todos los aminoácidos son enantiómeros D", correct: true },
-                { text: "Todos los aminoácidos de proteínas son de la serie L", correct: false },
-                { text: "El enlace peptídico es un enlace covalente", correct: false },
-                { text: "Los péptidos tienen un extremo amino-terminal y otro carboxilo-terminal", correct: false }
-            ]
+        { 
+            q: "Con respecto a las proteínas, ¿cuál de las siguientes afirmaciones NO es cierta?", 
+            opts: ["Están constituidas por combinaciones de 20 α-aminoácidos", "Todos los aminoácidos son enantiómeros D", "Todos los aminoácidos de proteínas son de la serie L", "El enlace peptídico es un enlace covalente", "Los péptidos tienen un extremo amino-terminal y otro carboxilo-terminal"], 
+            a: "Todos los aminoácidos son enantiómeros D", 
+            exp: "Los aminoácidos presentes en las proteínas son estereoisómeros L." 
         },
-        {
-            text: "En la estructura proteica:",
-            explanation: "Todas las afirmaciones describen correctamente aspectos geométricos de hélice α y lámina β.",
-            options: [
-                { text: "En las hélices los puentes de hidrógeno son casi paralelos al eje", correct: false },
-                { text: "En la hélice las cadenas laterales se sitúan hacia el exterior", correct: false },
-                { text: "En la lámina β los puentes de hidrógeno son aproximadamente perpendiculares a las cadenas", correct: false },
-                { text: "En la lámina β paralela un residuo puede contactar con dos de la cadena vecina", correct: false },
-                { text: "Todas las afirmaciones anteriores son ciertas", correct: true }
-            ]
+        { 
+            q: "En la estructura proteica:", 
+            opts: ["En las hélices los puentes de hidrógeno son casi paralelos al eje", "En la hélice las cadenas laterales se sitúan hacia el exterior", "En la lámina β los puentes de hidrógeno son aproximadamente perpendiculares a las cadenas", "En la lámina β paralela un residuo puede contactar con dos de la cadena vecina", "Todas las afirmaciones anteriores son ciertas"], 
+            a: "Todas las afirmaciones anteriores son ciertas", 
+            exp: "Resumen correcto de las características de la estructura secundaria (Hélice alfa y Hoja beta)." 
         },
-        {
-            text: "Los fosfoglicéridos:",
-            explanation: "Son derivados del ácido fosfatídico y habitualmente tienen dos ácidos grasos, el del carbono 2 suele ser insaturado.",
-            options: [
-                { text: "Derivan del ácido fosfatídico", correct: false },
-                { text: "El carbono 2 del glicerol suele estar esterificado por un ácido graso saturado", correct: false },
-                { text: "El carbono 2 del glicerol suele estar esterificado por un ácido graso insaturado", correct: false },
-                { text: "Derivan del ácido fosfatídico y el C2 suele llevar un ácido graso insaturado", correct: true },
-                { text: "Ninguna de las afirmaciones es cierta", correct: false }
-            ]
+        { 
+            q: "Los fosfoglicéridos:", 
+            opts: ["Derivan del ácido fosfatídico", "El carbono 2 del glicerol suele estar esterificado por un ácido graso saturado", "El carbono 2 del glicerol suele estar esterificado por un ácido graso insaturado", "Derivan del ácido fosfatídico y el C2 suele llevar un ácido graso insaturado", "Ninguna de las afirmaciones es cierta"], 
+            a: "Derivan del ácido fosfatídico y el C2 suele llevar un ácido graso insaturado", 
+            exp: "Generalmente, el C1 tiene un ácido graso saturado y el C2 uno insaturado." 
         },
-        {
-            text: "Un ácido graso 16:4 ω3:",
-            explanation: "La notación 16:4 indica 16 carbonos y 4 dobles enlaces; la opción que combina ambas características es la correcta.",
-            options: [
-                { text: "Tiene 4 dobles enlaces", correct: false },
-                { text: "Tiene 3 dobles enlaces", correct: false },
-                { text: "Tiene 16 carbonos", correct: false },
-                { text: "Es saturado", correct: false },
-                { text: "Tiene 4 dobles enlaces y 16 carbonos", correct: true }
-            ]
+        { 
+            q: "Un ácido graso 16:4 ω3:", 
+            opts: ["Tiene 4 dobles enlaces", "Tiene 3 dobles enlaces", "Tiene 16 carbonos", "Es saturado", "Tiene 4 dobles enlaces y 16 carbonos"], 
+            a: "Tiene 4 dobles enlaces y 16 carbonos", 
+            exp: "La nomenclatura C:D indica Carbonos:DoblesEnlaces. 16:4 = 16 carbonos y 4 insaturaciones." 
         },
-        {
-            text: "En el enlace glucosídico:",
-            explanation: "Para que exista un enlace glucosídico debe participar al menos un carbono anomérico de un monosacárido.",
-            options: [
-                { text: "Siempre intervienen dos carbonos anoméricos", correct: false },
-                { text: "Nunca intervienen carbonos anoméricos", correct: false },
-                { text: "Interviene al menos un carbono anomérico", correct: true },
-                { text: "Se forma entre dos grupos hidroxilo", correct: false },
-                { text: "Ninguna afirmación es cierta", correct: false }
-            ]
+        { 
+            q: "En el enlace glucosídico:", 
+            opts: ["Siempre intervienen dos carbonos anoméricos", "Nunca intervienen carbonos anoméricos", "Interviene al menos un carbono anomérico", "Se forma entre dos grupos hidroxilo", "Ninguna afirmación es cierta"], 
+            a: "Interviene al menos un carbono anomérico", 
+            exp: "El enlace se forma entre el grupo -OH del carbono anomérico de un azúcar y cualquier grupo -OH del otro." 
         },
-        {
-            text: "Señalar cuál de las siguientes afirmaciones referentes a las glucoproteínas NO es cierta:",
-            explanation: "En las glucoproteínas, los azúcares se unen covalentemente a la proteína.",
-            options: [
-                { text: "La unión entre los sacáridos y las proteínas no es covalente", correct: true },
-                { text: "El enlace O-glucosídico se establece con Ser o Thr", correct: false },
-                { text: "El enlace N-glucosídico se establece con Asn", correct: false },
-                { text: "El enlace O-glucosídico suele implicar N-acetilgalactosamina", correct: false },
-                { text: "El enlace N-glucosídico suele implicar N-acetilglucosamina", correct: false }
-            ]
+        { 
+            q: "Señalar cuál de las siguientes afirmaciones referentes a las glucoproteínas NO es cierta:", 
+            opts: ["La unión entre los sacáridos y las proteínas no es covalente", "El enlace O-glucosídico se establece con Ser o Thr", "El enlace N-glucosídico se establece con Asn", "El enlace O-glucosídico suele implicar N-acetilgalactosamina", "El enlace N-glucosídico suele implicar N-acetilglucosamina"], 
+            a: "La unión entre los sacáridos y las proteínas no es covalente", 
+            exp: "Falso. La unión entre la parte glucídica y proteica es siempre COVALENTE." 
         },
-        {
-            text: "El fosfatidilinositol está compuesto por:",
-            explanation: "Es un glicerofosfolípido: glicerol + dos ácidos grasos + fosfato + inositol.",
-            options: [
-                { text: "Ceramida + fosfato + colina", correct: false },
-                { text: "Ácido fosfatídico + fosfato + inositol", correct: false },
-                { text: "Glicerol + dos ácidos grasos + fosfato + inositol", correct: true },
-                { text: "Esfingosina + fosfato + inositol", correct: false },
-                { text: "Esfingosina + ácido graso + fosfato + glucosa", correct: false }
-            ]
+        { 
+            q: "El fosfatidilinositol está compuesto por:", 
+            opts: ["Ceramida + fosfato + colina", "Ácido fosfatídico + fosfato + inositol", "Glicerol + dos ácidos grasos + fosfato + inositol", "Esfingosina + fosfato + inositol", "Esfingosina + ácido graso + fosfato + glucosa"], 
+            a: "Glicerol + dos ácidos grasos + fosfato + inositol", 
+            exp: "Es un glicerofosfolípido clásico." 
         },
-        {
-            text: "Respecto a los siguientes glúcidos, ¿cuál de estas afirmaciones es incorrecta?",
-            explanation: "El ácido glucurónico es un monosacárido derivado, no un mucopolisacárido por sí mismo.",
-            options: [
-                { text: "Eritrosa: aldosa de 4 carbonos", correct: false },
-                { text: "Gliceraldehído: aldosa de 3 carbonos", correct: false },
-                { text: "Ácido siálico: monosacárido de 9 carbonos modificado", correct: false },
-                { text: "Maltosa: glucosa–glucosa (α 1-4)", correct: false },
-                { text: "Ácido glucurónico: mucopolisacárido", correct: true }
-            ]
+        { 
+            q: "Respecto a los siguientes glúcidos, ¿cuál de estas afirmaciones es incorrecta? (Repetida)", 
+            opts: ["Eritrosa: aldosa de 4 carbonos", "Gliceraldehído: aldosa de 3 carbonos", "Ácido siálico: monosacárido de 9 carbonos modificado", "Maltosa: glucosa–glucosa (α 1-4)", "Ácido glucurónico: mucopolisacárido"], 
+            a: "Ácido glucurónico: mucopolisacárido", 
+            exp: "El ácido glucurónico es un monosacárido derivado (ácido urónico), no un polisacárido." 
         },
-        {
-            text: "Cuál de estos mecanismos de transporte es un transporte activo secundario:",
-            explanation: "SGLT utiliza el gradiente de Na+ para introducir glucosa contra gradiente: es un transporte activo secundario.",
-            options: [
-                { text: "SGLT: simporte glucosa–Na+ en el enterocito", correct: true },
-                { text: "GLUT4: difusión de glucosa al interior celular", correct: false },
-                { text: "ATPasa Na+/K+: bomba primaria de Na+ hacia el exterior", correct: false },
-                { text: "AE-1: antiporte Cl-/HCO3-", correct: false },
-                { text: "IP3: activación de canales de Ca2+ del retículo", correct: false }
-            ]
+        { 
+            q: "Cuál de estos mecanismos de transporte es un transporte activo secundario:", 
+            opts: ["SGLT: simporte glucosa–Na+ en el enterocito", "GLUT4: difusión de glucosa al interior celular", "ATPasa Na+/K+: bomba primaria de Na+ hacia el exterior", "AE-1: antiporte Cl-/HCO3-", "IP3: activación de canales de Ca2+ del retículo"], 
+            a: "SGLT: simporte glucosa–Na+ en el enterocito", 
+            exp: "Aprovecha el gradiente de Na+ creado por la ATPasa (transporte primario) para mover glucosa." 
         },
-        {
-            text: "Cuál de los siguientes compuestos es un alcohol graso:",
-            explanation: "La esfingosina es un aminoalcohol de cadena larga (alcohol graso) que sirve de base para muchos esfingolípidos.",
-            options: [
-                { text: "Ácido linoleico", correct: false },
-                { text: "Esfingosina", correct: true },
-                { text: "Ceramida", correct: false },
-                { text: "Ácido fosfatídico", correct: false }
-            ]
+        { 
+            q: "Cuál de los siguientes compuestos es un alcohol graso:", 
+            opts: ["Ácido linoleico", "Esfingosina", "Ceramida", "Ácido fosfatídico"], 
+            a: "Esfingosina", 
+            exp: "La esfingosina es un aminoalcohol de cadena larga (alcohol graso)." 
         },
-        {
-            text: "Qué asociación es incorrecta respecto a la contribución del aminoácido a la función de la proteína:",
-            explanation: "La histidina suele coordinar grupos prostéticos por interacción de su anillo imidazol, no por un nuevo enlace peptídico.",
-            options: [
-                { text: "Histidina – unión de grupos prostéticos por enlace peptídico", correct: true },
-                { text: "Glutamato – carácter ácido de la proteína", correct: false },
-                { text: "Treonina – sitio fosforilable", correct: false },
-                { text: "Cisteína – formación de puentes disulfuro", correct: false }
-            ]
+        { 
+            q: "Qué asociación es incorrecta respecto a la contribución del aminoácido a la función de la proteína (Repetida):", 
+            opts: ["Histidina – unión de grupos prostéticos por enlace peptídico", "Glutamato – carácter ácido de la proteína", "Treonina – sitio fosforilable", "Cisteína – formación de puentes disulfuro"], 
+            a: "Histidina – unión de grupos prostéticos por enlace peptídico", 
+            exp: "La histidina coordina grupos prostéticos (como el hemo) mediante interacciones no covalentes o de coordinación, no creando nuevos enlaces peptídicos." 
         },
-        {
-            text: "La absorción de glucosa a través de la membrana luminal del epitelio intestinal es:",
-            explanation: "En el borde en cepillo intestinal la glucosa entra mediante el cotransportador SGLT1, un transporte activo secundario.",
-            options: [
-                { text: "A favor de gradiente", correct: false },
-                { text: "En antiporte con Na+", correct: false },
-                { text: "Con el transportador GLUT2", correct: false },
-                { text: "Mediante transporte activo secundario dependiente de Na+", correct: true }
-            ]
+        { 
+            q: "La absorción de glucosa a través de la membrana luminal del epitelio intestinal es:", 
+            opts: ["A favor de gradiente", "En antiporte con Na+", "Con el transportador GLUT2", "Mediante transporte activo secundario dependiente de Na+"], 
+            a: "Mediante transporte activo secundario dependiente de Na+", 
+            exp: "A través del cotransportador SGLT1." 
         },
-        {
-            text: "Respecto a los siguientes glúcidos, la afirmación incorrecta es:",
-            explanation: "El ácido glucurónico es un monosacárido derivado que forma parte de mucopolisacáridos, pero no es él mismo un mucopolisacárido.",
-            options: [
-                { text: "Maltosa: glucosa–glucosa (α 1-4)", correct: false },
-                { text: "Ácido glucurónico: mucopolisacárido", correct: true },
-                { text: "Gliceraldehído: aldosa de 3 carbonos", correct: false },
-                { text: "Eritrosa: aldosa de 4 carbonos", correct: false }
-            ]
+        { 
+            q: "Respecto a los siguientes glúcidos, la afirmación incorrecta es (Variación):", 
+            opts: ["Maltosa: glucosa–glucosa (α 1-4)", "Ácido glucurónico: mucopolisacárido", "Gliceraldehído: aldosa de 3 carbonos", "Eritrosa: aldosa de 4 carbonos"], 
+            a: "Ácido glucurónico: mucopolisacárido", 
+            exp: "Reiteración: El ácido glucurónico es un monosacárido ácido, no un mucopolisacárido." 
         },
-        {
-            text: "Qué asociación es incorrecta respecto a la contribución del aminoácido a la función de la proteína:",
-            explanation: "Lisina no suele ser el principal residuo que actúa como nucleófilo catalítico; esa función es típica de Ser o Cys.",
-            options: [
-                { text: "Lisina – ataque nucleófilo al sustrato", correct: true },
-                { text: "Aspartato – carácter ácido de la proteína", correct: false },
-                { text: "Serina – sitio fosforilable", correct: false },
-                { text: "Cisteína – formación de puentes disulfuro", correct: false },
-                { text: "Histidina – cesión/captación de protones", correct: false }
-            ]
+        { 
+            q: "Qué asociación es incorrecta respecto a la contribución del aminoácido a la función de la proteína (Repetida 2):", 
+            opts: ["Lisina – ataque nucleófilo al sustrato", "Aspartato – carácter ácido de la proteína", "Serina – sitio fosforilable", "Cisteína – formación de puentes disulfuro", "Histidina – cesión/captación de protones"], 
+            a: "Lisina – ataque nucleófilo al sustrato", 
+            exp: "La lisina suele participar en enlaces iónicos o estabilización; el ataque nucleófilo es más típico de Ser, Cys o His." 
         },
-        {
-            text: "En función de su complejidad, la molécula de piruvato puede clasificarse como:",
-            explanation: "El piruvato es un metabolito intermedio clave en numerosas rutas (glucólisis, neoglucogénesis, etc.).",
-            options: [
-                { text: "Un precursor estructural", correct: false },
-                { text: "Una unidad estructural básica", correct: false },
-                { text: "Una macromolécula", correct: false },
-                { text: "Una supramolécula", correct: false },
-                { text: "Un intermediario metabólico", correct: true }
-            ]
+        { 
+            q: "En función de su complejidad, la molécula de piruvato puede clasificarse como:", 
+            opts: ["Un precursor estructural", "Una unidad estructural básica", "Una macromolécula", "Una supramolécula", "Un intermediario metabólico"], 
+            a: "Un intermediario metabólico", 
+            exp: "Es un compuesto central en el metabolismo intermediario (cruce de caminos)." 
         },
-        {
-            text: "Los aminoácidos:",
-            explanation: "En el punto isoeléctrico la carga neta total del aminoácido es cero.",
-            options: [
-                { text: "Son todos dextrógiros", correct: false },
-                { text: "Su carga neta es independiente del pH", correct: false },
-                { text: "En el punto isoeléctrico la carga neta es cero", correct: true },
-                { text: "A pH ácido su carga es negativa", correct: false },
-                { text: "A y B son ciertas", correct: false }
-            ]
+        { 
+            q: "Los aminoácidos:", 
+            opts: ["Son todos dextrógiros", "Su carga neta es independiente del pH", "En el punto isoeléctrico la carga neta es cero", "A pH ácido su carga es negativa", "A y B son ciertas"], 
+            a: "En el punto isoeléctrico la carga neta es cero", 
+            exp: "Definición de punto isoeléctrico." 
         },
-        {
-            text: "Leucina, tirosina y fenilalanina son aminoácidos:",
-            explanation: "Tirosina y fenilalanina son aromáticos; leucina es alifática de cadena ramificada.",
-            options: [
-                { text: "Todos aromáticos", correct: false },
-                { text: "Leucina y tirosina tienen cadena lateral alifática", correct: false },
-                { text: "Tirosina y fenilalanina son aromáticos", correct: true },
-                { text: "Fenilalanina tiene cadena lateral alifática", correct: false },
-                { text: "La leucina contiene azufre en su cadena lateral", correct: false }
-            ]
+        { 
+            q: "Leucina, tirosina y fenilalanina son aminoácidos:", 
+            opts: ["Todos aromáticos", "Leucina y tirosina tienen cadena lateral alifática", "Tirosina y fenilalanina son aromáticos", "Fenilalanina tiene cadena lateral alifática", "La leucina contiene azufre en su cadena lateral"], 
+            a: "Tirosina y fenilalanina son aromáticos", 
+            exp: "La leucina es alifática (ramificada); Tyr y Phe tienen anillos aromáticos." 
         },
-        {
-            text: "En la alfa-hélice, los puentes de hidrógeno intracatenarios se establecen entre:",
-            explanation: "En la hélice α el CO del residuo i se une al NH del residuo i+4.",
-            options: [
-                { text: "Un CO en posición i y un NH en posición i+2", correct: false },
-                { text: "Un COO- en posición i y un NH3+ en posición i+2", correct: false },
-                { text: "Un COO- en posición i y un NH3+ en posición i+4", correct: false },
-                { text: "El amino-terminal y el carboxilo-terminal", correct: false },
-                { text: "Un CO en posición i y un NH en posición i+4", correct: true }
-            ]
+        { 
+            q: "En la alfa-hélice, los puentes de hidrógeno intracatenarios se establecen entre:", 
+            opts: ["Un CO en posición i y un NH en posición i+2", "Un COO- en posición i y un NH3+ en posición i+2", "Un COO- en posición i y un NH3+ en posición i+4", "El amino-terminal y el carboxilo-terminal", "Un CO en posición i y un NH en posición i+4"], 
+            a: "Un CO en posición i y un NH en posición i+4", 
+            exp: "Patrón característico de puentes de H en la hélice alfa." 
         },
-        {
-            text: "Como resultado del efecto hidrófobo:",
-            explanation: "El efecto hidrófobo favorece que los residuos apolares se agrupen en el interior y la proteína adopte una forma globular.",
-            options: [
-                { text: "Las proteínas se pliegan necesariamente en forma de hélice α", correct: false },
-                { text: "Se adquiere una estructura globular con residuos apolares hacia el interior", correct: true },
-                { text: "Los residuos polares se disponen hacia el interior", correct: false },
-                { text: "Desaparecen las láminas β", correct: false },
-                { text: "Desaparecen los puentes de hidrógeno intracatenarios", correct: false }
-            ]
+        { 
+            q: "Como resultado del efecto hidrófobo:", 
+            opts: ["Las proteínas se pliegan necesariamente en forma de hélice α", "Se adquiere una estructura globular con residuos apolares hacia el interior", "Los residuos polares se disponen hacia el interior", "Desaparecen las láminas β", "Desaparecen los puentes de hidrógeno intracatenarios"], 
+            a: "Se adquiere una estructura globular con residuos apolares hacia el interior", 
+            exp: "Es la fuerza impulsora principal del plegamiento globular en medio acuoso." 
         },
-        {
-            text: "En los monosacáridos, ¿cuál es el carbono anomérico?",
-            explanation: "Es el carbono que en la forma cíclica procede del grupo carbonilo (aldehído o ceto) y puede formar el nuevo centro quiral.",
-            options: [
-                { text: "El C2 en las aldosas", correct: false },
-                { text: "El carbono que porta el OH en posición 6", correct: false },
-                { text: "El C1 en las cetosas", correct: false },
-                { text: "El carbono que contiene la función aldehído o ceto", correct: true },
-                { text: "El carbono del extremo no reductor", correct: false }
-            ]
+        { 
+            q: "En los monosacáridos, ¿cuál es el carbono anomérico?", 
+            opts: ["El C2 en las aldosas", "El carbono que porta el OH en posición 6", "El C1 en las cetosas", "El carbono que contiene la función aldehído o ceto", "El carbono del extremo no reductor"], 
+            a: "El carbono que contiene la función aldehído o ceto", 
+            exp: "Es el carbono carbonílico que se convierte en un nuevo centro quiral al ciclarse." 
         },
-        {
-            text: "Cuál de los siguientes disacáridos está formado por dos moléculas de glucosa con unión 1-4-α glucosídica:",
-            explanation: "La maltosa está formada por glucosa–glucosa con enlace α(1→4).",
-            options: [
-                { text: "Sacarosa", correct: false },
-                { text: "Lactosa", correct: false },
-                { text: "Trealosa", correct: false },
-                { text: "Maltosa", correct: true },
-                { text: "Celobiosa", correct: false }
-            ]
+        { 
+            q: "Cuál de los siguientes disacáridos está formado por dos moléculas de glucosa con unión 1-4-α glucosídica:", 
+            opts: ["Sacarosa", "Lactosa", "Trealosa", "Maltosa", "Celobiosa"], 
+            a: "Maltosa", 
+            exp: "Maltosa = Glc(alpha1->4)Glc." 
         },
-        {
-            text: "La serie linolénica se caracteriza por:",
-            explanation: "Los ácidos grasos de la serie linolénica pertenecen a la familia ω-3, presentan al menos un doble enlace en posición ω-3.",
-            options: [
-                { text: "No presentar insaturaciones", correct: false },
-                { text: "Derivar del ácido linoleico", correct: false },
-                { text: "Presentar solo dos dobles enlaces", correct: false },
-                { text: "Ser ácidos grasos de cadena muy corta", correct: false },
-                { text: "Presentar un doble enlace en posición ω-3", correct: true }
-            ]
+        { 
+            q: "La serie linolénica se caracteriza por:", 
+            opts: ["No presentar insaturaciones", "Derivar del ácido linoleico", "Presentar solo dos dobles enlaces", "Ser ácidos grasos de cadena muy corta", "Presentar un doble enlace en posición ω-3"], 
+            a: "Presentar un doble enlace en posición ω-3", 
+            exp: "El ácido alfa-linolénico es el precursor de la serie omega-3." 
         },
-        {
-            text: "Los glicolípidos:",
-            explanation: "Son lípidos basados en esfingosina con azúcares unidos al OH primario; los más simples son los cerebrósidos.",
-            options: [
-                { text: "Derivan de la esfingosina", correct: false },
-                { text: "El grupo amino de la esfingosina está acilado por un ácido graso", correct: false },
-                { text: "Al OH primario de la esfingosina se unen uno o más azúcares", correct: false },
-                { text: "Los glicolípidos más simples son los cerebrósidos", correct: false },
-                { text: "Todas las afirmaciones anteriores son ciertas", correct: true }
-            ]
+        { 
+            q: "Los glicolípidos:", 
+            opts: ["Derivan de la esfingosina", "El grupo amino de la esfingosina está acilado por un ácido graso", "Al OH primario de la esfingosina se unen uno o más azúcares", "Los glicolípidos más simples son los cerebrósidos", "Todas las afirmaciones anteriores son ciertas"], 
+            a: "Todas las afirmaciones anteriores son ciertas", 
+            exp: "Descripción completa y correcta de la estructura de los glicolípidos." 
         },
-        {
-            text: "Cuál de estos componentes lipídicos es el más abundante en las membranas biológicas:",
-            explanation: "La fosfatidilcolina es uno de los fosfolípidos mayoritarios en muchas membranas eucariotas.",
-            options: [
-                { text: "Fosfatidilcolina", correct: true },
-                { text: "Fosfatidilserina", correct: false },
-                { text: "Fosfatidilinositol", correct: false },
-                { text: "Ácido fosfatídico", correct: false },
-                { text: "Colesterol", correct: false }
-            ]
+        { 
+            q: "Cuál de estos componentes lipídicos es el más abundante en las membranas biológicas:", 
+            opts: ["Fosfatidilcolina", "Fosfatidilserina", "Fosfatidilinositol", "Ácido fosfatídico", "Colesterol"], 
+            a: "Fosfatidilcolina", 
+            exp: "Es el fosfolípido mayoritario en la capa externa de la mayoría de células animales." 
         },
-        {
-            text: "Las insaturaciones en los ácidos grasos de nuestro organismo:",
-            explanation: "Las dobles ligaduras introducidas por las desaturasas son, en condiciones fisiológicas, de configuración cis.",
-            options: [
-                { text: "Siempre están separadas por un solo carbono saturado", correct: false },
-                { text: "Presentan isomería cis", correct: true },
-                { text: "Se sitúan más allá de la posición 9 en todos los casos", correct: false },
-                { text: "Aparecen de forma espontánea sin enzimas", correct: false },
-                { text: "No existen ácidos grasos insaturados en el organismo", correct: false }
-            ]
+        { 
+            q: "Las insaturaciones en los ácidos grasos de nuestro organismo:", 
+            opts: ["Siempre están separadas por un solo carbono saturado", "Presentan isomería cis", "Se sitúan más allá de la posición 9 en todos los casos", "Aparecen de forma espontánea sin enzimas", "No existen ácidos grasos insaturados en el organismo"], 
+            a: "Presentan isomería cis", 
+            exp: "Los dobles enlaces naturales son casi siempre CIS, lo que produce acodamientos en la cadena." 
         },
-        {
-            text: "Los eicosanoides:",
-            explanation: "Son derivados de 20 carbonos, en su mayoría procedentes del ácido araquidónico.",
-            options: [
-                { text: "Son fosfolípidos de membrana", correct: false },
-                { text: "Derivan de ácidos grasos saturados", correct: false },
-                { text: "Derivan del ácido araquidónico", correct: true },
-                { text: "Son sustancias patológicas que no aparecen en condiciones normales", correct: false },
-                { text: "Su principal función es producir energía", correct: false }
-            ]
+        { 
+            q: "Los eicosanoides:", 
+            opts: ["Son fosfolípidos de membrana", "Derivan de ácidos grasos saturados", "Derivan del ácido araquidónico", "Son sustancias patológicas que no aparecen en condiciones normales", "Su principal función es producir energía"], 
+            a: "Derivan del ácido araquidónico", 
+            exp: "Prostaglandinas, tromboxanos y leucotrienos derivan de ácidos grasos poliinsaturados de 20 carbonos (araquidónico)." 
         },
-        {
-            text: "Cuál de estas proteínas de membrana se relaciona con un mecanismo de antiporte por difusión facilitada:",
-            explanation: "AE-1 (banda 3 del hematíe) intercambia Cl- y HCO3- mediante un antiporte electroneutro.",
-            options: [
-                { text: "GLUT4", correct: false },
-                { text: "AE-1", correct: true },
-                { text: "SGLT", correct: false },
-                { text: "Bomba Na+/K+-ATPasa", correct: false },
-                { text: "Un receptor acoplado a proteína G (GPCR)", correct: false }
-            ]
+        { 
+            q: "Cuál de estas proteínas de membrana se relaciona con un mecanismo de antiporte por difusión facilitada:", 
+            opts: ["GLUT4", "AE-1", "SGLT", "Bomba Na+/K+-ATPasa", "Un receptor acoplado a proteína G (GPCR)"], 
+            a: "AE-1", 
+            exp: "Intercambiador aniónico 1 (Banda 3): Cl- entra, HCO3- sale (o viceversa)." 
         },
-        {
-            text: "Cuál de estas moléculas NO es un proteoglicano:",
-            explanation: "Los sulfátidos son esfingolípidos sulfatados, no proteoglicanos.",
-            options: [
-                { text: "Condroitín sulfato", correct: false },
-                { text: "Dermatán sulfato", correct: false },
-                { text: "Queratán sulfato", correct: false },
-                { text: "Sulfátidos", correct: true },
-                { text: "Ácido hialurónico", correct: false }
-            ]
+        { 
+            q: "Cuál de estas moléculas NO es un proteoglicano:", 
+            opts: ["Condroitín sulfato", "Dermatán sulfato", "Queratán sulfato", "Sulfátidos", "Ácido hialurónico"], 
+            a: "Sulfátidos", 
+            exp: "Los sulfátidos son esfingolípidos (galactocerebrósido sulfatado), no glicosaminoglicanos/proteoglicanos." 
         },
-        {
-            text: "Qué es el ácido siálico:",
-            explanation: "El ácido siálico es un monosacárido derivado (como el N-acetilneuramínico) presente en extremos de oligosacáridos.",
-            options: [
-                { text: "Un gangliósido completo", correct: false },
-                { text: "Un monosacárido modificado", correct: true },
-                { text: "Un glicerofosfolípido", correct: false },
-                { text: "Un proteoglicano", correct: false },
-                { text: "Una glucoproteína", correct: false }
-            ]
+        { 
+            q: "Qué es el ácido siálico:", 
+            opts: ["Un gangliósido completo", "Un monosacárido modificado", "Un glicerofosfolípido", "Un proteoglicano", "Una glucoproteína"], 
+            a: "Un monosacárido modificado", 
+            exp: "Es un derivado de 9 carbonos (ácido N-acetilneuramínico)." 
         },
-        {
-            text: "Tirosina, histidina y cisteína:",
-            explanation: "Tirosina es aromática, cisteína contiene azufre y puede formar puentes disulfuro, e histidina tiene un anillo imidazol básico.",
-            options: [
-                { text: "La tirosina es un aminoácido aromático", correct: false },
-                { text: "La cisteína contiene azufre en su cadena lateral", correct: false },
-                { text: "La histidina es un aminoácido básico", correct: false },
-                { text: "La cisteína puede formar puentes disulfuro", correct: false },
-                { text: "Todas las afirmaciones anteriores son ciertas", correct: true }
-            ]
+        { 
+            q: "Tirosina, histidina y cisteína:", 
+            opts: ["La tirosina es un aminoácido aromático", "La cisteína contiene azufre en su cadena lateral", "La histidina es un aminoácido básico", "La cisteína puede formar puentes disulfuro", "Todas las afirmaciones anteriores son ciertas"], 
+            a: "Todas las afirmaciones anteriores son ciertas", 
+            exp: "Todas son características correctas de estos aminoácidos." 
         },
-        {
-            text: "Con respecto a la estructura proteica, señalar cuál de las siguientes afirmaciones NO es cierta:",
-            explanation: "En la hélice α los enlaces de hidrógeno son aproximadamente paralelos al eje, no perpendiculares.",
-            options: [
-                { text: "En las hélices los enlaces de hidrógeno son perpendiculares al eje de enrollamiento", correct: true },
-                { text: "En la lámina β las cadenas laterales se sitúan por encima y por debajo del plano", correct: false },
-                { text: "En las hélices los enlaces de hidrógeno son paralelos al eje de enrollamiento", correct: false },
-                { text: "El enlace de hidrógeno se establece entre el H del amino y el O del carbonilo", correct: false },
-                { text: "En las hélices las cadenas laterales se disponen al exterior", correct: false }
-            ]
+        { 
+            q: "Con respecto a la estructura proteica, señalar cuál de las siguientes afirmaciones NO es cierta:", 
+            opts: ["En las hélices los enlaces de hidrógeno son perpendiculares al eje de enrollamiento", "En la lámina β las cadenas laterales se sitúan por encima y por debajo del plano", "En las hélices los enlaces de hidrógeno son paralelos al eje de enrollamiento", "El enlace de hidrógeno se establece entre el H del amino y el O del carbonilo", "En las hélices las cadenas laterales se disponen al exterior"], 
+            a: "En las hélices los enlaces de hidrógeno son perpendiculares al eje de enrollamiento", 
+            exp: "Incorrecto. En la hélice alfa, los puentes de H son PARALELOS al eje longitudinal de la hélice." 
         },
-        {
-            text: "En las proteínas globulares:",
-            explanation: "Los residuos hidrófobos se esconden en el interior y las interacciones carga-carga también ayudan al plegamiento.",
-            options: [
-                { text: "Los residuos hidrófobos se sitúan en el interior", correct: false },
-                { text: "La estructura es siempre en hélice", correct: false },
-                { text: "El plegado incluye interacciones entre cargas", correct: false },
-                { text: "Las dos afirmaciones anteriores (hidrófobos internos e interacciones de carga) son ciertas", correct: true },
-                { text: "El plegado es independiente de la secuencia", correct: false }
-            ]
+        { 
+            q: "En las proteínas globulares:", 
+            opts: ["Los residuos hidrófobos se sitúan en el interior", "La estructura es siempre en hélice", "El plegado incluye interacciones entre cargas", "Las dos afirmaciones anteriores (hidrófobos internos e interacciones de carga) son ciertas", "El plegado es independiente de la secuencia"], 
+            a: "Las dos afirmaciones anteriores (hidrófobos internos e interacciones de carga) son ciertas", 
+            exp: "Combina el efecto hidrófobo y las interacciones electrostáticas." 
         },
-        {
-            text: "La degradación de Edman se emplea:",
-            explanation: "La degradación de Edman permite liberar secuencialmente el extremo amino-terminal de un péptido y repetir el ciclo para determinar la secuencia.",
-            options: [
-                { text: "Para analizar la estructura secundaria de las proteínas", correct: false },
-                { text: "Para analizar la secuencia de aminoácidos de un péptido", correct: false },
-                { text: "Para separar secuencialmente el residuo del extremo amino-terminal", correct: false },
-                { text: "Puede realizarse varias veces sobre el mismo péptido", correct: false },
-                { text: "Incluye las tres afirmaciones anteriores sobre la secuencia", correct: true }
-            ]
+        { 
+            q: "La degradación de Edman se emplea:", 
+            opts: ["Para analizar la estructura secundaria de las proteínas", "Para analizar la secuencia de aminoácidos de un péptido", "Para separar secuencialmente el residuo del extremo amino-terminal", "Puede realizarse varias veces sobre el mismo péptido", "Incluye las tres afirmaciones anteriores sobre la secuencia"], 
+            a: "Incluye las tres afirmaciones anteriores sobre la secuencia", 
+            exp: "Es el método clásico de secuenciación desde el extremo N-terminal." 
         },
-        {
-            text: "Los disacáridos:",
-            explanation: "Si los dos carbonos anoméricos están implicados en el enlace, el disacárido no es reductor; la lactosa sí es reductora.",
-            options: [
-                { text: "Son todos reductores", correct: false },
-                { text: "Si intervienen dos carbonos anoméricos pueden no ser reductores", correct: false },
-                { text: "La lactosa se forma por unión de galactosa y glucosa", correct: false },
-                { text: "La sacarosa es un disacárido reductor", correct: false },
-                { text: "Las dos afirmaciones anteriores sobre el carácter reductor y la lactosa son correctas", correct: true }
-            ]
+        { 
+            q: "Los disacáridos:", 
+            opts: ["Son todos reductores", "Si intervienen dos carbonos anoméricos pueden no ser reductores", "La lactosa se forma por unión de galactosa y glucosa", "La sacarosa es un disacárido reductor", "Las dos afirmaciones anteriores sobre el carácter reductor y la lactosa son correctas"], 
+            a: "Las dos afirmaciones anteriores sobre el carácter reductor y la lactosa son correctas", 
+            exp: "Si ambos carbonos anoméricos forman el enlace, no hay extremo libre para reducir. La lactosa es Gal+Glc." 
         },
-        {
-            text: "En las glucoproteínas, los enlaces entre proteínas y sacáridos:",
-            explanation: "Los carbohidratos pueden unirse tanto por enlace N-glucosídico (Asn) como por enlace O-glucosídico (Ser/Thr).",
-            options: [
-                { text: "Son siempre enlaces N-glucosídicos", correct: false },
-                { text: "Son siempre enlaces O-glucosídicos", correct: false },
-                { text: "Los carbohidratos se unen a las proteínas a través de Asn o de Ser/Thr", correct: false },
-                { text: "Pueden ser enlaces N- u O-glucosídicos", correct: false },
-                { text: "Las dos afirmaciones anteriores (unión por Asn o por Ser/Thr y enlaces N u O) son correctas", correct: true }
-            ]
+        { 
+            q: "En las glucoproteínas, los enlaces entre proteínas y sacáridos:", 
+            opts: ["Son siempre enlaces N-glucosídicos", "Son siempre enlaces O-glucosídicos", "Los carbohidratos se unen a las proteínas a través de Asn o de Ser/Thr", "Pueden ser enlaces N- u O-glucosídicos", "Las dos afirmaciones anteriores (unión por Asn o por Ser/Thr y enlaces N u O) son correctas"], 
+            a: "Las dos afirmaciones anteriores (unión por Asn o por Ser/Thr y enlaces N u O) son correctas", 
+            exp: "Existen ambos tipos de glicosilación." 
         },
-        {
-            text: "Cuál de los siguientes ácidos grasos corresponde a la serie araquidónica:",
-            explanation: "El ácido araquidónico es un ácido graso C20 con cuatro dobles enlaces en posiciones 5,8,11,14.",
-            options: [
-                { text: "18:1 Δ9", correct: false },
-                { text: "18:2 Δ9,12", correct: false },
-                { text: "18:3 Δ9,12,15", correct: false },
-                { text: "20:4 Δ5,8,11,14", correct: true },
-                { text: "Ninguna de las anteriores", correct: false }
-            ]
+        { 
+            q: "Cuál de los siguientes ácidos grasos corresponde a la serie araquidónica:", 
+            opts: ["18:1 Δ9", "18:2 Δ9,12", "18:3 Δ9,12,15", "20:4 Δ5,8,11,14", "Ninguna de las anteriores"], 
+            a: "20:4 Δ5,8,11,14", 
+            exp: "Ácido araquidónico = 20 carbonos, 4 dobles enlaces." 
         },
-        {
-            text: "Los glicerofosfolípidos:",
-            explanation: "Son derivados del ácido fosfatídico, contienen dos ácidos grasos y un alcohol en el grupo polar (colina, etanolamina, etc.).",
-            options: [
-                { text: "Son derivados del ácido fosfatídico", correct: false },
-                { text: "Contienen dos ácidos grasos", correct: false },
-                { text: "Contienen un alcohol en el grupo polar", correct: false },
-                { text: "Fosfatidilcolina y fosfatidiletanolamina son glicerofosfolípidos", correct: false },
-                { text: "Todas las afirmaciones anteriores son ciertas", correct: true }
-            ]
+        { 
+            q: "Los glicerofosfolípidos:", 
+            opts: ["Son derivados del ácido fosfatídico", "Contienen dos ácidos grasos", "Contienen un alcohol en el grupo polar", "Fosfatidilcolina y fosfatidiletanolamina son glicerofosfolípidos", "Todas las afirmaciones anteriores son ciertas"], 
+            a: "Todas las afirmaciones anteriores son ciertas", 
+            exp: "Definición completa." 
         },
-        {
-            text: "Los glucolípidos y esfingolípidos:",
-            explanation: "Muchos esfingolípidos contienen ácidos grasos de cadena muy larga y comparten la base de esfingosina.",
-            options: [
-                { text: "Contienen ambos esfingosina", correct: false },
-                { text: "Los esfingolípidos suelen tener ácidos grasos muy largos", correct: false },
-                { text: "Los cerebrósidos incluyen un monosacárido unido a ceramida", correct: false },
-                { text: "La colina no forma parte de la mayoría de esfingolípidos (solo en esfingomielina)", correct: false },
-                { text: "Las dos primeras afirmaciones son ciertas", correct: true }
-            ]
+        { 
+            q: "Los glucolípidos y esfingolípidos:", 
+            opts: ["Contienen ambos esfingosina", "Los esfingolípidos suelen tener ácidos grasos muy largos", "Los cerebrósidos incluyen un monosacárido unido a ceramida", "La colina no forma parte de la mayoría de esfingolípidos (solo en esfingomielina)", "Las dos primeras afirmaciones son ciertas"], 
+            a: "Las dos primeras afirmaciones son ciertas", 
+            exp: "Comparten la base esfingoide y suelen tener ácidos grasos de cadena larga." 
         },
-        {
-            text: "En las proteínas, la hélice α y la hoja β-plegada son ejemplos de:",
-            explanation: "Son estructuras locales del esqueleto peptídico estabilizadas por puentes de hidrógeno: estructura secundaria.",
-            options: [
-                { text: "Estructura primaria", correct: false },
-                { text: "Estructura secundaria", correct: true },
-                { text: "Estructura terciaria", correct: false },
-                { text: "Estructura cuaternaria", correct: false }
-            ]
+        { 
+            q: "En las proteínas, la hélice α y la hoja β-plegada son ejemplos de:", 
+            opts: ["Estructura primaria", "Estructura secundaria", "Estructura terciaria", "Estructura cuaternaria"], 
+            a: "Estructura secundaria", 
+            exp: "Patrones de plegamiento local." 
         },
-        {
-            text: "Indica qué afirmación es correcta:",
-            explanation: "Cuanto más hidrófobo es un aminoácido, más tiende a localizarse en entornos no polares o en el interior de las proteínas.",
-            options: [
-                { text: "La glicina es el único aminoácido con carbono α asimétrico", correct: false },
-                { text: "En un centro quiral las imágenes especulares son superponibles", correct: false },
-                { text: "El pKa del grupo carboxilo de un aminoácido es invariable en cualquier entorno", correct: false },
-                { text: "A mayor hidrofobicidad de un aminoácido, más tendencia a unirse a moléculas no polares", correct: true }
-            ]
+        { 
+            q: "Indica qué afirmación es correcta (Repetida):", 
+            opts: ["La glicina es el único aminoácido con carbono α asimétrico", "En un centro quiral las imágenes especulares son superponibles", "El pKa del grupo carboxilo de un aminoácido es invariable en cualquier entorno", "A mayor hidrofobicidad de un aminoácido, más tendencia a unirse a moléculas no polares"], 
+            a: "A mayor hidrofobicidad de un aminoácido, más tendencia a unirse a moléculas no polares", 
+            exp: "Principio básico de las interacciones hidrófobas." 
         },
-        {
-            text: "Indica qué afirmación es correcta:",
-            explanation: "Se repite la idea: los aminoácidos más hidrófobos prefieren entornos no polares.",
-            options: [
-                { text: "En un centro quiral las imágenes especulares son superponibles", correct: false },
-                { text: "A mayor hidrofobicidad de un aminoácido, más tendencia a unirse a moléculas no polares", correct: true },
-                { text: "La glicina es el único aminoácido con carbono α asimétrico", correct: false },
-                { text: "El pKa del grupo carboxilo de un aminoácido es totalmente invariable", correct: false }
-            ]
+        { 
+            q: "Indica qué afirmación es correcta (Variación):", 
+            opts: ["En un centro quiral las imágenes especulares son superponibles", "A mayor hidrofobicidad de un aminoácido, más tendencia a unirse a moléculas no polares", "La glicina es el único aminoácido con carbono α asimétrico", "El pKa del grupo carboxilo de un aminoácido es totalmente invariable"], 
+            a: "A mayor hidrofobicidad de un aminoácido, más tendencia a unirse a moléculas no polares", 
+            exp: "Reiteración del concepto hidrófobo." 
         },
-        {
-            text: "Indica qué afirmación es correcta en relación con soluciones de aminoácidos a pH fisiológico:",
-            explanation: "A pH cercano a 7, la mayoría de aminoácidos están como zwitteriones con una carga positiva y otra negativa.",
-            options: [
-                { text: "Algunos aminoácidos contienen sólo cargas negativas", correct: false },
-                { text: "Todos los aminoácidos contienen simultáneamente cargas positivas y negativas", correct: true },
-                { text: "Todos los aminoácidos tienen cargas positivas en la cadena R", correct: false },
-                { text: "Algunos aminoácidos contienen sólo cargas positivas", correct: false }
-            ]
+        { 
+            q: "Indica qué afirmación es correcta en relación con soluciones de aminoácidos a pH fisiológico:", 
+            opts: ["Algunos aminoácidos contienen sólo cargas negativas", "Todos los aminoácidos contienen simultáneamente cargas positivas y negativas", "Todos los aminoácidos tienen cargas positivas en la cadena R", "Algunos aminoácidos contienen sólo cargas positivas"], 
+            a: "Todos los aminoácidos contienen simultáneamente cargas positivas y negativas", 
+            exp: "A pH neutro, todos tienen el grupo alfa-amino protonado (+) y el alfa-carboxilo desprotonado (-)." 
         },
-        {
-            text: "Cuál de los siguientes compuestos no es de alta energía de hidrólisis:",
-            explanation: "Fosfocreatina, ATP, acil-CoA y PEP se consideran compuestos de alta energía; la carboxibiotina es un intermediario activado pero no un fosfato de alta energía clásico.",
-            options: [
-                { text: "ATP", correct: false },
-                { text: "Acil-CoA", correct: false },
-                { text: "Carboxibiotina", correct: true },
-                { text: "Fosfoenolpiruvato", correct: false },
-                { text: "Fosfocreatina", correct: false }
-            ]
+        { 
+            q: "Cuál de los siguientes compuestos no es de alta energía de hidrólisis:", 
+            opts: ["ATP", "Acil-CoA", "Carboxibiotina", "Fosfoenolpiruvato", "Fosfocreatina"], 
+            a: "Carboxibiotina", 
+            exp: "Es un cofactor activado para transferencia de CO2, pero su hidrólisis no libera la energía comparable a un fosfato de alta energía o un tioéster." 
         },
-        {
-            text: "Tras la disociación del heterotrímero α/β/γ asociado a un receptor GPCR:",
-            explanation: "Cuando el complejo se activa, el receptor puede cambiar su afinidad por el ligando y se inician vías de desensibilización.",
-            options: [
-                { text: "El receptor no sufre cambios conformacionales", correct: false },
-                { text: "El complejo β/γ no puede actuar sobre proteínas efectoras", correct: false },
-                { text: "La subunidad α intercambia GTP por GDP tras la hidrólisis", correct: false },
-                { text: "El receptor puede disminuir su afinidad por el ligando", correct: true }
-            ]
+        { 
+            q: "Tras la disociación del heterotrímero α/β/γ asociado a un receptor GPCR:", 
+            opts: ["El receptor no sufre cambios conformacionales", "El complejo β/γ no puede actuar sobre proteínas efectoras", "La subunidad α intercambia GTP por GDP tras la hidrólisis", "El receptor puede disminuir su afinidad por el ligando"], 
+            a: "El receptor puede disminuir su afinidad por el ligando", 
+            exp: "Al activarse la proteína G, el receptor suele pasar a un estado de baja afinidad." 
         }
     ];
 
-    function renderQuiz() {
-        const container = document.getElementById('quiz-container');
-        container.innerHTML = '';
+    // --- ASIGNAR IDs ÚNICOS ---
+    quizData.forEach((item, index) => {
+        item.id = index;
+    });
 
-        // Ahora iteramos directamente sobre 'questions' sin barajar
-        // Siempre saldrán en el orden original del 1 al 40
-        questions.forEach((q, index) => {
+    // --- GESTIÓN DE ESTADO ---
+    let markedQuestions = new Set();
+    let failedQuestions = new Set();
+
+    function shuffleArray(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
+
+    const container = document.getElementById('quiz-container');
+
+    // Función principal
+    function renderQuiz(questionsToLoad = quizData) {
+        container.innerHTML = "";
+        document.getElementById("restart-menu").style.display = "none";
+        document.getElementById("finish-btn").style.display = "inline-block";
+
+        if(questionsToLoad.length === 0) {
+            container.innerHTML = "<p style='text-align:center; padding:20px; color:#6b7280;'>No hay preguntas para mostrar en esta selección.</p>";
+            return;
+        }
+
+        questionsToLoad.forEach((item, displayIndex) => {
             const card = document.createElement('div');
             card.className = 'question-card';
 
-            const title = document.createElement('div');
-            title.className = 'question-title';
-            title.textContent = `${index + 1}. ${q.text}`;
-            card.appendChild(title);
+            // Checkbox Marcar
+            const markContainer = document.createElement("div");
+            markContainer.className = "mark-container";
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = `mark-${item.id}`;
+            if(markedQuestions.has(item.id)) checkbox.checked = true;
 
-            const optionsList = document.createElement('ul');
-            optionsList.className = 'options-list';
+            checkbox.onchange = (e) => {
+                if(e.target.checked) markedQuestions.add(item.id);
+                else markedQuestions.delete(item.id);
+            };
 
-            // Ahora iteramos directamente sobre 'q.options' sin barajar
-            // Las respuestas (A, B, C...) siempre estarán en el mismo lugar
-            q.options.forEach(opt => {
-                const li = document.createElement('li');
-                li.className = 'option-item';
+            const label = document.createElement("label");
+            label.htmlFor = `mark-${item.id}`;
+            label.innerText = "Marcar para revisar";
+            markContainer.appendChild(checkbox);
+            markContainer.appendChild(label);
+            card.appendChild(markContainer);
 
+            // Pregunta
+            const header = document.createElement('div');
+            header.className = 'question-header';
+            header.textContent = `Pregunta ${item.id + 1}`; 
+            card.appendChild(header);
+
+            const questionText = document.createElement('div');
+            questionText.className = 'question-text';
+            questionText.textContent = item.q;
+
+            // --- INSERCIÓN DE DIAGRAMAS ---
+            if (item.id === 0) { // Aminoácidos estructura
+                 questionText.innerHTML += `<span class='img-tag'>
+
+[Image of amino acid general structure and side chains]
+</span>`;
+            } else if (item.id === 29) { // Hélice Alfa
+                 questionText.innerHTML += `<span class='img-tag'></span>`;
+            } else if (item.id === 6) { // Transporte membrana
+                 questionText.innerHTML += `<span class='img-tag'></span>`;
+            } else if (item.id === 37) { // Fosfolípidos
+                 questionText.innerHTML += `<span class='img-tag'></span>`;
+            } else if (item.id === 12) { // Enlace glucosídico
+                 questionText.innerHTML += `<span class='img-tag'>
+
+[Image of glycosidic bond formation]
+</span>`;
+            } else if (item.id === 5) { // Esfingomielina
+                 questionText.innerHTML += `<span class='img-tag'>
+
+[Image of sphingomyelin structure]
+</span>`;
+            } else if (item.id === 50) { // GPCR
+                 questionText.innerHTML += `<span class='img-tag'>
+
+[Image of GPCR signaling pathway]
+</span>`;
+            }
+
+            card.appendChild(questionText);
+
+            // Opciones
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options-container';
+
+            let optionsObj = item.opts.map(opt => ({
+                text: opt,
+                isCorrect: opt === item.a
+            }));
+            optionsObj = shuffleArray(optionsObj);
+
+            // Explicación
+            const explanationDiv = document.createElement('div');
+            explanationDiv.className = 'explanation';
+            explanationDiv.innerHTML = `<strong>Explicación:</strong> ${item.exp}`;
+
+            optionsObj.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.textContent = opt.text;
-                btn.dataset.correct = opt.correct ? 'true' : 'false';
 
-                btn.onclick = () => checkAnswer(card, btn);
+                btn.onclick = () => {
+                    const allBtns = optionsDiv.querySelectorAll('.option-btn');
+                    allBtns.forEach(b => b.disabled = true);
 
-                li.appendChild(btn);
-                optionsList.appendChild(li);
+                    if (opt.isCorrect) {
+                        btn.classList.add('correct');
+                    } else {
+                        btn.classList.add('incorrect');
+                        failedQuestions.add(item.id);
+                        
+                        allBtns.forEach(b => {
+                            if (b.textContent === item.a) b.classList.add('correct');
+                        });
+                    }
+                    explanationDiv.classList.add('visible');
+                };
+                optionsDiv.appendChild(btn);
             });
 
-            card.appendChild(optionsList);
-
-            const feedback = document.createElement('div');
-            feedback.className = 'feedback';
-            feedback.textContent = q.explanation;
-            card.appendChild(feedback);
-
+            card.appendChild(optionsDiv);
+            card.appendChild(explanationDiv);
             container.appendChild(card);
         });
     }
 
-    function checkAnswer(card, clickedBtn) {
-        if (card.dataset.answered === 'true') return;
-        card.dataset.answered = 'true';
-
-        const buttons = card.querySelectorAll('.option-btn');
-        buttons.forEach(b => {
-            b.classList.add('disabled');
-            if (b.dataset.correct === 'true') {
-                b.classList.add('correct');
-            }
-        });
-
-        if (clickedBtn.dataset.correct !== 'true') {
-            clickedBtn.classList.add('incorrect');
-        }
-
-        const feedback = card.querySelector('.feedback');
-        if (feedback) feedback.style.display = 'block';
+    // --- Control Final ---
+    function showEndOptions() {
+        document.getElementById("finish-btn").style.display = "none";
+        document.getElementById("restart-menu").style.display = "flex";
+        document.getElementById("controls-area").scrollIntoView({behavior: "smooth"});
+        
+        document.getElementById("stats-summary").innerHTML = `
+            Preguntas marcadas: <strong>${markedQuestions.size}</strong><br>
+            Preguntas falladas en esta sesión: <strong>${failedQuestions.size}</strong>
+        `;
     }
 
-    // Inicializar
+    function restartQuiz(mode) {
+        let subset = [];
+        if (mode === 'all') subset = quizData;
+        else if (mode === 'marked') subset = quizData.filter(q => markedQuestions.has(q.id));
+        else if (mode === 'failed') subset = quizData.filter(q => failedQuestions.has(q.id));
+        else if (mode === 'failed_marked') subset = quizData.filter(q => failedQuestions.has(q.id) || markedQuestions.has(q.id));
+
+        if(mode !== 'all') failedQuestions.clear(); 
+        else {
+            failedQuestions.clear();
+            markedQuestions.clear();
+        }
+
+        renderQuiz(subset);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     renderQuiz();
 </script>
 
