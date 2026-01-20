@@ -5,491 +5,576 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Bloque X: Información Genética</title>
     <style>
+        :root {
+            --primary: #059669; /* Verde Esmeralda */
+            --primary-dark: #047857;
+            --primary-light: #d1fae5;
+            --bg: #f0fdf4;
+            --text: #1f2937;
+            --white: #ffffff;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
-            line-height: 1.6;
-            margin: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            max-width: 850px;
+            margin: 0 auto;
             padding: 20px;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
+
         h1 {
             text-align: center;
-            color: #2c3e50;
-            margin-bottom: 30px;
-        }
-        .question-block {
-            margin-bottom: 25px;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--primary);
             padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
+            display: inline-block;
+            width: 100%;
         }
-        .question-text {
-            font-weight: 600;
-            font-size: 1.1em;
+
+        .question-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-left: 6px solid var(--primary);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+
+        .question-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- Checkbox para Marcar --- */
+        .mark-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
             margin-bottom: 15px;
-            color: #2c3e50;
+            font-size: 0.9em;
+            color: var(--primary);
+            font-weight: bold;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 10px;
         }
+        .mark-container input {
+            margin-right: 8px;
+            transform: scale(1.3);
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+        .mark-container label {
+            cursor: pointer;
+        }
+
+        .question-header {
+            font-size: 0.85em;
+            color: #059669;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-weight: 700;
+            font-size: 1.15em;
+            margin-bottom: 20px;
+            color: #111827;
+            line-height: 1.5;
+        }
+
+        /* Etiquetas para diagramas */
+        .img-tag {
+            display: block;
+            margin-top: 12px;
+            padding: 10px;
+            background-color: #ecfdf5;
+            border-left: 4px solid #34d399;
+            color: #065f46;
+            font-size: 0.9em;
+            font-style: italic;
+            border-radius: 0 4px 4px 0;
+        }
+
         .options-container {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
+
         .option-btn {
-            background-color: #f8f9fa;
-            border: 2px solid #e9ecef;
+            padding: 14px 18px;
+            border: 2px solid #e5e7eb;
+            background: #fff;
             border-radius: 8px;
-            padding: 12px 15px;
+            cursor: pointer;
             text-align: left;
-            cursor: pointer;
             transition: all 0.2s;
-            font-size: 0.95em;
-            color: #495057;
+            font-size: 1em;
+            color: #374151;
+            position: relative;
         }
-        .option-btn:hover:not(.disabled) {
-            background-color: #e2e6ea;
-            border-color: #adb5bd;
+
+        .option-btn:hover:not(:disabled) {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+            padding-left: 25px; /* Efecto desplazamiento */
         }
-        .option-btn.correct {
-            background-color: #d4edda !important;
-            border-color: #28a745 !important;
-            color: #155724 !important;
-        }
-        .option-btn.incorrect {
-            background-color: #f8d7da !important;
-            border-color: #dc3545 !important;
-            color: #721c24 !important;
-        }
-        .option-btn.disabled {
+
+        .option-btn:disabled {
             cursor: default;
-            opacity: 0.8;
-            pointer-events: none;
+            opacity: 0.7;
         }
-        .reload-btn {
-            display: block;
-            width: 100%;
+
+        /* Estados de respuesta */
+        .correct {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #064e3b !important;
+            font-weight: 600;
+        }
+
+        .incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #7f1d1d !important;
+        }
+
+        /* Caja de Explicación */
+        .explanation {
+            margin-top: 20px;
             padding: 15px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
-            cursor: pointer;
-            margin-top: 30px;
-        }
-        .reload-btn:hover {
-            background-color: #2980b9;
-        }
-        .feedback {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #e9ecef;
+            background-color: #f0fdfa;
+            border-left: 5px solid var(--primary);
             border-radius: 6px;
-            font-size: 0.9em;
             display: none;
+            font-size: 0.95em;
+            color: #134e4a;
+            animation: slideDown 0.3s ease-out;
         }
+        .explanation.visible {
+            display: block;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Área de Controles --- */
+        #controls-area {
+            margin-top: 50px;
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--primary);
+        }
+
+        .action-btn {
+            background: var(--primary); color: white; border: none;
+            padding: 12px 25px; font-size: 1.05em; border-radius: 8px;
+            cursor: pointer; margin: 8px;
+            transition: background 0.3s, transform 0.2s;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .action-btn:hover { 
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .restart-options {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 25px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .restart-options button {
+            width: 100%;
+            background: #4b5563;
+        }
+        .restart-options button:hover { background: #1f2937; }
+        .restart-options button:first-child { background: var(--primary); }
+
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Bloque X. Información Genética [1º MED UCA]</h1>
-    <div id="quiz-area"></div>
-    <button class="reload-btn" onclick="renderQuiz()">Reiniciar Test (Barajar Opciones)</button>
-</div>
+    <h1>Información Genética</h1>
+    <div style="text-align: center; color: #4b5563; margin-bottom: 30px;">
+        1º Medicina UCA | Replicación, Transcripción y Traducción
+    </div>
+    
+    <div id="quiz-container"></div>
+
+    <div id="controls-area">
+        <button id="finish-btn" class="action-btn" onclick="showEndOptions()">🏁 Finalizar revisión</button>
+        
+        <div id="restart-menu" class="restart-options">
+            <h3>Resultados de la sesión</h3>
+            <p id="stats-summary"></p>
+            <button class="action-btn" onclick="restartQuiz('all')">🔄 Rehacer todo el test</button>
+            <button class="action-btn" onclick="restartQuiz('marked')">🔖 Repasar marcadas</button>
+            <button class="action-btn" onclick="restartQuiz('failed')">❌ Repasar falladas</button>
+            <button class="action-btn" onclick="restartQuiz('failed_marked')">⚠️ Falladas + Marcadas</button>
+        </div>
+    </div>
 
 <script>
-    // Base de datos de preguntas CON explicación y SIN mostrar la correcta
-    const questions = [
-        {
-            text: "1. En la síntesis de DNA:",
-            explanation: "Las DNA polimerasas añaden desoxinucleótidos trifosfato y corrigen errores gracias a su actividad exonucleasa 3'→5'.",
-            options: [
-                { text: "Se necesitan desoxinucleótidos monofosfato para elongar la cadena.", correct: false },
-                { text: "No es necesario que haya un ácido nucleico que actúe como cebador.", correct: false },
-                { text: "El sentido de la elongación de la cadena es 3’→5’.", correct: false },
-                { text: "En eucariotas intervienen 3 RNA polimerasas en el proceso de inicio.", correct: false },
-                { text: "Las DNA polimerasas tienen actividad exonucleasa 3’→5’.", correct: true }
-            ]
+    // Datos convertidos al formato estándar
+    const quizData = [
+        { 
+            q: "1. En la síntesis de DNA:", 
+            opts: ["Se necesitan desoxinucleótidos monofosfato para elongar la cadena.", "No es necesario que haya un ácido nucleico que actúe como cebador.", "El sentido de la elongación de la cadena es 3’→5’.", "En eucariotas intervienen 3 RNA polimerasas en el proceso de inicio.", "Las DNA polimerasas tienen actividad exonucleasa 3’→5’."], 
+            a: "Las DNA polimerasas tienen actividad exonucleasa 3’→5’.", 
+            exp: "Las DNA polimerasas añaden desoxinucleótidos trifosfato y corrigen errores gracias a su actividad exonucleasa 3'→5' (proofreading)." 
         },
-        {
-            text: "2. El RNA mensajero de eucariotas:",
-            explanation: "El mRNA eucariota se protege y madura con un caperuzón 5’ y una cola poli-A en 3’, además del splicing.",
-            options: [
-                { text: "Sufre una poliadenilación en el extremo 5’.", correct: false },
-                { text: "Es procesado de modo que conserva todos sus intrones.", correct: false },
-                { text: "Sufre modificaciones en sus extremos 5’ y 3’.", correct: true },
-                { text: "No se modifica.", correct: false },
-                { text: "Se modifica solamente en el extremo 3’.", correct: false }
-            ]
+        { 
+            q: "2. El RNA mensajero de eucariotas:", 
+            opts: ["Sufre una poliadenilación en el extremo 5’.", "Es procesado de modo que conserva todos sus intrones.", "Sufre modificaciones en sus extremos 5’ y 3’.", "No se modifica.", "Se modifica solamente en el extremo 3’."], 
+            a: "Sufre modificaciones en sus extremos 5’ y 3’.", 
+            exp: "El mRNA eucariota madura con la adición de un caperuzón (Cap 5’) y una cola poli-A en 3’, además del splicing." 
         },
-        {
-            text: "3. Indique la respuesta FALSA respecto a la información genética:",
-            explanation: "Las telomerasas alargan los telómeros; la unión de fragmentos de Okazaki la hace la DNA ligasa.",
-            options: [
-                { text: "Topoisomerasa, helicasa, ADN polimerasa y primasa son enzimas implicadas en la replicación del ADN.", correct: false },
-                { text: "La caja TATA es un elemento de control común de inicio de la transcripción.", correct: false },
-                { text: "Las telomerasas intervienen en la unión de los fragmentos de Okazaki.", correct: true },
-                { text: "El codón AUG en el mRNA marca el inicio de la traducción.", correct: false },
-                { text: "El CRE es un elemento de respuesta específico que promueve la transcripción.", correct: false }
-            ]
+        { 
+            q: "3. Indique la respuesta FALSA respecto a la información genética:", 
+            opts: ["Topoisomerasa, helicasa, ADN polimerasa y primasa son enzimas implicadas en la replicación del ADN.", "La caja TATA es un elemento de control común de inicio de la transcripción.", "Las telomerasas intervienen en la unión de los fragmentos de Okazaki.", "El codón AUG en el mRNA marca el inicio de la traducción.", "El CRE es un elemento de respuesta específico que promueve la transcripción."], 
+            a: "Las telomerasas intervienen en la unión de los fragmentos de Okazaki.", 
+            exp: "Falso. Las telomerasas alargan los telómeros. La unión de los fragmentos de Okazaki la realiza la DNA ligasa." 
         },
-        {
-            text: "4. En relación con la entrada en la fase S del ciclo celular (replicación del DNA):",
-            explanation: "E2F es un factor de transcripción que activa genes necesarios para que la célula entre en fase S.",
-            options: [
-                { text: "La proteína del retinoblastoma es activadora del inicio de la fase S.", correct: false },
-                { text: "La activación de la proteína CDK4 es independiente de señales mitogénicas extracelulares.", correct: false },
-                { text: "La proteína CDK2 fosforila a la proteína E2F.", correct: false },
-                { text: "La proteína E2F actúa como factor de transcripción de genes necesarios para el inicio de la fase S.", correct: true },
-                { text: "Ninguna de las anteriores es correcta.", correct: false }
-            ]
+        { 
+            q: "4. En relación con la entrada en la fase S del ciclo celular (replicación del DNA):", 
+            opts: ["La proteína del retinoblastoma es activadora del inicio de la fase S.", "La activación de la proteína CDK4 es independiente de señales mitogénicas extracelulares.", "La proteína CDK2 fosforila a la proteína E2F.", "La proteína E2F actúa como factor de transcripción de genes necesarios para el inicio de la fase S.", "Ninguna de las anteriores es correcta."], 
+            a: "La proteína E2F actúa como factor de transcripción de genes necesarios para el inicio de la fase S.", 
+            exp: "E2F es un factor de transcripción clave que, al liberarse de Rb, activa genes necesarios para la síntesis de DNA." 
         },
-        {
-            text: "5. ¿Cuál de las siguientes afirmaciones sobre las DNA polimerasas de E. coli es correcta?",
-            explanation: "Las DNA polimerasas necesitan siempre un molde y un cebador con extremo 3’-OH libre.",
-            options: [
-                { text: "Las polimerasas I y III requieren a la vez un cebador y un molde.", correct: true },
-                { text: "Todas las polimerasas tienen a la vez actividad exonucleolítica de 3’ a 5’ y de 5’ a 3’.", correct: false },
-                { text: "La función principal de la DNA polimerasa III es la reparación del DNA.", correct: false },
-                { text: "La polimerasa I tiende a permanecer unida al molde hasta que se ha añadido un número grande de nucleótidos.", correct: false },
-                { text: "En E. coli se han descrito 7 DNA polimerasas distintas.", correct: false }
-            ]
+        { 
+            q: "5. ¿Cuál de las siguientes afirmaciones sobre las DNA polimerasas de E. coli es correcta?", 
+            opts: ["Las polimerasas I y III requieren a la vez un cebador y un molde.", "Todas las polimerasas tienen a la vez actividad exonucleolítica de 3’ a 5’ y de 5’ a 3’.", "La función principal de la DNA polimerasa III es la reparación del DNA.", "La polimerasa I tiende a permanecer unida al molde hasta que se ha añadido un número grande de nucleótidos.", "En E. coli se han descrito 7 DNA polimerasas distintas."], 
+            a: "Las polimerasas I y III requieren a la vez un cebador y un molde.", 
+            exp: "Todas las DNA polimerasas conocidas requieren un molde de DNA y un cebador con un extremo 3’-OH libre." 
         },
-        {
-            text: "6. La proteína p53:",
-            explanation: "p53 es un supresor tumoral que detiene el ciclo celular o induce apoptosis ante daño en el DNA.",
-            options: [
-                { text: "Es defosforilada cuando se produce daño en el DNA.", correct: false },
-                { text: "Impide la entrada en la fase S cuando el DNA no está dañado.", correct: false },
-                { text: "Es un oncogén.", correct: false },
-                { text: "Es una proteína supresora de tumores.", correct: true },
-                { text: "No tiene ninguna relación con la formación de tumores.", correct: false }
-            ]
+        { 
+            q: "6. La proteína p53:", 
+            opts: ["Es defosforilada cuando se produce daño en el DNA.", "Impide la entrada en la fase S cuando el DNA no está dañado.", "Es un oncogén.", "Es una proteína supresora de tumores.", "No tiene ninguna relación con la formación de tumores."], 
+            a: "Es una proteína supresora de tumores.", 
+            exp: "p53 es el 'guardián del genoma', un supresor tumoral que detiene el ciclo celular o induce apoptosis ante daño en el DNA." 
         },
-        {
-            text: "7. Qué respuesta es FALSA respecto al espliceosoma:",
-            explanation: "El espliceosoma está formado por snRNP (snRNA + proteínas), no por retrotranscriptasas.",
-            options: [
-                { text: "Está formado por snRNP (pequeñas partículas de retrotranscriptasas nucleares unidas a proteínas).", correct: true },
-                { text: "Se encarga de la maduración del hnRNA.", correct: false },
-                { text: "Corta intrones y empalma exones.", correct: false },
-                { text: "Tiene actividad ribozima.", correct: false },
-                { text: "Lo constituyen cinco subunidades de snRNA unidas a proteínas.", correct: false }
-            ]
+        { 
+            q: "7. Qué respuesta es FALSA respecto al espliceosoma:", 
+            opts: ["Está formado por snRNP (pequeñas partículas de retrotranscriptasas nucleares unidas a proteínas).", "Se encarga de la maduración del hnRNA.", "Corta intrones y empalma exones.", "Tiene actividad ribozima.", "Lo constituyen cinco subunidades de snRNA unidas a proteínas."], 
+            a: "Está formado por snRNP (pequeñas partículas de retrotranscriptasas nucleares unidas a proteínas).", 
+            exp: "Falso. Los snRNP contienen 'Ribonucleoproteínas nucleares pequeñas', no retrotranscriptasas." 
         },
-        {
-            text: "8. Qué es cierto respecto al CRE:",
-            explanation: "El elemento CRE es una secuencia de DNA que responde al AMPc a través de factores de transcripción específicos.",
-            options: [
-                { text: "Es un factor de transcripción.", correct: false },
-                { text: "Es un elemento de respuesta al AMPc.", correct: true },
-                { text: "Se activa por glucagón.", correct: false },
-                { text: "Está en la región promotora del gen de la PEPCK.", correct: false },
-                { text: "Estimula la neoglucogénesis.", correct: false }
-            ]
+        { 
+            q: "8. Qué es cierto respecto al CRE:", 
+            opts: ["Es un factor de transcripción.", "Es un elemento de respuesta al AMPc.", "Se activa por glucagón.", "Está en la región promotora del gen de la PEPCK.", "Estimula la neoglucogénesis."], 
+            a: "Es un elemento de respuesta al AMPc.", 
+            exp: "CRE (cAMP Response Element) es una secuencia de DNA que responde a niveles de AMPc." 
         },
-        {
-            text: "9. Indique la respuesta FALSA respecto a la información genética:",
-            explanation: "El espliceosoma no alarga telómeros; esa función corresponde a la telomerasa.",
-            options: [
-                { text: "Topoisomerasa, helicasa, ADN polimerasa y primasa son enzimas implicadas en la replicación del ADN.", correct: false },
-                { text: "La caja TATA es un elemento de control común de inicio de la transcripción.", correct: false },
-                { text: "El espliceosoma tiene actividad ribozima y se encarga de alargar los telómeros.", correct: true },
-                { text: "El codón AUG en el mRNA marca el inicio de la traducción.", correct: false },
-                { text: "El CRE es un elemento de respuesta específico que promueve la transcripción.", correct: false }
-            ]
+        { 
+            q: "9. Indique la respuesta FALSA respecto a la información genética (Repetida):", 
+            opts: ["Topoisomerasa, helicasa, ADN polimerasa y primasa son enzimas implicadas en la replicación del ADN.", "La caja TATA es un elemento de control común de inicio de la transcripción.", "El espliceosoma tiene actividad ribozima y se encarga de alargar los telómeros.", "El codón AUG en el mRNA marca el inicio de la traducción.", "El CRE es un elemento de respuesta específico que promueve la transcripción."], 
+            a: "El espliceosoma tiene actividad ribozima y se encarga de alargar los telómeros.", 
+            exp: "Falso. El espliceosoma elimina intrones (splicing), no alarga telómeros (telomerasa)." 
         },
-        {
-            text: "10. Sea una enzima de restricción tipo II que reconoce una secuencia en el DNA de 5 pares de bases y se utiliza en una digestión de DNA genómico. Indique qué afirmación es correcta:",
-            explanation: "Una secuencia específica de 5 pb aparece estadísticamente cada 4⁵ = 1024 pb de media.",
-            options: [
-                { text: "El enzima cortará el DNA cada 1024 pares (promedio estadístico).", correct: true },
-                { text: "El enzima, al ser tipo II, corta en una secuencia específica de DNA diferente a la que reconoce.", correct: false },
-                { text: "El enzima genera fragmentos de 1024 pares de bases de longitud media.", correct: false },
-                { text: "El enzima tiene una frecuencia de corte mayor a otra que reconozca 4 pares de bases.", correct: false }
-            ]
+        { 
+            q: "10. Sea una enzima de restricción tipo II que reconoce una secuencia en el DNA de 5 pares de bases. ¿Qué afirmación es correcta?", 
+            opts: ["El enzima cortará el DNA cada 1024 pares (promedio estadístico).", "El enzima, al ser tipo II, corta en una secuencia específica de DNA diferente a la que reconoce.", "El enzima genera fragmentos de 1024 pares de bases de longitud media.", "El enzima tiene una frecuencia de corte mayor a otra que reconozca 4 pares de bases."], 
+            a: "El enzima cortará el DNA cada 1024 pares (promedio estadístico).", 
+            exp: "Estadísticamente, una secuencia de 5 bases aparece cada 4^5 = 1024 pares de bases." 
         },
-        {
-            text: "11. En relación a la metilación del DNA, indica cuál es FALSA:",
-            explanation: "La hipermetilación de islas CpG suele silenciar genes, no estimular su expresión.",
-            options: [
-                { text: "Mayor metilación en las islas CpG se asocia a fenómenos de expresión o sobreexpresión de un gen dado.", correct: true },
-                { text: "Se produce en zonas promotoras ricas en secuencias de CpG.", correct: false },
-                { text: "La metilación se asocia con la regulación de genes supresores de tumores.", correct: false },
-                { text: "Se produce mayoritariamente sobre la H3.", correct: false }
-            ]
+        { 
+            q: "11. En relación a la metilación del DNA, indica cuál es FALSA:", 
+            opts: ["Mayor metilación en las islas CpG se asocia a fenómenos de expresión o sobreexpresión de un gen dado.", "Se produce en zonas promotoras ricas en secuencias de CpG.", "La metilación se asocia con la regulación de genes supresores de tumores.", "Se produce mayoritariamente sobre la H3."], 
+            a: "Mayor metilación en las islas CpG se asocia a fenómenos de expresión o sobreexpresión de un gen dado.", 
+            exp: "Falso. La hipermetilación de islas CpG en promotores generalmente SILENCIA (reprime) la expresión génica." 
         },
-        {
-            text: "12. Identifica qué afirmación es INCORRECTA:",
-            explanation: "La fidelidad de la replicación no depende solo del apareamiento de bases, sino también del proofreading y reparación.",
-            options: [
-                { text: "La RNA polimerasa puede presentar actividad 3´-5´ exonucleasa.", correct: false },
-                { text: "La DNA polimerasa I tiene actividad exonucleasa 5´ - 3´.", correct: false },
-                { text: "La replicación es un proceso semiconservativo universalmente.", correct: false },
-                { text: "La fidelidad del proceso replicativo se explica exclusivamente por la complementariedad de las bases.", correct: true }
-            ]
+        { 
+            q: "12. Identifica qué afirmación es INCORRECTA:", 
+            opts: ["La RNA polimerasa puede presentar actividad 3´-5´ exonucleasa.", "La DNA polimerasa I tiene actividad exonucleasa 5´ - 3´.", "La replicación es un proceso semiconservativo universalmente.", "La fidelidad del proceso replicativo se explica exclusivamente por la complementariedad de las bases."], 
+            a: "La fidelidad del proceso replicativo se explica exclusivamente por la complementariedad de las bases.", 
+            exp: "Falso. La fidelidad también depende de la actividad correctora de pruebas (exonucleasa 3'-5') y los sistemas de reparación." 
         },
-        {
-            text: "13. Identifica la afirmación correcta en relación a una molécula de mRNA eucariota o procariota:",
-            explanation: "Todas las moléculas de mRNA tienen extremos 5’ y 3’ con direccionalidad definida.",
-            options: [
-                { text: "Siempre produce una proteína.", correct: false },
-                { text: "Une factores de transcripción.", correct: false },
-                { text: "Nunca puede producir ADN.", correct: false },
-                { text: "Tiene direccionalidad, con un extremo 5´ y otro 3´.", correct: true }
-            ]
+        { 
+            q: "13. Identifica la afirmación correcta en relación a una molécula de mRNA eucariota o procariota:", 
+            opts: ["Siempre produce una proteína.", "Une factores de transcripción.", "Nunca puede producir ADN.", "Tiene direccionalidad, con un extremo 5´ y otro 3´."], 
+            a: "Tiene direccionalidad, con un extremo 5´ y otro 3´.", 
+            exp: "Todos los ácidos nucleicos (DNA y RNA) tienen polaridad definida 5' -> 3'." 
         },
-        {
-            text: "14. Un polinucleótido es un polímero en el que:",
-            explanation: "Los nucleótidos se unen entre sí mediante enlaces fosfodiéster entre el 3’-OH y el 5’-fosfato.",
-            options: [
-                { text: "Existen al menos 20 clases diferentes de monómeros susceptibles de ser utilizados.", correct: false },
-                { text: "Las bases púricas y pirimidínicas son las unidades repetitivas.", correct: false },
-                { text: "Las unidades monoméricas están unidas por enlace fosfodiéster.", correct: true },
-                { text: "Las unidades monoméricas no se pueden separar por hidrólisis.", correct: false },
-                { text: "Los dos extremos son estructuralmente equivalentes.", correct: false }
-            ]
+        { 
+            q: "14. Un polinucleótido es un polímero en el que:", 
+            opts: ["Existen al menos 20 clases diferentes de monómeros susceptibles de ser utilizados.", "Las bases púricas y pirimidínicas son las unidades repetitivas.", "Las unidades monoméricas están unidas por enlace fosfodiéster.", "Las unidades monoméricas no se pueden separar por hidrólisis.", "Los dos extremos son estructuralmente equivalentes."], 
+            a: "Las unidades monoméricas están unidas por enlace fosfodiéster.", 
+            exp: "El esqueleto del DNA/RNA se forma mediante enlaces fosfodiéster entre el 3'-OH de un azúcar y el 5'-fosfato del siguiente." 
         },
-        {
-            text: "15. En una doble hélice de DNA:",
-            explanation: "En el DNA B, la adenina de una hebra forma dos puentes de hidrógeno con la timina de la hebra complementaria.",
-            options: [
-                { text: "La parte externa de la hélice no está cargada.", correct: false },
-                { text: "La adenina de una hebra forma puentes de hidrógeno con la timina de la hebra opuesta.", correct: true },
-                { text: "Los puentes de hidrógeno se forman entre bases púricas y pirimidínicas de la misma hebra.", correct: false },
-                { text: "Los enlaces fosfodiéster están orientados hacia el interior de la hélice.", correct: false },
-                { text: "Las hebras individuales no son helicoidales.", correct: false }
-            ]
+        { 
+            q: "15. En una doble hélice de DNA:", 
+            opts: ["La parte externa de la hélice no está cargada.", "La adenina de una hebra forma puentes de hidrógeno con la timina de la hebra opuesta.", "Los puentes de hidrógeno se forman entre bases púricas y pirimidínicas de la misma hebra.", "Los enlaces fosfodiéster están orientados hacia el interior de la hélice.", "Las hebras individuales no son helicoidales."], 
+            a: "La adenina de una hebra forma puentes de hidrógeno con la timina de la hebra opuesta.", 
+            exp: "Principio de complementariedad de Watson-Crick: A se aparea con T mediante 2 puentes de hidrógeno." 
         },
-        {
-            text: "16. Un nucleosoma:",
-            explanation: "El nucleosoma es la unidad estructural de la cromatina: DNA enrollado alrededor de un octámero de histonas y repetido regularmente.",
-            options: [
-                { text: "Utiliza un solo tipo de histona por nucleosoma.", correct: false },
-                { text: "Tiene un núcleo de DNA con proteínas que lo envuelven.", correct: false },
-                { text: "Tiene histonas en contacto con el surco mayor del DNA.", correct: false },
-                { text: "Es una estructura regularmente repetida de DNA e histonas.", correct: true },
-                { text: "Está separada de un segundo nucleosoma por proteínas no histonas.", correct: false }
-            ]
+        { 
+            q: "16. Un nucleosoma:", 
+            opts: ["Utiliza un solo tipo de histona por nucleosoma.", "Tiene un núcleo de DNA con proteínas que lo envuelven.", "Tiene histonas en contacto con el surco mayor del DNA.", "Es una estructura regularmente repetida de DNA e histonas.", "Está separada de un segundo nucleosoma por proteínas no histonas."], 
+            a: "Es una estructura regularmente repetida de DNA e histonas.", 
+            exp: "El nucleosoma es la unidad básica de la cromatina: ~146 pb de DNA enrollado sobre un octámero de histonas." 
         },
-        {
-            text: "17. La hélice de la forma A del DNA difiere de la hélice B en todo lo siguiente EXCEPTO:",
-            explanation: "Las formas A y B conservan la misma polaridad de las cadenas; difieren en geometría y surcos.",
-            options: [
-                { text: "La apariencia de los surcos mayor y menor.", correct: false },
-                { text: "La polaridad de las cadenas.", correct: true },
-                { text: "La pendiente de las bases.", correct: false },
-                { text: "La inclinación de los pares de bases respecto al eje de la hélice.", correct: false },
-                { text: "El grosor de la hélice.", correct: false }
-            ]
+        { 
+            q: "17. La hélice de la forma A del DNA difiere de la hélice B en todo lo siguiente EXCEPTO:", 
+            opts: ["La apariencia de los surcos mayor y menor.", "La polaridad de las cadenas.", "La pendiente de las bases.", "La inclinación de los pares de bases respecto al eje de la hélice.", "El grosor de la hélice."], 
+            a: "La polaridad de las cadenas.", 
+            exp: "Tanto en la forma A como en la B, las cadenas son antiparalelas." 
         },
-        {
-            text: "18. El RNA:",
-            explanation: "Muchas moléculas de RNA forman estructuras de doble hélice local y apilamiento de bases unidos por puentes de hidrógeno.",
-            options: [
-                { text: "No puede formar pares de bases del tipo Watson y Crick.", correct: false },
-                { text: "No puede tener nunca estructura de doble hélice.", correct: false },
-                { text: "Presenta apilamiento de bases y pares de bases unidos por puentes de hidrógeno.", correct: true },
-                { text: "Incorpora bases púricas y pirimidínicas modificadas y no modificadas durante la transcripción.", correct: false },
-                { text: "Normalmente contiene unos 65 - 100 nucleótidos.", correct: false }
-            ]
+        { 
+            q: "18. El RNA:", 
+            opts: ["No puede formar pares de bases del tipo Watson y Crick.", "No puede tener nunca estructura de doble hélice.", "Presenta apilamiento de bases y pares de bases unidos por puentes de hidrógeno.", "Incorpora bases púricas y pirimidínicas modificadas y no modificadas durante la transcripción.", "Normalmente contiene unos 65 - 100 nucleótidos."], 
+            a: "Presenta apilamiento de bases y pares de bases unidos por puentes de hidrógeno.", 
+            exp: "El RNA suele ser monocatenario pero forma estructuras secundarias (horquillas, bucles) mediante apareamiento de bases intracadena." 
         },
-        {
-            text: "19. La replicación:",
-            explanation: "La replicación del DNA es semiconservadora: cada molécula hija conserva una hebra vieja y sintetiza una nueva.",
-            options: [
-                { text: "Utiliza una actividad polimerasa de 5´ a 3´ para sintetizar una hebra y de 3´ a 5´ para sintetizar la hebra complementaria.", correct: false },
-                { text: "Debe empezar un paso de escisión.", correct: false },
-                { text: "Sólo requiere proteínas con actividad DNA polimerasa.", correct: false },
-                { text: "Es semiconservadora.", correct: true },
-                { text: "Requiere un cebador en los eucariotas pero no en los procariotas.", correct: false }
-            ]
+        { 
+            q: "19. La replicación:", 
+            opts: ["Utiliza una actividad polimerasa de 5´ a 3´ para sintetizar una hebra y de 3´ a 5´ para sintetizar la hebra complementaria.", "Debe empezar un paso de escisión.", "Sólo requiere proteínas con actividad DNA polimerasa.", "Es semiconservadora.", "Requiere un cebador en los eucariotas pero no en los procariotas."], 
+            a: "Es semiconservadora.", 
+            exp: "Cada molécula hija de DNA conserva una hebra 'vieja' (molde) y una hebra 'nueva' recién sintetizada." 
         },
-        {
-            text: "20. En la replicación del DNA en los eucariotas:",
-            explanation: "Al menos una DNA polimerasa eucariota posee actividad exonucleasa 3’→5’ para corregir errores.",
-            options: [
-                { text: "El proceso tiene lugar a lo largo de todo el ciclo celular.", correct: false },
-                { text: "La helicasa se disocia del DNA tan pronto se forma la burbuja de iniciación.", correct: false },
-                { text: "Al menos una DNA polimerasa tiene actividad exonucleotídica de 3´ a 5´.", correct: true },
-                { text: "Sólo se forma un replisoma porque hay UN solo origen de replicación.", correct: false },
-                { text: "Los fragmentos de Okazaki tienen 1000-2000 nucleótidos de longitud.", correct: false }
-            ]
+        { 
+            q: "20. En la replicación del DNA en los eucariotas:", 
+            opts: ["El proceso tiene lugar a lo largo de todo el ciclo celular.", "La helicasa se disocia del DNA tan pronto se forma la burbuja de iniciación.", "Al menos una DNA polimerasa tiene actividad exonucleotídica de 3´ a 5´.", "Sólo se forma un replisoma porque hay UN solo origen de replicación.", "Los fragmentos de Okazaki tienen 1000-2000 nucleótidos de longitud."], 
+            a: "Al menos una DNA polimerasa tiene actividad exonucleotídica de 3´ a 5´.", 
+            exp: "Esta actividad es esencial para la corrección de pruebas (proofreading) y asegurar la fidelidad." 
         },
-        {
-            text: "21. Los requisitos para la síntesis proteica en eucariotas incluyen todos los siguientes EXCEPTO:",
-            explanation: "En eucariotas el primer aminoácido no es formilmetionina, por lo que no se utiliza fMet-tRNA.",
-            options: [
-                { text: "20 Aa diferentes en forma de aminoacil - tRNA.", correct: false },
-                { text: "fMet - tRNA.", correct: true },
-                { text: "GTP.", correct: false },
-                { text: "mRNA.", correct: false },
-                { text: "Ribosoma.", correct: false }
-            ]
+        { 
+            q: "21. Los requisitos para la síntesis proteica en eucariotas incluyen todos los siguientes EXCEPTO:", 
+            opts: ["20 Aa diferentes en forma de aminoacil - tRNA.", "fMet - tRNA.", "GTP.", "mRNA.", "Ribosoma."], 
+            a: "fMet - tRNA.", 
+            exp: "El fMet-tRNA (formil-metionina) es exclusivo de PROCARIOTAS (y mitocondrias). Eucariotas usan Met-tRNA." 
         },
-        {
-            text: "22. La degeneración del código genético denota la existencia de:",
-            explanation: "Varios codones pueden especificar el mismo aminoácido; esta redundancia es la degeneración del código.",
-            options: [
-                { text: "Tripletes de bases que no codifican ningún Aa.", correct: false },
-                { text: "Codones múltiples para un solo Aa.", correct: true },
-                { text: "Codones compuestos por tan solo dos bases.", correct: false },
-                { text: "Diferentes sistemas de síntesis de proteínas en los que un determinado triplete codifica Aa diferentes.", correct: false },
-                { text: "Codones que incorporan una o más bases 'inusuales'.", correct: false }
-            ]
+        { 
+            q: "22. La degeneración del código genético denota la existencia de:", 
+            opts: ["Tripletes de bases que no codifican ningún Aa.", "Codones múltiples para un solo Aa.", "Codones compuestos por tan solo dos bases.", "Diferentes sistemas de síntesis de proteínas en los que un determinado triplete codifica Aa diferentes.", "Codones que incorporan una o más bases 'inusuales'."], 
+            a: "Codones múltiples para un solo Aa.", 
+            exp: "Degeneración significa redundancia: varios codones diferentes pueden codificar el mismo aminoácido." 
         },
-        {
-            text: "23. Durante la fase de elongación de la síntesis proteica eucariota:",
-            explanation: "La peptidil transferasa de la subunidad grande cataliza el enlace entre el péptido y el nuevo aminoácido.",
-            options: [
-                { text: "El péptido se separa del tRNA y se traslada al sitio E del ribosoma.", correct: false },
-                { text: "El aminoacil-tRNA entrante se une al sitio P.", correct: false },
-                { text: "Se sintetiza un nuevo enlace peptídico por el sitio peptidil transferasa de la subunidad ribosómica grande.", correct: true },
-                { text: "El péptido, todavía unido a la molécula del tRNA, se traslada al sitio P.", correct: false },
-                { text: "El aminoacil - tRNA entrante se une al sitio E del ribosoma.", correct: false }
-            ]
+        { 
+            q: "23. Durante la fase de elongación de la síntesis proteica eucariota:", 
+            opts: ["El péptido se separa del tRNA y se traslada al sitio E del ribosoma.", "El aminoacil-tRNA entrante se une al sitio P.", "Se sintetiza un nuevo enlace peptídico por el sitio peptidil transferasa de la subunidad ribosómica grande.", "El péptido, todavía unido a la molécula del tRNA, se traslada al sitio P.", "El aminoacil - tRNA entrante se une al sitio E del ribosoma."], 
+            a: "Se sintetiza un nuevo enlace peptídico por el sitio peptidil transferasa de la subunidad ribosómica grande.", 
+            exp: "La peptidil transferasa (una ribozima en la subunidad mayor) cataliza la formación del enlace peptídico." 
         },
-        {
-            text: "24. Todas las características siguientes son propias de un operón EXCEPTO:",
-            explanation: "El operón es típico de procariotas; en eucariotas los genes suelen transcribirse de forma individual.",
-            options: [
-                { text: "Incluye genes estructurales.", correct: false },
-                { text: "Es un mecanismo de control para genes eucariotas.", correct: true },
-                { text: "Se espera que codifique un mRNA policistrónico.", correct: false },
-                { text: "Contiene secuencias de control tales como un operador.", correct: false },
-                { text: "Suele regular la expresión de los genes en función de los nutrientes del medio.", correct: false }
-            ]
+        { 
+            q: "24. Todas las características siguientes son propias de un operón EXCEPTO:", 
+            opts: ["Incluye genes estructurales.", "Es un mecanismo de control para genes eucariotas.", "Se espera que codifique un mRNA policistrónico.", "Contiene secuencias de control tales como un operador.", "Suele regular la expresión de los genes en función de los nutrientes del medio."], 
+            a: "Es un mecanismo de control para genes eucariotas.", 
+            exp: "Los operones son característicos de PROCARIOTAS. Los eucariotas suelen tener promotores individuales para cada gen." 
         },
-        {
-            text: "25. La expresión completa del operón lac requiere:",
-            explanation: "Para máxima expresión del operón lac se necesita lactosa (que inactiva al represor) y cAMP (activo con CAP).",
-            options: [
-                { text: "La proteína represora.", correct: false },
-                { text: "Sólo lactosa.", correct: false },
-                { text: "Solo cAMP.", correct: false },
-                { text: "Lactosa y cAMP.", correct: true },
-                { text: "Que no haya lactosa en el medio.", correct: false }
-            ]
+        { 
+            q: "25. La expresión completa del operón lac requiere:", 
+            opts: ["La proteína represora.", "Sólo lactosa.", "Solo cAMP.", "Lactosa y cAMP.", "Que no haya lactosa en el medio."], 
+            a: "Lactosa y cAMP.", 
+            exp: "La lactosa inactiva al represor (desbloqueo) y el cAMP (con CAP) activa al promotor (estimulación)." 
         },
-        {
-            text: "26. En la transcripción eucariótica por la RNA polimerasa II, la formación de un complejo de preiniciación:",
-            explanation: "El complejo de preiniciación se monta de forma ordenada en el promotor TATA con TBP y otros factores, y requiere CTD NO fosforilado.",
-            options: [
-                { text: "Implica la adición ordenada de varios factores de transformación y de la RNA polimerasa.", correct: false },
-                { text: "Requiere que el dominio C- Terminal (CTD) de la RNA polimerasa II no esté fosforilado en este punto.", correct: false },
-                { text: "Todas son correctas.", correct: true },
-                { text: "Todas son falsas.", correct: false },
-                { text: "Empieza con la unión de una proteína (TBP) a la caja TATA del promotor.", correct: false }
-            ]
+        { 
+            q: "26. En la transcripción eucariótica por la RNA polimerasa II, la formación de un complejo de preiniciación:", 
+            opts: ["Implica la adición ordenada de varios factores de transformación y de la RNA polimerasa.", "Requiere que el dominio C- Terminal (CTD) de la RNA polimerasa II no esté fosforilado en este punto.", "Todas son correctas.", "Todas son falsas.", "Empieza con la unión de una proteína (TBP) a la caja TATA del promotor."], 
+            a: "Todas son correctas.", 
+            exp: "Se requiere un ensamblaje ordenado de factores basales (TFIIA, B, D, E, F, H) y la Pol II con su CTD no fosforilado." 
         },
-        {
-            text: "27. La terminación de la síntesis proteica:",
-            explanation: "Cuando un codón de parada entra en el sitio A se une un factor de liberación que hidroliza el péptido.",
-            options: [
-                { text: "Requiere la acción de una hidrolasa no ribosómica para liberar al péptido.", correct: false },
-                { text: "Requiere un codón de terminación en el sitio P de la subunidad ribosómica grande.", correct: false },
-                { text: "Ocurre cuando un factor proteico de liberación no ribosómico se une al ribosoma.", correct: true },
-                { text: "No requiere energía.", correct: false },
-                { text: "Coincide con la degradación de los ribosomas.", correct: false }
-            ]
+        { 
+            q: "27. La terminación de la síntesis proteica:", 
+            opts: ["Requiere la acción de una hidrolasa no ribosómica para liberar al péptido.", "Requiere un codón de terminación en el sitio P de la subunidad ribosómica grande.", "Ocurre cuando un factor proteico de liberación no ribosómico se une al ribosoma.", "No requiere energía.", "Coincide con la degradación de los ribosomas."], 
+            a: "Ocurre cuando un factor proteico de liberación no ribosómico se une al ribosoma.", 
+            exp: "Cuando entra un codón STOP en el sitio A, se unen factores de liberación (RF) que hidrolizan el péptido." 
         },
-        {
-            text: "28. Deseas realizar un protocolo de subclonación de DNA de longitud pequeña (menor de 5 kb), identifica qué vector usarías preferiblemente:",
-            explanation: "Para fragmentos pequeños de DNA los plásmidos son los vectores de elección por su sencillez y capacidad.",
-            options: [
-                { text: "YAC.", correct: false },
-                { text: "Bacteriófago lambda.", correct: false },
-                { text: "Plásmido.", correct: true },
-                { text: "Cósmido.", correct: false }
-            ]
+        { 
+            q: "28. Deseas realizar un protocolo de subclonación de DNA de longitud pequeña (menor de 5 kb), identifica qué vector usarías preferiblemente:", 
+            opts: ["YAC.", "Bacteriófago lambda.", "Plásmido.", "Cósmido."], 
+            a: "Plásmido.", 
+            exp: "Los plásmidos son ideales para insertar fragmentos de DNA pequeños (hasta 10-15 kb)." 
         },
-        {
-            text: "29. Indica qué emparejamiento de bases es incorrecto:",
-            explanation: "En emparejamientos canónicos: A-T, A-U y G-C son correctos; T-C no forma un par Watson-Crick estable.",
-            options: [
-                { text: "A - T.", correct: false },
-                { text: "A - U.", correct: false },
-                { text: "T - C.", correct: true },
-                { text: "G - C.", correct: false }
-            ]
+        { 
+            q: "29. Indica qué emparejamiento de bases es incorrecto:", 
+            opts: ["A - T.", "A - U.", "T - C.", "G - C."], 
+            a: "T - C.", 
+            exp: "Las pirimidinas (T, C) no se aparean entre sí en la estructura estándar de Watson-Crick." 
         }
     ];
 
-    // Barajar (Fisher–Yates)
+    // --- ASIGNAR IDs ÚNICOS ---
+    quizData.forEach((item, index) => {
+        item.id = index;
+    });
+
+    // --- GESTIÓN DE ESTADO ---
+    let markedQuestions = new Set();
+    let failedQuestions = new Set();
+
     function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
         }
         return array;
     }
 
-    function renderQuiz() {
-        const quizArea = document.getElementById('quiz-area');
-        quizArea.innerHTML = "";
+    const container = document.getElementById('quiz-container');
 
-        questions.forEach(q => {
-            const qDiv = document.createElement('div');
-            qDiv.className = 'question-block';
+    // Función principal
+    function renderQuiz(questionsToLoad = quizData) {
+        container.innerHTML = "";
+        document.getElementById("restart-menu").style.display = "none";
+        document.getElementById("finish-btn").style.display = "inline-block";
 
-            const qText = document.createElement('div');
-            qText.className = 'question-text';
-            qText.textContent = q.text;
-            qDiv.appendChild(qText);
+        if(questionsToLoad.length === 0) {
+            container.innerHTML = "<p style='text-align:center; padding:20px; color:#6b7280;'>No hay preguntas para mostrar en esta selección.</p>";
+            return;
+        }
 
-            const optsContainer = document.createElement('div');
-            optsContainer.className = 'options-container';
+        questionsToLoad.forEach((item, displayIndex) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
 
-            const shuffled = shuffleArray([...q.options]);
+            // Checkbox Marcar
+            const markContainer = document.createElement("div");
+            markContainer.className = "mark-container";
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = `mark-${item.id}`;
+            if(markedQuestions.has(item.id)) checkbox.checked = true;
 
-            shuffled.forEach(opt => {
+            checkbox.onchange = (e) => {
+                if(e.target.checked) markedQuestions.add(item.id);
+                else markedQuestions.delete(item.id);
+            };
+
+            const label = document.createElement("label");
+            label.htmlFor = `mark-${item.id}`;
+            label.innerText = "Marcar para revisar";
+            markContainer.appendChild(checkbox);
+            markContainer.appendChild(label);
+            card.appendChild(markContainer);
+
+            // Pregunta
+            const header = document.createElement('div');
+            header.className = 'question-header';
+            header.textContent = `Pregunta ${item.id + 1}`; 
+            card.appendChild(header);
+
+            const questionText = document.createElement('div');
+            questionText.className = 'question-text';
+            questionText.textContent = item.q;
+
+            // --- INSERCIÓN DE DIAGRAMAS (Visualización mejorada) ---
+            if (item.id === 0) { // DNA Replication
+                questionText.innerHTML += `<span class='img-tag'></span>`;
+            } else if (item.id === 1) { // mRNA Processing
+                questionText.innerHTML += `<span class='img-tag'></span>`;
+            } else if (item.id === 3) { // Cell Cycle E2F
+                questionText.innerHTML += `<span class='img-tag'></span>`;
+            } else if (item.id === 5) { // p53
+                questionText.innerHTML += `<span class='img-tag'></span>`;
+            } else if (item.id === 15) { // Nucleosome
+                 questionText.innerHTML += `<span class='img-tag'>
+
+[Image of nucleosome structure]
+</span>`;
+            } else if (item.id === 24) { // Lac Operon
+                 questionText.innerHTML += `<span class='img-tag'></span>`;
+            } else if (item.id === 20) { // Translation Initiation
+                 questionText.innerHTML += `<span class='img-tag'></span>`;
+            } else if (item.id === 27) { // Cloning Vectors
+                 questionText.innerHTML += `<span class='img-tag'>
+
+[Image of plasmid vector map]
+</span>`;
+            }
+
+            card.appendChild(questionText);
+
+            // Opciones
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options-container';
+
+            let optionsObj = item.opts.map(opt => ({
+                text: opt,
+                isCorrect: opt === item.a
+            }));
+            optionsObj = shuffleArray(optionsObj);
+
+            // Explicación
+            const explanationDiv = document.createElement('div');
+            explanationDiv.className = 'explanation';
+            explanationDiv.innerHTML = `<strong>Explicación:</strong> ${item.exp}`;
+
+            optionsObj.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.textContent = opt.text;
-                btn.dataset.correct = opt.correct ? 'true' : 'false';
 
-                btn.onclick = () => handleClick(btn, optsContainer, qDiv, q.explanation);
+                btn.onclick = () => {
+                    const allBtns = optionsDiv.querySelectorAll('.option-btn');
+                    allBtns.forEach(b => b.disabled = true);
 
-                optsContainer.appendChild(btn);
+                    if (opt.isCorrect) {
+                        btn.classList.add('correct');
+                    } else {
+                        btn.classList.add('incorrect');
+                        failedQuestions.add(item.id);
+                        
+                        allBtns.forEach(b => {
+                            if (b.textContent === item.a) b.classList.add('correct');
+                        });
+                    }
+                    explanationDiv.classList.add('visible');
+                };
+                optionsDiv.appendChild(btn);
             });
 
-            qDiv.appendChild(optsContainer);
-
-            const feedback = document.createElement('div');
-            feedback.className = 'feedback';
-            feedback.textContent = q.explanation;
-            qDiv.appendChild(feedback);
-
-            quizArea.appendChild(qDiv);
+            card.appendChild(optionsDiv);
+            card.appendChild(explanationDiv);
+            container.appendChild(card);
         });
     }
 
-    function handleClick(clickedBtn, container, qDiv, explanation) {
-        const buttons = container.querySelectorAll('.option-btn');
-        buttons.forEach(b => {
-            b.classList.add('disabled');
-            if (b.dataset.correct === 'true') {
-                b.classList.add('correct');
-            }
-        });
+    // --- Control Final ---
+    function showEndOptions() {
+        document.getElementById("finish-btn").style.display = "none";
+        document.getElementById("restart-menu").style.display = "flex";
+        document.getElementById("controls-area").scrollIntoView({behavior: "smooth"});
+        
+        document.getElementById("stats-summary").innerHTML = `
+            Preguntas marcadas: <strong>${markedQuestions.size}</strong><br>
+            Preguntas falladas en esta sesión: <strong>${failedQuestions.size}</strong>
+        `;
+    }
 
-        if (clickedBtn.dataset.correct !== 'true') {
-            clickedBtn.classList.add('incorrect');
+    function restartQuiz(mode) {
+        let subset = [];
+        if (mode === 'all') subset = quizData;
+        else if (mode === 'marked') subset = quizData.filter(q => markedQuestions.has(q.id));
+        else if (mode === 'failed') subset = quizData.filter(q => failedQuestions.has(q.id));
+        else if (mode === 'failed_marked') subset = quizData.filter(q => failedQuestions.has(q.id) || markedQuestions.has(q.id));
+
+        if(mode !== 'all') failedQuestions.clear(); 
+        else {
+            failedQuestions.clear();
+            markedQuestions.clear();
         }
 
-        const fb = qDiv.querySelector('.feedback');
-        fb.style.display = 'block';
+        renderQuiz(subset);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Render inicial
     renderQuiz();
 </script>
 
