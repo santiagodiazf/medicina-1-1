@@ -5,555 +5,617 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Bloque VIII: Bioquímica Humana</title>
     <style>
+        :root {
+            --primary: #7c3aed; /* Violeta Intenso */
+            --primary-dark: #5b21b6;
+            --primary-light: #ddd6fe;
+            --bg: #f5f3ff;
+            --text: #4c1d95;
+            --white: #ffffff;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
-            max-width: 800px;
+            background-color: var(--bg);
+            color: var(--text);
+            max-width: 850px;
             margin: 0 auto;
             padding: 20px;
         }
+
         h1 {
-            color: #2c3e50;
             text-align: center;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 20px;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 15px;
+            display: inline-block;
+            width: 100%;
         }
+
         .question-card {
-            background-color: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-left: 6px solid var(--primary);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
         }
-        .question-text {
-            font-weight: 600;
-            font-size: 1.1em;
+
+        .question-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- Checkbox para Marcar --- */
+        .mark-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
             margin-bottom: 15px;
-            color: #2c3e50;
+            font-size: 0.9em;
+            color: var(--primary);
+            font-weight: bold;
+            border-bottom: 1px solid #c4b5fd;
+            padding-bottom: 10px;
         }
+        .mark-container input {
+            margin-right: 8px;
+            transform: scale(1.3);
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+        .mark-container label {
+            cursor: pointer;
+        }
+
+        .question-header {
+            font-size: 0.85em;
+            color: #6d28d9;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-weight: 700;
+            font-size: 1.15em;
+            margin-bottom: 20px;
+            color: #4c1d95;
+            line-height: 1.5;
+        }
+
+        /* Etiquetas para diagramas */
+        .img-tag {
+            display: block;
+            margin-top: 12px;
+            padding: 10px;
+            background-color: #ede9fe;
+            border-left: 4px solid #8b5cf6;
+            color: #5b21b6;
+            font-size: 0.9em;
+            font-style: italic;
+            border-radius: 0 4px 4px 0;
+        }
+
         .options-container {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
+
         .option-btn {
-            padding: 12px;
-            border: 2px solid #e1e4e8;
-            border-radius: 6px;
-            background-color: #fff;
-            text-align: left;
+            padding: 14px 18px;
+            border: 2px solid #e5e7eb;
+            background: #fff;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            text-align: left;
+            transition: all 0.2s;
             font-size: 1em;
-            color: #444;
-        }
-        .option-btn:hover:not(.disabled) {
-            background-color: #f1f8ff;
-            border-color: #3498db;
-        }
-        
-        /* Estilos de corrección */
-        .option-btn.correct {
-            background-color: #d4edda !important;
-            border-color: #28a745 !important;
-            color: #155724 !important;
-        }
-        .option-btn.incorrect {
-            background-color: #f8d7da !important;
-            border-color: #dc3545 !important;
-            color: #721c24 !important;
-        }
-        .disabled {
-            pointer-events: none;
-            opacity: 0.9;
+            color: #374151;
+            position: relative;
         }
 
-        .reset-btn {
-            display: block;
-            width: 100%;
+        .option-btn:hover:not(:disabled) {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+            padding-left: 25px; /* Efecto desplazamiento */
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        /* Estados de respuesta */
+        .correct {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #064e3b !important;
+            font-weight: 600;
+        }
+
+        .incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #7f1d1d !important;
+        }
+
+        /* Caja de Explicación */
+        .explanation {
+            margin-top: 20px;
             padding: 15px;
-            background-color: #3498db;
-            color: white;
-            border: none;
+            background-color: #f3e8ff;
+            border-left: 5px solid var(--primary);
             border-radius: 6px;
-            font-size: 1.2em;
-            cursor: pointer;
-            margin-top: 30px;
-            margin-bottom: 50px;
+            display: none;
+            font-size: 0.95em;
+            color: #581c87;
+            animation: slideDown 0.3s ease-out;
         }
-        .reset-btn:hover {
-            background-color: #2980b9;
+        .explanation.visible {
+            display: block;
         }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Área de Controles --- */
+        #controls-area {
+            margin-top: 50px;
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--primary);
+        }
+
+        .action-btn {
+            background: var(--primary); color: white; border: none;
+            padding: 12px 25px; font-size: 1.05em; border-radius: 8px;
+            cursor: pointer; margin: 8px;
+            transition: background 0.3s, transform 0.2s;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .action-btn:hover { 
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .restart-options {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 25px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .restart-options button {
+            width: 100%;
+            background: #4b5563;
+        }
+        .restart-options button:hover { background: #1f2937; }
+        .restart-options button:first-child { background: var(--primary); }
+
     </style>
 </head>
 <body>
 
-    <h1>Bloque VIII - Bioquímica Humana</h1>
-    <p style="text-align:center; color:#666;">Alvaro Condon - UCA</p>
-
+    <h1>Bloque VIII: Bioquímica Humana</h1>
+    <div style="text-align: center; color: #5b21b6; margin-bottom: 30px;">
+        Santi Díaz | Metabolismo Nitrogenado, Urea y Aminoácidos
+    </div>
+    
     <div id="quiz-container"></div>
 
-    <button class="reset-btn" onclick="location.reload()">Reiniciar Test (Barajar Preguntas y Respuestas)</button>
+    <div id="controls-area">
+        <button id="finish-btn" class="action-btn" onclick="showEndOptions()">🏁 Finalizar revisión</button>
+        
+        <div id="restart-menu" class="restart-options">
+            <h3>Resultados de la sesión</h3>
+            <p id="stats-summary"></p>
+            <button class="action-btn" onclick="restartQuiz('all')">🔄 Rehacer todo el test</button>
+            <button class="action-btn" onclick="restartQuiz('marked')">🔖 Repasar marcadas</button>
+            <button class="action-btn" onclick="restartQuiz('failed')">❌ Repasar falladas</button>
+            <button class="action-btn" onclick="restartQuiz('failed_marked')">⚠️ Falladas + Marcadas</button>
+        </div>
+    </div>
 
 <script>
-    // Base de datos de preguntas (Limpia de pistas y números fijos)
     const quizData = [
-        {
-            question: "Respecto al ciclo de la urea, indique cuál de las siguientes respuestas es correcta:",
-            options: [
-                { text: "Tiene lugar en el hígado.", correct: false },
-                { text: "El proceso tiene lugar parte en la mitocondria y parte en el citosol.", correct: false },
-                { text: "La síntesis de urea comienza con la condensación de bicarbonato y amoníaco.", correct: false },
-                { text: "Todas son correctas.", correct: true }
-            ]
+        { 
+            q: "Respecto al ciclo de la urea, indique cuál de las siguientes respuestas es correcta:", 
+            opts: ["Tiene lugar en el hígado.", "El proceso tiene lugar parte en la mitocondria y parte en el citosol.", "La síntesis de urea comienza con la condensación de bicarbonato y amoníaco.", "Todas son correctas."], 
+            a: "Todas son correctas.", 
+            exp: "El ciclo ocurre exclusivamente en el hígado, compartimentado entre mitocondria y citosol, comenzando con la formación de Carbamil-fosfato." 
         },
-        {
-            question: "Indique la enzima regulable de la síntesis de la urea:",
-            options: [
-                { text: "Carbamil fosfato sintetasa I.", correct: true },
-                { text: "Arginasa.", correct: false },
-                { text: "Ornitina transcarbamilasa.", correct: false },
-                { text: "Argininosuccinato sintetasa.", correct: false }
-            ]
+        { 
+            q: "Indique la enzima regulable de la síntesis de la urea:", 
+            opts: ["Carbamil fosfato sintetasa I.", "Arginasa.", "Ornitina transcarbamilasa.", "Argininosuccinato sintetasa."], 
+            a: "Carbamil fosfato sintetasa I.", 
+            exp: "Es la enzima marcapasos, activada alostéricamente por N-acetilglutamato." 
         },
-        {
-            question: "El destino del esqueleto carbonatado de los aminoácidos es formar:",
-            options: [
-                { text: "alfa-cetoglutarato, acetato (Acetil-CoA) y piruvato.", correct: true },
-                { text: "Urea y amoniaco exclusivamente.", correct: false },
-                { text: "Glucosa directamente sin intermediarios.", correct: false },
-                { text: "Solo cuerpos cetónicos.", correct: false }
-            ]
+        { 
+            q: "El destino del esqueleto carbonatado de los aminoácidos es formar:", 
+            opts: ["alfa-cetoglutarato, acetato (Acetil-CoA) y piruvato.", "Urea y amoniaco exclusivamente.", "Glucosa directamente sin intermediarios.", "Solo cuerpos cetónicos."], 
+            a: "alfa-cetoglutarato, acetato (Acetil-CoA) y piruvato.", 
+            exp: "Los esqueletos carbonados se integran en el ciclo de Krebs o vías glucolíticas/cetogénicas." 
         },
-        {
-            question: "Un paciente con enteropatía produce gran cantidad de amoniaco por sobrecrecimiento bacteriano. El amoniaco se absorbe e ingresa en la circulación sanguínea. ¿Cuál es la consecuencia probable?",
-            options: [
-                { text: "Descenso del pH sanguíneo.", correct: false },
-                { text: "Conversión de amoniaco en amonio (NH4+).", correct: true },
-                { text: "Descenso en la concentración de bicarbonato en sangre.", correct: false },
-                { text: "Respiración de Kussmaul (hiperventilación).", correct: false },
-                { text: "Aumento de la espiración de CO2.", correct: false }
-            ]
+        { 
+            q: "Un paciente con enteropatía produce gran cantidad de amoniaco por sobrecrecimiento bacteriano. El amoniaco se absorbe e ingresa en la circulación sanguínea. ¿Cuál es la consecuencia probable?", 
+            opts: ["Descenso del pH sanguíneo.", "Conversión de amoniaco en amonio (NH4+).", "Descenso en la concentración de bicarbonato en sangre.", "Respiración de Kussmaul (hiperventilación).", "Aumento de la espiración de CO2."], 
+            a: "Conversión de amoniaco en amonio (NH4+).", 
+            exp: "El NH3 capta protones (H+) para formar NH4+, actuando como base, lo que podría alcalinizar ligeramente, no acidificar." 
         },
-        {
-            question: "Cuando se realiza el proceso de transaminación, el α-cetoácido aceptor del grupo amino más frecuente es:",
-            options: [
-                { text: "Piruvato.", correct: false },
-                { text: "Citrato.", correct: false },
-                { text: "Oxalacetato.", correct: false },
-                { text: "α-cetoglutarato.", correct: true },
-                { text: "Succinato.", correct: false }
-            ]
+        { 
+            q: "Cuando se realiza el proceso de transaminación, el α-cetoácido aceptor del grupo amino más frecuente es:", 
+            opts: ["Piruvato.", "Citrato.", "Oxalacetato.", "α-cetoglutarato.", "Succinato."], 
+            a: "α-cetoglutarato.", 
+            exp: "Recibe el grupo amino para convertirse en Glutamato." 
         },
-        {
-            question: "Los nitrógenos que forman parte de la estructura de la urea proceden fundamentalmente de:",
-            options: [
-                { text: "Glutamato y glutamina.", correct: false },
-                { text: "Glutamato y asparragina.", correct: false },
-                { text: "Aspartato y glutamina.", correct: false },
-                { text: "Glutamato y aspartato.", correct: true },
-                { text: "Lisina y citrulina.", correct: false }
-            ]
+        { 
+            q: "Los nitrógenos que forman parte de la estructura de la urea proceden fundamentalmente de:", 
+            opts: ["Glutamato y glutamina.", "Glutamato y asparragina.", "Aspartato y glutamina.", "Glutamato y aspartato.", "Lisina y citrulina."], 
+            a: "Glutamato y aspartato.", 
+            exp: "Uno viene del amonio libre (vía glutamato deshidrogenasa) y el otro directamente del Aspartato." 
         },
-        {
-            question: "La principal enzima regulable de la síntesis de urea es:",
-            options: [
-                { text: "Carbamilfosfato sintetasa I.", correct: true },
-                { text: "Ornitina transcarbamilasa.", correct: false },
-                { text: "Arginasa.", correct: false },
-                { text: "Argininosintetasa.", correct: false },
-                { text: "Argininosuccinasa.", correct: false }
-            ]
+        { 
+            q: "La principal enzima regulable de la síntesis de urea es:", 
+            opts: ["Carbamilfosfato sintetasa I.", "Ornitina transcarbamilasa.", "Arginasa.", "Argininosintetasa.", "Argininosuccinasa."], 
+            a: "Carbamilfosfato sintetasa I.", 
+            exp: "CPS-I mitocondrial." 
         },
-        {
-            question: "¿Qué es cofactor necesario para la hidroxilación de prolina y lisina?",
-            options: [
-                { text: "La vitamina C (Ascorbato).", correct: true },
-                { text: "La vitamina B12.", correct: false },
-                { text: "La biotina.", correct: false },
-                { text: "El magnesio.", correct: false }
-            ]
+        { 
+            q: "¿Qué es cofactor necesario para la hidroxilación de prolina y lisina?", 
+            opts: ["La vitamina C (Ascorbato).", "La vitamina B12.", "La biotina.", "El magnesio."], 
+            a: "La vitamina C (Ascorbato).", 
+            exp: "Esencial para la síntesis de colágeno." 
         },
-        {
-            question: "La fenilalanina se convierte en tirosina por medio de la enzima fenilalanina hidroxilasa. Un déficit de esta enzima da como resultado:",
-            options: [
-                { text: "Fenilcetonuria.", correct: true },
-                { text: "Albinismo.", correct: false },
-                { text: "Alcaptonuria.", correct: false },
-                { text: "Tirosinemia.", correct: false }
-            ]
+        { 
+            q: "La fenilalanina se convierte en tirosina por medio de la enzima fenilalanina hidroxilasa. Un déficit de esta enzima da como resultado:", 
+            opts: ["Fenilcetonuria.", "Albinismo.", "Alcaptonuria.", "Tirosinemia."], 
+            a: "Fenilcetonuria.", 
+            exp: "Acumulación de fenilalanina y deficiencia de tirosina." 
         },
-        {
-            question: "En relación con el metabolismo de los AA es INCORRECTO que:",
-            options: [
-                { text: "Un AA glucogénico puede originar α-cetoglutarato al degradarse.", correct: false },
-                { text: "Un AA cetogénico origina Succinil-CoA al degradarse.", correct: false },
-                { text: "Se libera NH3 tras la acción de la glutaminasa.", correct: false },
-                { text: "Se obtenga oxalacetato a partir de aspartato por transaminación.", correct: false },
-                { text: "Un AA no esencial puede sintetizarse a partir de eritrosa-4-P.", correct: true }
-            ]
+        { 
+            q: "En relación con el metabolismo de los AA es INCORRECTO que:", 
+            opts: ["Un AA glucogénico puede originar α-cetoglutarato al degradarse.", "Un AA cetogénico origina Succinil-CoA al degradarse.", "Se libera NH3 tras la acción de la glutaminasa.", "Se obtenga oxalacetato a partir de aspartato por transaminación.", "Un AA no esencial puede sintetizarse a partir de eritrosa-4-P."], 
+            a: "Un AA no esencial puede sintetizarse a partir de eritrosa-4-P.", 
+            exp: "La vía de la eritrosa-4-P (ácido shikímico) es para síntesis de AA aromáticos en bacterias/plantas, no en humanos." 
         },
-        {
-            question: "Respecto al ciclo de la urea, indica cuál de las siguientes respuestas es FALSA:",
-            options: [
-                { text: "Tiene lugar en el hígado.", correct: false },
-                { text: "Los donantes de -NH2 son los AA glutamato y glicina.", correct: true },
-                { text: "El proceso es en parte mitocondrial y en parte citosólico.", correct: false },
-                { text: "La síntesis de urea comienza con la condensación de CO2 y amoniaco.", correct: false },
-                { text: "La enzima regulable es la carbamil fosfato sintetasa I.", correct: false }
-            ]
+        { 
+            q: "Respecto al ciclo de la urea, indica cuál de las siguientes respuestas es FALSA:", 
+            opts: ["Tiene lugar en el hígado.", "Los donantes de -NH2 son los AA glutamato y glicina.", "El proceso es en parte mitocondrial y en parte citosólico.", "La síntesis de urea comienza con la condensación de CO2 y amoniaco.", "La enzima regulable es la carbamil fosfato sintetasa I."], 
+            a: "Los donantes de -NH2 son los AA glutamato y glicina.", 
+            exp: "Falso: los donantes principales son Amoniaco (vía Glutamato) y Aspartato." 
         },
-        {
-            question: "En cuál de los siguientes procesos del metabolismo de los aminoácidos (AA) se hace alusión al compuesto representado (α-cetoglutarato):",
-            options: [
-                { text: "Un AA cetogénico puede originar acetoacetato al degradarse.", correct: false },
-                { text: "Un AA glucogénico puede originar α-cetoglutarato al degradarse.", correct: true },
-                { text: "Se libera NH3 tras la acción de la glutaminasa.", correct: false },
-                { text: "Se obtiene oxalacetato a partir del aspartato por transaminación.", correct: false },
-                { text: "Un AA no esencial puede sintetizarse a partir de eritrosa-4-P.", correct: false }
-            ]
+        { 
+            q: "En cuál de los siguientes procesos del metabolismo de los aminoácidos (AA) se hace alusión al compuesto representado (α-cetoglutarato):", 
+            opts: ["Un AA cetogénico puede originar acetoacetato al degradarse.", "Un AA glucogénico puede originar α-cetoglutarato al degradarse.", "Se libera NH3 tras la acción de la glutaminasa.", "Se obtiene oxalacetato a partir del aspartato por transaminación.", "Un AA no esencial puede sintetizarse a partir de eritrosa-4-P."], 
+            a: "Un AA glucogénico puede originar α-cetoglutarato al degradarse.", 
+            exp: "El α-cetoglutarato es un punto de entrada al ciclo de Krebs para AA glucogénicos (ej. Glu, Gln, Pro, His, Arg)." 
         },
-        {
-            question: "El destino del esqueleto carbonatado de los aminoácidos es formar:",
-            options: [
-                { text: "Malato, oxalacetato y piruvato.", correct: false },
-                { text: "Alfa-cetoglutarato, malato, citrato.", correct: false },
-                { text: "Alfa-cetoglutarato, oxalacetato, fumarato, piruvato, acetil-CoA, succinil-CoA.", correct: true },
-                { text: "Citrato, isocitrato, malato.", correct: false },
-                { text: "Solo alfa-cetoglutarato.", correct: false }
-            ]
+        { 
+            q: "El destino del esqueleto carbonatado de los aminoácidos es formar:", 
+            opts: ["Malato, oxalacetato y piruvato.", "Alfa-cetoglutarato, malato, citrato.", "Alfa-cetoglutarato, oxalacetato, fumarato, piruvato, acetil-CoA, succinil-CoA.", "Citrato, isocitrato, malato.", "Solo alfa-cetoglutarato."], 
+            a: "Alfa-cetoglutarato, oxalacetato, fumarato, piruvato, acetil-CoA, succinil-CoA.", 
+            exp: "Son los 7 metabolitos principales a los que confluyen todos los aminoácidos." 
         },
-        {
-            question: "Respecto al ciclo de la urea, indique cuál de las siguientes respuestas es correcta:",
-            options: [
-                { text: "Tiene lugar en el hígado.", correct: false },
-                { text: "La urea se sintetiza en el riñón.", correct: false },
-                { text: "El proceso tiene lugar parte en la mitocondria y parte en el citosol.", correct: false },
-                { text: "La síntesis de urea comienza con la condensación de bicarbonato y amoniaco.", correct: false },
-                { text: "A, C y D son ciertas.", correct: true }
-            ]
+        { 
+            q: "Respecto al ciclo de la urea, indique cuál de las siguientes respuestas es correcta:", 
+            opts: ["Tiene lugar en el hígado.", "La urea se sintetiza en el riñón.", "El proceso tiene lugar parte en la mitocondria y parte en el citosol.", "La síntesis de urea comienza con la condensación de bicarbonato y amoniaco.", "A, C y D son ciertas."], 
+            a: "A, C y D son ciertas.", 
+            exp: "Hígado, compartimentado y condensación NH3+HCO3-." 
         },
-        {
-            question: "Indique la enzima regulable de la síntesis de la urea:",
-            options: [
-                { text: "Carbamil fosfato sintetasa I.", correct: true },
-                { text: "Ornitina transcarbamilasa.", correct: false },
-                { text: "Arginino succinasa.", correct: false },
-                { text: "Arginasa.", correct: false },
-                { text: "Ureasa.", correct: false }
-            ]
+        { 
+            q: "Indique la enzima regulable de la síntesis de la urea:", 
+            opts: ["Carbamil fosfato sintetasa I.", "Ornitina transcarbamilasa.", "Arginino succinasa.", "Arginasa.", "Ureasa."], 
+            a: "Carbamil fosfato sintetasa I.", 
+            exp: "Repetida por énfasis." 
         },
-        {
-            question: "En la biosíntesis de AA:",
-            options: [
-                { text: "El oxalato es el precursor del aspartato.", correct: false },
-                { text: "El piruvato es el precursor de la tirosina.", correct: false },
-                { text: "El alfa-cetoglutarato es el precursor del glutamato.", correct: false },
-                { text: "El glutamato es el precursor de la histidina.", correct: false },
-                { text: "El alfa-cetoglutarato es precursor del glutamato y oxalacetato del aspartato.", correct: true }
-            ]
+        { 
+            q: "En la biosíntesis de AA:", 
+            opts: ["El oxalato es el precursor del aspartato.", "El piruvato es el precursor de la tirosina.", "El alfa-cetoglutarato es el precursor del glutamato.", "El glutamato es el precursor de la histidina.", "El alfa-cetoglutarato es precursor del glutamato y oxalacetato del aspartato."], 
+            a: "El alfa-cetoglutarato es precursor del glutamato y oxalacetato del aspartato.", 
+            exp: "Por transaminación directa." 
         },
-        {
-            question: "¿Cuáles de los siguientes intermediarios metabólicos son productos catabólicos de los AA?",
-            options: [
-                { text: "Piruvato.", correct: false },
-                { text: "Fumarato.", correct: false },
-                { text: "Oxalacetato.", correct: false },
-                { text: "Alfa-cetoglutarato.", correct: false },
-                { text: "Todas son ciertas.", correct: true }
-            ]
+        { 
+            q: "¿Cuáles de los siguientes intermediarios metabólicos son productos catabólicos de los AA?", 
+            opts: ["Piruvato.", "Fumarato.", "Oxalacetato.", "Alfa-cetoglutarato.", "Todas son ciertas."], 
+            a: "Todas son ciertas.", 
+            exp: "Todos son puntos de entrada al metabolismo central." 
         },
-        {
-            question: "La desaminación oxidativa del ácido glutámico dará lugar a:",
-            options: [
-                { text: "Ácido Succínico.", correct: false },
-                { text: "Ácido Oxalacético.", correct: false },
-                { text: "Ácido Fumárico.", correct: false },
-                { text: "Ácido α-cetoglutárico.", correct: true },
-                { text: "Ninguna es cierta.", correct: false }
-            ]
+        { 
+            q: "La desaminación oxidativa del ácido glutámico dará lugar a:", 
+            opts: ["Ácido Succínico.", "Ácido Oxalacético.", "Ácido Fumárico.", "Ácido α-cetoglutárico.", "Ninguna es cierta."], 
+            a: "Ácido α-cetoglutárico.", 
+            exp: "Reacción catalizada por la Glutamato Deshidrogenasa (GDH)." 
         },
-        {
-            question: "En la etapa enzimática de la desaminación oxidativa de un AA se produce:",
-            options: [
-                { text: "La formación en el AA de un grupo imino (=NH).", correct: false },
-                { text: "La pérdida por el AA de 2 átomos de H.", correct: false },
-                { text: "La hidrólisis del grupo amino (-NH2) del mismo.", correct: false },
-                { text: "A y B son ciertas.", correct: true },
-                { text: "B y C son ciertas.", correct: false }
-            ]
+        { 
+            q: "En la etapa enzimática de la desaminación oxidativa de un AA se produce:", 
+            opts: ["La formación en el AA de un grupo imino (=NH).", "La pérdida por el AA de 2 átomos de H.", "La hidrólisis del grupo amino (-NH2) del mismo.", "A y B son ciertas.", "B y C son ciertas."], 
+            a: "A y B son ciertas.", 
+            exp: "Se forma un intermedio imino que luego se hidroliza liberando amonio." 
         },
-        {
-            question: "En el metabolismo de los AA:",
-            options: [
-                { text: "La vía catabólica siempre origina cuerpos cetónicos.", correct: false },
-                { text: "La carencia de un aminoácido esencial puede provocar balance nitrogenado negativo.", correct: true },
-                { text: "Los AA ramificados son totalmente degradados en el hígado.", correct: false },
-                { text: "Las reacciones catabólicas son irreversibles.", correct: false },
-                { text: "La alanina es el principal AA cetogénico.", correct: false }
-            ]
+        { 
+            q: "En el metabolismo de los AA:", 
+            opts: ["La vía catabólica siempre origina cuerpos cetónicos.", "La carencia de un aminoácido esencial puede provocar balance nitrogenado negativo.", "Los AA ramificados son totalmente degradados en el hígado.", "Las reacciones catabólicas son irreversibles.", "La alanina es el principal AA cetogénico."], 
+            a: "La carencia de un aminoácido esencial puede provocar balance nitrogenado negativo.", 
+            exp: "Si falta un AA esencial, no se pueden sintetizar proteínas corporales y se degrada el exceso de los demás, excretando más N del que se retiene." 
         },
-        {
-            question: "De los siguientes AA, ¿cuáles son glucogénicos?",
-            options: [
-                { text: "Valina.", correct: false },
-                { text: "Glutámico.", correct: false },
-                { text: "Leucina.", correct: false },
-                { text: "Valina y Glutámico.", correct: true },
-                { text: "Ninguna es cierta.", correct: false }
-            ]
+        { 
+            q: "De los siguientes AA, ¿cuáles son glucogénicos?", 
+            opts: ["Valina.", "Glutámico.", "Leucina.", "Valina y Glutámico.", "Ninguna es cierta."], 
+            a: "Valina y Glutámico.", 
+            exp: "Leucina es puramente cetogénico (junto con Lisina)." 
         },
-        {
-            question: "La glutamato deshidrogenasa cataliza el paso de alfa-cetoglutarato a glutamato:",
-            options: [
-                { text: "Por aminación oxidativa.", correct: false },
-                { text: "Por hidrólisis.", correct: false },
-                { text: "Por oxidación.", correct: false },
-                { text: "Por aminación reductiva.", correct: true },
-                { text: "Por hidratación.", correct: false }
-            ]
+        { 
+            q: "La glutamato deshidrogenasa cataliza el paso de alfa-cetoglutarato a glutamato:", 
+            opts: ["Por aminación oxidativa.", "Por hidrólisis.", "Por oxidación.", "Por aminación reductiva.", "Por hidratación."], 
+            a: "Por aminación reductiva.", 
+            exp: "Incorpora NH3 y usa NADPH (poder reductor) para formar Glutamato." 
         },
-        {
-            question: "A partir del glutamato-gamma-semialdehído se forma:",
-            options: [
-                { text: "Arginina.", correct: false },
-                { text: "Metionina.", correct: false },
-                { text: "Prolina.", correct: true },
-                { text: "Histidina.", correct: false },
-                { text: "Prolina y Arginina.", correct: false }
-            ]
+        { 
+            q: "A partir del glutamato-gamma-semialdehído se forma:", 
+            opts: ["Arginina.", "Metionina.", "Prolina.", "Histidina.", "Prolina y Arginina."], 
+            a: "Prolina.", 
+            exp: "El semialdehído se cicla espontáneamente para formar Prolina (y también es intermedio hacia Arginina/Ornitina)." 
         },
-        {
-            question: "Indique qué enzimas están implicadas en el metabolismo nitrogenado:",
-            options: [
-                { text: "Glutaminasa.", correct: false },
-                { text: "Glutamina sintetasa.", correct: false },
-                { text: "Glutamato deshidrogenasa.", correct: false },
-                { text: "Transaminasa.", correct: false },
-                { text: "Todas son ciertas.", correct: true }
-            ]
+        { 
+            q: "Indique qué enzimas están implicadas en el metabolismo nitrogenado:", 
+            opts: ["Glutaminasa.", "Glutamina sintetasa.", "Glutamato deshidrogenasa.", "Transaminasa.", "Todas son ciertas."], 
+            a: "Todas son ciertas.", 
+            exp: "Conjunto clave de enzimas para el manejo del grupo amino." 
         },
-        {
-            question: "El ciclo de la urea:",
-            options: [
-                { text: "Sólo tiene lugar en las células renales.", correct: false },
-                { text: "Se gasta un mol de ATP por mol de urea producido.", correct: false },
-                { text: "El aporte de nitrógeno se realiza exclusivamente por el fosfato de carbamilo.", correct: false },
-                { text: "El ciclo es muy reversible.", correct: false },
-                { text: "Ninguna es cierta.", correct: true }
-            ]
+        { 
+            q: "El ciclo de la urea:", 
+            opts: ["Sólo tiene lugar en las células renales.", "Se gasta un mol de ATP por mol de urea producido.", "El aporte de nitrógeno se realiza exclusivamente por el fosfato de carbamilo.", "El ciclo es muy reversible.", "Ninguna es cierta."], 
+            a: "Ninguna es cierta.", 
+            exp: "Es hepático, gasta 3 ATP (4 enlaces), usa Aspartato también y es irreversible." 
         },
-        {
-            question: "En la síntesis de urea, la formación de carbamil fosfato:",
-            options: [
-                { text: "Tiene lugar en el citosol.", correct: false },
-                { text: "Tiene lugar en la mitocondria.", correct: true },
-                { text: "La enzima implicada en su síntesis no requiere ATP.", correct: false },
-                { text: "La enzima que cataliza este paso es NADPH dependiente.", correct: false },
-                { text: "Son ciertas A y D.", correct: false }
-            ]
+        { 
+            q: "En la síntesis de urea, la formación de carbamil fosfato:", 
+            opts: ["Tiene lugar en el citosol.", "Tiene lugar en la mitocondria.", "La enzima implicada en su síntesis no requiere ATP.", "La enzima que cataliza este paso es NADPH dependiente.", "Son ciertas A y D."], 
+            a: "Tiene lugar en la mitocondria.", 
+            exp: "Paso limitante catalizado por CPS-I mitocondrial." 
         },
-        {
-            question: "¿En qué organelo celular se realiza el paso de ornitina a citrulina en el ciclo de la urea?",
-            options: [
-                { text: "Mitocondrias.", correct: true },
-                { text: "Citoplasma.", correct: false },
-                { text: "Retículo endoplasmático liso.", correct: false },
-                { text: "Retículo endoplasmático rugoso.", correct: false },
-                { text: "Ribosoma.", correct: false }
-            ]
+        { 
+            q: "¿En qué organelo celular se realiza el paso de ornitina a citrulina en el ciclo de la urea?", 
+            opts: ["Mitocondrias.", "Citoplasma.", "Retículo endoplasmático liso.", "Retículo endoplasmático rugoso.", "Ribosoma."], 
+            a: "Mitocondrias.", 
+            exp: "La ornitina entra a la mitocondria para recibir el grupo carbamilo." 
         },
-        {
-            question: "En el ciclo de la urea intervienen:",
-            options: [
-                { text: "Citrulina, triptófano y fenilalanina.", correct: false },
-                { text: "Sólo triptófano y fenilalanina.", correct: false },
-                { text: "Ornitina, citrulina y arginina.", correct: true },
-                { text: "Sólo citrulina y arginina.", correct: false },
-                { text: "Intervienen las 5 sustancias citadas.", correct: false }
-            ]
+        { 
+            q: "En el ciclo de la urea intervienen:", 
+            opts: ["Citrulina, triptófano y fenilalanina.", "Sólo triptófano y fenilalanina.", "Ornitina, citrulina y arginina.", "Sólo citrulina y arginina.", "Intervienen las 5 sustancias citadas."], 
+            a: "Ornitina, citrulina y arginina.", 
+            exp: "Son los tres aminoácidos 'no proteicos' (excepto Arg) clave del ciclo." 
         },
-        {
-            question: "¿Cuál de estos compuestos NO guarda relación directa con el ciclo de la urea?",
-            options: [
-                { text: "Ornitina.", correct: false },
-                { text: "Citrulina.", correct: false },
-                { text: "Carbamil fosfato.", correct: false },
-                { text: "Glutamato.", correct: false },
-                { text: "Ascorbato.", correct: true }
-            ]
+        { 
+            q: "¿Cuál de estos compuestos NO guarda relación directa con el ciclo de la urea?", 
+            opts: ["Ornitina.", "Citrulina.", "Carbamil fosfato.", "Glutamato.", "Ascorbato."], 
+            a: "Ascorbato.", 
+            exp: "El Ascorbato es vitamina C (hidroxilaciones), no interviene en el ciclo de la urea." 
         },
-        {
-            question: "En el ciclo de la urea, ésta queda libre en el medio biológico al escindirse:",
-            options: [
-                { text: "Histidina que se convierte en glicocola.", correct: false },
-                { text: "Fenilalanina que se convierte en tirosina.", correct: false },
-                { text: "Triptófano que se convierte en tiramina.", correct: false },
-                { text: "Arginina que se convierte en ornitina.", correct: true },
-                { text: "Ninguna es cierta.", correct: false }
-            ]
+        { 
+            q: "En el ciclo de la urea, ésta queda libre en el medio biológico al escindirse:", 
+            opts: ["Histidina que se convierte en glicocola.", "Fenilalanina que se convierte en tirosina.", "Triptófano que se convierte en tiramina.", "Arginina que se convierte en ornitina.", "Ninguna es cierta."], 
+            a: "Arginina que se convierte en ornitina.", 
+            exp: "Acción de la Arginasa (citosólica)." 
         },
-        {
-            question: "Respecto al ciclo de la urea, indica cuál de las siguientes respuestas es correcta:",
-            options: [
-                { text: "La enzima regulable es la carbamil fosfato sintetasa 1.", correct: true },
-                { text: "La síntesis tiene lugar en el riñón.", correct: false },
-                { text: "Los donantes de –NH2 son los aminoácidos glutamato y glicina.", correct: false },
-                { text: "El proceso se da enteramente en la mitocondria.", correct: false },
-                { text: "La síntesis de urea comienza con la condensación de CO2 y glutamato.", correct: false }
-            ]
+        { 
+            q: "Respecto al ciclo de la urea, indica cuál de las siguientes respuestas es correcta (Repetida):", 
+            opts: ["La enzima regulable es la carbamil fosfato sintetasa 1.", "La síntesis tiene lugar en el riñón.", "Los donantes de –NH2 son los aminoácidos glutamato y glicina.", "El proceso se da enteramente en la mitocondria.", "La síntesis de urea comienza con la condensación de CO2 y glutamato."], 
+            a: "La enzima regulable es la carbamil fosfato sintetasa 1.", 
+            exp: "CPS-1 es la clave regulatoria." 
         },
-        {
-            question: "En cuál de los siguientes procesos del metabolismo de los aminoácidos se hace alusión al compuesto representado (Oxalacetato):",
-            options: [
-                { text: "Un AA cetogénico puede originar acetoacetato al degradarse.", correct: false },
-                { text: "Es un producto de un AA glucogénico.", correct: true },
-                { text: "Se libera NH3 tras la acción de la glutaminasa.", correct: false },
-                { text: "Se origina en la reacción catalizada por la GPT.", correct: false },
-                { text: "Un AA no esencial puede sintetizarse a partir de eritrosa-4-P.", correct: false }
-            ]
+        { 
+            q: "En cuál de los siguientes procesos se hace alusión al compuesto representado (Oxalacetato):", 
+            opts: ["Un AA no esencial puede sintetizarse a partir de este compuesto y eritrosa-4-P.", "Se libera junto con NH3 tras la acción de la glutaminasa.", "Es el resultado de la degradación del esqueleto carbonatado de un AA cetogénico.", "Está implicado en la reacción catalizada por la AST (Aspartato aminotransferasa/GOT)."], 
+            a: "Está implicado en la reacción catalizada por la AST (Aspartato aminotransferasa/GOT).", 
+            exp: "La AST transfiere un grupo amino del Aspartato al α-cetoglutarato, formando Oxalacetato y Glutamato." 
         },
-        {
-            question: "El ciclo del γ-glutamilo requiere para llevarse a cabo la presencia de:",
-            options: [
-                { text: "Glutamina.", correct: false },
-                { text: "Glutamato.", correct: false },
-                { text: "Histidina.", correct: false },
-                { text: "Glutatión.", correct: true },
-                { text: "Glicina.", correct: false }
-            ]
+        { 
+            q: "El ciclo del γ-glutamilo requiere para llevarse a cabo la presencia de:", 
+            opts: ["Glutamina.", "Glutamato.", "Histidina.", "Glutatión.", "Glicina."], 
+            a: "Glutatión.", 
+            exp: "Ciclo para transporte de aminoácidos a través de membranas (Ciclo de Meister)." 
         },
-        {
-            question: "La enzima glutatión peroxidasa permite que se lleve a cabo la siguiente reacción:",
-            options: [
-                { text: "Oxidación del glutatión.", correct: false },
-                { text: "Reducción del glutatión.", correct: false },
-                { text: "Transforma el H2O2 en H2O.", correct: false },
-                { text: "Son ciertas A y C.", correct: true },
-                { text: "Son ciertas B y C.", correct: false }
-            ]
+        { 
+            q: "La enzima glutatión peroxidasa permite que se lleve a cabo la siguiente reacción:", 
+            opts: ["Oxidación del glutatión.", "Reducción del glutatión.", "Transforma el H2O2 en H2O.", "Son ciertas A y C.", "Son ciertas B y C."], 
+            a: "Son ciertas A y C.", 
+            exp: "Oxida el glutatión (GSH -> GSSG) mientras reduce el peróxido de hidrógeno a agua." 
         },
-        {
-            question: "Entre los aminoácidos glucogénicos, el más destacado de ellos (ciclo glucosa-alanina) es:",
-            options: [
-                { text: "Alanina.", correct: true },
-                { text: "Tirosina.", correct: false },
-                { text: "Triptófano.", correct: false },
-                { text: "Fenil-alanina.", correct: false },
-                { text: "Histidina.", correct: false }
-            ]
+        { 
+            q: "Entre los aminoácidos glucogénicos, el más destacado de ellos (ciclo glucosa-alanina) es:", 
+            opts: ["Alanina.", "Tirosina.", "Triptófano.", "Fenil-alanina.", "Histidina."], 
+            a: "Alanina.", 
+            exp: "Fundamental para el transporte de esqueletos carbonados y nitrógeno desde el músculo al hígado." 
         },
-        {
-            question: "¿Cómo actúa la arginasa?",
-            options: [
-                { text: "Incorpora arginina a la ornitina.", correct: false },
-                { text: "Escinde la arginina en fumarato y ornitina.", correct: false },
-                { text: "Escinde la arginina en ornitina y urea.", correct: true },
-                { text: "Es sólo de localización mitocondrial.", correct: false },
-                { text: "Incorpora arginina a la citrulina.", correct: false }
-            ]
+        { 
+            q: "¿Cómo actúa la arginasa?", 
+            opts: ["Incorpora arginina a la ornitina.", "Escinde la arginina en fumarato y ornitina.", "Escinde la arginina en ornitina y urea.", "Es sólo de localización mitocondrial.", "Incorpora arginina a la citrulina."], 
+            a: "Escinde la arginina en ornitina y urea.", 
+            exp: "Paso final del ciclo." 
         },
-        {
-            question: "¿En cuál de los siguientes procesos se hace alusión al Oxalacetato (implicado en AST)?",
-            options: [
-                { text: "Un AA no esencial puede sintetizarse a partir de este compuesto y eritrosa-4-P.", correct: false },
-                { text: "Se libera junto con NH3 tras la acción de la glutaminasa.", correct: false },
-                { text: "Es el resultado de la degradación del esqueleto carbonatado de un AA cetogénico.", correct: false },
-                { text: "Está implicado en la reacción catalizada por la AST (Aspartato aminotransferasa/GOT).", correct: true }
-            ]
+        { 
+            q: "¿En cuál de los siguientes procesos se hace alusión al Oxalacetato (Repetida):", 
+            opts: ["Un AA no esencial puede sintetizarse a partir de este compuesto y eritrosa-4-P.", "Se libera junto con NH3 tras la acción de la glutaminasa.", "Es el resultado de la degradación del esqueleto carbonatado de un AA cetogénico.", "Está implicado en la reacción catalizada por la AST (Aspartato aminotransferasa/GOT)."], 
+            a: "Está implicado en la reacción catalizada por la AST (Aspartato aminotransferasa/GOT).", 
+            exp: "AST interconvierte Aspartato/Oxalacetato." 
         },
-        {
-            question: "¿Cuál de las siguientes frases en relación a los aminoácidos y su metabolismo es la correcta?",
-            options: [
-                { text: "La glutamina derivada del músculo se metaboliza en el hígado y en el riñón para formar amoniaco y un precursor gluconeogénico.", correct: true },
-                { text: "El primer paso en el catabolismo de la mayoría de los aminoácidos es la desaminación oxidativa.", correct: false },
-                { text: "El hígado utiliza el NH3 para tamponar protones.", correct: false },
-                { text: "En un estado saludable, la entrada al pool de aminoácidos excede a la salida.", correct: false }
-            ]
+        { 
+            q: "¿Cuál de las siguientes frases en relación a los aminoácidos y su metabolismo es la correcta?", 
+            opts: ["La glutamina derivada del músculo se metaboliza en el hígado y en el riñón para formar amoniaco y un precursor gluconeogénico.", "El primer paso en el catabolismo de la mayoría de los aminoácidos es la desaminación oxidativa.", "El hígado utiliza el NH3 para tamponar protones.", "En un estado saludable, la entrada al pool de aminoácidos excede a la salida."], 
+            a: "La glutamina derivada del músculo se metaboliza en el hígado y en el riñón para formar amoniaco y un precursor gluconeogénico.", 
+            exp: "La glutamina transporta amonio al riñón (excreción) e hígado (urea) y su esqueleto (α-KG) es gluconeogénico." 
         },
-        {
-            question: "Identifica la afirmación correcta en el contexto del ciclo de la urea:",
-            options: [
-                { text: "Se localiza exclusivamente en la mitocondria.", correct: false },
-                { text: "La ureasa bacteriana es el principal responsable de la hipoamonemia.", correct: false },
-                { text: "Es un ciclo exclusivo del hígado.", correct: true },
-                { text: "Sintetiza urea a partir de aspártico y amoniaco como fuentes de energía.", correct: false }
-            ]
+        { 
+            q: "Identifica la afirmación correcta en el contexto del ciclo de la urea:", 
+            opts: ["Se localiza exclusivamente en la mitocondria.", "La ureasa bacteriana es el principal responsable de la hipoamonemia.", "Es un ciclo exclusivo del hígado.", "Sintetiza urea a partir de aspártico y amoniaco como fuentes de energía."], 
+            a: "Es un ciclo exclusivo del hígado.", 
+            exp: "Solo el hígado expresa todas las enzimas necesarias (especialmente Arginasa en cantidad suficiente)." 
         }
     ];
 
-    // Función para barajar array
+    // --- ASIGNAR IDs ÚNICOS ---
+    quizData.forEach((item, index) => {
+        item.id = index;
+    });
+
+    // --- GESTIÓN DE ESTADO ---
+    let markedQuestions = new Set();
+    let failedQuestions = new Set();
+
     function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
         }
         return array;
     }
 
-    // Renderizar cuestionario
-    function renderQuiz() {
-        const container = document.getElementById('quiz-container');
-        container.innerHTML = '';
+    const container = document.getElementById('quiz-container');
 
-        // 1. Barajar el orden de las preguntas
-        const shuffledQuestions = shuffleArray([...quizData]);
+    // Función principal
+    function renderQuiz(questionsToLoad = quizData) {
+        container.innerHTML = "";
+        document.getElementById("restart-menu").style.display = "none";
+        document.getElementById("finish-btn").style.display = "inline-block";
 
-        shuffledQuestions.forEach((item, index) => {
+        if(questionsToLoad.length === 0) {
+            container.innerHTML = "<p style='text-align:center; padding:20px; color:#6b7280;'>No hay preguntas para mostrar en esta selección.</p>";
+            return;
+        }
+
+        questionsToLoad.forEach((item, displayIndex) => {
             const card = document.createElement('div');
             card.className = 'question-card';
 
-            const title = document.createElement('div');
-            title.className = 'question-text';
-            // 2. Numerar dinámicamente según el nuevo orden
-            title.textContent = `${index + 1}. ${item.question}`;
-            card.appendChild(title);
+            // Checkbox Marcar
+            const markContainer = document.createElement("div");
+            markContainer.className = "mark-container";
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = `mark-${item.id}`;
+            if(markedQuestions.has(item.id)) checkbox.checked = true;
 
+            checkbox.onchange = (e) => {
+                if(e.target.checked) markedQuestions.add(item.id);
+                else markedQuestions.delete(item.id);
+            };
+
+            const label = document.createElement("label");
+            label.htmlFor = `mark-${item.id}`;
+            label.innerText = "Marcar para revisar";
+            markContainer.appendChild(checkbox);
+            markContainer.appendChild(label);
+            card.appendChild(markContainer);
+
+            // Pregunta
+            const header = document.createElement('div');
+            header.className = 'question-header';
+            header.textContent = `Pregunta ${item.id + 1}`; 
+            card.appendChild(header);
+
+            const questionText = document.createElement('div');
+            questionText.className = 'question-text';
+            questionText.textContent = item.q;
+
+            // --- INSERCIÓN DE DIAGRAMAS (Placeholders) ---
+            if (item.id === 12) { 
+                 questionText.innerHTML += `<span class='img-tag'>[Imagen: Estructura de α-cetoglutarato]</span>`;
+            } else if (item.id === 37 || item.id === 32) { 
+                 questionText.innerHTML += `<span class='img-tag'>[Imagen: Estructura de Oxalacetato]</span>`;
+            }
+
+            card.appendChild(questionText);
+
+            // Opciones
             const optionsDiv = document.createElement('div');
             optionsDiv.className = 'options-container';
 
-            // 3. Barajar opciones
-            const currentOptions = shuffleArray([...item.options]);
+            let optionsObj = item.opts.map(opt => ({
+                text: opt,
+                isCorrect: opt === item.a
+            }));
+            optionsObj = shuffleArray(optionsObj);
 
-            currentOptions.forEach(opt => {
+            // Explicación
+            const explanationDiv = document.createElement('div');
+            explanationDiv.className = 'explanation';
+            explanationDiv.innerHTML = `<strong>Explicación:</strong> ${item.exp}`;
+
+            optionsObj.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.textContent = opt.text;
-                
-                // Guardar si es correcta en el elemento
-                btn.dataset.correct = opt.correct;
 
-                btn.onclick = () => checkAnswer(btn, optionsDiv);
+                btn.onclick = () => {
+                    const allBtns = optionsDiv.querySelectorAll('.option-btn');
+                    allBtns.forEach(b => b.disabled = true);
 
+                    if (opt.isCorrect) {
+                        btn.classList.add('correct');
+                    } else {
+                        btn.classList.add('incorrect');
+                        failedQuestions.add(item.id);
+                        
+                        allBtns.forEach(b => {
+                            if (b.textContent === item.a) b.classList.add('correct');
+                        });
+                    }
+                    explanationDiv.classList.add('visible');
+                };
                 optionsDiv.appendChild(btn);
             });
 
             card.appendChild(optionsDiv);
+            card.appendChild(explanationDiv);
             container.appendChild(card);
         });
     }
 
-    // Función de corrección
-    function checkAnswer(selectedBtn, container) {
-        const allBtns = container.querySelectorAll('.option-btn');
-        const isCorrect = selectedBtn.dataset.correct === 'true';
-
-        // Deshabilitar botones y mostrar colores
-        allBtns.forEach(btn => {
-            btn.classList.add('disabled');
-            if (btn.dataset.correct === 'true') {
-                btn.classList.add('correct');
-            }
-        });
-
-        // Si la elegida no era correcta, marcarla en rojo
-        if (!isCorrect) {
-            selectedBtn.classList.add('incorrect');
-        }
+    // --- Control Final ---
+    function showEndOptions() {
+        document.getElementById("finish-btn").style.display = "none";
+        document.getElementById("restart-menu").style.display = "flex";
+        document.getElementById("controls-area").scrollIntoView({behavior: "smooth"});
+        
+        document.getElementById("stats-summary").innerHTML = `
+            Preguntas marcadas: <strong>${markedQuestions.size}</strong><br>
+            Preguntas falladas en esta sesión: <strong>${failedQuestions.size}</strong>
+        `;
     }
 
-    // Iniciar
+    function restartQuiz(mode) {
+        let subset = [];
+        if (mode === 'all') subset = quizData;
+        else if (mode === 'marked') subset = quizData.filter(q => markedQuestions.has(q.id));
+        else if (mode === 'failed') subset = quizData.filter(q => failedQuestions.has(q.id));
+        else if (mode === 'failed_marked') subset = quizData.filter(q => failedQuestions.has(q.id) || markedQuestions.has(q.id));
+
+        if(mode !== 'all') failedQuestions.clear(); 
+        else {
+            failedQuestions.clear();
+            markedQuestions.clear();
+        }
+
+        renderQuiz(subset);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     renderQuiz();
 </script>
 
