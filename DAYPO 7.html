@@ -166,20 +166,33 @@
             box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
         }
 
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
         .action-btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 12px 30px;
-            font-size: 1.1em;
+            padding: 12px 20px;
+            font-size: 1em;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.1s;
         }
         .action-btn:hover {
             background: var(--primary-dark);
+        }
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+        .action-btn.secondary {
+            background-color: #78350f;
         }
 
         .checkbox-container {
@@ -207,12 +220,20 @@
     <div id="quiz-container"></div>
 
     <div id="controls-area">
-        <div id="score-display" style="margin-bottom: 15px; font-weight: bold; color: var(--primary-dark);"></div>
-        <button class="action-btn" onclick="renderQuiz()">🔄 Reiniciar Test (Barajar)</button>
+        <div id="status-display" style="margin-bottom: 15px; font-weight: bold; color: var(--primary-dark);">
+            Responde las preguntas para ver las opciones de repaso.
+        </div>
+        
+        <div class="controls-grid">
+            <button class="action-btn" onclick="restartQuiz('failed')">Repetir Falladas ✕</button>
+            <button class="action-btn" onclick="restartQuiz('marked')">Repetir Marcadas 🚩</button>
+            <button class="action-btn" onclick="restartQuiz('failed_marked')">Repetir Falladas y Marcadas</button>
+            <button class="action-btn secondary" onclick="restartQuiz('all')">Repetir Todas 🔄</button>
+        </div>
     </div>
 
 <script>
-    // Procesamiento de datos: Se han combinado las respuestas tipo "A y B son ciertas" para que funcionen al barajar.
+    // Procesamiento de datos
     const quizData = [
         {
             q: "La principal procedencia del Acetil-CoA en la síntesis de ácidos grasos es:",
@@ -822,10 +843,21 @@
         const container = document.getElementById('quiz-container');
         container.innerHTML = "";
         
-        // Barajar preguntas
+        // CORRECCIÓN: Eliminado el barajado de preguntas para mantener el orden original
         let items = [...questionsToLoad];
-        // Si es carga inicial o reinicio completo, barajamos. 
-        if(questionsToLoad === quizData) items = shuffleArray([...quizData]);
+        
+        // Actualizar mensaje de estado
+        const statusDisplay = document.getElementById('status-display');
+        if(questionsToLoad.length < quizData.length) {
+            statusDisplay.textContent = `Repasando ${questionsToLoad.length} preguntas seleccionadas.`;
+        } else {
+            statusDisplay.textContent = "Responde las preguntas para ver las opciones de repaso.";
+        }
+
+        if(items.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding:20px; color:#666;">No hay preguntas en esta selección.</div>`;
+            return;
+        }
 
         items.forEach((item, index) => {
             const card = document.createElement('div');
@@ -834,13 +866,17 @@
             // Cabecera
             const header = document.createElement('div');
             header.className = 'question-header';
-            header.innerHTML = `<span>Pregunta ${index + 1}</span>`;
+            header.innerHTML = `<span>Pregunta</span>`;
             
             // Checkbox
             const checkDiv = document.createElement('div');
             checkDiv.className = 'checkbox-container';
             const check = document.createElement('input');
             check.type = 'checkbox';
+            
+            // Mantener estado del checkbox si ya estaba marcada
+            if(markedQuestions.has(item.q)) check.checked = true;
+
             check.onclick = () => {
                 if(check.checked) markedQuestions.add(item.q);
                 else markedQuestions.delete(item.q);
@@ -876,6 +912,7 @@
             optsDiv.className = 'options-container';
             
             let opts = item.opts.map(opt => ({ txt: opt, isCorrect: opt === item.a }));
+            // Mantenemos el barajado SOLO de las opciones, no de las preguntas
             opts = shuffleArray(opts);
 
             const expDiv = document.createElement('div');
@@ -892,6 +929,8 @@
                     
                     if(opt.isCorrect) {
                         btn.classList.add('correct');
+                        // Si se acierta, la quitamos de falladas si estaba ahí (opcional, según lógica de repaso)
+                        // failedQuestions.delete(item); 
                     } else {
                         btn.classList.add('incorrect');
                         failedQuestions.add(item);
@@ -909,22 +948,25 @@
             card.appendChild(expDiv);
             container.appendChild(card);
         });
-
-        // Actualizar estadísticas al final
-        document.getElementById('restart-menu').style.display = 'flex';
     }
 
     // Funciones de control
     function restartQuiz(mode) {
-        if (mode === 'all') renderQuiz(quizData);
+        if (mode === 'all') {
+            // Limpiamos fallos al reiniciar todo, pero mantenemos marcadas si se quiere
+            failedQuestions.clear();
+            renderQuiz(quizData);
+        }
         else if (mode === 'marked') {
             const subset = quizData.filter(i => markedQuestions.has(i.q));
             renderQuiz(subset);
         }
         else if (mode === 'failed') {
+            // Convertimos el Set a Array
             renderQuiz(Array.from(failedQuestions));
         }
         else if (mode === 'failed_marked') {
+            // Unión: Preguntas que están en falladas O en marcadas
             const subset = quizData.filter(i => markedQuestions.has(i.q) || failedQuestions.has(i));
             renderQuiz(subset);
         }
