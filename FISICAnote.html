@@ -8,7 +8,7 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; color: #333; line-height: 1.6; margin: 0; padding: 20px; }
         .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         h1 { text-align: center; color: #2c3e50; }
-        .stats { text-align: center; margin-bottom: 20px; font-weight: bold; color: #555; background: #eef; padding: 10px; border-radius: 5px; }
+        .stats { text-align: center; margin-bottom: 20px; font-weight: bold; color: #555; background: #eef; padding: 10px; border-radius: 5px; position: sticky; top: 0; z-index: 100; border-bottom: 2px solid #dde; }
         .question-block { border-bottom: 1px solid #eee; padding: 20px 0; }
         .question-text { font-size: 1.1em; margin-bottom: 15px; font-weight: 600; }
         .options { list-style: none; padding: 0; }
@@ -18,13 +18,25 @@
         .option.incorrect { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; }
         .option.disabled { pointer-events: none; opacity: 0.8; }
         .explanation { margin-top: 10px; padding: 10px; background-color: #e2e3e5; border-radius: 5px; font-size: 0.9em; display: none; }
-        .controls { text-align: center; margin-top: 30px; }
-        button { background-color: #3498db; color: white; border: none; padding: 12px 24px; font-size: 1em; border-radius: 5px; cursor: pointer; margin: 5px; }
-        button:hover { background-color: #2980b9; }
-        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        
+        /* Estilos para la sección final y botones */
+        .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 30px; }
+        button { border: none; padding: 12px 24px; font-size: 1em; border-radius: 5px; cursor: pointer; transition: transform 0.1s; font-weight: bold; }
+        button:active { transform: scale(0.98); }
+        
+        .btn-retry-wrong { background-color: #e74c3c; color: white; } /* Rojo para fallos */
+        .btn-retry-wrong:hover { background-color: #c0392b; }
+        
+        .btn-retry-marked { background-color: #f39c12; color: white; } /* Naranja para repasos */
+        .btn-retry-marked:hover { background-color: #d35400; }
+        
+        .btn-reset { background-color: #3498db; color: white; } /* Azul para todo */
+        .btn-reset:hover { background-color: #2980b9; }
+
+        button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.6; }
+        
         .hidden { display: none; }
-        #final-score { text-align: center; font-size: 1.4em; margin: 20px 0; font-weight: bold; }
-        .block-header { background: #2c3e50; color: white; padding: 5px 10px; margin-top: 30px; border-radius: 5px; font-size: 0.9em; }
+        #final-score { text-align: center; font-size: 1.5em; margin: 20px 0; font-weight: bold; padding: 20px; background: #f8f9fa; border-radius: 8px; }
     </style>
 </head>
 <body>
@@ -41,17 +53,17 @@
     <div id="final-section" class="hidden">
         <div id="final-score"></div>
         <div class="controls">
-            <button onclick="retryWrong()" id="btn-retry-wrong">Repetir falladas</button>
-            <button onclick="location.reload()">Reiniciar todo</button>
+            <button onclick="restartQuiz('wrong')" id="btn-retry-wrong" class="btn-retry-wrong">Repetir Falladas</button>
+            <button onclick="restartQuiz('marked')" id="btn-retry-marked" class="btn-retry-marked">Repetir Marcadas (Repaso)</button>
+            <button onclick="restartQuiz('all')" class="btn-reset">Reiniciar Todo (Original)</button>
         </div>
     </div>
 </div>
 
 <script>
-    // Base de datos completa con 160 preguntas
+    // --- BASE DE DATOS DE PREGUNTAS (160) ---
     const allQuestions = [
         // --- BLOQUE ORIGINAL (1-100) ---
-        // Bioelectricidad
         { q: "¿Qué ocurre con el potencial de membrana (Vm) cuando una célula excitable recibe un estímulo pequeño?", opts: ["Se produce un potencial de acción inmediatamente.", "El Vm se altera de forma proporcional al estímulo y vuelve a su valor inicial.", "La célula muere por exceso de carga.", "No ocurre ningún cambio detectable."], a: 1, exp: "Estímulo subumbral genera un potencial electrotónico graduado, no un potencial de acción." },
         { q: "Un potencial generador se diferencia de un potencial de acción en que:", opts: ["Se propaga a larga distancia.", "Su amplitud es fija y no depende del estímulo.", "No se propaga a lo largo de la fibra nerviosa (es local).", "Cambia el signo del interior de la célula permanentemente."], a: 2, exp: "Es una señal local que disminuye con la distancia y es graduada." },
         { q: "El valor umbral (Em) es necesario para:", opts: ["Detener la bomba de sodio-potasio.", "Iniciar un potencial de acción.", "Mantener el estado de reposo.", "Abrir las sinapsis de forma irreversible."], a: 1, exp: "Es el voltaje crítico para abrir los canales de Na+ dependientes de voltaje masivamente." },
@@ -64,7 +76,6 @@
         { q: "El magnetómetro SQUID basa su funcionamiento en:", opts: ["El efecto fotoeléctrico.", "Fenómenos cuánticos de la superconductividad.", "La ley de Snell.", "La desintegración beta."], a: 1, exp: "Dispositivo Superconductor de Interferencia Cuántica." },
         { q: "El ruido magnético ambiental es causado principalmente por:", opts: ["El movimiento de los músculos del paciente.", "Redes eléctricas y campos magnéticos urbanos.", "La respiración del feto.", "El uso de rayos X cercanos."], a: 1, exp: "Líneas de alta tensión, coches, etc., generan ruido mucho mayor que la señal biológica." },
         { q: "¿Cuál es el origen del campo magnético terrestre (valor aproximado)?", opts: ["10^-15 T.", "5·10^-5 T (50 µT).", "100 T.", "7·10^-11 T."], a: 1, exp: "Es aprox 50 microteslas, mucho mayor que los campos biomagnéticos." },
-        // Biomecánica
         { q: "El objetivo de la ergonomía en biomecánica es:", opts: ["Aumentar el peso de los objetos.", "Diseñar tareas para realizarlas sin riesgo de lesiones.", "Estudiar fluidos en reposo.", "Medir la radiactividad de los huesos."], a: 1, exp: "Adaptar el trabajo a la persona." },
         { q: "Un cuerpo está en equilibrio mientras:", opts: ["Su masa sea superior a 100 kg.", "La vertical del centro de gravedad caiga sobre la base de sustentación.", "Se encuentre en movimiento acelerado.", "Esté apoyado en un solo punto fuera de su eje."], a: 1, exp: "Condición básica de estabilidad estática." },
         { q: "¿Qué sucede con la estabilidad al separar los pies?", opts: ["Disminuye siempre.", "Aumenta al ampliar la base de sustentación.", "No afecta al equilibrio.", "Elimina la fuerza de la gravedad."], a: 1, exp: "Mayor base de sustentación = mayor estabilidad." },
@@ -74,7 +85,6 @@
         { q: "En la deformación por compresión, si la fuerza es excesiva en columnas largas, ocurre:", opts: ["Tracción pura.", "Pandeo (inestabilidad lateral).", "Resonancia magnética.", "Ionización."], a: 1, exp: "Fallo estructural por flexión lateral bajo carga axial." },
         { q: "¿De qué depende el Módulo de Young (E)?", opts: ["De la longitud del objeto.", "Solo de la naturaleza del material.", "De la cantidad de fuerza aplicada.", "Del área de la sección transversal."], a: 1, exp: "Es una propiedad intrínseca del material." },
         { q: "¿Qué ocurre si los músculos abductores se paralizan al estar apoyado en un solo pie?", opts: ["La fuerza de contacto se verticaliza y la cadera cae (Trendelenburg).", "El centro de gravedad sube automáticamente.", "El peso del cuerpo disminuye.", "No hay cambios en la dirección de las fuerzas."], a: 0, exp: "Se pierde el mecanismo de palanca para equilibrar la pelvis." },
-        // Circulatorio
         { q: "El sistema circulatorio se rige por principios de:", opts: ["Óptica geométrica.", "Hidrostática e hidrodinámica.", "Física nuclear únicamente.", "Termodinámica de gases ideales."], a: 1, exp: "Fluidos en reposo y movimiento." },
         { q: "La ecuación de continuidad (A1·v1 = A2·v2) implica que:", opts: ["El caudal es constante en un circuito cerrado.", "La velocidad es mayor donde el área es mayor.", "La densidad del fluido cambia constantemente.", "El fluido debe ser viscoso."], a: 0, exp: "Conservación de la masa en flujo." },
         { q: "El teorema de Bernoulli describe el comportamiento de:", opts: ["Fluidos muy viscosos.", "Un fluido ideal (no viscoso) en una línea de corriente.", "Sólidos elásticos.", "Gases en expansión libre."], a: 1, exp: "Conservación de energía en fluidos ideales." },
@@ -84,7 +94,6 @@
         { q: "¿Qué sucede con el trabajo del corazón en personas hipertensas?", opts: ["Disminuye porque la presión es baja.", "Es grande debido a la alta postcarga.", "Se mantiene igual que en una persona sana.", "Se anula durante la sístole."], a: 1, exp: "El corazón debe vencer mayor resistencia." },
         { q: "La unidad de viscosidad en el Sistema Internacional es:", opts: ["Poise (p).", "Pascal por segundo (Pa·s).", "Newton por metro.", "mmHg."], a: 1, exp: "Pa·s es la unidad SI." },
         { q: "Un caudal (Q) de 1 m³/s equivale a:", opts: ["1 L/min.", "60,000 L/min.", "1.000 cm³/s.", "760 torr."], a: 1, exp: "1 m³ = 1000 L; 1s = 1/60 min." },
-        // Ondas y Oído
         { q: "Las ondas sonoras se definen como:", opts: ["Ondas electromagnéticas transversales.", "Ondas mecánicas longitudinales.", "Partículas alfa en movimiento.", "Flujo de electrones en el aire."], a: 1, exp: "Necesitan medio y vibran en la dirección de propagación." },
         { q: "El rango de frecuencias audibles para el ser humano es aproximadamente:", opts: ["0 a 10 Hz.", "20 Hz a 20.000 Hz.", "1 MHz a 10 MHz.", "100.000 Hz en adelante."], a: 1, exp: "Espectro audible estándar." },
         { q: "La intensidad mínima audible (umbral) a 1000 Hz es:", opts: ["1 W/m².", "10^-12 W/m².", "120 dB.", "20 Pa."], a: 1, exp: "0 decibelios." },
@@ -97,7 +106,6 @@
         { q: "La misión principal de la cadena de huesecillos en el oído medio es:", opts: ["Producir cera.", "Acoplar impedancias (aire-líquido) amplificando la presión.", "Analizar las frecuencias del sonido.", "Proteger el cerebro del ruido."], a: 1, exp: "Sin ellos, el sonido rebotaría en la cóclea." },
         { q: "En medios disipativos, la intensidad de la onda disminuye según:", opts: ["Una línea recta.", "Una función exponencial.", "No disminuye nunca.", "Aumenta con la distancia."], a: 1, exp: "Ley de atenuación." },
         { q: "El timbre de un sonido permite distinguir:", opts: ["Un sonido fuerte de uno débil.", "Un sonido grave de uno agudo.", "Fuentes distintas con misma frecuencia e intensidad.", "El nivel de decibelios exacto."], a: 2, exp: "Depende de los armónicos." },
-        // Atómica y Radiaciones
         { q: "El modelo atómico de Bohr postula que los electrones:", opts: ["Están quietos en el núcleo.", "Giran en órbitas definidas y emiten radiación al saltar.", "Son partículas masivas sin carga.", "No tienen energía."], a: 1, exp: "Cuantización de la energía orbital." },
         { q: "El defecto de masa en un núcleo se manifiesta como:", opts: ["Calor externo.", "Energía de enlace nuclear.", "Pérdida de electrones.", "Aumento de volumen."], a: 1, exp: "E=mc² que mantiene unido el núcleo." },
         { q: "La dualidad onda-corpúsculo indica que:", opts: ["Las ondas solo son ondas.", "Las partículas pueden comportarse como ondas y viceversa.", "La luz no tiene energía.", "El sonido es una radiación ionizante."], a: 1, exp: "Hipótesis de De Broglie." },
@@ -109,7 +117,6 @@
         { q: "¿Qué unidad del SI mide la actividad radiactiva?", opts: ["Curio (Ci).", "Bequerelio (Bq).", "Gray (Gy).", "Sievert (Sv)."], a: 1, exp: "1 Bq = 1 desintegración/segundo." },
         { q: "La captura electrónica se caracteriza por la emisión de:", opts: ["Un positrón.", "Un rayo X característico.", "Una partícula alfa.", "Un neutrón."], a: 1, exp: "Reordenamiento de la corteza electrónica tras capturar un e-." },
         { q: "¿Cuál es la actividad de 1 gramo de Radio-226?", opts: ["1 Bq.", "1 Curio (Ci).", "1 Gray.", "37 Bequerelios."], a: 1, exp: "Definición original del Curio." },
-        // Medicina Nuclear
         { q: "La tomografía por emisión de positrones (PET) utiliza radionúclidos que:", opts: ["Se producen en reactores nucleares gigantes.", "Son emisores de positrones de vida corta (ej. F-18).", "Emiten partículas alfa únicamente.", "Son estables para siempre."], a: 1, exp: "Se producen en ciclotrones cercanos." },
         { q: "La PET proporciona principalmente información sobre:", opts: ["Estructura anatómica de alta resolución.", "Actividad metabólica y funcional.", "El color de los órganos.", "La densidad ósea."], a: 1, exp: "Imagen funcional." },
         { q: "Un estudio de PET-TC combina:", opts: ["Sonido y luz.", "Metabolismo (PET) y Anatomía (TC).", "Rayos X y microondas.", "Magnetismo y calor."], a: 1, exp: "Fusión de imágenes." },
@@ -123,7 +130,6 @@
         { q: "Un dosímetro de termoluminiscencia (TLD) funciona mediante:", opts: ["Descarga de un condensador.", "Emisión de luz al calentar un cristal irradiado.", "Ennegrecimiento de una película.", "Registro de sonido."], a: 1, exp: "Materiales como LiF." },
         { q: "Los trabajadores expuestos de Categoría A son aquellos que pueden recibir:", opts: ["Más de 6 mSv al año.", "Solo radiación natural.", "Menos de 1 mSv al año.", "Radiación solo en los pies."], a: 0, exp: "Límite superior de clasificación." },
         { q: "¿Qué dosímetro permite una lectura directa e inmediata?", opts: ["Fotográfico.", "TLD.", "Dosímetro de pluma/electrónico.", "Ninguno."], a: 2, exp: "Para control en tiempo real." },
-        // No Ionizantes
         { q: "Las radiaciones ópticas incluyen:", opts: ["Ondas de radio y microondas.", "Infrarrojo, luz visible y ultravioleta.", "Rayos X y Gamma.", "Campos magnéticos estáticos."], a: 1, exp: "Espectro óptico." },
         { q: "La radiación ultravioleta tipo C (UVC) es:", opts: ["Inofensiva para la piel.", "Germicida y bloqueada por la atmósfera.", "La que llega mayoritariamente a la Tierra.", "Visible para el ojo humano."], a: 1, exp: "Muy energética, usada en lámparas germicidas." },
         { q: "¿Qué aplicación médica tienen los campos magnéticos estáticos (0 Hz)?", opts: ["Radioterapia.", "Resonancia Magnética (campo principal).", "Termoterapia.", "Esterilización de material."], a: 1, exp: "Alineación de espines nucleares." },
@@ -133,7 +139,6 @@
         { q: "La radiación UVB ayuda a metabolizar:", opts: ["El hierro.", "La vitamina D.", "El calcio directamente.", "Los carbohidratos."], a: 1, exp: "Síntesis cutánea." },
         { q: "Las radiaciones ELF (frecuencia extremadamente baja) son usadas para:", opts: ["Comunicación con submarinos.", "Gammagrafías óseas.", "Hacer radiografías dentales.", "Calentar comida."], a: 0, exp: "Ondas kilométricas." },
         { q: "¿Qué ocurre si una persona se sitúa bajo una antena cuya longitud de onda es el doble de su altura?", opts: ["No ocurre nada.", "Resonancia y máxima absorción.", "La persona se vuelve invisible.", "La antena deja de funcionar."], a: 1, exp: "El cuerpo actúa como antena dipolo." },
-        // Fluidos y Respiración
         { q: "La Ley de Jurin relaciona la altura de ascenso capilar con:", opts: ["El color del líquido.", "La tensión interfacial y el radio del tubo.", "La presión atmosférica únicamente.", "La cantidad de nitrógeno."], a: 1, exp: "Fenómeno de capilaridad." },
         { q: "Un menisco es cóncavo (agua en vidrio) cuando:", opts: ["Fuerzas de adhesión > Fuerzas de cohesión.", "Fuerzas de cohesión > adhesión.", "El tubo es muy ancho.", "El líquido es mercurio."], a: 0, exp: "El líquido moja el recipiente." },
         { q: "La compliancia pulmonar es una medida de:", opts: ["La rigidez del pulmón.", "Distensibilidad (ΔV/ΔP).", "La velocidad de la sangre.", "El número de alvéolos."], a: 1, exp: "Facilidad de llenado." },
@@ -146,7 +151,6 @@
         { q: "El volumen corriente (VC) en una espirometría normal es de:", opts: ["100 mL.", "500 mL.", "3.000 mL.", "1.200 mL."], a: 1, exp: "Respiración tidal." },
         { q: "¿Qué volumen pulmonar NO se puede medir directamente con un espirómetro?", opts: ["Volumen Corriente.", "Volumen Residual (VR).", "Volumen de Reserva Inspiratoria.", "Capacidad Vital."], a: 1, exp: "Es el aire que nunca sale." },
         { q: "La capacidad pulmonar total (CPT) es la suma de:", opts: ["Solo el aire que entra y sale.", "Los 4 volúmenes primarios (VC+VRI+VRE+VR).", "El aire de la tráquea.", "El peso de los pulmones."], a: 1, exp: "Todo el aire que cabe en el pulmón." },
-        // Visión
         { q: "La formación de imágenes en el ojo ocurre en:", opts: ["El cristalino.", "La retina.", "El nervio óptico.", "La pupila."], a: 1, exp: "Pantalla biológica." },
         { q: "La Ley de Snell describe:", opts: ["La reflexión total.", "La refracción de la luz entre medios.", "El brillo.", "La presión del ojo."], a: 1, exp: "Cambio de dirección por cambio de índice de refracción." },
         { q: "La potencia del ojo varía para enfocar mediante:", opts: ["El cambio de color.", "La acomodación del cristalino.", "El parpadeo.", "El movimiento retinal."], a: 1, exp: "Cambio de curvatura de la lente." },
@@ -160,9 +164,8 @@
         { q: "Las lentes bifocales corrigen:", opts: ["Solo miopía.", "Presbicia combinada con ametropía.", "Daltonismo.", "Ceguera."], a: 1, exp: "Lejos y cerca." },
         { q: "¿Qué receptores son más numerosos en la retina?", opts: ["Conos.", "Bastones.", "Nervios.", "Iguales."], a: 1, exp: "Aprox 120 millones de bastones vs 6 millones de conos." },
         { q: "El color es:", opts: ["Propiedad física pura.", "Sensación psicológica (psicofísica).", "Longitud de onda sola.", "Ilusión."], a: 1, exp: "Interpretación cerebral." },
-
-        // --- NUEVAS PREGUNTAS INCORPORADAS (101-160) ---
-        // Bloque 1 Extra: Atómica y Radiación
+        
+        // --- BLOQUE 2 (101-160) ---
         { q: "¿Qué es un modelo atómico?", opts: ["Una realidad física inalterable.", "Una representación gráfica para entender el átomo.", "Un tipo de radiación.", "Una partícula."], a: 1, exp: "Herramienta teórica explicativa." },
         { q: "¿Cuál de estas partículas es un leptón según el modelo estándar?", opts: ["Fotón.", "Gluon.", "Neutrino electrónico.", "Bosón de Higgs."], a: 2, exp: "Familia del electrón." },
         { q: "Los núcleos que tienen el mismo número másico (A) se denominan:", opts: ["Isótopos.", "Isótonos.", "Isóbaros.", "Isómeros."], a: 2, exp: "Igual masa, diferente elemento." },
@@ -193,8 +196,6 @@
         { q: "¿Cuál es el objetivo principal de la radioprotección?", opts: ["Eliminar radiación.", "Evitar efectos deterministas y limitar estocásticos.", "Aumentar dosis.", "No usar rayos X."], a: 1, exp: "Principio ALARA." },
         { q: "La radiosensibilidad es:", opts: ["Emitir radiación.", "Susceptibilidad al daño por radiación.", "Energía.", "Vida media."], a: 1, exp: "Ley de Bergonie y Tribondeau." },
         { q: "¿Qué radionúclido se usa típicamente para emisiones gamma en diagnóstico?", opts: ["Radio.", "Fósforo.", "Tecnecio-99m.", "Yodo alfa."], a: 2, exp: "Ideal para gammacámaras." },
-
-        // Bloque 2 Extra: Biomecánica y Fluidos
         { q: "La biomecánica aplica los principios de la mecánica a:", opts: ["Máquinas.", "El organismo vivo.", "Fluidos perfectos.", "Arquitectura."], a: 1, exp: "Estudio mecánico biológico." },
         { q: "¿Qué parte de la mecánica estudia las fuerzas en cuerpos en equilibrio?", opts: ["Cinemática.", "Dinámica.", "Estática.", "Cinética."], a: 2, exp: "Suma de fuerzas = 0." },
         { q: "La fuerza normal es siempre:", opts: ["Paralela.", "Perpendicular a la superficie.", "Igual al peso.", "Fricción."], a: 1, exp: "Reacción de contacto." },
@@ -227,8 +228,13 @@
         { q: "La tensión interfacial (TLS) se da en la separación entre:", opts: ["Sólidos.", "Líquido y sólido (o fases inmiscibles).", "Gases.", "Protones."], a: 1, exp: "Interfase." }
     ];
 
-    let currentQuestions = [];
-    let wrongAnswers = new Set();
+    // Variables de estado
+    let currentQuestions = []; // Lista de preguntas actuales
+    
+    // Usamos Sets para guardar los Índices originales (para mantener el orden)
+    let wrongIndices = new Set();
+    let markedIndices = new Set();
+    
     let score = 0;
     let wrongCount = 0;
 
@@ -237,16 +243,36 @@
         container.innerHTML = '';
         currentQuestions = questions;
         
+        // Reset stats visuales
         document.getElementById('total-count').textContent = questions.length;
         document.getElementById('remaining').textContent = questions.length;
+        document.getElementById('score').textContent = 0;
+        document.getElementById('wrong').textContent = 0;
+        
+        // Reset variables internas si es la carga inicial "completa"
+        if(questions === allQuestions) {
+            score = 0;
+            wrongCount = 0;
+            wrongIndices.clear();
+            markedIndices.clear();
+        } else {
+            // Si es un "retry", reseteamos contadores visuales para esta sesión
+            score = 0;
+            wrongCount = 0;
+        }
 
+        // Renderizado
         questions.forEach((item, index) => {
+            // Buscamos el índice real en la base de datos completa para mostrar el número correcto (opcional)
+            // O simplemente usamos el índice actual + 1. Usaré el índice actual del array renderizado.
+            
             const qBlock = document.createElement('div');
             qBlock.className = 'question-block';
             qBlock.id = `q-${index}`;
 
             const qTitle = document.createElement('div');
             qTitle.className = 'question-text';
+            // Muestra el número de pregunta relativo al quiz actual
             qTitle.textContent = `${index + 1}. ${item.q}`;
             qBlock.appendChild(qTitle);
 
@@ -277,6 +303,10 @@
         if (block.classList.contains('answered')) return;
         block.classList.add('answered');
 
+        // Encontrar índice real en el array original para guardarlo
+        const realIndex = allQuestions.indexOf(questionObj);
+        markedIndices.add(realIndex);
+
         const options = block.querySelectorAll('.option');
         options.forEach(opt => opt.classList.add('disabled'));
 
@@ -289,7 +319,7 @@
         } else {
             selectedLi.classList.add('incorrect');
             options[questionObj.a].classList.add('correct');
-            wrongAnswers.add(questionObj);
+            wrongIndices.add(realIndex);
             wrongCount++;
         }
         
@@ -308,31 +338,53 @@
     function checkCompletion() {
         const total = document.querySelectorAll('.question-block').length;
         const answered = document.querySelectorAll('.question-block.answered').length;
+        
         if (total === answered) {
             document.getElementById('final-section').classList.remove('hidden');
             document.getElementById('final-score').textContent = `Test finalizado. Puntuación: ${score} / ${total}`;
             
-            const retryBtn = document.getElementById('btn-retry-wrong');
-            if (wrongAnswers.size === 0) {
-                retryBtn.disabled = true;
-                retryBtn.textContent = "¡Perfecto! No hay fallos";
-            } else {
-                retryBtn.disabled = false;
-                retryBtn.textContent = `Repetir ${wrongAnswers.size} falladas`;
-            }
+            // Habilitar/Deshabilitar botones según disponibilidad
+            document.getElementById('btn-retry-wrong').disabled = (wrongIndices.size === 0);
+            document.getElementById('btn-retry-marked').disabled = (markedIndices.size === 0);
         }
     }
 
-    function retryWrong() {
-        if (wrongAnswers.size === 0) return;
-        score = 0;
-        wrongCount = 0;
-        const questionsToRetry = Array.from(wrongAnswers);
-        wrongAnswers.clear();
-        initQuiz(questionsToRetry);
+    // Función unificada para reiniciar según el modo
+    function restartQuiz(mode) {
+        let questionsToLoad = [];
+
+        if (mode === 'all') {
+            questionsToLoad = allQuestions;
+        } else if (mode === 'wrong') {
+            // Convertimos el Set a Array y ORDENAMOS numéricamente para mantener el orden original
+            const sortedIndices = Array.from(wrongIndices).sort((a, b) => a - b);
+            questionsToLoad = sortedIndices.map(index => allQuestions[index]);
+            
+            // Limpiamos los fallos previos para que si acierta ahora, ya no cuente como fallo futuro
+            // (Opcional: Si quieres que siga recordando fallos históricos, no limpies wrongIndices aquí,
+            // pero para un "re-test" es mejor limpiar para evaluar de nuevo).
+            wrongIndices.clear(); 
+            // NOTA: markedIndices no se limpia aquí para permitir volver a "repetir marcadas" más tarde si se desea,
+            // pero al iniciar un subset, markedIndices se irá llenando de nuevo con las interacciones de este subset.
+            
+        } else if (mode === 'marked') {
+            const sortedIndices = Array.from(markedIndices).sort((a, b) => a - b);
+            questionsToLoad = sortedIndices.map(index => allQuestions[index]);
+            // Limpiamos indices para reiniciar la sesión de marcado
+            wrongIndices.clear();
+            markedIndices.clear();
+        }
+
+        if (questionsToLoad.length === 0) {
+            alert("No hay preguntas en esta categoría.");
+            return;
+        }
+
+        initQuiz(questionsToLoad);
         window.scrollTo(0, 0);
     }
 
+    // Iniciar con todas las preguntas
     initQuiz(allQuestions);
 </script>
 
