@@ -8,33 +8,51 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; color: #333; line-height: 1.6; margin: 0; padding: 20px; }
         .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         h1 { text-align: center; color: #2c3e50; }
-        .stats { text-align: center; margin-bottom: 20px; font-weight: bold; color: #555; background: #eef; padding: 10px; border-radius: 5px; position: sticky; top: 0; z-index: 100; border-bottom: 2px solid #dde; }
-        .question-block { border-bottom: 1px solid #eee; padding: 20px 0; }
-        .question-text { font-size: 1.1em; margin-bottom: 15px; font-weight: 600; }
+        
+        /* Stats Header */
+        .stats { 
+            text-align: center; margin-bottom: 20px; font-weight: bold; color: #555; 
+            background: #eef; padding: 15px; border-radius: 8px; 
+            position: sticky; top: 0; z-index: 100; border-bottom: 2px solid #dde;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .question-block { border-bottom: 1px solid #eee; padding: 25px 0; position: relative; }
+        
+        /* Estilo del botón de Marcar */
+        .bookmark {
+            position: absolute;
+            top: 20px;
+            right: 10px;
+            font-size: 1.8em;
+            cursor: pointer;
+            color: #ddd; /* Color inactivo */
+            transition: color 0.2s, transform 0.2s;
+            user-select: none;
+        }
+        .bookmark:hover { transform: scale(1.2); }
+        .bookmark.active { color: #f39c12; } /* Color activo (dorado) */
+        
+        .question-text { font-size: 1.15em; margin-bottom: 15px; font-weight: 600; padding-right: 40px; }
         .options { list-style: none; padding: 0; }
-        .option { background: #f9f9f9; border: 1px solid #ddd; padding: 10px 15px; margin-bottom: 8px; border-radius: 5px; cursor: pointer; transition: background 0.2s; }
+        .option { background: #f9f9f9; border: 1px solid #ddd; padding: 12px 15px; margin-bottom: 8px; border-radius: 5px; cursor: pointer; transition: background 0.2s; }
         .option:hover { background: #eef; }
         .option.correct { background-color: #d4edda; border-color: #c3e6cb; color: #155724; }
         .option.incorrect { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; }
         .option.disabled { pointer-events: none; opacity: 0.8; }
-        .explanation { margin-top: 10px; padding: 10px; background-color: #e2e3e5; border-radius: 5px; font-size: 0.9em; display: none; }
+        .explanation { margin-top: 15px; padding: 15px; background-color: #e2e3e5; border-radius: 5px; font-size: 0.95em; display: none; }
         
-        /* Estilos para la sección final y botones */
+        /* Botones finales */
         .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 30px; }
-        button { border: none; padding: 12px 24px; font-size: 1em; border-radius: 5px; cursor: pointer; transition: transform 0.1s; font-weight: bold; }
-        button:active { transform: scale(0.98); }
-        
-        .btn-retry-wrong { background-color: #e74c3c; color: white; } /* Rojo para fallos */
-        .btn-retry-wrong:hover { background-color: #c0392b; }
-        
-        .btn-retry-marked { background-color: #f39c12; color: white; } /* Naranja para repasos */
-        .btn-retry-marked:hover { background-color: #d35400; }
-        
-        .btn-reset { background-color: #3498db; color: white; } /* Azul para todo */
-        .btn-reset:hover { background-color: #2980b9; }
+        button { border: none; padding: 12px 20px; font-size: 1em; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; transition: opacity 0.2s; }
+        button:hover { opacity: 0.9; }
+        button:disabled { background-color: #ccc !important; cursor: not-allowed; opacity: 0.5; }
 
-        button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.6; }
-        
+        .btn-wrong { background-color: #e74c3c; }
+        .btn-marked { background-color: #f39c12; }
+        .btn-marked-wrong { background-color: #d35400; }
+        .btn-reset { background-color: #3498db; }
+
         .hidden { display: none; }
         #final-score { text-align: center; font-size: 1.5em; margin: 20px 0; font-weight: bold; padding: 20px; background: #f8f9fa; border-radius: 8px; }
     </style>
@@ -53,9 +71,10 @@
     <div id="final-section" class="hidden">
         <div id="final-score"></div>
         <div class="controls">
-            <button onclick="restartQuiz('wrong')" id="btn-retry-wrong" class="btn-retry-wrong">Repetir Falladas</button>
-            <button onclick="restartQuiz('marked')" id="btn-retry-marked" class="btn-retry-marked">Repetir Marcadas (Repaso)</button>
-            <button onclick="restartQuiz('all')" class="btn-reset">Reiniciar Todo (Original)</button>
+            <button onclick="restartQuiz('wrong')" id="btn-retry-wrong" class="btn-wrong">Repetir Falladas</button>
+            <button onclick="restartQuiz('marked')" id="btn-retry-marked" class="btn-marked">Repetir Marcadas</button>
+            <button onclick="restartQuiz('marked_wrong')" id="btn-retry-marked-wrong" class="btn-marked-wrong">Repetir Marcadas y Falladas</button>
+            <button onclick="restartQuiz('all')" class="btn-reset">Reiniciar Todo</button>
         </div>
     </div>
 </div>
@@ -229,9 +248,9 @@
     ];
 
     // Variables de estado
-    let currentQuestions = []; // Lista de preguntas actuales
+    let currentQuestions = [];
     
-    // Usamos Sets para guardar los Índices originales (para mantener el orden)
+    // Sets para guardar los índices ORIGINALES
     let wrongIndices = new Set();
     let markedIndices = new Set();
     
@@ -243,36 +262,45 @@
         container.innerHTML = '';
         currentQuestions = questions;
         
-        // Reset stats visuales
+        // Reset stats visuales para la sesión actual
         document.getElementById('total-count').textContent = questions.length;
         document.getElementById('remaining').textContent = questions.length;
         document.getElementById('score').textContent = 0;
         document.getElementById('wrong').textContent = 0;
         
-        // Reset variables internas si es la carga inicial "completa"
+        // Si es una carga completa (reinicio total), reseteamos contadores globales
         if(questions === allQuestions) {
             score = 0;
             wrongCount = 0;
             wrongIndices.clear();
             markedIndices.clear();
         } else {
-            // Si es un "retry", reseteamos contadores visuales para esta sesión
+            // Si es un "retry", reseteamos contadores visuales para esta sesión solamente
             score = 0;
             wrongCount = 0;
         }
 
         // Renderizado
         questions.forEach((item, index) => {
-            // Buscamos el índice real en la base de datos completa para mostrar el número correcto (opcional)
-            // O simplemente usamos el índice actual + 1. Usaré el índice actual del array renderizado.
-            
             const qBlock = document.createElement('div');
             qBlock.className = 'question-block';
             qBlock.id = `q-${index}`;
 
+            // Determinar el índice original para verificar si está marcado
+            const realIndex = allQuestions.indexOf(item);
+
+            // Botón de Marcado
+            const bookmarkBtn = document.createElement('div');
+            bookmarkBtn.className = 'bookmark';
+            bookmarkBtn.innerHTML = '&#9733;'; // Estrella
+            if (markedIndices.has(realIndex)) {
+                bookmarkBtn.classList.add('active');
+            }
+            bookmarkBtn.onclick = (e) => toggleMark(realIndex, bookmarkBtn, e);
+            qBlock.appendChild(bookmarkBtn);
+
             const qTitle = document.createElement('div');
             qTitle.className = 'question-text';
-            // Muestra el número de pregunta relativo al quiz actual
             qTitle.textContent = `${index + 1}. ${item.q}`;
             qBlock.appendChild(qTitle);
 
@@ -299,14 +327,22 @@
         document.getElementById('final-section').classList.add('hidden');
     }
 
+    function toggleMark(realIndex, btn, e) {
+        e.stopPropagation(); // Evitar otros clics
+        if (markedIndices.has(realIndex)) {
+            markedIndices.delete(realIndex);
+            btn.classList.remove('active');
+        } else {
+            markedIndices.add(realIndex);
+            btn.classList.add('active');
+        }
+    }
+
     function checkAnswer(selectedLi, questionObj, selectedIndex, block) {
         if (block.classList.contains('answered')) return;
         block.classList.add('answered');
 
-        // Encontrar índice real en el array original para guardarlo
         const realIndex = allQuestions.indexOf(questionObj);
-        markedIndices.add(realIndex);
-
         const options = block.querySelectorAll('.option');
         options.forEach(opt => opt.classList.add('disabled'));
 
@@ -316,6 +352,10 @@
         if (selectedIndex === questionObj.a) {
             selectedLi.classList.add('correct');
             score++;
+            // Si acierta, nos aseguramos que no esté en la lista de fallos para el futuro
+            if (wrongIndices.has(realIndex)) {
+               wrongIndices.delete(realIndex); 
+            }
         } else {
             selectedLi.classList.add('incorrect');
             options[questionObj.a].classList.add('correct');
@@ -344,42 +384,48 @@
             document.getElementById('final-score').textContent = `Test finalizado. Puntuación: ${score} / ${total}`;
             
             // Habilitar/Deshabilitar botones según disponibilidad
+            const markedAndWrongCount = Array.from(wrongIndices).filter(i => markedIndices.has(i)).length;
+
             document.getElementById('btn-retry-wrong').disabled = (wrongIndices.size === 0);
             document.getElementById('btn-retry-marked').disabled = (markedIndices.size === 0);
+            document.getElementById('btn-retry-marked-wrong').disabled = (markedAndWrongCount === 0);
+            
+            // Textos dinámicos en botones
+            document.getElementById('btn-retry-wrong').textContent = `Repetir Falladas (${wrongIndices.size})`;
+            document.getElementById('btn-retry-marked').textContent = `Repetir Marcadas (${markedIndices.size})`;
+            document.getElementById('btn-retry-marked-wrong').textContent = `Repetir Marcadas y Falladas (${markedAndWrongCount})`;
         }
     }
 
-    // Función unificada para reiniciar según el modo
     function restartQuiz(mode) {
-        let questionsToLoad = [];
+        let indicesToLoad = [];
+        
+        // Ordenamos los índices para mantener el orden original del examen
+        const sortedWrong = Array.from(wrongIndices).sort((a, b) => a - b);
+        const sortedMarked = Array.from(markedIndices).sort((a, b) => a - b);
 
         if (mode === 'all') {
-            questionsToLoad = allQuestions;
+            indicesToLoad = allQuestions.map((_, i) => i); // Todos los índices
         } else if (mode === 'wrong') {
-            // Convertimos el Set a Array y ORDENAMOS numéricamente para mantener el orden original
-            const sortedIndices = Array.from(wrongIndices).sort((a, b) => a - b);
-            questionsToLoad = sortedIndices.map(index => allQuestions[index]);
-            
-            // Limpiamos los fallos previos para que si acierta ahora, ya no cuente como fallo futuro
-            // (Opcional: Si quieres que siga recordando fallos históricos, no limpies wrongIndices aquí,
-            // pero para un "re-test" es mejor limpiar para evaluar de nuevo).
+            indicesToLoad = sortedWrong;
+            // Opcional: limpiar wrongIndices para re-evaluar, o mantenerlos.
+            // Aquí los limpiamos para una nueva "ronda" de práctica sobre estos errores.
             wrongIndices.clear(); 
-            // NOTA: markedIndices no se limpia aquí para permitir volver a "repetir marcadas" más tarde si se desea,
-            // pero al iniciar un subset, markedIndices se irá llenando de nuevo con las interacciones de este subset.
-            
         } else if (mode === 'marked') {
-            const sortedIndices = Array.from(markedIndices).sort((a, b) => a - b);
-            questionsToLoad = sortedIndices.map(index => allQuestions[index]);
-            // Limpiamos indices para reiniciar la sesión de marcado
+            indicesToLoad = sortedMarked;
+            wrongIndices.clear(); // Limpiamos fallos para re-evaluar
+        } else if (mode === 'marked_wrong') {
+            // Intersección: Marcadas Y Falladas
+            indicesToLoad = sortedWrong.filter(index => markedIndices.has(index));
             wrongIndices.clear();
-            markedIndices.clear();
         }
 
-        if (questionsToLoad.length === 0) {
+        if (indicesToLoad.length === 0) {
             alert("No hay preguntas en esta categoría.");
             return;
         }
 
+        const questionsToLoad = indicesToLoad.map(index => allQuestions[index]);
         initQuiz(questionsToLoad);
         window.scrollTo(0, 0);
     }
