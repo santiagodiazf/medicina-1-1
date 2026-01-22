@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Completo de Biofísica (160 Preguntas)</title>
+    <title>Quiz Completo de Biofísica (Aleatorio)</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; color: #333; line-height: 1.6; margin: 0; padding: 20px; }
         .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         h1 { text-align: center; color: #2c3e50; }
         
-        /* Stats Header */
         .stats { 
             text-align: center; margin-bottom: 20px; font-weight: bold; color: #555; 
             background: #eef; padding: 15px; border-radius: 8px; 
@@ -19,19 +18,18 @@
 
         .question-block { border-bottom: 1px solid #eee; padding: 25px 0; position: relative; }
         
-        /* Estilo del botón de Marcar */
         .bookmark {
             position: absolute;
             top: 20px;
             right: 10px;
             font-size: 1.8em;
             cursor: pointer;
-            color: #ddd; /* Color inactivo */
+            color: #ddd; 
             transition: color 0.2s, transform 0.2s;
             user-select: none;
         }
         .bookmark:hover { transform: scale(1.2); }
-        .bookmark.active { color: #f39c12; } /* Color activo (dorado) */
+        .bookmark.active { color: #f39c12; }
         
         .question-text { font-size: 1.15em; margin-bottom: 15px; font-weight: 600; padding-right: 40px; }
         .options { list-style: none; padding: 0; }
@@ -42,7 +40,6 @@
         .option.disabled { pointer-events: none; opacity: 0.8; }
         .explanation { margin-top: 15px; padding: 15px; background-color: #e2e3e5; border-radius: 5px; font-size: 0.95em; display: none; }
         
-        /* Botones finales */
         .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 30px; }
         button { border: none; padding: 12px 20px; font-size: 1em; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; transition: opacity 0.2s; }
         button:hover { opacity: 0.9; }
@@ -307,11 +304,29 @@
             const optList = document.createElement('ul');
             optList.className = 'options';
 
-            item.opts.forEach((opt, i) => {
+            // --- LÓGICA DE MEZCLA (SHUFFLE) ---
+            // Creamos objetos temporales para saber cuál es la correcta tras mezclar
+            let shuffledOpts = item.opts.map((opt, i) => {
+                return { text: opt, isCorrect: (i === item.a) };
+            });
+
+            // Algoritmo Fisher-Yates para mezclar
+            for (let i = shuffledOpts.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledOpts[i], shuffledOpts[j]] = [shuffledOpts[j], shuffledOpts[i]];
+            }
+
+            // Renderizamos las opciones mezcladas
+            shuffledOpts.forEach((optObj) => {
                 const li = document.createElement('li');
                 li.className = 'option';
-                li.textContent = opt;
-                li.onclick = () => checkAnswer(li, item, i, qBlock);
+                li.textContent = optObj.text;
+                
+                // Si es la correcta, le ponemos una marca invisible (data-correct) para encontrarla luego
+                if(optObj.isCorrect) li.dataset.correct = "true";
+                
+                // Pasamos 'optObj.isCorrect' directamente en lugar del índice
+                li.onclick = () => checkAnswer(li, optObj.isCorrect, item, qBlock);
                 optList.appendChild(li);
             });
             qBlock.appendChild(optList);
@@ -338,7 +353,8 @@
         }
     }
 
-    function checkAnswer(selectedLi, questionObj, selectedIndex, block) {
+    // Ahora recibe isCorrect (booleano) en lugar de selectedIndex
+    function checkAnswer(selectedLi, isCorrect, questionObj, block) {
         if (block.classList.contains('answered')) return;
         block.classList.add('answered');
 
@@ -349,7 +365,7 @@
         const explanation = block.querySelector('.explanation');
         explanation.style.display = 'block';
 
-        if (selectedIndex === questionObj.a) {
+        if (isCorrect) {
             selectedLi.classList.add('correct');
             score++;
             // Si acierta, nos aseguramos que no esté en la lista de fallos para el futuro
@@ -358,7 +374,11 @@
             }
         } else {
             selectedLi.classList.add('incorrect');
-            options[questionObj.a].classList.add('correct');
+            
+            // Buscar visualmente cuál es la correcta usando el dataset
+            const correctLi = block.querySelector('li[data-correct="true"]');
+            if(correctLi) correctLi.classList.add('correct');
+            
             wrongIndices.add(realIndex);
             wrongCount++;
         }
@@ -408,14 +428,11 @@
             indicesToLoad = allQuestions.map((_, i) => i); // Todos los índices
         } else if (mode === 'wrong') {
             indicesToLoad = sortedWrong;
-            // Opcional: limpiar wrongIndices para re-evaluar, o mantenerlos.
-            // Aquí los limpiamos para una nueva "ronda" de práctica sobre estos errores.
             wrongIndices.clear(); 
         } else if (mode === 'marked') {
             indicesToLoad = sortedMarked;
-            wrongIndices.clear(); // Limpiamos fallos para re-evaluar
+            wrongIndices.clear(); 
         } else if (mode === 'marked_wrong') {
-            // Intersección: Marcadas Y Falladas
             indicesToLoad = sortedWrong.filter(index => markedIndices.has(index));
             wrongIndices.clear();
         }
