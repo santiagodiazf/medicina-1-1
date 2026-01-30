@@ -12,6 +12,8 @@
             --correct-text: #155724;
             --incorrect-color: #f8d7da;
             --incorrect-text: #721c24;
+            --mark-bg: #fff3cd;
+            --mark-text: #856404;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -28,6 +30,7 @@
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            min-height: 500px;
         }
         header {
             text-align: center;
@@ -59,16 +62,47 @@
             z-index: 100;
         }
         .question-card {
-            display: none; /* Oculto por defecto */
+            display: none;
             animation: fadeIn 0.5s;
+            position: relative; /* Para posicionar la marca */
         }
         .question-card.active {
             display: block;
         }
+        
+        /* Estilos para la pestaña de Marcar */
+        .bookmark-panel {
+            position: absolute;
+            top: -10px;
+            right: 0;
+            background: var(--mark-bg);
+            color: var(--mark-text);
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #ffeeba;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s;
+            z-index: 10;
+        }
+        .bookmark-panel:hover {
+            transform: scale(1.05);
+            background-color: #ffe8a1;
+        }
+        .bookmark-checkbox {
+            margin-right: 8px;
+            transform: scale(1.3);
+            cursor: pointer;
+        }
+
         .question-text {
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 20px;
+            padding-top: 25px; /* Espacio para la marca */
+            padding-right: 140px; /* Espacio lateral para la marca */
         }
         .options-grid {
             display: grid;
@@ -91,6 +125,7 @@
         }
         .option-btn:disabled {
             cursor: default;
+            opacity: 0.7;
         }
         .option-btn.correct {
             background-color: var(--correct-color);
@@ -134,15 +169,43 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 1rem;
-            display: none; /* Se muestra tras responder */
+            display: none;
         }
         .nav-btn:hover {
             background-color: #004494;
         }
+        
         .results-summary {
             text-align: center;
             display: none;
+            padding: 20px;
         }
+        
+        /* Grid de botones finales */
+        .action-buttons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .action-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.2s;
+        }
+        .action-btn:hover { transform: translateY(-3px); }
+        .action-btn:disabled { background-color: #ccc !important; cursor: not-allowed; transform: none; }
+        
+        .btn-restart { background-color: var(--primary-color); grid-column: span 2; }
+        .btn-failed { background-color: #dc3545; }
+        .btn-marked { background-color: #ffc107; color: #333; }
+        .btn-mixed { background-color: #6f42c1; grid-column: span 2; }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -162,974 +225,662 @@
 
 <div class="container">
     <header>
-        <h1>Examen Bloque 5: Membranas, Citoesqueleto y Orgánulos</h1>
+        <h1>Examen Bloque 5: Membranas y Citoesqueleto</h1>
         <div class="professors">Profesoras: Meritxell Llorca Torralba y Ana Muñoz-Manchado</div>
     </header>
 
-    <div class="stats-bar">
-        <div id="progress">Pregunta 1 de 75</div>
-        <div id="score">Aciertos: 0</div>
+    <div class="stats-bar" id="statsBar">
+        <div id="progress">Cargando...</div>
+        <div id="score">Aciertos sesión: 0</div>
     </div>
 
-    <div id="quiz-area">
-        </div>
+    <div id="quiz-area"></div>
 
     <div id="results" class="results-summary">
-        <h2>Examen Finalizado</h2>
-        <p>Has completado las 75 preguntas del Bloque 5.</p>
-        <p style="font-size: 2rem; font-weight: bold;" id="final-score">0/75</p>
+        <h2>Sesión Finalizada</h2>
+        <div style="font-size: 3rem; font-weight: bold; color: var(--primary-color);" id="final-score"></div>
         <p id="final-percent"></p>
-        <button class="nav-btn" style="display:inline-block;" onclick="location.reload()">Reiniciar Test</button>
+        
+        <div id="stats-summary" style="margin: 20px 0; color: #555;"></div>
+
+        <div class="action-buttons-grid">
+            <button class="action-btn btn-restart" onclick="startQuiz('all')">🔄 Reiniciar Test Completo (Borrar todo)</button>
+            <button class="action-btn btn-failed" id="btn-failed" onclick="startQuiz('failed')">❌ Repetir Falladas</button>
+            <button class="action-btn btn-marked" id="btn-marked" onclick="startQuiz('marked')">⚠️ Repetir Marcadas</button>
+            <button class="action-btn btn-mixed" id="btn-mixed" onclick="startQuiz('mixed')">❌ + ⚠️ Repetir Falladas y Marcadas</button>
+        </div>
     </div>
 </div>
 
 <script>
-// Base de datos de 75 preguntas extraídas del temario Bloque 5
+// Base de datos de preguntas
 const questions = [
     // --- MEMBRANAS CELULARES (1-15) ---
     {
         topic: "Estructura de Membrana",
         question: "¿Qué propiedad fundamental de los fosfolípidos impulsa su autoensamblaje en bicapa?",
-        options: [
-            "Su naturaleza hidrofóbica pura.",
-            "Su naturaleza anfipática (cabeza hidrófila y colas hidrófobas).",
-            "Su carga eléctrica positiva.",
-            "Su capacidad de formar enlaces covalentes entre sí."
-        ],
+        options: ["Su naturaleza hidrofóbica pura.", "Su naturaleza anfipática (cabeza hidrófila y colas hidrófobas).", "Su carga eléctrica positiva.", "Su capacidad de formar enlaces covalentes entre sí."],
         correct: 1,
         explanation: "La dualidad anfipática hace que las colas se escondan del agua y las cabezas se expongan, formando la bicapa espontáneamente."
     },
     {
         topic: "Lípidos de Membrana",
         question: "¿Cuál es uno de los fosfolípidos más comunes en las membranas celulares?",
-        options: [
-            "Colesterol.",
-            "Glucolípido.",
-            "Fosfatidilcolina.",
-            "Triglicérido."
-        ],
+        options: ["Colesterol.", "Glucolípido.", "Fosfatidilcolina.", "Triglicérido."],
         correct: 2,
         explanation: "La fosfatidilcolina es citada textualmente como uno de los componentes más abundantes."
     },
     {
         topic: "Fluidez de Membrana",
         question: "¿Qué efecto tienen las colas de ácidos grasos insaturados (con dobles enlaces) en la membrana?",
-        options: [
-            "Aumentan la rigidez.",
-            "Aumentan la fluidez al crear 'codos' que dificultan el empaquetamiento.",
-            "Disminuyen la permeabilidad.",
-            "No tienen efecto."
-        ],
+        options: ["Aumentan la rigidez.", "Aumentan la fluidez al crear 'codos' que dificultan el empaquetamiento.", "Disminuyen la permeabilidad.", "No tienen efecto."],
         correct: 1,
         explanation: "Los dobles enlaces crean quiebres o 'codos' que impiden que los lípidos se empaqueten densamente, aumentando la fluidez."
     },
     {
         topic: "Fluidez de Membrana",
         question: "¿Cómo actúa el colesterol en las membranas de células animales?",
-        options: [
-            "Aumenta la permeabilidad a iones.",
-            "Actúa como canal iónico.",
-            "Endurece la membrana y la hace menos permeable.",
-            "Cataliza reacciones químicas."
-        ],
+        options: ["Aumenta la permeabilidad a iones.", "Actúa como canal iónico.", "Endurece la membrana y la hace menos permeable.", "Cataliza reacciones químicas."],
         correct: 2,
         explanation: "El colesterol rellena los huecos entre fosfolípidos, reduciendo la movilidad y aumentando la rigidez/impermeabilidad."
     },
     {
         topic: "Asimetría de Membrana",
         question: "¿Dónde se encuentran exclusivamente los glucolípidos en la membrana plasmática?",
-        options: [
-            "En la monocapa citosólica.",
-            "En la monocapa no citosólica (externa).",
-            "En ambas capas por igual.",
-            "En el interior hidrofóbico."
-        ],
+        options: ["En la monocapa citosólica.", "En la monocapa no citosólica (externa).", "En ambas capas por igual.", "En el interior hidrofóbico."],
         correct: 1,
         explanation: "Se ubican en la cara externa para formar parte del glucocáliz y participar en el reconocimiento celular."
     },
     {
         topic: "Proteínas de Membrana",
         question: "¿Qué porcentaje aproximado de la masa total de la membrana plasmática constituyen las proteínas?",
-        options: [
-            "10%",
-            "25%",
-            "50%",
-            "90%"
-        ],
+        options: ["10%", "25%", "50%", "90%"],
         correct: 2,
         explanation: "Aunque son menos numerosas que los lípidos, por su tamaño constituyen cerca del 50% de la masa."
     },
     {
         topic: "Proteínas de Membrana",
         question: "¿Cómo se denominan las proteínas que atraviesan la bicapa lipídica por completo?",
-        options: [
-            "Proteínas periféricas.",
-            "Proteínas transmembrana.",
-            "Proteínas ancladas a lípidos.",
-            "Proteínas citosólicas."
-        ],
+        options: ["Proteínas periféricas.", "Proteínas transmembrana.", "Proteínas ancladas a lípidos.", "Proteínas citosólicas."],
         correct: 1,
         explanation: "Atraviesan la membrana, a menudo en forma de hélice alfa."
     },
     {
         topic: "Estructura Celular",
         question: "¿Qué estructura rica en actina se encuentra justo debajo de la membrana plasmática?",
-        options: [
-            "La lámina nuclear.",
-            "El glucocáliz.",
-            "La corteza celular.",
-            "El centrosoma."
-        ],
+        options: ["La lámina nuclear.", "El glucocáliz.", "La corteza celular.", "El centrosoma."],
         correct: 2,
         explanation: "La corteza celular refuerza la membrana y determina la forma de la célula."
     },
     {
         topic: "Superficie Celular",
         question: "¿Cuál es la función del glucocáliz (capa de carbohidratos)?",
-        options: [
-            "Transporte de electrones.",
-            "Síntesis de ATP.",
-            "Protección mecánica, lubricación y reconocimiento celular.",
-            "Contracción muscular."
-        ],
+        options: ["Transporte de electrones.", "Síntesis de ATP.", "Protección mecánica, lubricación y reconocimiento celular.", "Contracción muscular."],
         correct: 2,
         explanation: "Protege la superficie, la mantiene húmeda/lubricada y permite la identificación entre células."
     },
     {
         topic: "Síntesis de Membrana",
         question: "¿Dónde comienza el proceso de ensamblaje de nuevas membranas?",
-        options: [
-            "En el Aparato de Golgi.",
-            "En el Retículo Endoplasmático (RE).",
-            "En la mitocondria.",
-            "En el núcleo."
-        ],
+        options: ["En el Aparato de Golgi.", "En el Retículo Endoplasmático (RE).", "En la mitocondria.", "En el núcleo."],
         correct: 1,
         explanation: "La síntesis de lípidos y el ensamblaje inicial ocurren en el RE."
     },
     {
         topic: "Fluidez",
         question: "¿Qué tipo de movimiento ocurre raramente de forma espontánea en los fosfolípidos (sin enzimas)?",
-        options: [
-            "Difusión lateral.",
-            "Rotación.",
-            "Flexión de colas.",
-            "Flip-flop (cambio de una monocapa a otra)."
-        ],
+        options: ["Difusión lateral.", "Rotación.", "Flexión de colas.", "Flip-flop (cambio de una monocapa a otra)."],
         correct: 3,
         explanation: "El paso de la cabeza polar a través del centro hidrofóbico es energéticamente desfavorable."
     },
     {
         topic: "Proteínas",
         question: "¿Cuál NO es una función típica de las proteínas de membrana?",
-        options: [
-            "Almacenamiento de información genética.",
-            "Transporte de iones.",
-            "Recepción de señales.",
-            "Anclaje al citoesqueleto."
-        ],
+        options: ["Almacenamiento de información genética.", "Transporte de iones.", "Recepción de señales.", "Anclaje al citoesqueleto."],
         correct: 0,
         explanation: "El almacenamiento de información genética es función del ADN en el núcleo."
     },
     {
         topic: "Estructura",
         question: "¿Qué es una proteína integral de membrana?",
-        options: [
-            "Aquella que se puede liberar solo rompiendo la bicapa (ej. con detergentes).",
-            "Aquella unida débilmente a la superficie.",
-            "Una proteína secretada.",
-            "Una proteína del citosol."
-        ],
+        options: ["Aquella que se puede liberar solo rompiendo la bicapa (ej. con detergentes).", "Aquella unida débilmente a la superficie.", "Una proteína secretada.", "Una proteína del citosol."],
         correct: 0,
         explanation: "Están directamente insertadas o ancladas covalentemente a lípidos, requiriendo disrupción de la membrana para extraerlas."
     },
     {
         topic: "Glúcidos",
         question: "¿Qué componentes forman el glucocáliz?",
-        options: [
-            "Solo fosfolípidos.",
-            "Azúcares de glucolípidos, glucoproteínas y proteoglucanos.",
-            "Colesterol y ácidos grasos.",
-            "ARN ribosomal."
-        ],
+        options: ["Solo fosfolípidos.", "Azúcares de glucolípidos, glucoproteínas y proteoglucanos.", "Colesterol y ácidos grasos.", "ARN ribosomal."],
         correct: 1,
         explanation: "Es la 'zona dulce' externa formada por las cadenas de carbohidratos unidas a lípidos y proteínas."
     },
     {
         topic: "Estructura",
         question: "¿Qué molécula lipídica es anfipática?",
-        options: [
-            "Solo el fosfolípido.",
-            "Solo el colesterol.",
-            "Solo el glucolípido.",
-            "Todas las anteriores."
-        ],
+        options: ["Solo el fosfolípido.", "Solo el colesterol.", "Solo el glucolípido.", "Todas las anteriores."],
         correct: 3,
         explanation: "Todos los lípidos de membrana principales tienen una parte hidrófila y otra hidrófoba."
     },
-
     // --- TRANSPORTE DE MEMBRANA (16-35) ---
     {
         topic: "Permeabilidad",
         question: "¿Qué moléculas atraviesan la bicapa lipídica más fácilmente por difusión simple?",
-        options: [
-            "Iones cargados (Na+).",
-            "Moléculas polares grandes (Glucosa).",
-            "Moléculas pequeñas no polares (O2, CO2).",
-            "Proteínas."
-        ],
+        options: ["Iones cargados (Na+).", "Moléculas polares grandes (Glucosa).", "Moléculas pequeñas no polares (O2, CO2).", "Proteínas."],
         correct: 2,
         explanation: "Los gases y moléculas pequeñas hidrofóbicas difunden sin ayuda."
     },
     {
         topic: "Permeabilidad",
         question: "¿Qué tipo de molécula es prácticamente impermeable a la bicapa lipídica pura?",
-        options: [
-            "Agua.",
-            "Etanol.",
-            "Iones inorgánicos (Na+, K+, Ca2+).",
-            "Oxígeno."
-        ],
+        options: ["Agua.", "Etanol.", "Iones inorgánicos (Na+, K+, Ca2+).", "Oxígeno."],
         correct: 2,
         explanation: "Debido a su carga y capa de hidratación, los iones no pueden cruzar el interior hidrofóbico sin canales o transportadores."
     },
     {
         topic: "Transporte",
         question: "¿Cuál es la diferencia entre transporte pasivo y activo?",
-        options: [
-            "El pasivo requiere ATP.",
-            "El activo mueve solutos a favor de gradiente.",
-            "El pasivo es a favor de gradiente (sin energía) y el activo en contra (con energía).",
-            "El activo solo ocurre en el núcleo."
-        ],
+        options: ["El pasivo requiere ATP.", "El activo mueve solutos a favor de gradiente.", "El pasivo es a favor de gradiente (sin energía) y el activo en contra (con energía).", "El activo solo ocurre en el núcleo."],
         correct: 2,
         explanation: "El transporte activo requiere un aporte energético para vencer el gradiente electroquímico."
     },
     {
         topic: "Bombas",
         question: "¿Qué hace la bomba de Na+-K+?",
-        options: [
-            "Bombea 3 Na+ dentro y 2 K+ fuera.",
-            "Bombea Na+ fuera y K+ dentro, gastando ATP.",
-            "Permite la difusión pasiva de Na+ y K+.",
-            "Sintetiza ATP."
-        ],
+        options: ["Bombea 3 Na+ dentro y 2 K+ fuera.", "Bombea Na+ fuera y K+ dentro, gastando ATP.", "Permite la difusión pasiva de Na+ y K+.", "Sintetiza ATP."],
         correct: 1,
         explanation: "Expulsa sodio e introduce potasio contra gradiente para mantener el potencial y el equilibrio osmótico."
     },
     {
         topic: "Bombas",
         question: "¿Por qué es crucial la bomba de Na+-K+ para el volumen celular?",
-        options: [
-            "Evita que la célula pierda agua y se seque.",
-            "Evita que entre exceso de agua por ósmosis y la célula estalle.",
-            "Genera lípidos.",
-            "Controla el pH."
-        ],
+        options: ["Evita que la célula pierda agua y se seque.", "Evita que entre exceso de agua por ósmosis y la célula estalle.", "Genera lípidos.", "Controla el pH."],
         correct: 1,
         explanation: "Al mantener baja la concentración de solutos (Na+) dentro, contrarresta la tendencia del agua a entrar."
     },
     {
         topic: "Bombas",
         question: "¿Qué función tienen las bombas de Ca2+?",
-        options: [
-            "Mantener una concentración citosólica de Ca2+ extremadamente baja.",
-            "Aumentar el Ca2+ en el citosol para la digestión.",
-            "Transportar Ca2+ al núcleo.",
-            "Eliminar Ca2+ de la mitocondria."
-        ],
+        options: ["Mantener una concentración citosólica de Ca2+ extremadamente baja.", "Aumentar el Ca2+ en el citosol para la digestión.", "Transportar Ca2+ al núcleo.", "Eliminar Ca2+ de la mitocondria."],
         correct: 0,
         explanation: "Mantener el Ca2+ citosólico bajo es vital para que pueda actuar como señalizador (mensajero intracelular)."
     },
     {
         topic: "Cotransporte",
         question: "¿Qué fuente de energía utiliza el transportador de glucosa-Na+ en el intestino?",
-        options: [
-            "ATP directo.",
-            "Luz solar.",
-            "El gradiente electroquímico de Na+ (transporte activo secundario).",
-            "El gradiente de glucosa."
-        ],
+        options: ["ATP directo.", "Luz solar.", "El gradiente electroquímico de Na+ (transporte activo secundario).", "El gradiente de glucosa."],
         correct: 2,
         explanation: "Usa la energía almacenada en el gradiente de sodio (creado por la bomba Na/K) para arrastrar glucosa."
     },
     {
         topic: "Canales Iónicos",
         question: "¿Qué propiedad define a los canales iónicos además de su selectividad?",
-        options: [
-            "Siempre están abiertos.",
-            "Son bombas de ATP.",
-            "Tienen regulación (gating): se abren/cierran ante estímulos.",
-            "Transportan lípidos."
-        ],
+        options: ["Siempre están abiertos.", "Son bombas de ATP.", "Tienen regulación (gating): se abren/cierran ante estímulos.", "Transportan lípidos."],
         correct: 2,
         explanation: "No son poros continuos; oscilan entre estados abierto y cerrado según voltaje, ligando o estrés mecánico."
     },
     {
         topic: "Potencial de Membrana",
         question: "¿Qué canales son los principales responsables del potencial de membrana en reposo?",
-        options: [
-            "Canales de Na+ regulados por voltaje.",
-            "Canales de fuga de K+.",
-            "Bombas de Ca2+.",
-            "Canales de Cl-."
-        ],
+        options: ["Canales de Na+ regulados por voltaje.", "Canales de fuga de K+.", "Bombas de Ca2+.", "Canales de Cl-."],
         correct: 1,
         explanation: "Permiten que el K+ salga a favor de gradiente, dejando cargas negativas dentro, estableciendo el potencial negativo."
     },
     {
         topic: "Potencial de Acción",
         question: "¿Qué evento inicia la fase ascendente (despolarización) del potencial de acción?",
-        options: [
-            "La apertura de canales de K+.",
-            "La apertura rápida de canales de Na+ regulados por voltaje.",
-            "El cierre de la bomba Na/K.",
-            "La entrada de Cl-."
-        ],
+        options: ["La apertura de canales de K+.", "La apertura rápida de canales de Na+ regulados por voltaje.", "El cierre de la bomba Na/K.", "La entrada de Cl-."],
         correct: 1,
         explanation: "La entrada masiva de Na+ hace que el potencial de membrana se vuelva positivo transitoriamente."
     },
     {
         topic: "Potencial de Acción",
         question: "¿Qué ocurre inmediatamente después de la despolarización para repolarizar la membrana?",
-        options: [
-            "Inactivación de canales de Na+ y apertura de canales de K+ regulados por voltaje.",
-            "Apertura de más canales de Na+.",
-            "Entrada de Ca2+.",
-            "Hidrólisis de ATP."
-        ],
+        options: ["Inactivación de canales de Na+ y apertura de canales de K+ regulados por voltaje.", "Apertura de más canales de Na+.", "Entrada de Ca2+.", "Hidrólisis de ATP."],
         correct: 0,
         explanation: "El Na+ deja de entrar y el K+ sale rápidamente, devolviendo la membrana a su potencial negativo."
     },
     {
         topic: "Gradiente",
         question: "¿Qué es el gradiente electroquímico?",
-        options: [
-            "Solo la diferencia de concentración.",
-            "Solo la diferencia de voltaje.",
-            "La suma de la fuerza del gradiente de concentración y el potencial de membrana.",
-            "La cantidad de ATP disponible."
-        ],
+        options: ["Solo la diferencia de concentración.", "Solo la diferencia de voltaje.", "La suma de la fuerza del gradiente de concentración y el potencial de membrana.", "La cantidad de ATP disponible."],
         correct: 2,
         explanation: "Determina la dirección neta del transporte pasivo de iones, combinando fuerzas químicas y eléctricas."
     },
     {
         topic: "Transportadores",
         question: "¿Qué tipo de proteína de transporte sufre un cambio conformacional para mover el soluto?",
-        options: [
-            "Canal iónico.",
-            "Transportador (carrier).",
-            "Poro nuclear.",
-            "Acuaporina."
-        ],
+        options: ["Canal iónico.", "Transportador (carrier).", "Poro nuclear.", "Acuaporina."],
         correct: 1,
         explanation: "Los transportadores unen el soluto y cambian de forma para liberarlo al otro lado, a diferencia de los canales que son poros."
     },
     {
         topic: "Señalización",
         question: "¿Qué tipo de canal responde a la unión de un neurotransmisor?",
-        options: [
-            "Regulado por voltaje.",
-            "Regulado por ligando.",
-            "Regulado mecánicamente.",
-            "De fuga."
-        ],
+        options: ["Regulado por voltaje.", "Regulado por ligando.", "Regulado mecánicamente.", "De fuga."],
         correct: 1,
         explanation: "El neurotransmisor actúa como un ligando que abre el canal."
     },
     {
         topic: "Señalización",
         question: "¿Qué ley rige el potencial de acción?",
-        options: [
-            "Ley de la gravedad.",
-            "Ley del todo o nada.",
-            "Ley de la termodinámica.",
-            "Ley de la difusión simple."
-        ],
+        options: ["Ley de la gravedad.", "Ley del todo o nada.", "Ley de la termodinámica.", "Ley de la difusión simple."],
         correct: 1,
         explanation: "Si el estímulo supera el umbral, el potencial se dispara completamente; si no, no ocurre."
     },
     {
         topic: "Neurotransmisión",
         question: "¿Cómo se propaga el potencial de acción a lo largo del axón?",
-        options: [
-            "De forma bidireccional.",
-            "Disipándose con la distancia.",
-            "Como una onda autopropagada unidireccional.",
-            "Mediante transporte activo."
-        ],
+        options: ["De forma bidireccional.", "Disipándose con la distancia.", "Como una onda autopropagada unidireccional.", "Mediante transporte activo."],
         correct: 2,
         explanation: "La inactivación de los canales de Na+ detrás de la onda asegura que solo avance hacia adelante."
     },
     {
         topic: "Transporte",
         question: "¿Qué ion está más concentrado en el exterior de la célula animal típica?",
-        options: [
-            "K+",
-            "Na+",
-            "H+",
-            "Fosfato"
-        ],
+        options: ["K+", "Na+", "H+", "Fosfato"],
         correct: 1,
         explanation: "El Na+ es el principal catión extracelular (como agua de mar), mientras que el K+ es intracelular."
     },
     {
         topic: "Transporte",
         question: "La glucosa entra a las células en contra de gradiente mediante:",
-        options: [
-            "Difusión simple.",
-            "Bomba de ATP.",
-            "Cotransporte con Na+ (Simporte).",
-            "Canal iónico."
-        ],
+        options: ["Difusión simple.", "Bomba de ATP.", "Cotransporte con Na+ (Simporte).", "Canal iónico."],
         correct: 2,
         explanation: "Aprovecha la entrada favorable de Na+ para 'colarse' contra su propio gradiente."
     },
     {
         topic: "Canales",
         question: "¿Qué canal se activa por deformación física de la membrana (ej. oído)?",
-        options: [
-            "Regulado por voltaje.",
-            "Regulado por ligando.",
-            "Regulado mecánicamente.",
-            "Canal de fuga."
-        ],
+        options: ["Regulado por voltaje.", "Regulado por ligando.", "Regulado mecánicamente.", "Canal de fuga."],
         correct: 2,
         explanation: "La fuerza mecánica abre el canal, fundamental para el sentido del tacto y la audición."
     },
     {
         topic: "Potencial",
         question: "¿Qué bomba restablece los gradientes iónicos a largo plazo tras los potenciales de acción?",
-        options: [
-            "La bomba Na+/K+.",
-            "El canal de fuga de K+.",
-            "El canal de Na+.",
-            "La bomba de protones."
-        ],
+        options: ["La bomba Na+/K+.", "El canal de fuga de K+.", "El canal de Na+.", "La bomba de protones."],
         correct: 0,
         explanation: "Aunque cada disparo mueve pocos iones, la bomba Na+/K+ trabaja constantemente para mantener los gradientes vitales."
     },
-
     // --- MITOCONDRIA Y ENERGÍA (36-50) ---
     {
         topic: "Función Mitocondrial",
         question: "¿Cuál es la función principal de la mitocondria?",
-        options: [
-            "Síntesis de proteínas.",
-            "Digestión celular.",
-            "Fosforilación oxidativa (producción de ATP).",
-            "Fotosíntesis."
-        ],
+        options: ["Síntesis de proteínas.", "Digestión celular.", "Fosforilación oxidativa (producción de ATP).", "Fotosíntesis."],
         correct: 2,
         explanation: "Es la central energética que convierte la energía química de los alimentos en ATP usando oxígeno."
     },
     {
         topic: "Estructura Mitocondrial",
         question: "¿Qué característica tiene la membrana mitocondrial externa?",
-        options: [
-            "Es impermeable a todo.",
-            "Contiene porinas y es permeable a moléculas < 5000 daltons.",
-            "Contiene la cadena de transporte de electrones.",
-            "Está plegada en crestas."
-        ],
+        options: ["Es impermeable a todo.", "Contiene porinas y es permeable a moléculas < 5000 daltons.", "Contiene la cadena de transporte de electrones.", "Está plegada en crestas."],
         correct: 1,
         explanation: "Las porinas la hacen muy permeable, por lo que el espacio intermembrana es químicamente similar al citosol."
     },
     {
         topic: "Estructura Mitocondrial",
-        question: "¿Dónde se localiza la cadena transportadora de electrones y la ATP sintasa?",
-        options: [
-            "Membrana externa.",
-            "Matriz.",
-            "Membrana mitocondrial interna.",
-            "Espacio intermembrana."
-        ],
+        question: "¿ónde se localiza la cadena transportadora de electrones y la ATP sintasa?",
+        options: ["Membrana externa.", "Matriz.", "Membrana mitocondrial interna.", "Espacio intermembrana."],
         correct: 2,
         explanation: "La membrana interna es impermeable y alberga la maquinaria de la fosforilación oxidativa."
     },
     {
         topic: "Estructura Mitocondrial",
         question: "¿Qué son las crestas mitocondriales?",
-        options: [
-            "Pliegues de la membrana interna que aumentan su superficie.",
-            "Proteínas de transporte.",
-            "Fragmentos de ADN mitocondrial.",
-            "Poros de la membrana externa."
-        ],
+        options: ["Pliegues de la membrana interna que aumentan su superficie.", "Proteínas de transporte.", "Fragmentos de ADN mitocondrial.", "Poros de la membrana externa."],
         correct: 0,
         explanation: "Aumentan enormemente la superficie disponible para alojar más complejos de producción de ATP."
     },
     {
         topic: "Matriz",
         question: "¿Qué proceso metabólico clave ocurre en la matriz mitocondrial?",
-        options: [
-            "Glucólisis.",
-            "Ciclo del ácido cítrico (Krebs) y oxidación de piruvato/ácidos grasos.",
-            "Fotosíntesis.",
-            "Splicing del ARN."
-        ],
+        options: ["Glucólisis.", "Ciclo del ácido cítrico (Krebs) y oxidación de piruvato/ácidos grasos.", "Fotosíntesis.", "Splicing del ARN."],
         correct: 1,
         explanation: "La matriz contiene las enzimas para oxidar los combustibles metabólicos y generar electrones de alta energía."
     },
     {
         topic: "Acoplamiento Quimiosmótico",
         question: "¿Qué se bombea desde la matriz al espacio intermembrana usando la energía de los electrones?",
-        options: [
-            "ATP.",
-            "Protones (H+).",
-            "Electrones.",
-            "Oxígeno."
-        ],
+        options: ["ATP.", "Protones (H+).", "Electrones.", "Oxígeno."],
         correct: 1,
         explanation: "El transporte de electrones impulsa el bombeo de protones, creando un gradiente electroquímico."
     },
     {
         topic: "ATP Sintasa",
         question: "¿Qué impulsa a la ATP sintasa a producir ATP?",
-        options: [
-            "La luz.",
-            "El flujo de protones (H+) volviendo a la matriz a favor de gradiente.",
-            "La hidrólisis de ATP.",
-            "El transporte de Na+."
-        ],
+        options: ["La luz.", "El flujo de protones (H+) volviendo a la matriz a favor de gradiente.", "La hidrólisis de ATP.", "El transporte de Na+."],
         correct: 1,
         explanation: "El gradiente de protones actúa como una 'presa' hidráulica; al fluir de vuelta, hace girar la turbina de la ATP sintasa."
     },
     {
         topic: "Cadena de Transporte",
         question: "¿Cuál es el aceptor final de los electrones en la cadena respiratoria?",
-        options: [
-            "NADH.",
-            "ATP.",
-            "Oxígeno (O2).",
-            "CO2."
-        ],
+        options: ["NADH.", "ATP.", "Oxígeno (O2).", "CO2."],
         correct: 2,
         explanation: "El oxígeno recibe los electrones y protones para formar agua; sin él, la cadena se detiene."
     },
     {
         topic: "Transportadores de electrones",
         question: "¿Qué moléculas donan los electrones de alta energía a la cadena?",
-        options: [
-            "ATP y GTP.",
-            "NADH y FADH2.",
-            "Agua y CO2.",
-            "Glucosa y piruvato."
-        ],
+        options: ["ATP y GTP.", "NADH y FADH2.", "Agua y CO2.", "Glucosa y piruvato."],
         correct: 1,
         explanation: "Son los portadores activados que traen los electrones del ciclo de Krebs y la glucólisis."
     },
     {
         topic: "Complejos",
         question: "¿Cuántos grandes complejos respiratorios forman la cadena de transporte?",
-        options: [
-            "Uno.",
-            "Tres (NADH deshidrogenasa, Citocromo c reductasa, Citocromo c oxidasa).",
-            "Cinco.",
-            "Diez."
-        ],
+        options: ["Uno.", "Tres (NADH deshidrogenasa, Citocromo c reductasa, Citocromo c oxidasa).", "Cinco.", "Diez."],
         correct: 1,
         explanation: "Son tres complejos principales de bombeo de protones."
     },
     {
         topic: "Dinámica",
         question: "¿Son las mitocondrias orgánulos estáticos?",
-        options: [
-            "Sí, son rígidos.",
-            "No, son dinámicos, se mueven, fusionan y dividen.",
-            "Solo se mueven en mitosis.",
-            "Desaparecen en interfase."
-        ],
+        options: ["Sí, son rígidos.", "No, son dinámicos, se mueven, fusionan y dividen.", "Solo se mueven en mitosis.", "Desaparecen en interfase."],
         correct: 1,
         explanation: "Forman redes tubulares cambiantes y se distribuyen activamente por la célula."
     },
     {
         topic: "Genética",
         question: "¿Qué característica genética única tienen las mitocondrias?",
-        options: [
-            "No tienen ADN.",
-            "Contienen su propio ADN y ribosomas.",
-            "Usan el ADN del núcleo directamente.",
-            "Su ADN es lineal."
-        ],
+        options: ["No tienen ADN.", "Contienen su propio ADN y ribosomas.", "Usan el ADN del núcleo directamente.", "Su ADN es lineal."],
         correct: 1,
         explanation: "Poseen un genoma propio (remanente de su origen bacteriano) y maquinaria para sintetizar algunas proteínas."
     },
     {
         topic: "Gradiente",
         question: "¿Por qué es esencial la impermeabilidad de la membrana interna?",
-        options: [
-            "Para evitar que entre agua.",
-            "Para mantener el gradiente de protones necesario para la síntesis de ATP.",
-            "Para proteger el ADN.",
-            "Para aislar el citocromo c."
-        ],
+        options: ["Para evitar que entre agua.", "Para mantener el gradiente de protones necesario para la síntesis de ATP.", "Para proteger el ADN.", "Para aislar el citocromo c."],
         correct: 1,
         explanation: "Si fuera permeable, los protones volverían a filtrarse sin pasar por la ATP sintasa, disipando la energía (desacoplamiento)."
     },
     {
         topic: "Mecanismo",
         question: "¿Qué conversión de energía realiza la mitocondria?",
-        options: [
-            "Luminosa a Química.",
-            "Química (enlaces de nutrientes) a Química (enlace de ATP).",
-            "Mecánica a Eléctrica.",
-            "Térmica a Química."
-        ],
+        options: ["Luminosa a Química.", "Química (enlaces de nutrientes) a Química (enlace de ATP).", "Mecánica a Eléctrica.", "Térmica a Química."],
         correct: 1,
         explanation: "Extrae energía de enlaces C-H y la almacena en el enlace fosfato de alta energía del ATP."
     },
     {
         topic: "Espacio Intermembrana",
         question: "¿Qué enzima se encuentra en el espacio intermembrana utilizando el ATP saliente?",
-        options: [
-            "ADN polimerasa.",
-            "Quinasas que fosforilan otros nucleótidos.",
-            "ATP sintasa.",
-            "Ribosomas."
-        ],
+        options: ["ADN polimerasa.", "Quinasas que fosforilan otros nucleótidos.", "ATP sintasa.", "Ribosomas."],
         correct: 1,
         explanation: "Aprovechan el ATP recién hecho para fosforilar nucleótidos como AMP o GDP."
     },
-
     // --- CITOESQUELETO Y MÚSCULO (51-75) ---
     {
         topic: "General",
         question: "¿Cuál NO es una función del citoesqueleto?",
-        options: [
-            "Mantener la forma celular.",
-            "Generar ATP.",
-            "Permitir el movimiento celular.",
-            "Organizar orgánulos internos."
-        ],
+        options: ["Mantener la forma celular.", "Generar ATP.", "Permitir el movimiento celular.", "Organizar orgánulos internos."],
         correct: 1,
         explanation: "La generación de ATP es mitocondrial. El citoesqueleto es estructural y motor."
     },
     {
         topic: "Filamentos Intermedios",
         question: "¿Cuál es la función principal de los filamentos intermedios?",
-        options: [
-            "Transporte de vesículas.",
-            "Proporcionar resistencia mecánica frente al estrés físico.",
-            "Contracción muscular.",
-            "Formar el anillo contráctil."
-        ],
+        options: ["Transporte de vesículas.", "Proporcionar resistencia mecánica frente al estrés físico.", "Contracción muscular.", "Formar el anillo contráctil."],
         correct: 1,
         explanation: "Son como cuerdas resistentes que evitan que la célula se rompa al estirarse."
     },
     {
         topic: "Filamentos Intermedios",
         question: "¿Dónde se encuentra la lámina nuclear?",
-        options: [
-            "En el citoplasma.",
-            "En el núcleo, sosteniendo la envoltura nuclear.",
-            "En la membrana plasmática.",
-            "En la mitocondria."
-        ],
+        options: ["En el citoplasma.", "En el núcleo, sosteniendo la envoltura nuclear.", "En la membrana plasmática.", "En la mitocondria."],
         correct: 1,
         explanation: "Es una red de filamentos intermedios que da soporte al núcleo."
     },
     {
         topic: "Filamentos Intermedios",
         question: "¿Qué estructuras de unión intercelular anclan los filamentos intermedios?",
-        options: [
-            "Uniones estrechas.",
-            "Desmosomas.",
-            "Gap junctions.",
-            "Sinapsis."
-        ],
+        options: ["Uniones estrechas.", "Desmosomas.", "Gap junctions.", "Sinapsis."],
         correct: 1,
         explanation: "Los desmosomas conectan los filamentos intermedios de células vecinas, dando fuerza al tejido."
     },
     {
         topic: "Microtúbulos",
         question: "¿Qué proteína forma los microtúbulos?",
-        options: [
-            "Actina.",
-            "Tubulina.",
-            "Queratina.",
-            "Miosina."
-        ],
+        options: ["Actina.", "Tubulina.", "Queratina.", "Miosina."],
         correct: 1,
         explanation: "Están formados por dímeros de tubulina que se apilan formando tubos huecos."
     },
     {
         topic: "Microtúbulos",
         question: "¿Desde dónde crecen generalmente los microtúbulos en una célula animal?",
-        options: [
-            "Desde la membrana plasmática.",
-            "Desde el centrosoma.",
-            "Desde la mitocondria.",
-            "Desde los ribosomas."
-        ],
+        options: ["Desde la membrana plasmática.", "Desde el centrosoma.", "Desde la mitocondria.", "Desde los ribosomas."],
         correct: 1,
         explanation: "El centrosoma es el principal Centro Organizador de Microtúbulos (MTOC)."
     },
     {
         topic: "Microtúbulos",
         question: "¿Qué es la inestabilidad dinámica?",
-        options: [
-            "La capacidad de los microtúbulos de crecer y encogerse rápidamente.",
-            "El movimiento de los lípidos.",
-            "La rotura del ADN.",
-            "La vibración de la membrana."
-        ],
+        options: ["La capacidad de los microtúbulos de crecer y encogerse rápidamente.", "El movimiento de los lípidos.", "La rotura del ADN.", "La vibración de la membrana."],
         correct: 0,
         explanation: "Permite a los microtúbulos explorar el espacio celular creciendo y retrayéndose según la hidrólisis de GTP."
     },
     {
         topic: "Motores Moleculares",
         question: "¿Hacia qué extremo del microtúbulo se mueven las Cinesinas?",
-        options: [
-            "Hacia el extremo negativo (-) o centro.",
-            "Hacia el extremo positivo (+) o periferia.",
-            "No se mueven.",
-            "Hacia el núcleo."
-        ],
+        options: ["Hacia el extremo negativo (-) o centro.", "Hacia el extremo positivo (+) o periferia.", "No se mueven.", "Hacia el núcleo."],
         correct: 1,
         explanation: "Las cinesinas transportan carga hacia fuera (extremo +), alejándose del centrosoma."
     },
     {
         topic: "Motores Moleculares",
         question: "¿Hacia qué extremo del microtúbulo se mueven las Dineínas?",
-        options: [
-            "Hacia el extremo positivo (+).",
-            "Hacia el extremo negativo (-) o centro.",
-            "Aleatoriamente.",
-            "Hacia la membrana."
-        ],
+        options: ["Hacia el extremo positivo (+).", "Hacia el extremo negativo (-) o centro.", "Aleatoriamente.", "Hacia la membrana."],
         correct: 1,
         explanation: "Las dineínas transportan carga hacia el centro de la célula (extremo -)."
     },
     {
         topic: "Cilios y Flagelos",
         question: "¿Qué estructura de microtúbulos es característica de cilios y flagelos?",
-        options: [
-            "Disposición '9+2'.",
-            "Disposición aleatoria.",
-            "Un solo microtúbulo central.",
-            "Hélice triple."
-        ],
+        options: ["Disposición '9+2'.", "Disposición aleatoria.", "Un solo microtúbulo central.", "Hélice triple."],
         correct: 0,
         explanation: "Nueve pares externos y dos microtúbulos centrales forman el axonema."
     },
     {
         topic: "Actina",
         question: "¿Dónde se concentran los filamentos de actina en la célula?",
-        options: [
-            "En el núcleo.",
-            "En la corteza celular, justo bajo la membrana.",
-            "Alrededor del centrosoma.",
-            "En la matriz mitocondrial."
-        ],
+        options: ["En el núcleo.", "En la corteza celular, justo bajo la membrana.", "Alrededor del centrosoma.", "En la matriz mitocondrial."],
         correct: 1,
         explanation: "Forman el córtex celular, determinando la forma y el movimiento de la superficie."
     },
     {
         topic: "Actina",
         question: "¿Qué estructuras forma la actina para el movimiento celular (reptación)?",
-        options: [
-            "Cilios.",
-            "Filopodios y Lamelipodios.",
-            "Desmosomas.",
-            "Microtúbulos astrales."
-        ],
+        options: ["Cilios.", "Filopodios y Lamelipodios.", "Desmosomas.", "Microtúbulos astrales."],
         correct: 1,
         explanation: "Son proyecciones de actina en el borde de avance que empujan la membrana hacia adelante."
     },
     {
         topic: "Actina",
         question: "¿Qué proteína motora interactúa con la actina para generar contracción?",
-        options: [
-            "Cinesina.",
-            "Dineína.",
-            "Miosina.",
-            "Tubulina."
-        ],
+        options: ["Cinesina.", "Dineína.", "Miosina.", "Tubulina."],
         correct: 2,
         explanation: "La miosina utiliza ATP para deslizarse sobre la actina, base de la contracción muscular y celular."
     },
     {
         topic: "Contracción Muscular",
         question: "¿Cuál es la unidad contráctil fundamental del músculo esquelético?",
-        options: [
-            "El miocito.",
-            "El sarcómero.",
-            "El túbulo T.",
-            "El retículo sarcoplásmico."
-        ],
+        options: ["El miocito.", "El sarcómero.", "El túbulo T.", "El retículo sarcoplásmico."],
         correct: 1,
         explanation: "El sarcómero es la disposición ordenada de actina y miosina que se acorta."
     },
     {
         topic: "Contracción Muscular",
         question: "¿Qué ion desencadena la contracción muscular al ser liberado?",
-        options: [
-            "Na+",
-            "K+",
-            "Ca2+",
-            "Cl-"
-        ],
+        options: ["Na+", "K+", "Ca2+", "Cl-"],
         correct: 2,
         explanation: "El calcio liberado del retículo sarcoplásmico es la señal intracelular para contraer."
     },
     {
         topic: "Mecanismo Contracción",
         question: "¿A qué proteína se une el Ca2+ para iniciar la contracción en el músculo estriado?",
-        options: [
-            "Miosina.",
-            "Actina.",
-            "Troponina.",
-            "Tropomiosina."
-        ],
+        options: ["Miosina.", "Actina.", "Troponina.", "Tropomiosina."],
         correct: 2,
         explanation: "El calcio se une a la troponina, lo que causa un cambio en la tropomiosina."
     },
     {
         topic: "Mecanismo Contracción",
         question: "¿Qué hace la tropomiosina en reposo?",
-        options: [
-            "Genera ATP.",
-            "Bloquea los sitios de unión de la miosina en la actina.",
-            "Une calcio.",
-            "Degrada actina."
-        ],
+        options: ["Genera ATP.", "Bloquea los sitios de unión de la miosina en la actina.", "Une calcio.", "Degrada actina."],
         correct: 1,
         explanation: "Impide que las cabezas de miosina se unan a la actina; el calcio la desplaza."
     },
     {
         topic: "Mecanismo Contracción",
         question: "¿Qué ocurre durante el 'golpe de fuerza' o deslizamiento?",
-        options: [
-            "Los filamentos de actina se acortan.",
-            "Los filamentos de miosina se acortan.",
-            "Los filamentos de actina y miosina se deslizan uno sobre otro sin cambiar de longitud.",
-            "La membrana se rompe."
-        ],
+        options: ["Los filamentos de actina se acortan.", "Los filamentos de miosina se acortan.", "Los filamentos de actina y miosina se deslizan uno sobre otro sin cambiar de longitud.", "La membrana se rompe."],
         correct: 2,
         explanation: "El sarcómero se acorta por el solapamiento creciente de filamentos, no porque los filamentos se encojan."
     },
     {
         topic: "Regulación Actina",
         question: "¿Qué familia de proteínas regula la organización de la actina en respuesta a señales?",
-        options: [
-            "Proteínas Rho.",
-            "Proteínas Ran.",
-            "Proteínas Ras.",
-            "Proteínas Rab."
-        ],
+        options: ["Proteínas Rho.", "Proteínas Ran.", "Proteínas Ras.", "Proteínas Rab."],
         correct: 0,
         explanation: "La familia Rho controla la formación de lamelipodios, filopodios y fibras de estrés."
     },
     {
         topic: "Microtúbulos",
         question: "¿Qué molécula regula la inestabilidad dinámica de los microtúbulos?",
-        options: [
-            "ATP.",
-            "GTP.",
-            "Calcio.",
-            "AMPc."
-        ],
+        options: ["ATP.", "GTP.", "Calcio.", "AMPc."],
         correct: 1,
         explanation: "La tubulina unida a GTP polimeriza; si se hidroliza a GDP, el microtúbulo se despolimeriza."
     },
     {
         topic: "Actina",
         question: "¿Qué estructura transitoria de actina/miosina divide la célula en la citoquinesis?",
-        options: [
-            "El huso mitótico.",
-            "El anillo contráctil.",
-            "El centrosoma.",
-            "La lámina nuclear."
-        ],
+        options: ["El huso mitótico.", "El anillo contráctil.", "El centrosoma.", "La lámina nuclear."],
         correct: 1,
         explanation: "El anillo contráctil estrangula el citoplasma para separar las dos células hijas."
     },
     {
         topic: "Intermedios",
         question: "¿Tienen polaridad (extremos distintos) los filamentos intermedios?",
-        options: [
-            "Sí, un extremo + y otro -.",
-            "No, sus extremos son idénticos.",
-            "Depende del tipo.",
-            "Sí, 5' y 3'."
-        ],
+        options: ["Sí, un extremo + y otro -.", "No, sus extremos son idénticos.", "Depende del tipo.", "Sí, 5' y 3'."],
         correct: 1,
         explanation: "A diferencia de actina y microtúbulos, los filamentos intermedios son apolares."
     },
     {
         topic: "Miosina",
         question: "¿Qué tipo de miosina es la responsable de la contracción muscular?",
-        options: [
-            "Miosina I.",
-            "Miosina II.",
-            "Miosina V.",
-            "Cinesina."
-        ],
+        options: ["Miosina I.", "Miosina II.", "Miosina V.", "Cinesina."],
         correct: 1,
         explanation: "La Miosina II forma filamentos gruesos bipolares en el sarcómero."
     },
     {
         topic: "Energía",
         question: "¿Qué usa la proteína motora (cinesina/dineína/miosina) para moverse?",
-        options: [
-            "Gradiente de protones.",
-            "Hidrólisis de ATP.",
-            "Difusión pasiva.",
-            "Energía térmica."
-        ],
+        options: ["Gradiente de protones.", "Hidrólisis de ATP.", "Difusión pasiva.", "Energía térmica."],
         correct: 1,
         explanation: "Los cambios conformacionales que generan movimiento están acoplados a ciclos de ATP."
     },
     {
         topic: "Resumen",
         question: "¿Qué filamento es el más resistente y duradero?",
-        options: [
-            "Microtúbulo.",
-            "Actina.",
-            "Filamento intermedio.",
-            "ADN."
-        ],
+        options: ["Microtúbulo.", "Actina.", "Filamento intermedio.", "ADN."],
         correct: 2,
         explanation: "Su función principal es la resistencia mecánica, comparable a una cuerda."
     }
 ];
 
-let currentQuestionIndex = 0;
-let score = 0;
+// --- GESTIÓN DE ESTADO ---
+// Inicializamos propiedades extra en las preguntas
+questions.forEach(q => {
+    q.isMarked = false;       // Estado de marca
+    q.userCorrect = null;     // null: no respondida, true: correcta, false: incorrecta
+});
+
+let activeIndices = []; // Índices de las preguntas activas (playlist)
+let currentPlaylistIndex = 0; // Puntero dentro de la playlist
+let sessionScore = 0;
 let answered = false;
 
-const quizArea = document.getElementById('quiz-area');
-const progressEl = document.getElementById('progress');
-const scoreEl = document.getElementById('score');
-const resultsArea = document.getElementById('results');
-const finalScoreEl = document.getElementById('final-score');
-const finalPercentEl = document.getElementById('final-percent');
+// Al cargar
+document.addEventListener('DOMContentLoaded', () => {
+    startQuiz('all');
+});
 
-function loadQuestion() {
-    answered = false;
-    if (currentQuestionIndex >= questions.length) {
-        showResults();
+// Función Principal: Iniciar/Reiniciar con modos
+function startQuiz(mode) {
+    activeIndices = [];
+    
+    // 1. Filtrar índices según el modo
+    if (mode === 'all') {
+        // Reinicio total: limpiamos respuestas
+        questions.forEach(q => q.userCorrect = null);
+        questions.forEach(q => q.isMarked = false); // Opcional: limpiar marcas
+        activeIndices = questions.map((_, i) => i);
+    } 
+    else if (mode === 'failed') {
+        activeIndices = questions.map((q, i) => q.userCorrect === false ? i : -1).filter(i => i !== -1);
+    } 
+    else if (mode === 'marked') {
+        activeIndices = questions.map((q, i) => q.isMarked ? i : -1).filter(i => i !== -1);
+    } 
+    else if (mode === 'mixed') {
+        // Falladas O marcadas
+        activeIndices = questions.map((q, i) => (q.userCorrect === false || q.isMarked) ? i : -1).filter(i => i !== -1);
+    }
+
+    // 2. Validar
+    if (activeIndices.length === 0) {
+        alert("No hay preguntas para este modo (ej. no has fallado o marcado ninguna).");
         return;
     }
 
-    const q = questions[currentQuestionIndex];
-    progressEl.textContent = `Pregunta ${currentQuestionIndex + 1} de ${questions.length}`;
+    // 3. Resetear sesión
+    currentPlaylistIndex = 0;
+    sessionScore = 0;
     
+    // 4. UI
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('quiz-area').style.display = 'block';
+    document.getElementById('statsBar').style.display = 'flex';
+    
+    loadQuestion();
+}
+
+function loadQuestion() {
+    answered = false;
+    
+    // Usamos activeIndices para saber qué pregunta real cargar
+    const realIndex = activeIndices[currentPlaylistIndex];
+    const q = questions[realIndex];
+    
+    document.getElementById('progress').textContent = `Pregunta ${currentPlaylistIndex + 1} de ${activeIndices.length}`;
+    document.getElementById('score').textContent = `Aciertos sesión: ${sessionScore}`;
+
+    const quizArea = document.getElementById('quiz-area');
+    
+    // Estado del checkbox
+    const markedChecked = q.isMarked ? 'checked' : '';
+
     let html = `
         <div class="question-card active">
+            
+            <label class="bookmark-panel">
+                <input type="checkbox" class="bookmark-checkbox" onchange="toggleMark(${realIndex}, this)" ${markedChecked}>
+                <span>Marcar para revisar</span>
+            </label>
+
             <div class="topic-tag">${q.topic}</div>
             <div class="question-text">${q.question}</div>
+            
             <div class="options-grid">
-                ${q.options.map((opt, index) => `
-                    <button class="option-btn" onclick="checkAnswer(${index}, ${q.correct})">
-                        ${opt}
+                ${q.options.map((opt, i) => `
+                    <button class="option-btn" onclick="checkAnswer(${i}, ${q.correct}, this, ${realIndex})">
+                        ${String.fromCharCode(65+i)}. ${opt}
                     </button>
                 `).join('')}
             </div>
-            <div id="feedback-${currentQuestionIndex}" class="feedback"></div>
+            
+            <div id="feedback" class="feedback"></div>
+            
             <div class="navigation">
-                <button id="next-btn-${currentQuestionIndex}" class="nav-btn" onclick="nextQuestion()">Siguiente →</button>
+                <button id="next-btn" class="nav-btn" onclick="nextQuestion()">Siguiente →</button>
             </div>
         </div>
     `;
@@ -1137,56 +888,83 @@ function loadQuestion() {
     quizArea.innerHTML = html;
 }
 
-function checkAnswer(selected, correct) {
+// Función para marcar/desmarcar (se guarda en el objeto global)
+function toggleMark(realIndex, checkbox) {
+    questions[realIndex].isMarked = checkbox.checked;
+}
+
+function checkAnswer(selected, correct, btn, realIndex) {
     if (answered) return;
     answered = true;
 
-    const buttons = document.querySelectorAll('.option-btn');
-    const feedbackEl = document.getElementById(`feedback-${currentQuestionIndex}`);
-    const nextBtn = document.getElementById(`next-btn-${currentQuestionIndex}`);
+    const btns = document.querySelectorAll('.option-btn');
+    const feedbackEl = document.getElementById('feedback');
+    const nextBtn = document.getElementById('next-btn');
+
+    // Deshabilitar botones
+    btns.forEach(b => b.disabled = true);
 
     if (selected === correct) {
-        buttons[selected].classList.add('correct');
+        sessionScore++;
+        questions[realIndex].userCorrect = true; // Guardar estado
+        btn.classList.add('correct');
         feedbackEl.className = 'feedback feedback-correct show';
-        feedbackEl.innerHTML = `<strong>¡Correcto!</strong> ${questions[currentQuestionIndex].explanation}`;
-        score++;
+        feedbackEl.innerHTML = `<strong>¡Correcto!</strong> ${questions[realIndex].explanation}`;
     } else {
-        buttons[selected].classList.add('incorrect');
-        buttons[correct].classList.add('correct');
+        questions[realIndex].userCorrect = false; // Guardar estado fallo
+        btn.classList.add('incorrect');
+        btns[correct].classList.add('correct');
         feedbackEl.className = 'feedback feedback-incorrect show';
-        feedbackEl.innerHTML = `<strong>Incorrecto.</strong> ${questions[currentQuestionIndex].explanation}`;
+        feedbackEl.innerHTML = `<strong>Incorrecto.</strong> ${questions[realIndex].explanation}`;
     }
 
-    scoreEl.textContent = `Aciertos: ${score}`;
+    document.getElementById('score').textContent = `Aciertos sesión: ${sessionScore}`;
     nextBtn.style.display = 'inline-block';
-    
-    // Deshabilitar botones
-    buttons.forEach(btn => btn.disabled = true);
 }
 
 function nextQuestion() {
-    currentQuestionIndex++;
-    loadQuestion();
+    if (currentPlaylistIndex < activeIndices.length - 1) {
+        currentPlaylistIndex++;
+        loadQuestion();
+    } else {
+        showResults();
+    }
 }
 
 function showResults() {
-    quizArea.innerHTML = '';
-    resultsArea.style.display = 'block';
-    finalScoreEl.textContent = `${score} / ${questions.length}`;
-    const percent = Math.round((score / questions.length) * 100);
+    document.getElementById('quiz-area').style.display = 'none';
+    document.getElementById('statsBar').style.display = 'none';
+    document.getElementById('results').style.display = 'block';
+
+    const percent = Math.round((sessionScore / activeIndices.length) * 100);
+    document.getElementById('final-score').textContent = `${sessionScore} / ${activeIndices.length}`;
     
-    let message = "";
-    if(percent >= 90) message = "¡Excelente! Dominas el Bloque 5.";
-    else if(percent >= 70) message = "Muy bien, estás preparado.";
-    else if(percent >= 50) message = "Aprobado, pero repasa los detalles.";
-    else message = "Necesitas estudiar más Membranas y Citoesqueleto.";
+    let msg = "";
+    if(percent >= 90) msg = "¡Excelente!";
+    else if(percent >= 70) msg = "Muy bien.";
+    else if(percent >= 50) msg = "Aprobado.";
+    else msg = "Sigue repasando.";
+    document.getElementById('final-percent').textContent = `${percent}% - ${msg}`;
+
+    // Calcular estadísticas globales
+    const totalFailed = questions.filter(q => q.userCorrect === false).length;
+    const totalMarked = questions.filter(q => q.isMarked === true).length;
+    const totalMixed = questions.filter(q => q.userCorrect === false || q.isMarked).length;
+
+    document.getElementById('stats-summary').innerHTML = `
+        <strong>Resumen Global:</strong><br>
+        Preguntas marcadas para revisión: ${totalMarked}<br>
+        Preguntas falladas (histórico): ${totalFailed}
+    `;
+
+    // Habilitar/Deshabilitar botones
+    document.getElementById('btn-failed').disabled = (totalFailed === 0);
+    document.getElementById('btn-marked').disabled = (totalMarked === 0);
+    document.getElementById('btn-mixed').disabled = (totalMixed === 0);
     
-    finalPercentEl.textContent = `${percent}% - ${message}`;
+    document.getElementById('btn-failed').innerHTML = `❌ Repetir Falladas (${totalFailed})`;
+    document.getElementById('btn-marked').innerHTML = `⚠️ Repetir Marcadas (${totalMarked})`;
 }
-
-// Iniciar el examen
-loadQuestion();
-
 </script>
 
 </body>
