@@ -24,6 +24,7 @@
             max-width: 800px;
             padding: 30px;
             text-align: left;
+            position: relative;
         }
 
         .header {
@@ -44,6 +45,28 @@
             color: #1565c0;
             font-weight: bold;
             font-size: 1.1em;
+        }
+
+        /* --- Estilo para la pestaña de marcar --- */
+        .mark-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+            font-size: 0.95em;
+            color: #f57c00; /* Naranja */
+            font-weight: 600;
+            width: fit-content;
+            background-color: #fff3e0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid #ffe0b2;
+        }
+        
+        .mark-container input {
+            margin-right: 8px;
+            transform: scale(1.3);
+            cursor: pointer;
         }
 
         .question {
@@ -116,19 +139,35 @@
             display: none;
         }
         
+        /* --- Botones de Repetición --- */
+        .retry-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
         .restart-btn {
-            background-color: #78909c;
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
+            padding: 15px;
+            border-radius: 8px;
             cursor: pointer;
-            margin-top: 20px;
             font-size: 1rem;
+            font-weight: 600;
+            transition: opacity 0.2s;
         }
-        
-        .restart-btn:hover {
-            background-color: #546e7a;
+
+        .restart-btn:hover { opacity: 0.9; }
+        .restart-btn:disabled { background-color: #cfd8dc; color: #90a4ae; cursor: not-allowed; opacity: 1; }
+
+        .btn-all { background-color: #1976d2; }
+        .btn-failed { background-color: #e53935; }
+        .btn-marked { background-color: #fb8c00; }
+        .btn-mixed { background-color: #8e24aa; }
+
+        @media (max-width: 600px) {
+            .retry-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -140,24 +179,35 @@
         <span class="score" id="score">Aciertos: 0</span>
     </div>
     
-    <div class="question" id="question-text">Cargando...</div>
-    
-    <div class="options" id="options-container"></div>
+    <label class="mark-container">
+        <input type="checkbox" id="mark-checkbox" onchange="toggleMark()">
+        <span>🔖 Marcar pregunta</span>
+    </label>
 
+    <div class="question" id="question-text">Cargando...</div>
+    <div class="options" id="options-container"></div>
     <button class="next-btn" id="next-btn" onclick="nextQuestion()">Siguiente Pregunta</button>
 </div>
 
 <div class="quiz-container result-container" id="result-box">
     <h2>¡Quiz Completado!</h2>
-    <p style="font-size: 1.3em; margin: 20px 0;">Tu puntuación final: <span id="final-score" style="font-weight:bold; color:#2e7d32;"></span></p>
-    <button class="restart-btn" onclick="restartQuiz()">Volver a empezar</button>
+    <p style="font-size: 1.3em; margin: 20px 0;">
+        Puntuación Global: <span id="final-score" style="font-weight:bold; color:#2e7d32;"></span> / <span id="total-questions"></span>
+    </p>
+    <p id="mode-indicator" style="color: #78909c; font-size: 0.9em;"></p>
+    
+    <h3>Opciones de Repaso</h3>
+    <div class="retry-grid">
+        <button class="restart-btn btn-all" onclick="initQuiz('all')">🔄 Repetir Completo</button>
+        <button class="restart-btn btn-failed" id="btn-failed" onclick="initQuiz('failed')">❌ Repetir Falladas</button>
+        <button class="restart-btn btn-marked" id="btn-marked" onclick="initQuiz('marked')">🔖 Repetir Marcadas</button>
+        <button class="restart-btn btn-mixed" id="btn-mixed" onclick="initQuiz('mixed')">❌ + 🔖 Falladas y Marcadas</button>
+    </div>
 </div>
 
 <script>
-    /* PREGUNTAS EXTRAÍDAS DEL DOCUMENTO UNIFICADO (BLOQUES B, C, D, E, F)
-       Se han corregido las comillas internas para evitar errores de sintaxis JS.
-    */
-    const questions = [
+    // Preguntas originales (Datos puros)
+    const rawQuestions = [
         // --- BLOQUE A (Continuación) ---
         { q: "¿Cuál de las siguientes afirmaciones sobre las proteínas de la membrana plasmática es falsa?", options: ["Establecen fuertes enlaces covalentes con los lípidos", "Son responsables de la mayoría de las funciones de la membrana", "Pueden mediar como enzimas", "Pueden actuar como transportadores específicos"], correct: 0 },
         { q: "¿Qué tipos de movimientos pueden realizar las moléculas de membrana?", options: ["Rotación, difusión simple, flip-flop y flexión", "Rotación, difusión lateral, flip-flop y flexión", "Rotación, difusión lateral flip-flop y giro", "Rotación, intercalación, flip-flop y flexión"], correct: 1 },
@@ -197,7 +247,7 @@
         { q: "¿Qué proteína se expresa para inhibir el complejo CDK-Ciclina en caso de que el material genético esté dañado?", options: ["P50", "P23", "P21", "P51"], correct: 2 },
         { q: "¿Qué moléculas se degradan en la anafase para permitir la separación de las cromátidas?", options: ["La proteína degradada es la cohesina, gracias a su ubiquitinización...", "La proteína que se degrada es la condensina...", "Las proteínas que se degradan son las del centrómero...", "La proteína degradada es la cohesina, por acción de la separasa."], correct: 3 },
         { q: "¿Qué proteína de la membrana externa mitocondrial une la proteína BAD y desencadena el proceso de la apoptosis?", options: ["La Bcl2", "La procaspasa 3", "La caspasa 9", "La procaspasa 9"], correct: 0 },
-        { q: "Las caspasas...", options: ["Son enzimas cisteín-proteasas que escinden sustratos después de un ácido aspártico", "Son sintetizadas en forma de procaspasas activas", "Se localizan en el citoplasma y en el espacio intermembrana de las mitocondrias", "Degradan e inactivan las enzimas..."], correct: 2 }, // Nota: Marcada C en fuente original aunque A es definicion tecnica.
+        { q: "Las caspasas...", options: ["Son enzimas cisteín-proteasas que escinden sustratos después de un ácido aspártico", "Son sintetizadas en forma de procaspasas activas", "Se localizan en el citoplasma y en el espacio intermembrana de las mitocondrias", "Degradan e inactivan las enzimas..."], correct: 2 },
 
         // --- BLOQUE E: Genética Humana ---
         { q: "¿Cuál es el fenómeno por el cual un solo gen es responsable de efectos fenotípicos múltiples y no relacionados?", options: ["Pleiotropía", "Fenocopias", "Penetrancia", "Genes letales"], correct: 0 },
@@ -221,10 +271,17 @@
         { q: "Los neuroporos comunican temporalmente:", options: ["cavidad amniótica y saco vitelino", "celoma intra y extraembrionario", "saco vitelino y tubo neural", "cavidad amniótica y luz del tubo neural"], correct: 3 }
     ];
 
-    let currentQuestionIndex = 0;
-    let score = 0;
+    // Inicialización del estado de las preguntas
+    // state: null, 'correct', 'incorrect'
+    // marked: boolean
+    let questions = rawQuestions.map(q => ({...q, state: null, marked: false}));
+
+    // Variables de control
+    let quizIndices = []; 
+    let currentStep = 0; 
     let answered = false;
 
+    // Referencias al DOM
     const questionElement = document.getElementById("question-text");
     const optionsContainer = document.getElementById("options-container");
     const nextBtn = document.getElementById("next-btn");
@@ -233,16 +290,62 @@
     const quizBox = document.getElementById("quiz-box");
     const resultBox = document.getElementById("result-box");
     const finalScore = document.getElementById("final-score");
+    const totalQuestionsSpan = document.getElementById("total-questions");
+    const markCheckbox = document.getElementById("mark-checkbox");
+    const modeIndicator = document.getElementById("mode-indicator");
+
+    // Función de inicio del Quiz con filtrado
+    function initQuiz(mode = 'all') {
+        if (mode === 'all') {
+            // Reinicio completo: borramos historial de esta sesión
+            questions = rawQuestions.map(q => ({...q, state: null, marked: false}));
+            quizIndices = questions.map((_, i) => i);
+            modeIndicator.innerText = "Modo: Test Completo";
+        } else if (mode === 'failed') {
+            quizIndices = questions
+                .map((q, i) => ({...q, originalIndex: i}))
+                .filter(q => q.state === 'incorrect')
+                .map(q => q.originalIndex);
+            modeIndicator.innerText = "Modo: Repaso de Falladas";
+        } else if (mode === 'marked') {
+            quizIndices = questions
+                .map((q, i) => ({...q, originalIndex: i}))
+                .filter(q => q.marked)
+                .map(q => q.originalIndex);
+            modeIndicator.innerText = "Modo: Repaso de Marcadas";
+        } else if (mode === 'mixed') {
+            quizIndices = questions
+                .map((q, i) => ({...q, originalIndex: i}))
+                .filter(q => q.marked || q.state === 'incorrect')
+                .map(q => q.originalIndex);
+            modeIndicator.innerText = "Modo: Falladas + Marcadas";
+        }
+
+        if (quizIndices.length === 0) {
+            alert("No hay preguntas en esta categoría para repasar.");
+            return;
+        }
+
+        currentStep = 0;
+        quizBox.style.display = "block";
+        resultBox.style.display = "none";
+        loadQuestion();
+        updateScoreDisplay();
+    }
 
     function loadQuestion() {
         answered = false;
         nextBtn.style.display = "none";
         
-        const currentQuestion = questions[currentQuestionIndex];
+        const realIndex = quizIndices[currentStep];
+        const currentQuestion = questions[realIndex];
         
-        // El número mostrado empieza en 161 (continuando la serie)
-        questionElement.innerText = `${currentQuestionIndex + 161}. ${currentQuestion.q}`;
-        progressText.innerText = `Pregunta ${currentQuestionIndex + 1} de ${questions.length}`;
+        // Numeración continuando la parte 2 (161 en adelante)
+        questionElement.innerText = `${realIndex + 161}. ${currentQuestion.q}`;
+        progressText.innerText = `Pregunta ${currentStep + 1} de ${quizIndices.length}`;
+        
+        // Sincronizar checkbox
+        markCheckbox.checked = currentQuestion.marked;
         
         optionsContainer.innerHTML = "";
 
@@ -255,21 +358,30 @@
         });
     }
 
+    // Toggle de marcado
+    function toggleMark() {
+        const realIndex = quizIndices[currentStep];
+        questions[realIndex].marked = markCheckbox.checked;
+    }
+
     function checkAnswer(selectedIndex, selectedButton) {
         if (answered) return;
         answered = true;
 
-        const currentQuestion = questions[currentQuestionIndex];
+        const realIndex = quizIndices[currentStep];
+        const currentQuestion = questions[realIndex];
         const allButtons = optionsContainer.children;
 
         if (selectedIndex === currentQuestion.correct) {
             selectedButton.classList.add("correct");
-            score++;
-            scoreText.innerText = `Aciertos: ${score}`;
+            currentQuestion.state = 'correct';
         } else {
             selectedButton.classList.add("incorrect");
             allButtons[currentQuestion.correct].classList.add("correct");
+            currentQuestion.state = 'incorrect';
         }
+        
+        updateScoreDisplay();
 
         for (let btn of allButtons) {
             btn.disabled = true;
@@ -280,59 +392,65 @@
     }
 
     function nextQuestion() {
-        currentQuestionIndex++;
-        if (currentQuestionIndex < questions.length) {
+        currentStep++;
+        if (currentStep < quizIndices.length) {
             loadQuestion();
         } else {
             showResults();
         }
     }
 
+    function getGlobalScore() {
+        return questions.filter(q => q.state === 'correct').length;
+    }
+    
+    function updateScoreDisplay() {
+        scoreText.innerText = `Aciertos Globales: ${getGlobalScore()}`;
+    }
+
     function showResults() {
         quizBox.style.display = "none";
         resultBox.style.display = "block";
-        finalScore.innerText = `${score} / ${questions.length}`;
+        
+        finalScore.innerText = getGlobalScore();
+        totalQuestionsSpan.innerText = questions.length;
+
+        // Habilitar/deshabilitar botones según disponibilidad
+        const failedCount = questions.filter(q => q.state === 'incorrect').length;
+        const markedCount = questions.filter(q => q.marked).length;
+        const mixedCount = questions.filter(q => q.state === 'incorrect' || q.marked).length;
+
+        document.getElementById('btn-failed').disabled = (failedCount === 0);
+        document.getElementById('btn-failed').innerText = `❌ Repetir Falladas (${failedCount})`;
+        
+        document.getElementById('btn-marked').disabled = (markedCount === 0);
+        document.getElementById('btn-marked').innerText = `🔖 Repetir Marcadas (${markedCount})`;
+        
+        document.getElementById('btn-mixed').disabled = (mixedCount === 0);
+        document.getElementById('btn-mixed').innerText = `❌ + 🔖 Falladas y Marcadas (${mixedCount})`;
     }
 
-    function restartQuiz() {
-        currentQuestionIndex = 0;
-        score = 0;
-        scoreText.innerText = "Aciertos: 0";
-        quizBox.style.display = "block";
-        resultBox.style.display = "none";
-        loadQuestion();
-    }
-
-    // Iniciar el quiz
-    loadQuestion();
+    // Iniciar
+    initQuiz('all');
 </script>
+
 <script>
 (function() {
-    // 1. Obtener ID del examen
     const params = new URLSearchParams(window.location.search);
     const testId = params.get('id');
 
     if (testId) {
-        // 2. Vigilar cuando aparece la caja de resultados
         const resultBox = document.getElementById('result-box');
         
-        // Creamos un observador que detecta cambios en el estilo (display: none -> block)
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
-                // Si la caja de resultados se hace visible
                 if (resultBox.style.display === 'block') {
                     
-                    // A. Leer la puntuación que calculó el test
-                    // El test pone el número de aciertos en el span id="final-score"
                     const scoreText = document.getElementById('final-score').innerText;
-                    // Limpiamos el texto por si dice "50 / 80" o solo "50"
-                    const aciertos = parseInt(scoreText.split('/')[0]);
-                    
-                    // B. Calcular porcentaje (usamos la variable 'questions' que ya existe en tu test)
-                    const total = questions.length;
+                    const aciertos = parseInt(scoreText);
+                    const total = rawQuestions.length;
                     const porcentaje = Math.round((aciertos / total) * 100);
 
-                    // C. Guardar datos
                     let intentos = parseInt(localStorage.getItem('intentos_' + testId) || 0);
                     localStorage.setItem('intentos_' + testId, intentos + 1);
 
@@ -341,7 +459,6 @@
                         localStorage.setItem('nota_' + testId, porcentaje);
                     }
 
-                    // D. Añadir botón de "Volver" si no existe
                     if (!document.getElementById('btn-volver-menu')) {
                         const btn = document.createElement('button');
                         btn.id = 'btn-volver-menu';
@@ -354,7 +471,6 @@
             });
         });
 
-        // Iniciar la vigilancia
         observer.observe(resultBox, { attributes: true, attributeFilter: ['style'] });
     }
 })();
