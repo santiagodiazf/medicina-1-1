@@ -22,16 +22,44 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-height: 200px;
         }
         .question-block {
             margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 1px solid #eee;
+            position: relative; /* Para posicionar la marca */
         }
+        
+        /* Estilos para el marcador (Check/Estrella) */
+        .mark-question {
+            position: absolute;
+            top: 0;
+            right: 0;
+            cursor: pointer;
+            font-size: 1.5em;
+            color: #ccc;
+            transition: color 0.3s;
+            user-select: none;
+        }
+        .mark-question.active {
+            color: #f1c40f; /* Amarillo dorado */
+        }
+        .mark-question:hover {
+            color: #f39c12;
+        }
+        .mark-label {
+            font-size: 0.6em;
+            vertical-align: middle;
+            margin-right: 5px;
+            color: #999;
+        }
+
         .question-title {
             font-size: 1.1em;
             margin-bottom: 15px;
             font-weight: 600;
+            padding-right: 40px; /* Espacio para la estrella */
         }
         .options-list {
             list-style-type: none;
@@ -87,16 +115,93 @@
             pointer-events: none;
             opacity: 0.8;
         }
+
+        /* Área de Resultados y Botones de Acción */
+        #results-area {
+            display: none; /* Oculto por defecto */
+            text-align: center;
+            padding: 20px;
+        }
+        .score-display {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .action-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .action-btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+        .action-btn:disabled {
+            background-color: #ccc !important;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-blue { background-color: #3498db; }
+        .btn-red { background-color: #e74c3c; }
+        .btn-yellow { background-color: #f1c40f; color: #333; }
+        .btn-purple { background-color: #9b59b6; }
+        .btn-dark { background-color: #2c3e50; width: 100%; margin-top: 20px; }
+
     </style>
 </head>
 <body>
 
     <h1>Test Bloque I: Bases de la Vida y Célula</h1>
-    <div class="quiz-container" id="quiz">
+    
+    <div class="quiz-container" id="quiz"></div>
+
+    <div class="quiz-container" id="results-area">
+        <div class="score-display" id="score-text"></div>
+        <div style="margin-bottom: 20px; color: #666;" id="feedback-text"></div>
+
+        <h3>¿Qué deseas hacer ahora?</h3>
+        <div class="action-grid">
+            <button class="action-btn btn-blue" onclick="restartQuiz('all')">
+                🔄 Repetir Completo
+            </button>
+            <button class="action-btn btn-red" id="btn-retry-failed" onclick="restartQuiz('failed')">
+                ❌ Repetir Falladas
+            </button>
+            <button class="action-btn btn-yellow" id="btn-retry-marked" onclick="restartQuiz('marked')">
+                ★ Repetir Marcadas
+            </button>
+            <button class="action-btn btn-purple" id="btn-retry-both" onclick="restartQuiz('failed_marked')">
+                ❌ + ★ Repetir Ambas
+            </button>
         </div>
+        
+        <button class="action-btn btn-dark" onclick="goToIndex()">
+            🔙 Volver al Índice Principal
+        </button>
+    </div>
+
+    <div id="finish-container" style="text-align: center; margin-top: 40px; padding: 20px; background: #eee; border-radius: 8px;">
+        <button id="btn-finish" style="background: #2c3e50; color: white; border: none; padding: 15px 30px; font-size: 1.2em; border-radius: 6px; cursor: pointer; font-weight: bold;">
+            🏁 Finalizar y Ver Opciones
+        </button>
+    </div>
 
     <script>
-        const questions = [
+        // 1. Base de datos de preguntas
+        const rawQuestions = [
             {
                 text: "1. El principio fundamental de la Teoría Celular, propuesto por Rudolf Virchow, 'Omnis cellula e cellula', se establece como la 'Unidad de Origen celular'. Este postulado médico-científico implica directamente:",
                 options: [
@@ -549,6 +654,15 @@
             }
         ];
 
+        // 2. Estado del Quiz
+        // Añadimos propiedades extra a las preguntas para seguir su estado
+        let questions = rawQuestions.map((q, index) => ({
+            ...q,
+            id: index,
+            userState: null, // 'correct', 'incorrect' o null
+            isMarked: false
+        }));
+
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -556,20 +670,38 @@
             }
         }
 
-        function renderQuiz() {
+        // 3. Renderizado
+        function renderQuiz(subsetOfQuestions = questions) {
             const quizContainer = document.getElementById('quiz');
             quizContainer.innerHTML = '';
+            
+            // Si no hay preguntas que mostrar (ej. 0 falladas)
+            if (subsetOfQuestions.length === 0) {
+                quizContainer.innerHTML = '<p style="text-align:center; padding:20px;">No hay preguntas en esta categoría.</p>';
+                return;
+            }
 
-            questions.forEach((q, index) => {
+            subsetOfQuestions.forEach(q => {
                 const questionBlock = document.createElement('div');
                 questionBlock.className = 'question-block';
+
+                // --- BOTÓN DE MARCAR (ESTRELLA) ---
+                const markBtn = document.createElement('div');
+                markBtn.className = `mark-question ${q.isMarked ? 'active' : ''}`;
+                markBtn.innerHTML = '<span class="mark-label">Marcar</span>★';
+                markBtn.onclick = () => {
+                    q.isMarked = !q.isMarked;
+                    markBtn.classList.toggle('active');
+                };
+                questionBlock.appendChild(markBtn);
+                // ----------------------------------
 
                 const title = document.createElement('div');
                 title.className = 'question-title';
                 title.innerText = q.text;
                 questionBlock.appendChild(title);
 
-                // Clonar opciones para no modificar el orden original si se recarga
+                // Clonar opciones y barajar
                 let currentOptions = [...q.options];
                 shuffleArray(currentOptions);
 
@@ -584,19 +716,23 @@
                     btn.className = 'option-btn';
                     btn.innerText = opt.text;
                     
+                    // Comprobar si ya fue respondida en esta sesión de renderizado
+                    // (Si quisieras mantener el color al filtrar, podrías usar q.userState aquí)
+                    
                     btn.onclick = function() {
-                        // Deshabilitar todos los botones de esta pregunta
+                        // Deshabilitar botones de esta pregunta
                         const allBtns = optionsList.querySelectorAll('.option-btn');
                         allBtns.forEach(b => b.classList.add('disabled'));
 
                         if (opt.correct) {
                             btn.classList.add('correct');
+                            q.userState = 'correct'; // Guardar estado
                         } else {
                             btn.classList.add('incorrect');
-                            // Resaltar la correcta
+                            q.userState = 'incorrect'; // Guardar estado
+                            
+                            // Mostrar la correcta
                             allBtns.forEach(b => {
-                                // Buscar el botón que tiene el texto de la opción correcta
-                                // (Método simple comparando texto)
                                 const originalOpt = q.options.find(o => o.correct);
                                 if (b.innerText === originalOpt.text) {
                                     b.classList.add('correct');
@@ -614,64 +750,93 @@
             });
         }
 
-        // Renderizar al cargar
-        renderQuiz();
-    </script>
-<div style="text-align: center; margin-top: 40px; padding: 20px; background: #eee; border-radius: 8px;">
-    <button id="btn-finish" style="background: #2c3e50; color: white; border: none; padding: 15px 30px; font-size: 1.2em; border-radius: 6px; cursor: pointer; font-weight: bold;">
-        🏁 Finalizar y Guardar Nota
-    </button>
-</div>
+        // Renderizado inicial (todas las preguntas)
+        renderQuiz(questions);
 
-<script>
-    // Lógica para capturar el ID desde la URL (viene del index.html)
-    const urlParams = new URLSearchParams(window.location.search);
-    const testID = urlParams.get('id'); // Ej: 'bio-1'
+        // 4. Lógica de Finalización y Resultados
+        const urlParams = new URLSearchParams(window.location.search);
+        const testID = urlParams.get('id');
 
-    document.getElementById('btn-finish').onclick = function() {
-        if (!testID) {
-            alert("⚠️ Nota: Abre este test desde el 'index.html' para que se guarde tu progreso.");
+        document.getElementById('btn-finish').onclick = function() {
+            // Calcular resultados sobre el TOTAL de preguntas originales
+            let total = questions.length;
+            let correctas = questions.filter(q => q.userState === 'correct').length;
+            let incorrectas = questions.filter(q => q.userState === 'incorrect').length;
+            let marcadas = questions.filter(q => q.isMarked).length;
+            
+            // Calculo de nota
+            const notaFinal = Math.round((correctas / total) * 100);
+
+            // Ocultar quiz y botón finalizar, mostrar área de resultados
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('finish-container').style.display = 'none';
+            const resultsArea = document.getElementById('results-area');
+            resultsArea.style.display = 'block';
+
+            // Textos
+            document.getElementById('score-text').innerText = `Nota: ${notaFinal}% (${correctas}/${total})`;
+            document.getElementById('feedback-text').innerHTML = `
+                Acertadas: <b>${correctas}</b> <br>
+                Falladas: <b>${incorrectas}</b> <br>
+                Marcadas para repaso: <b>${marcadas}</b>
+            `;
+
+            // Habilitar/Deshabilitar botones según disponibilidad
+            document.getElementById('btn-retry-failed').disabled = (incorrectas === 0);
+            document.getElementById('btn-retry-marked').disabled = (marcadas === 0);
+            document.getElementById('btn-retry-both').disabled = (incorrectas === 0 && marcadas === 0);
+
+            // Guardar progreso si hay ID
+            if (testID) {
+                let intentos = parseInt(localStorage.getItem(`intentos_${testID}`) || 0);
+                localStorage.setItem(`intentos_${testID}`, intentos + 1);
+                let notaAnterior = localStorage.getItem(`nota_${testID}`);
+                if (!notaAnterior || notaFinal > parseInt(notaAnterior)) {
+                    localStorage.setItem(`nota_${testID}`, notaFinal);
+                }
+            } else {
+               // alert("Nota: Para guardar el progreso, abre este test desde el índice principal.");
+            }
+        };
+
+        // 5. Funciones de Reinicio / Repetición
+        function restartQuiz(mode) {
+            // Ocultar resultados, mostrar quiz y botón finish
+            document.getElementById('results-area').style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
+            document.getElementById('finish-container').style.display = 'block';
+
+            let subset = [];
+
+            if (mode === 'all') {
+                // Resetear estados visuales
+                questions.forEach(q => q.userState = null); 
+                subset = questions;
+            } else if (mode === 'failed') {
+                subset = questions.filter(q => q.userState === 'incorrect');
+                // Al reintentar falladas, reseteamos su estado 'incorrect' para poder responderlas de nuevo
+                subset.forEach(q => q.userState = null);
+            } else if (mode === 'marked') {
+                subset = questions.filter(q => q.isMarked);
+                // Reseteamos estado para responder de nuevo
+                subset.forEach(q => q.userState = null);
+            } else if (mode === 'failed_marked') {
+                subset = questions.filter(q => q.userState === 'incorrect' || q.isMarked);
+                subset.forEach(q => q.userState = null);
+            }
+
+            renderQuiz(subset);
+            
+            // Scroll arriba
+            window.scrollTo(0, 0);
         }
 
-        const allBlocks = document.querySelectorAll('.question-block');
-        let totalQuestions = allBlocks.length;
-        let correctas = 0;
-
-        allBlocks.forEach(block => {
-            // Buscamos si hay algún botón con clase 'incorrect' (usuario falló)
-            const hasIncorrect = block.querySelector('button.incorrect');
-            // Buscamos si hay algún botón con clase 'correct' (usuario acertó o se reveló)
-            const hasCorrect = block.querySelector('button.correct');
-            
-            // Lógica: Si hay un verde Y NO hay un rojo, el usuario acertó a la primera.
-            // Si hay un rojo, falló. Si no hay nada, no contestó.
-            if (hasCorrect && !hasIncorrect) {
-                correctas++;
-            }
-        });
-
-        const notaFinal = Math.round((correctas / totalQuestions) * 100);
-        
-        // Mensaje de resultado
-        alert(`📊 Resultado:\n\nHas acertado ${correctas} de ${totalQuestions}.\nTu nota es: ${notaFinal}%`);
-
-        if (testID) {
-            // 1. Guardar Intento
-            let intentos = parseInt(localStorage.getItem(`intentos_${testID}`) || 0);
-            localStorage.setItem(`intentos_${testID}`, intentos + 1);
-
-            // 2. Guardar Mejor Nota (solo si es mayor a la anterior)
-            let notaAnterior = localStorage.getItem(`nota_${testID}`);
-            if (!notaAnterior || notaFinal > parseInt(notaAnterior)) {
-                localStorage.setItem(`nota_${testID}`, notaFinal);
-            }
-
-            // 3. Volver al menú
-            if(confirm("¿Quieres volver al menú principal?")) {
+        function goToIndex() {
+            if(confirm("¿Volver al menú principal?")) {
                 window.location.href = 'index.html';
             }
         }
-    };
-</script>
+
+    </script>
 </body>
 </html>
