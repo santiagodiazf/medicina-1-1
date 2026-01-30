@@ -24,6 +24,7 @@
             max-width: 800px;
             padding: 30px;
             text-align: left;
+            position: relative;
         }
 
         .header {
@@ -44,6 +45,34 @@
             color: #4a148c;
             font-weight: bold;
             font-size: 1.1em;
+        }
+
+        /* --- Estilo para la pestaña de marcar --- */
+        .mark-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+            font-size: 0.95em;
+            color: #8e24aa;
+            font-weight: 600;
+            width: fit-content;
+            background-color: #f3e5f5;
+            padding: 5px 12px;
+            border-radius: 20px;
+            border: 1px solid #e1bee7;
+            transition: background 0.2s;
+        }
+        
+        .mark-container:hover {
+            background-color: #e1bee7;
+        }
+
+        .mark-container input {
+            margin-right: 8px;
+            transform: scale(1.3);
+            cursor: pointer;
+            accent-color: #8e24aa;
         }
 
         .question {
@@ -115,20 +144,43 @@
             text-align: center;
             display: none;
         }
-        
+
+        /* --- Nuevos Estilos para el Menú Final --- */
+        .retry-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
         .restart-btn {
-            background-color: #90a4ae;
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
+            padding: 15px;
+            border-radius: 8px;
             cursor: pointer;
-            margin-top: 20px;
             font-size: 1rem;
+            font-weight: 600;
+            transition: opacity 0.2s, transform 0.1s;
         }
-        
-        .restart-btn:hover {
-            background-color: #607d8b;
+
+        .restart-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        .restart-btn:disabled { 
+            background-color: #e0e0e0; 
+            color: #9e9e9e; 
+            cursor: not-allowed; 
+            opacity: 1; 
+            transform: none; 
+            box-shadow: none;
+        }
+
+        .btn-all { background-color: #8e24aa; }      /* Morado principal */
+        .btn-failed { background-color: #e53935; }   /* Rojo */
+        .btn-marked { background-color: #fb8c00; }   /* Naranja */
+        .btn-mixed { background-color: #5e35b1; }    /* Morado oscuro */
+
+        @media (max-width: 600px) {
+            .retry-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -140,25 +192,35 @@
         <span class="score" id="score">Aciertos: 0</span>
     </div>
     
-    <div class="question" id="question-text">Cargando...</div>
-    
-    <div class="options" id="options-container"></div>
+    <label class="mark-container">
+        <input type="checkbox" id="mark-checkbox" onchange="toggleMark()">
+        <span>🔖 Marcar para revisar</span>
+    </label>
 
+    <div class="question" id="question-text">Cargando...</div>
+    <div class="options" id="options-container"></div>
     <button class="next-btn" id="next-btn" onclick="nextQuestion()">Siguiente Pregunta</button>
 </div>
 
 <div class="quiz-container result-container" id="result-box">
-    <h2>¡Temario Completado!</h2>
-    <p style="font-size: 1.3em; margin: 20px 0;">Tu puntuación final: <span id="final-score" style="font-weight:bold; color:#6a1b9a;"></span></p>
-    <button class="restart-btn" onclick="restartQuiz()">Volver a empezar este bloque</button>
+    <h2>¡Bloque Final Completado!</h2>
+    <p style="font-size: 1.3em; margin: 20px 0;">
+        Puntuación Global: <span id="final-score" style="font-weight:bold; color:#6a1b9a;"></span> / <span id="total-questions"></span>
+    </p>
+    <p id="mode-indicator" style="color: #7b1fa2; font-size: 0.9em; font-style: italic;"></p>
+
+    <h3>¿Cómo deseas continuar?</h3>
+    <div class="retry-grid">
+        <button class="restart-btn btn-all" onclick="initQuiz('all')">🔄 Repetir Completo</button>
+        <button class="restart-btn btn-failed" id="btn-failed" onclick="initQuiz('failed')">❌ Repetir Falladas</button>
+        <button class="restart-btn btn-marked" id="btn-marked" onclick="initQuiz('marked')">🔖 Repetir Marcadas</button>
+        <button class="restart-btn btn-mixed" id="btn-mixed" onclick="initQuiz('mixed')">❌ + 🔖 Falladas y Marcadas</button>
+    </div>
 </div>
 
 <script>
-    /* BLOQUE 4 (FINAL) - PREGUNTAS 211 a 296
-       Contiene: Test Biología 2 completo y Bloques A, B, C, D, E, F (Nuevas)
-       Se han limpiado comillas conflictivas.
-    */
-    const questions = [
+    // Preguntas originales (Datos base)
+    const rawQuestions = [
         // --- TEST BIOLOGÍA 2 (Embriología y Ciclo) ---
         { q: "En ausencia de factores de crecimiento, la mayoría de las células animales detendrán el ciclo celular en un punto de restricción, ¿en qué fase?", options: ["Fase S", "Fase M", "Fase G2", "Fase G1"], correct: 3 },
         { q: "Los gemelos que comparten cavidad amniótica son:", options: ["Dicigóticos", "Monocigóticos, monocoriales y monoamnióticos", "Monocigóticos, bicoriales y monoamnióticos", "Monocigóticos y bicoriales"], correct: 1 },
@@ -259,10 +321,17 @@
         { q: "Los neuroporos comunican temporalmente:", options: ["cavidad amniótica y saco vitelino", "celoma intra y extraembrionario", "saco vitelino y tubo neural", "cavidad amniótica y luz del tubo neural"], correct: 3 }
     ];
 
-    let currentQuestionIndex = 0;
-    let score = 0;
+    // Inicializamos el estado de las preguntas
+    // state: null (sin responder), 'correct', 'incorrect'
+    // marked: boolean (true/false)
+    let questions = rawQuestions.map(q => ({...q, state: null, marked: false}));
+
+    // Variables de control de flujo
+    let quizIndices = []; // Lista de índices que se jugarán en esta ronda
+    let currentStep = 0;  // Posición en el array quizIndices
     let answered = false;
 
+    // Referencias al DOM
     const questionElement = document.getElementById("question-text");
     const optionsContainer = document.getElementById("options-container");
     const nextBtn = document.getElementById("next-btn");
@@ -271,16 +340,64 @@
     const quizBox = document.getElementById("quiz-box");
     const resultBox = document.getElementById("result-box");
     const finalScore = document.getElementById("final-score");
+    const totalQuestionsSpan = document.getElementById("total-questions");
+    const markCheckbox = document.getElementById("mark-checkbox");
+    const modeIndicator = document.getElementById("mode-indicator");
+
+    // Función principal para iniciar/reiniciar el Quiz
+    function initQuiz(mode = 'all') {
+        if (mode === 'all') {
+            // Reinicio completo: limpiamos estados
+            questions = rawQuestions.map(q => ({...q, state: null, marked: false}));
+            quizIndices = questions.map((_, i) => i);
+            modeIndicator.innerText = "Modo: Test Completo";
+        } else if (mode === 'failed') {
+            quizIndices = questions
+                .map((q, i) => ({...q, originalIndex: i}))
+                .filter(q => q.state === 'incorrect')
+                .map(q => q.originalIndex);
+            modeIndicator.innerText = "Modo: Repaso de Falladas";
+        } else if (mode === 'marked') {
+            quizIndices = questions
+                .map((q, i) => ({...q, originalIndex: i}))
+                .filter(q => q.marked)
+                .map(q => q.originalIndex);
+            modeIndicator.innerText = "Modo: Repaso de Marcadas";
+        } else if (mode === 'mixed') {
+            quizIndices = questions
+                .map((q, i) => ({...q, originalIndex: i}))
+                .filter(q => q.marked || q.state === 'incorrect')
+                .map(q => q.originalIndex);
+            modeIndicator.innerText = "Modo: Falladas + Marcadas";
+        }
+
+        // Si no hay preguntas en la categoría seleccionada
+        if (quizIndices.length === 0) {
+            alert("No hay preguntas en esta categoría para repasar.");
+            return;
+        }
+
+        currentStep = 0;
+        quizBox.style.display = "block";
+        resultBox.style.display = "none";
+        loadQuestion();
+        updateScoreDisplay();
+    }
 
     function loadQuestion() {
         answered = false;
         nextBtn.style.display = "none";
         
-        const currentQuestion = questions[currentQuestionIndex];
+        // Obtenemos la pregunta real basada en el índice filtrado
+        const realIndex = quizIndices[currentStep];
+        const currentQuestion = questions[realIndex];
         
-        // El número mostrado empieza en 211
-        questionElement.innerText = `${currentQuestionIndex + 211}. ${currentQuestion.q}`;
-        progressText.innerText = `Pregunta ${currentQuestionIndex + 1} de ${questions.length}`;
+        // Número original (empieza en 211 según tu código anterior)
+        questionElement.innerText = `${realIndex + 211}. ${currentQuestion.q}`;
+        progressText.innerText = `Pregunta ${currentStep + 1} de ${quizIndices.length}`;
+        
+        // Sincronizar el checkbox de marcado
+        markCheckbox.checked = currentQuestion.marked;
         
         optionsContainer.innerHTML = "";
 
@@ -293,21 +410,30 @@
         });
     }
 
+    function toggleMark() {
+        const realIndex = quizIndices[currentStep];
+        questions[realIndex].marked = markCheckbox.checked;
+    }
+
     function checkAnswer(selectedIndex, selectedButton) {
         if (answered) return;
         answered = true;
 
-        const currentQuestion = questions[currentQuestionIndex];
+        const realIndex = quizIndices[currentStep];
+        const currentQuestion = questions[realIndex];
         const allButtons = optionsContainer.children;
 
         if (selectedIndex === currentQuestion.correct) {
             selectedButton.classList.add("correct");
-            score++;
-            scoreText.innerText = `Aciertos: ${score}`;
+            currentQuestion.state = 'correct';
         } else {
             selectedButton.classList.add("incorrect");
+            // Mostrar la correcta
             allButtons[currentQuestion.correct].classList.add("correct");
+            currentQuestion.state = 'incorrect';
         }
+        
+        updateScoreDisplay();
 
         for (let btn of allButtons) {
             btn.disabled = true;
@@ -318,32 +444,50 @@
     }
 
     function nextQuestion() {
-        currentQuestionIndex++;
-        if (currentQuestionIndex < questions.length) {
+        currentStep++;
+        if (currentStep < quizIndices.length) {
             loadQuestion();
         } else {
             showResults();
         }
     }
 
+    // Calcula aciertos totales en todo el array de preguntas
+    function getGlobalScore() {
+        return questions.filter(q => q.state === 'correct').length;
+    }
+    
+    function updateScoreDisplay() {
+        scoreText.innerText = `Aciertos Globales: ${getGlobalScore()}`;
+    }
+
     function showResults() {
         quizBox.style.display = "none";
         resultBox.style.display = "block";
-        finalScore.innerText = `${score} / ${questions.length}`;
+        
+        finalScore.innerText = getGlobalScore();
+        totalQuestionsSpan.innerText = questions.length;
+
+        // Calcular conteos para habilitar/deshabilitar botones
+        const failedCount = questions.filter(q => q.state === 'incorrect').length;
+        const markedCount = questions.filter(q => q.marked).length;
+        const mixedCount = questions.filter(q => q.state === 'incorrect' || q.marked).length;
+
+        // Configurar botones
+        document.getElementById('btn-failed').disabled = (failedCount === 0);
+        document.getElementById('btn-failed').innerText = `❌ Repetir Falladas (${failedCount})`;
+        
+        document.getElementById('btn-marked').disabled = (markedCount === 0);
+        document.getElementById('btn-marked').innerText = `🔖 Repetir Marcadas (${markedCount})`;
+        
+        document.getElementById('btn-mixed').disabled = (mixedCount === 0);
+        document.getElementById('btn-mixed').innerText = `❌ + 🔖 Falladas y Marcadas (${mixedCount})`;
     }
 
-    function restartQuiz() {
-        currentQuestionIndex = 0;
-        score = 0;
-        scoreText.innerText = "Aciertos: 0";
-        quizBox.style.display = "block";
-        resultBox.style.display = "none";
-        loadQuestion();
-    }
-
-    // Iniciar el quiz
-    loadQuestion();
+    // Arrancar el quiz por primera vez
+    initQuiz('all');
 </script>
+
 <script>
 (function() {
     // 1. Obtener ID del examen
@@ -351,26 +495,18 @@
     const testId = params.get('id');
 
     if (testId) {
-        // 2. Vigilar cuando aparece la caja de resultados
         const resultBox = document.getElementById('result-box');
         
-        // Creamos un observador que detecta cambios en el estilo (display: none -> block)
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
-                // Si la caja de resultados se hace visible
                 if (resultBox.style.display === 'block') {
                     
-                    // A. Leer la puntuación que calculó el test
-                    // El test pone el número de aciertos en el span id="final-score"
                     const scoreText = document.getElementById('final-score').innerText;
-                    // Limpiamos el texto por si dice "50 / 80" o solo "50"
-                    const aciertos = parseInt(scoreText.split('/')[0]);
-                    
-                    // B. Calcular porcentaje (usamos la variable 'questions' que ya existe en tu test)
-                    const total = questions.length;
+                    const aciertos = parseInt(scoreText); // Solo el número, ya no hay '/'
+                    const total = rawQuestions.length;
                     const porcentaje = Math.round((aciertos / total) * 100);
 
-                    // C. Guardar datos
+                    // Guardar datos
                     let intentos = parseInt(localStorage.getItem('intentos_' + testId) || 0);
                     localStorage.setItem('intentos_' + testId, intentos + 1);
 
@@ -379,7 +515,6 @@
                         localStorage.setItem('nota_' + testId, porcentaje);
                     }
 
-                    // D. Añadir botón de "Volver" si no existe
                     if (!document.getElementById('btn-volver-menu')) {
                         const btn = document.createElement('button');
                         btn.id = 'btn-volver-menu';
@@ -392,7 +527,6 @@
             });
         });
 
-        // Iniciar la vigilancia
         observer.observe(resultBox, { attributes: true, attributeFilter: ['style'] });
     }
 })();
