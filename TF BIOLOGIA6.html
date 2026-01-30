@@ -10,6 +10,7 @@
             --secondary: #9b59b6;
             --success: #27ae60;
             --danger: #c0392b;
+            --warning: #f1c40f;
             --light: #f4f6f7;
             --dark: #2c3e50;
         }
@@ -28,6 +29,7 @@
             padding: 40px;
             border-radius: 12px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            min-height: 600px;
         }
         header {
             text-align: center;
@@ -52,9 +54,31 @@
 
         .question-card {
             display: none;
+            position: relative; /* Para el marcador */
             animation: fadeIn 0.4s ease-out;
         }
         .question-card.active { display: block; }
+
+        /* ESTILOS DEL MARCADOR */
+        .bookmark-panel {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #fff9c4;
+            border: 1px solid #fbc02d;
+            color: #f57f17;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s;
+            z-index: 10;
+        }
+        .bookmark-panel:hover { transform: scale(1.05); background: #fff176; }
+        .bookmark-panel input { cursor: pointer; transform: scale(1.3); }
 
         .question-header {
             font-size: 0.9rem;
@@ -62,12 +86,14 @@
             color: #7f8c8d;
             margin-bottom: 10px;
             letter-spacing: 1px;
+            margin-top: 15px;
         }
 
         .question-text {
             font-size: 1.3rem;
             margin-bottom: 25px;
             font-weight: 600;
+            padding-right: 120px; /* Espacio para no tapar el marcador */
         }
 
         .options-list {
@@ -85,7 +111,6 @@
             text-align: left;
             font-size: 1.05rem;
             transition: all 0.2s;
-            position: relative;
         }
 
         .option-btn:hover:not(:disabled) {
@@ -134,9 +159,11 @@
         }
         .nav-btn:hover { background: var(--secondary); }
 
+        /* PANTALLA DE RESULTADOS */
         .results-view {
             text-align: center;
             display: none;
+            padding: 20px 0;
         }
         .final-score {
             font-size: 4rem;
@@ -144,6 +171,40 @@
             color: var(--primary);
             margin: 20px 0;
         }
+        
+        .stats-summary {
+            color: #555;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        /* GRID DE BOTONES DE ACCIÓN */
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .action-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-size: 1rem;
+        }
+        .action-btn:hover { transform: translateY(-3px); filter: brightness(110%); }
+        .action-btn:disabled { background-color: #bdc3c7 !important; cursor: not-allowed; transform: none; filter: none; }
+
+        .btn-restart { background-color: var(--primary); grid-column: span 2; }
+        .btn-failed { background-color: var(--danger); }
+        .btn-marked { background-color: #f39c12; color: #fff; } /* Naranja */
+        .btn-mixed { background-color: #2c3e50; grid-column: span 2; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -157,547 +218,181 @@
     </header>
 
     <div class="status-panel" id="statusBar">
-        <span id="q-progress">Pregunta 1 de 75</span>
-        <span id="score-display">Puntuación: 0</span>
+        <span id="q-progress">Cargando...</span>
+        <span id="score-display">Aciertos: 0</span>
     </div>
 
-    <div id="quiz-container">
-        </div>
+    <div id="quiz-container"></div>
 
     <div id="results-screen" class="results-view">
-        <h2>Examen Completado</h2>
-        <p>Has finalizado el bloque de tejidos y adhesión celular.</p>
-        <div class="final-score" id="final-number">0/75</div>
-        <p id="final-text" style="font-size: 1.2rem; margin-bottom: 30px;"></p>
-        <button class="nav-btn" style="display:inline-block; float:none;" onclick="location.reload()">Repetir Examen</button>
+        <h2>Sesión Completada</h2>
+        <div class="final-score" id="final-number">0/0</div>
+        <p id="final-text" style="font-size: 1.2rem; margin-bottom: 20px;"></p>
+        
+        <div class="stats-summary" id="stats-box"></div>
+
+        <div class="action-grid">
+            <button class="action-btn btn-restart" onclick="startQuiz('all')">🔄 Reiniciar Test Completo</button>
+            <button class="action-btn btn-failed" id="btn-failed" onclick="startQuiz('failed')">❌ Repetir Falladas</button>
+            <button class="action-btn btn-marked" id="btn-marked" onclick="startQuiz('marked')">⚠️ Repetir Marcadas</button>
+            <button class="action-btn btn-mixed" id="btn-mixed" onclick="startQuiz('mixed')">❌ + ⚠️ Repetir Falladas y Marcadas</button>
+        </div>
     </div>
 </div>
 
 <script>
 const quizData = [
     // --- INTRODUCCIÓN Y GENERALIDADES (1-5) ---
-    {
-        topic: "Introducción",
-        question: "¿Qué transformación fundamental permitió la aparición de formas de vida complejas y especializadas?",
-        options: ["El desarrollo de la fotosíntesis.", "El paso de organismos unicelulares a multicelulares.", "La aparición de la mitocondria.", "La pérdida de la pared celular."],
-        correct: 1,
-        explanation: "La multicelularidad permitió la especialización celular y la formación de tejidos."
-    },
-    {
-        topic: "Tejidos",
-        question: "¿Qué tejido se encarga principalmente de proporcionar soporte y estructura, teniendo abundante matriz extracelular?",
-        options: ["Tejido Epitelial", "Tejido Nervioso", "Tejido Conjuntivo", "Tejido Muscular"],
-        correct: 2,
-        explanation: "En el tejido conjuntivo, la matriz extracelular soporta la carga mecánica y es más abundante que las células."
-    },
-    {
-        topic: "Tejidos",
-        question: "¿Qué tejido forma barreras y superficies, con células muy unidas entre sí?",
-        options: ["Tejido Conjuntivo", "Tejido Epitelial", "Tejido Muscular", "Tejido Nervioso"],
-        correct: 1,
-        explanation: "Los epitelios recubren superficies y cavidades, requiriendo uniones estrechas entre células."
-    },
-    {
-        topic: "Adhesión",
-        question: "¿Cuáles son los dos tipos principales de adhesión celular?",
-        options: ["Célula-Célula y Célula-Sustrato", "Célula-Virus y Célula-Bacteria", "Núcleo-Citoplasma y ADN-ARN", "Mitosis-Meiosis"],
-        correct: 0,
-        explanation: "Las células pueden unirse directamente a sus vecinas o anclarse a la matriz extracelular (sustrato)."
-    },
-    {
-        topic: "Adhesión",
-        question: "¿Qué es la histogénesis?",
-        options: ["La destrucción de tejidos.", "El proceso de formación de tejidos mediante la organización celular.", "La duplicación del ADN.", "La muerte celular programada."],
-        correct: 1,
-        explanation: "Es el proceso por el cual las células se organizan espacialmente para formar estructuras tisulares funcionales."
-    },
+    { topic: "Introducción", question: "¿Qué transformación fundamental permitió la aparición de formas de vida complejas y especializadas?", options: ["El desarrollo de la fotosíntesis.", "El paso de organismos unicelulares a multicelulares.", "La aparición de la mitocondria.", "La pérdida de la pared celular."], correct: 1, explanation: "La multicelularidad permitió la especialización celular y la formación de tejidos." },
+    { topic: "Tejidos", question: "¿Qué tejido se encarga principalmente de proporcionar soporte y estructura, teniendo abundante matriz extracelular?", options: ["Tejido Epitelial", "Tejido Nervioso", "Tejido Conjuntivo", "Tejido Muscular"], correct: 2, explanation: "En el tejido conjuntivo, la matriz extracelular soporta la carga mecánica y es más abundante que las células." },
+    { topic: "Tejidos", question: "¿Qué tejido forma barreras y superficies, con células muy unidas entre sí?", options: ["Tejido Conjuntivo", "Tejido Epitelial", "Tejido Muscular", "Tejido Nervioso"], correct: 1, explanation: "Los epitelios recubren superficies y cavidades, requiriendo uniones estrechas entre células." },
+    { topic: "Adhesión", question: "¿Cuáles son los dos tipos principales de adhesión celular?", options: ["Célula-Célula y Célula-Sustrato", "Célula-Virus y Célula-Bacteria", "Núcleo-Citoplasma y ADN-ARN", "Mitosis-Meiosis"], correct: 0, explanation: "Las células pueden unirse directamente a sus vecinas o anclarse a la matriz extracelular (sustrato)." },
+    { topic: "Adhesión", question: "¿Qué es la histogénesis?", options: ["La destrucción de tejidos.", "El proceso de formación de tejidos mediante la organización celular.", "La duplicación del ADN.", "La muerte celular programada."], correct: 1, explanation: "Es el proceso por el cual las células se organizan espacialmente para formar estructuras tisulares funcionales." },
 
     // --- MOLÉCULAS DE ADHESIÓN CELULAR (CAMs) (6-20) ---
-    {
-        topic: "CAMs",
-        question: "¿Qué significa el acrónimo CAM?",
-        options: ["Cell Adhesion Molecules (Moléculas de Adhesión Celular)", "Complejo de Ataque a Membrana", "Célula Activa Metabólicamente", "Centro de Actividad Mitótica"],
-        correct: 0,
-        explanation: "Son las proteínas de membrana responsables de la unión entre células."
-    },
-    {
-        topic: "Cadherinas",
-        question: "¿De qué ion dependen las Cadherinas para funcionar correctamente?",
-        options: ["Sodio (Na+)", "Potasio (K+)", "Calcio (Ca2+)", "Magnesio (Mg2+)"],
-        correct: 2,
-        explanation: "Las Cadherinas son dependientes de Calcio; sin él, pierden su rigidez y no pueden unirse."
-    },
-    {
-        topic: "Cadherinas",
-        question: "¿Qué tipo de adhesión median principalmente las cadherinas?",
-        options: ["Adhesión selectiva homotípica (célula con célula del mismo tipo).", "Adhesión a la matriz extracelular.", "Adhesión a bacterias.", "Adhesión heterotípica inespecífica."],
-        correct: 0,
-        explanation: "Las cadherinas suelen unirse a cadherinas idénticas en la célula vecina, permitiendo que células iguales se agrupen."
-    },
-    {
-        topic: "CAMs",
-        question: "¿Qué familia de proteínas de adhesión pertenece a la superfamilia de las inmunoglobulinas?",
-        options: ["Integrinas", "Cadherinas", "N-CAM e I-CAM", "Selectinas"],
-        correct: 2,
-        explanation: "Las moléculas de adhesión como N-CAM (neuronal) pertenecen a la superfamilia de las Igs."
-    },
-    {
-        topic: "Selectinas",
-        question: "¿Qué característica define a las interacciones mediadas por Selectinas?",
-        options: ["Son uniones permanentes y muy fuertes.", "Son uniones transitorias, a menudo en el torrente sanguíneo (rodamiento de leucocitos).", "Unen la célula a la lámina basal.", "Forman canales iónicos."],
-        correct: 1,
-        explanation: "Las selectinas median interacciones débiles y transitorias, cruciales para que los glóbulos blancos rueden sobre el endotelio."
-    },
-    {
-        topic: "Cadherinas",
-        question: "¿En qué tipo de unión celular estructural son fundamentales las cadherinas?",
-        options: ["Uniones Gap", "Hemidesmosomas", "Uniones Adherentes y Desmosomas", "Uniones Estrechas"],
-        correct: 2,
-        explanation: "Las cadherinas son el 'pegamento' tanto en desmosomas como en uniones adherentes."
-    },
-    {
-        topic: "Integrinas",
-        question: "¿Las integrinas pueden participar en la adhesión célula-célula?",
-        options: ["No, nunca.", "Sí, algunos tipos específicos, aunque su rol principal es célula-sustrato.", "Sí, siempre.", "Solo en células vegetales."],
-        correct: 1,
-        explanation: "Aunque son clásicas de la matriz (SAMs), algunas integrinas (como LFA-1 en leucocitos) median unión célula-célula."
-    },
-    {
-        topic: "CAMs",
-        question: "¿Qué proceso depende críticamente de la adhesión selectiva mediada por CAMs?",
-        options: ["La síntesis de ATP.", "La segregación de tejidos durante el desarrollo embrionario.", "La replicación del ADN.", "La glucólisis."],
-        correct: 1,
-        explanation: "Las células de diferentes tejidos se separan y agrupan gracias a expresar cadherinas distintas."
-    },
-    {
-        topic: "Estructura",
-        question: "¿Dónde se localizan las CAMs?",
-        options: ["En el citosol.", "En la membrana plasmática.", "En el núcleo.", "En la mitocondria."],
-        correct: 1,
-        explanation: "Son proteínas transmembrana o de superficie para poder interactuar con el exterior."
-    },
-    {
-        topic: "Función",
-        question: "¿Qué función tienen las CAMs además de la adhesión mecánica?",
-        options: ["Transducción de señales (comunicación).", "Generación de energía.", "Síntesis de proteínas.", "Digestión celular."],
-        correct: 0,
-        explanation: "Actúan como receptores que informan a la célula sobre su entorno (densidad celular, contacto)."
-    },
-    {
-        topic: "Cadherinas",
-        question: "¿Cómo se llama la cadherina típica de las células epiteliales?",
-        options: ["E-cadherina", "N-cadherina", "P-cadherina", "VE-cadherina"],
-        correct: 0,
-        explanation: "La E-cadherina es la principal en epitelios; su pérdida se asocia a metástasis tumoral."
-    },
-    {
-        topic: "Cadherinas",
-        question: "¿A qué elemento del citoesqueleto se unen las cadherinas en una Unión Adherente?",
-        options: ["Microtúbulos", "Filamentos de Actina", "Filamentos Intermedios", "Lámina Nuclear"],
-        correct: 1,
-        explanation: "En las uniones adherentes (zonula adherens), las cadherinas conectan con la actina."
-    },
-    {
-        topic: "Cadherinas",
-        question: "¿A qué elemento del citoesqueleto se unen las cadherinas en un Desmosoma?",
-        options: ["Actina", "Filamentos Intermedios", "Microtúbulos", "ADN"],
-        correct: 1,
-        explanation: "En los desmosomas, las cadherinas (desmogleínas) conectan con filamentos intermedios para dar resistencia."
-    },
-    {
-        topic: "Selectinas",
-        question: "¿Qué reconocen y unen las Selectinas en la célula diana?",
-        options: ["Otras proteínas.", "Carbohidratos (azúcares) de la superficie celular.", "Lípidos.", "ADN."],
-        correct: 1,
-        explanation: "Las selectinas son lectinas: proteínas que unen azúcares específicos."
-    },
-    {
-        topic: "General",
-        question: "¿Qué ocurre si se eliminan las CAMs en un embrión en desarrollo?",
-        options: ["El embrión crece más rápido.", "Las células se disgregan y la estructura tisular falla.", "No pasa nada.", "Aumenta la matriz extracelular."],
-        correct: 1,
-        explanation: "Sin adhesión, no hay arquitectura tisular y el desarrollo se detiene."
-    },
+    { topic: "CAMs", question: "¿Qué significa el acrónimo CAM?", options: ["Cell Adhesion Molecules (Moléculas de Adhesión Celular)", "Complejo de Ataque a Membrana", "Célula Activa Metabólicamente", "Centro de Actividad Mitótica"], correct: 0, explanation: "Son las proteínas de membrana responsables de la unión entre células." },
+    { topic: "Cadherinas", question: "¿De qué ion dependen las Cadherinas para funcionar correctamente?", options: ["Sodio (Na+)", "Potasio (K+)", "Calcio (Ca2+)", "Magnesio (Mg2+)"], correct: 2, explanation: "Las Cadherinas son dependientes de Calcio; sin él, pierden su rigidez y no pueden unirse." },
+    { topic: "Cadherinas", question: "¿Qué tipo de adhesión median principalmente las cadherinas?", options: ["Adhesión selectiva homotípica (célula con célula del mismo tipo).", "Adhesión a la matriz extracelular.", "Adhesión a bacterias.", "Adhesión heterotípica inespecífica."], correct: 0, explanation: "Las cadherinas suelen unirse a cadherinas idénticas en la célula vecina, permitiendo que células iguales se agrupen." },
+    { topic: "CAMs", question: "¿Qué familia de proteínas de adhesión pertenece a la superfamilia de las inmunoglobulinas?", options: ["Integrinas", "Cadherinas", "N-CAM e I-CAM", "Selectinas"], correct: 2, explanation: "Las moléculas de adhesión como N-CAM (neuronal) pertenecen a la superfamilia de las Igs." },
+    { topic: "Selectinas", question: "¿Qué característica define a las interacciones mediadas por Selectinas?", options: ["Son uniones permanentes y muy fuertes.", "Son uniones transitorias, a menudo en el torrente sanguíneo (rodamiento de leucocitos).", "Unen la célula a la lámina basal.", "Forman canales iónicos."], correct: 1, explanation: "Las selectinas median interacciones débiles y transitorias, cruciales para que los glóbulos blancos rueden sobre el endotelio." },
+    { topic: "Cadherinas", question: "¿En qué tipo de unión celular estructural son fundamentales las cadherinas?", options: ["Uniones Gap", "Hemidesmosomas", "Uniones Adherentes y Desmosomas", "Uniones Estrechas"], correct: 2, explanation: "Las cadherinas son el 'pegamento' tanto en desmosomas como en uniones adherentes." },
+    { topic: "Integrinas", question: "¿Las integrinas pueden participar en la adhesión célula-célula?", options: ["No, nunca.", "Sí, algunos tipos específicos, aunque su rol principal es célula-sustrato.", "Sí, siempre.", "Solo en células vegetales."], correct: 1, explanation: "Aunque son clásicas de la matriz (SAMs), algunas integrinas (como LFA-1 en leucocitos) median unión célula-célula." },
+    { topic: "CAMs", question: "¿Qué proceso depende críticamente de la adhesión selectiva mediada por CAMs?", options: ["La síntesis de ATP.", "La segregación de tejidos durante el desarrollo embrionario.", "La replicación del ADN.", "La glucólisis."], correct: 1, explanation: "Las células de diferentes tejidos se separan y agrupan gracias a expresar cadherinas distintas." },
+    { topic: "Estructura", question: "¿Dónde se localizan las CAMs?", options: ["En el citosol.", "En la membrana plasmática.", "En el núcleo.", "En la mitocondria."], correct: 1, explanation: "Son proteínas transmembrana o de superficie para poder interactuar con el exterior." },
+    { topic: "Función", question: "¿Qué función tienen las CAMs además de la adhesión mecánica?", options: ["Transducción de señales (comunicación).", "Generación de energía.", "Síntesis de proteínas.", "Digestión celular."], correct: 0, explanation: "Actúan como receptores que informan a la célula sobre su entorno (densidad celular, contacto)." },
+    { topic: "Cadherinas", question: "¿Cómo se llama la cadherina típica de las células epiteliales?", options: ["E-cadherina", "N-cadherina", "P-cadherina", "VE-cadherina"], correct: 0, explanation: "La E-cadherina es la principal en epitelios; su pérdida se asocia a metástasis tumoral." },
+    { topic: "Cadherinas", question: "¿A qué elemento del citoesqueleto se unen las cadherinas en una Unión Adherente?", options: ["Microtúbulos", "Filamentos de Actina", "Filamentos Intermedios", "Lámina Nuclear"], correct: 1, explanation: "En las uniones adherentes (zonula adherens), las cadherinas conectan con la actina." },
+    { topic: "Cadherinas", question: "¿A qué elemento del citoesqueleto se unen las cadherinas en un Desmosoma?", options: ["Actina", "Filamentos Intermedios", "Microtúbulos", "ADN"], correct: 1, explanation: "En los desmosomas, las cadherinas (desmogleínas) conectan con filamentos intermedios para dar resistencia." },
+    { topic: "Selectinas", question: "¿Qué reconocen y unen las Selectinas en la célula diana?", options: ["Otras proteínas.", "Carbohidratos (azúcares) de la superficie celular.", "Lípidos.", "ADN."], correct: 1, explanation: "Las selectinas son lectinas: proteínas que unen azúcares específicos." },
+    { topic: "General", question: "¿Qué ocurre si se eliminan las CAMs en un embrión en desarrollo?", options: ["El embrión crece más rápido.", "Las células se disgregan y la estructura tisular falla.", "No pasa nada.", "Aumenta la matriz extracelular."], correct: 1, explanation: "Sin adhesión, no hay arquitectura tisular y el desarrollo se detiene." },
 
     // --- MOLÉCULAS DE ADHESIÓN AL SUSTRATO (SAMs) (21-30) ---
-    {
-        topic: "SAMs",
-        question: "¿Cuál es la principal familia de receptores para la adhesión a la Matriz Extracelular?",
-        options: ["Cadherinas", "Integrinas", "Selectinas", "Claudinas"],
-        correct: 1,
-        explanation: "Las integrinas son los puentes universales entre la célula y la matriz."
-    },
-    {
-        topic: "Integrinas",
-        question: "¿Cómo es la estructura básica de una integrina?",
-        options: ["Un monómero.", "Un heterodímero con subunidades alfa y beta.", "Un trímero.", "Un canal iónico."],
-        correct: 1,
-        explanation: "Están formadas por dos cadenas distintas (alfa y beta) que cruzan la membrana."
-    },
-    {
-        topic: "Integrinas",
-        question: "¿Qué conectan las integrinas en el interior de la célula?",
-        options: ["El núcleo.", "El citoesqueleto (actina o filamentos intermedios).", "El aparato de Golgi.", "Los ribosomas."],
-        correct: 1,
-        explanation: "Vinculan la matriz externa con el esqueleto interno de la célula."
-    },
-    {
-        topic: "Función",
-        question: "¿Qué es la 'Mecanotransducción' mediada por integrinas?",
-        options: ["La conversión de fuerzas mecánicas de la matriz en señales bioquímicas intracelulares.", "El movimiento muscular.", "La síntesis de matriz.", "La rotura de la matriz."],
-        correct: 0,
-        explanation: "Las células 'sienten' la rigidez de su entorno a través de las integrinas y responden a ella."
-    },
-    {
-        topic: "Activación",
-        question: "¿Pueden las integrinas cambiar de estado activo a inactivo?",
-        options: ["No, siempre están activas.", "Sí, pueden activarse 'desde dentro' o 'desde fuera'.", "Solo están activas en mitosis.", "Están siempre inactivas."],
-        correct: 1,
-        explanation: "Las integrinas cambian de conformación (se 'despliegan') para unirse a la matriz cuando la célula lo necesita."
-    },
-    {
-        topic: "Fibronectina",
-        question: "¿Qué papel juega la fibronectina en la adhesión?",
-        options: ["Es un componente del citoesqueleto.", "Actúa como adaptador o 'pegamento' uniendo las integrinas al colágeno.", "Es una enzima.", "Es un lípido."],
-        correct: 1,
-        explanation: "La fibronectina tiene dominios de unión para colágeno y para integrinas, sirviendo de puente."
-    },
-    {
-        topic: "Laminina",
-        question: "¿En qué estructura especializada de la MEC es fundamental la Laminina?",
-        options: ["En el hueso.", "En la lámina basal.", "En el cartílago.", "En el tendón."],
-        correct: 1,
-        explanation: "La laminina es el principal componente organizador de la lámina basal epitelial."
-    },
-    {
-        topic: "Hemidesmosomas",
-        question: "¿Qué molécula de adhesión es clave en los Hemidesmosomas?",
-        options: ["Cadherina", "Selectina", "Integrina (específicamente alfa6beta4).", "Ig-CAM"],
-        correct: 2,
-        explanation: "A diferencia de los desmosomas (cadherinas), los hemidesmosomas usan integrinas para anclarse a la base."
-    },
-    {
-        topic: "Movimiento",
-        question: "¿Por qué es importante la unión dinámica de las integrinas para la migración celular?",
-        options: ["Para que la célula se quede quieta.", "Permite el ciclo de 'agarre y liberación' necesario para avanzar.", "Para sintetizar ADN.", "Para comer."],
-        correct: 1,
-        explanation: "La célula debe pegar su frente y soltar su cola para moverse; las integrinas gestionan este agarre."
-    },
-    {
-        topic: "Patología",
-        question: "¿Qué ocurre si una célula pierde su anclaje a la matriz (vía integrinas)?",
-        options: ["Se divide más rápido.", "Suele entrar en apoptosis (anoikis).", "Se hace inmortal.", "Se convierte en neurona."],
-        correct: 1,
-        explanation: "La mayoría de células normales requieren anclaje para sobrevivir; si flotan, mueren."
-    },
+    { topic: "SAMs", question: "¿Cuál es la principal familia de receptores para la adhesión a la Matriz Extracelular?", options: ["Cadherinas", "Integrinas", "Selectinas", "Claudinas"], correct: 1, explanation: "Las integrinas son los puentes universales entre la célula y la matriz." },
+    { topic: "Integrinas", question: "¿Cómo es la estructura básica de una integrina?", options: ["Un monómero.", "Un heterodímero con subunidades alfa y beta.", "Un trímero.", "Un canal iónico."], correct: 1, explanation: "Están formadas por dos cadenas distintas (alfa y beta) que cruzan la membrana." },
+    { topic: "Integrinas", question: "¿Qué conectan las integrinas en el interior de la célula?", options: ["El núcleo.", "El citoesqueleto (actina o filamentos intermedios).", "El aparato de Golgi.", "Los ribosomas."], correct: 1, explanation: "Vinculan la matriz externa con el esqueleto interno de la célula." },
+    { topic: "Función", question: "¿Qué es la 'Mecanotransducción' mediada por integrinas?", options: ["La conversión de fuerzas mecánicas de la matriz en señales bioquímicas intracelulares.", "El movimiento muscular.", "La síntesis de matriz.", "La rotura de la matriz."], correct: 0, explanation: "Las células 'sienten' la rigidez de su entorno a través de las integrinas y responden a ella." },
+    { topic: "Activación", question: "¿Pueden las integrinas cambiar de estado activo a inactivo?", options: ["No, siempre están activas.", "Sí, pueden activarse 'desde dentro' o 'desde fuera'.", "Solo están activas en mitosis.", "Están siempre inactivas."], correct: 1, explanation: "Las integrinas cambian de conformación (se 'despliegan') para unirse a la matriz cuando la célula lo necesita." },
+    { topic: "Fibronectina", question: "¿Qué papel juega la fibronectina en la adhesión?", options: ["Es un componente del citoesqueleto.", "Actúa como adaptador o 'pegamento' uniendo las integrinas al colágeno.", "Es una enzima.", "Es un lípido."], correct: 1, explanation: "La fibronectina tiene dominios de unión para colágeno y para integrinas, sirviendo de puente." },
+    { topic: "Laminina", question: "¿En qué estructura especializada de la MEC es fundamental la Laminina?", options: ["En el hueso.", "En la lámina basal.", "En el cartílago.", "En el tendón."], correct: 1, explanation: "La laminina es el principal componente organizador de la lámina basal epitelial." },
+    { topic: "Hemidesmosomas", question: "¿Qué molécula de adhesión es clave en los Hemidesmosomas?", options: ["Cadherina", "Selectina", "Integrina (específicamente alfa6beta4).", "Ig-CAM"], correct: 2, explanation: "A diferencia de los desmosomas (cadherinas), los hemidesmosomas usan integrinas para anclarse a la base." },
+    { topic: "Movimiento", question: "¿Por qué es importante la unión dinámica de las integrinas para la migración celular?", options: ["Para que la célula se quede quieta.", "Permite el ciclo de 'agarre y liberación' necesario para avanzar.", "Para sintetizar ADN.", "Para comer."], correct: 1, explanation: "La célula debe pegar su frente y soltar su cola para moverse; las integrinas gestionan este agarre." },
+    { topic: "Patología", question: "¿Qué ocurre si una célula pierde su anclaje a la matriz (vía integrinas)?", options: ["Se divide más rápido.", "Suele entrar en apoptosis (anoikis).", "Se hace inmortal.", "Se convierte en neurona."], correct: 1, explanation: "La mayoría de células normales requieren anclaje para sobrevivir; si flotan, mueren." },
 
     // --- MATRIZ EXTRACELULAR (MEC) (31-45) ---
-    {
-        topic: "Definición",
-        question: "¿Qué es la Matriz Extracelular (MEC)?",
-        options: ["El citoplasma.", "Una red de proteínas y polisacáridos secretada por las células que rellena los espacios intercelulares.", "La pared celular bacteriana.", "El núcleo."],
-        correct: 1,
-        explanation: "Es el andamio físico y químico donde residen las células en los tejidos."
-    },
-    {
-        topic: "Componentes",
-        question: "¿Cuáles son las dos clases principales de macromoléculas de la MEC?",
-        options: ["ADN y ARN.", "Proteínas fibrosas (ej. colágeno) y cadenas de polisacáridos (GAGs).", "Lípidos y carbohidratos simples.", "Actina y Tubulina."],
-        correct: 1,
-        explanation: "La MEC combina fibras resistentes (proteínas) con un gel hidratado (azúcares)."
-    },
-    {
-        topic: "Colágeno",
-        question: "¿Cuál es la proteína más abundante en el reino animal y en la MEC?",
-        options: ["Actina", "Tubulina", "Colágeno", "Elastina"],
-        correct: 2,
-        explanation: "El colágeno constituye el 25-30% de la proteína total en mamíferos."
-    },
-    {
-        topic: "Colágeno",
-        question: "¿Cuál es la función principal de las fibras de colágeno?",
-        options: ["Resistencia a la compresión.", "Resistencia a la tracción (estiramiento).", "Elasticidad.", "Señalización eléctrica."],
-        correct: 1,
-        explanation: "El colágeno es como una cuerda de acero biológica; resiste que el tejido se desgarre."
-    },
-    {
-        topic: "Colágeno",
-        question: "¿Cuál es la estructura característica del colágeno?",
-        options: ["Doble hélice.", "Triple hélice.", "Lámina beta.", "Glóbulo."],
-        correct: 1,
-        explanation: "Tres cadenas polipeptídicas se enrollan entre sí para formar una superhélice resistente."
-    },
-    {
-        topic: "Síntesis",
-        question: "¿Qué células son las principales productoras de MEC en el tejido conjuntivo?",
-        options: ["Neuronas", "Fibroblastos", "Macrófagos", "Adipocitos"],
-        correct: 1,
-        explanation: "Los fibroblastos secretan los precursores de la matriz (procolágeno, etc.)."
-    },
-    {
-        topic: "Colágeno",
-        question: "¿Por qué se secreta el colágeno como 'procolágeno' (inactivo)?",
-        options: ["Para que no se ensamble dentro de la célula y la obstruya.", "Porque es tóxico.", "Para ahorrar energía.", "Para transportarlo al núcleo."],
-        correct: 0,
-        explanation: "Si las fibras se formaran dentro de la célula, esta se ahogaría; el ensamblaje ocurre fuera."
-    },
-    {
-        topic: "GAGs",
-        question: "¿Qué son los Glucosaminoglucanos (GAGs)?",
-        options: ["Proteínas motoras.", "Largas cadenas de polisacáridos no ramificados con carga negativa.", "Lípidos de membrana.", "Factores de transcripción."],
-        correct: 1,
-        explanation: "Son cadenas de azúcares repetitivos, muy hidrofílicos."
-    },
-    {
-        topic: "Proteoglucanos",
-        question: "¿Cuál es la función principal del gel de Proteoglucanos/GAGs?",
-        options: ["Resistencia a la tracción.", "Resistencia a la compresión y ocupación de volumen.", "Contracción muscular.", "Transmisión nerviosa."],
-        correct: 1,
-        explanation: "Al atraer mucha agua (por sus cargas), forman un gel turgente que actúa como 'amortiguador'."
-    },
-    {
-        topic: "Tejidos",
-        question: "¿Qué tejido es especialmente rico en Proteoglucanos para absorber impactos?",
-        options: ["El tendón.", "El cartílago articular.", "El hueso.", "La epidermis."],
-        correct: 1,
-        explanation: "El cartílago necesita resistir mucha presión, por lo que está lleno de este gel hidratado."
-    },
-    {
-        topic: "Hueso",
-        question: "¿Qué caracteriza a la MEC del tejido óseo?",
-        options: ["Es líquida.", "Está calcificada (mineralizada).", "Es solo colágeno.", "Carece de matriz."],
-        correct: 1,
-        explanation: "La matriz ósea se endurece con cristales de hidroxiapatita (calcio/fosfato)."
-    },
-    {
-        topic: "Elastina",
-        question: "¿Qué proteína confiere elasticidad a tejidos como la piel o las arterias?",
-        options: ["Colágeno", "Fibronectina", "Elastina", "Laminina"],
-        correct: 2,
-        explanation: "Las fibras elásticas permiten que el tejido se estire y vuelva a su forma original."
-    },
-    {
-        topic: "Degradación",
-        question: "¿Qué enzimas degradan la matriz extracelular (necesario para la migración celular)?",
-        options: ["Polimerasas", "Metaloproteasas de matriz (MMPs)", "Ligasas", "Quinasas"],
-        correct: 1,
-        explanation: "Las MMPs cortan proteínas de la matriz, abriendo camino a las células (ej. en cicatrización o cáncer)."
-    },
-    {
-        topic: "Lámina Basal",
-        question: "¿Qué es la lámina basal?",
-        options: ["Una capa de células.", "Una capa delgada y especializada de MEC bajo los epitelios.", "La membrana plasmática basal.", "El fondo del núcleo."],
-        correct: 1,
-        explanation: "Es una alfombrilla de matriz especializada que sostiene y separa el epitelio del tejido conectivo."
-    },
-    {
-        topic: "Conexión",
-        question: "¿Cómo interactúa la célula con el colágeno?",
-        options: ["Directamente.", "Indirectamente a través de Fibronectina e Integrinas.", "A través de cadherinas.", "No interactúa."],
-        correct: 1,
-        explanation: "La célula agarra la fibronectina con sus integrinas, y la fibronectina agarra el colágeno."
-    },
+    { topic: "Definición", question: "¿Qué es la Matriz Extracelular (MEC)?", options: ["El citoplasma.", "Una red de proteínas y polisacáridos secretada por las células que rellena los espacios intercelulares.", "La pared celular bacteriana.", "El núcleo."], correct: 1, explanation: "Es el andamio físico y químico donde residen las células en los tejidos." },
+    { topic: "Componentes", question: "¿Cuáles son las dos clases principales de macromoléculas de la MEC?", options: ["ADN y ARN.", "Proteínas fibrosas (ej. colágeno) y cadenas de polisacáridos (GAGs).", "Lípidos y carbohidratos simples.", "Actina y Tubulina."], correct: 1, explanation: "La MEC combina fibras resistentes (proteínas) con un gel hidratado (azúcares)." },
+    { topic: "Colágeno", question: "¿Cuál es la proteína más abundante en el reino animal y en la MEC?", options: ["Actina", "Tubulina", "Colágeno", "Elastina"], correct: 2, explanation: "El colágeno constituye el 25-30% de la proteína total en mamíferos." },
+    { topic: "Colágeno", question: "¿Cuál es la función principal de las fibras de colágeno?", options: ["Resistencia a la compresión.", "Resistencia a la tracción (estiramiento).", "Elasticidad.", "Señalización eléctrica."], correct: 1, explanation: "El colágeno es como una cuerda de acero biológica; resiste que el tejido se desgarre." },
+    { topic: "Colágeno", question: "¿Cuál es la estructura característica del colágeno?", options: ["Doble hélice.", "Triple hélice.", "Lámina beta.", "Glóbulo."], correct: 1, explanation: "Tres cadenas polipeptídicas se enrollan entre sí para formar una superhélice resistente." },
+    { topic: "Síntesis", question: "¿Qué células son las principales productoras de MEC en el tejido conjuntivo?", options: ["Neuronas", "Fibroblastos", "Macrófagos", "Adipocitos"], correct: 1, explanation: "Los fibroblastos secretan los precursores de la matriz (procolágeno, etc.)." },
+    { topic: "Colágeno", question: "¿Por qué se secreta el colágeno como 'procolágeno' (inactivo)?", options: ["Para que no se ensamble dentro de la célula y la obstruya.", "Porque es tóxico.", "Para ahorrar energía.", "Para transportarlo al núcleo."], correct: 0, explanation: "Si las fibras se formaran dentro de la célula, esta se ahogaría; el ensamblaje ocurre fuera." },
+    { topic: "GAGs", question: "¿Qué son los Glucosaminoglucanos (GAGs)?", options: ["Proteínas motoras.", "Largas cadenas de polisacáridos no ramificados con carga negativa.", "Lípidos de membrana.", "Factores de transcripción."], correct: 1, explanation: "Son cadenas de azúcares repetitivos, muy hidrofílicos." },
+    { topic: "Proteoglucanos", question: "¿Cuál es la función principal del gel de Proteoglucanos/GAGs?", options: ["Resistencia a la tracción.", "Resistencia a la compresión y ocupación de volumen.", "Contracción muscular.", "Transmisión nerviosa."], correct: 1, explanation: "Al atraer mucha agua (por sus cargas), forman un gel turgente que actúa como 'amortiguador'." },
+    { topic: "Tejidos", question: "¿Qué tejido es especialmente rico en Proteoglucanos para absorber impactos?", options: ["El tendón.", "El cartílago articular.", "El hueso.", "La epidermis."], correct: 1, explanation: "El cartílago necesita resistir mucha presión, por lo que está lleno de este gel hidratado." },
+    { topic: "Hueso", question: "¿Qué caracteriza a la MEC del tejido óseo?", options: ["Es líquida.", "Está calcificada (mineralizada).", "Es solo colágeno.", "Carece de matriz."], correct: 1, explanation: "La matriz ósea se endurece con cristales de hidroxiapatita (calcio/fosfato)." },
+    { topic: "Elastina", question: "¿Qué proteína confiere elasticidad a tejidos como la piel o las arterias?", options: ["Colágeno", "Fibronectina", "Elastina", "Laminina"], correct: 2, explanation: "Las fibras elásticas permiten que el tejido se estire y vuelva a su forma original." },
+    { topic: "Degradación", question: "¿Qué enzimas degradan la matriz extracelular (necesario para la migración celular)?", options: ["Polimerasas", "Metaloproteasas de matriz (MMPs)", "Ligasas", "Quinasas"], correct: 1, explanation: "Las MMPs cortan proteínas de la matriz, abriendo camino a las células (ej. en cicatrización o cáncer)." },
+    { topic: "Lámina Basal", question: "¿Qué es la lámina basal?", options: ["Una capa de células.", "Una capa delgada y especializada de MEC bajo los epitelios.", "La membrana plasmática basal.", "El fondo del núcleo."], correct: 1, explanation: "Es una alfombrilla de matriz especializada que sostiene y separa el epitelio del tejido conectivo." },
+    { topic: "Conexión", question: "¿Cómo interactúa la célula con el colágeno?", options: ["Directamente.", "Indirectamente a través de Fibronectina e Integrinas.", "A través de cadherinas.", "No interactúa."], correct: 1, explanation: "La célula agarra la fibronectina con sus integrinas, y la fibronectina agarra el colágeno." },
 
     // --- UNIONES CELULARES (46-70) ---
-    {
-        topic: "Epitelios",
-        question: "¿Qué característica de las células epiteliales depende de las uniones celulares?",
-        options: ["Su capacidad de división.", "Su polaridad (cara apical vs basolateral).", "Su color.", "Su tamaño."],
-        correct: 1,
-        explanation: "Las uniones mantienen la separación física entre los dominios de membrana apical y basal."
-    },
-    {
-        topic: "Uniones Estrechas",
-        question: "¿Cuál es la función principal de las Uniones Estrechas (Tight Junctions)?",
-        options: ["Comunicación eléctrica.", "Resistencia mecánica.", "Sellar el espacio intercelular (barrera de permeabilidad).", "Unir la célula a la matriz."],
-        correct: 2,
-        explanation: "Impiden que fluidos y moléculas se filtren entre las células (vía paracelular)."
-    },
-    {
-        topic: "Uniones Estrechas",
-        question: "¿Qué proteínas forman las hebras de sellado en las Uniones Estrechas?",
-        options: ["Cadherinas", "Claudinas y Ocludinas", "Conexinas", "Integrinas"],
-        correct: 1,
-        explanation: "Estas proteínas transmembrana cosen las membranas adyacentes."
-    },
-    {
-        topic: "Uniones Estrechas",
-        question: "¿Qué función adicional tienen las uniones estrechas respecto a las proteínas de membrana?",
-        options: ["Actúan como 'vallas' impidiendo la difusión lateral de proteínas entre dominio apical y basal.", "Sintetizan proteínas.", "Transportan iones.", "Generan ATP."],
-        correct: 0,
-        explanation: "Mantienen la composición distinta de la cara apical y la basolateral."
-    },
-    {
-        topic: "Uniones de Anclaje",
-        question: "¿Qué función general tienen las uniones de anclaje (Adherentes y Desmosomas)?",
-        options: ["Impermeabilidad.", "Comunicación.", "Resistencia y cohesión mecánica.", "Secreción."],
-        correct: 2,
-        explanation: "Distribuyen las tensiones mecánicas por todo el tejido para evitar roturas."
-    },
-    {
-        topic: "Uniones Adherentes",
-        question: "¿Qué estructura forman a menudo las Uniones Adherentes en epitelios?",
-        options: ["Un punto aislado.", "Un cinturón de adhesión continuo alrededor de la célula.", "Un canal.", "Una red dispersa."],
-        correct: 1,
-        explanation: "Este cinturón de actina permite que el epitelio se contraiga o doble coordinadamente (ej. tubo neural)."
-    },
-    {
-        topic: "Uniones Adherentes",
-        question: "¿Qué elemento del citoesqueleto une el cinturón de adhesión?",
-        options: ["Filamentos de Actina", "Filamentos Intermedios", "Microtúbulos", "Lámina"],
-        correct: 0,
-        explanation: "Las cadherinas de la unión adherente se conectan intracelularmente con la actina."
-    },
-    {
-        topic: "Desmosomas",
-        question: "¿Cómo se describen visualmente los desmosomas?",
-        options: ["Como cremalleras.", "Como remaches o botones de soldadura.", "Como canales.", "Como poros."],
-        correct: 1,
-        explanation: "Son puntos de unión fuertes y puntuales, como remaches que unen dos chapas."
-    },
-    {
-        topic: "Desmosomas",
-        question: "¿Qué filamentos se anclan a los desmosomas?",
-        options: ["Actina", "Microtúbulos", "Filamentos Intermedios (ej. queratina).", "Colágeno"],
-        correct: 2,
-        explanation: "Esta conexión crea una red continua de filamentos intermedios a través del tejido, dando gran resistencia tensil."
-    },
-    {
-        topic: "Hemidesmosomas",
-        question: "¿Qué diferencia un Hemidesmosoma de un Desmosoma?",
-        options: ["El hemidesmosoma une célula con matriz (lámina basal), el desmosoma célula con célula.", "El hemidesmosoma usa cadherinas.", "El desmosoma usa integrinas.", "Son iguales."],
-        correct: 0,
-        explanation: "Hemidesmosoma ('mitad de desmosoma') ancla la base de la célula al sustrato usando integrinas."
-    },
-    {
-        topic: "Patología",
-        question: "¿Qué ocurre en el Pénfigo (enfermedad autoinmune contra desmosomas)?",
-        options: ["La piel se vuelve impermeable.", "Se forman ampollas porque las células de la piel se separan entre sí.", "La piel se endurece.", "No pasa nada."],
-        correct: 1,
-        explanation: "Al atacar las cadherinas de los desmosomas, se pierde la cohesión y la piel se deshace."
-    },
-    {
-        topic: "Uniones Gap",
-        question: "¿Cuál es la función de las Uniones Comunicantes (Gap Junctions)?",
-        options: ["Resistencia mecánica.", "Barrera impermeable.", "Comunicación directa citoplasma-citoplasma.", "Adhesión a matriz."],
-        correct: 2,
-        explanation: "Permiten el paso de iones y moléculas pequeñas entre células vecinas."
-    },
-    {
-        topic: "Uniones Gap",
-        question: "¿Qué proteínas forman los canales de las Uniones Gap?",
-        options: ["Conexinas", "Claudinas", "Cadherinas", "Integrinas"],
-        correct: 0,
-        explanation: "6 conexinas forman un conexón (hemicanal); dos conexones forman el canal completo."
-    },
-    {
-        topic: "Uniones Gap",
-        question: "¿Qué tipo de acoplamiento permiten las uniones Gap?",
-        options: ["Solo mecánico.", "Eléctrico y metabólico.", "Genético.", "Ninguno."],
-        correct: 1,
-        explanation: "Permiten que las células compartan metabolitos y que los impulsos eléctricos se propaguen (ej. corazón)."
-    },
-    {
-        topic: "Uniones Gap",
-        question: "¿Son los canales Gap permanentes?",
-        options: ["Sí, siempre abiertos.", "No, pueden abrirse o cerrarse (gating) en respuesta a señales (ej. pH, Ca2+).", "Nunca se abren.", "Se destruyen con el uso."],
-        correct: 1,
-        explanation: "La célula puede cerrar sus gap junctions para aislarse si una vecina muere (entrada masiva de Ca2+)."
-    },
-    {
-        topic: "Corazón",
-        question: "¿Por qué el músculo cardíaco se contrae sincronizadamente?",
-        options: ["Por las uniones estrechas.", "Por el flujo de iones a través de las Uniones Gap.", "Por la matriz extracelular.", "Por casualidad."],
-        correct: 1,
-        explanation: "Las uniones gap permiten que el potencial de acción pase directamente de célula a célula."
-    },
-    {
-        topic: "Resumen Uniones",
-        question: "¿Qué unión usa integrinas?",
-        options: ["Desmosoma", "Unión Adherente", "Hemidesmosoma", "Unión Gap"],
-        correct: 2,
-        explanation: "Es la única unión de anclaje de la lista que conecta con la matriz (lámina basal)."
-    },
-    {
-        topic: "Resumen Uniones",
-        question: "¿Qué unión sella el espacio intercelular?",
-        options: ["Desmosoma", "Unión Estrecha", "Hemidesmosoma", "Unión Gap"],
-        correct: 1,
-        explanation: "Es la 'junta de estanqueidad' del epitelio."
-    },
-    {
-        topic: "Resumen Uniones",
-        question: "¿Qué unión conecta los filamentos de actina de dos células?",
-        options: ["Desmosoma", "Unión Adherente", "Hemidesmosoma", "Unión Gap"],
-        correct: 1,
-        explanation: "La unión adherente (zonula adherens) es el anclaje célula-célula basado en actina."
-    },
-    {
-        topic: "Plantas",
-        question: "¿Cuál es el equivalente funcional de las uniones Gap en las plantas?",
-        options: ["Desmosomas", "Plasmodesmos", "Pared celular", "Estomas"],
-        correct: 1,
-        explanation: "Los plasmodesmos son canales revestidos de membrana que conectan citoplasmas vegetales a través de la pared."
-    },
-    {
-        topic: "Cáncer",
-        question: "¿Qué relación hay entre cadherinas y cáncer?",
-        options: ["Los tumores expresan más cadherinas.", "La pérdida de E-cadherina permite que las células se suelten y hagan metástasis.", "Las cadherinas matan al tumor.", "No hay relación."],
-        correct: 1,
-        explanation: "Para migrar, las células cancerosas deben romper sus uniones con las vecinas (transición epitelio-mesénquima)."
-    },
-    {
-        topic: "Leucocitos",
-        question: "¿Qué deficiencia causa el 'síndrome de deficiencia de adhesión leucocitaria'?",
-        options: ["Falta de integrinas beta-2.", "Falta de colágeno.", "Falta de actina.", "Falta de ATP."],
-        correct: 0,
-        explanation: "Sin integrinas funcionales, los glóbulos blancos no pueden adherirse firmemente y salir del vaso sanguíneo hacia la infección."
-    },
-    {
-        topic: "Piel",
-        question: "¿Qué unión es vital para que la epidermis resista la fricción sin romperse?",
-        options: ["Unión Gap", "Unión Estrecha", "Desmosoma", "Sinapsis"],
-        correct: 2,
-        explanation: "Los desmosomas (y filamentos intermedios) proporcionan la resistencia tensil necesaria."
-    },
-    {
-        topic: "MEC",
-        question: "¿Qué vitamina es esencial para la síntesis correcta de colágeno (previniendo el escorbuto)?",
-        options: ["Vitamina A", "Vitamina C", "Vitamina D", "Vitamina B12"],
-        correct: 1,
-        explanation: "La vitamina C es cofactor para la hidroxilación de la prolina, necesaria para la estabilidad de la hélice de colágeno."
-    },
-    {
-        topic: "General",
-        question: "¿Qué define a un tejido?",
-        options: ["Células aisladas.", "Un conjunto cooperativo de células y matriz con una función específica.", "Solo matriz extracelular.", "Solo proteínas."],
-        correct: 1,
-        explanation: "Es la definición básica: células + matriz trabajando juntas."
-    }
+    { topic: "Epitelios", question: "¿Qué característica de las células epiteliales depende de las uniones celulares?", options: ["Su capacidad de división.", "Su polaridad (cara apical vs basolateral).", "Su color.", "Su tamaño."], correct: 1, explanation: "Las uniones mantienen la separación física entre los dominios de membrana apical y basal." },
+    { topic: "Uniones Estrechas", question: "¿Cuál es la función principal de las Uniones Estrechas (Tight Junctions)?", options: ["Comunicación eléctrica.", "Resistencia mecánica.", "Sellar el espacio intercelular (barrera de permeabilidad).", "Unir la célula a la matriz."], correct: 2, explanation: "Impiden que fluidos y moléculas se filtren entre las células (vía paracelular)." },
+    { topic: "Uniones Estrechas", question: "¿Qué proteínas forman las hebras de sellado en las Uniones Estrechas?", options: ["Cadherinas", "Claudinas y Ocludinas", "Conexinas", "Integrinas"], correct: 1, explanation: "Estas proteínas transmembrana cosen las membranas adyacentes." },
+    { topic: "Uniones Estrechas", question: "¿Qué función adicional tienen las uniones estrechas respecto a las proteínas de membrana?", options: ["Actúan como 'vallas' impidiendo la difusión lateral de proteínas entre dominio apical y basal.", "Sintetizan proteínas.", "Transportan iones.", "Generan ATP."], correct: 0, explanation: "Mantienen la composición distinta de la cara apical y la basolateral." },
+    { topic: "Uniones de Anclaje", question: "¿Qué función general tienen las uniones de anclaje (Adherentes y Desmosomas)?", options: ["Impermeabilidad.", "Comunicación.", "Resistencia y cohesión mecánica.", "Secreción."], correct: 2, explanation: "Distribuyen las tensiones mecánicas por todo el tejido para evitar roturas." },
+    { topic: "Uniones Adherentes", question: "¿Qué estructura forman a menudo las Uniones Adherentes en epitelios?", options: ["Un punto aislado.", "Un cinturón de adhesión continuo alrededor de la célula.", "Un canal.", "Una red dispersa."], correct: 1, explanation: "Este cinturón de actina permite que el epitelio se contraiga o doble coordinadamente (ej. tubo neural)." },
+    { topic: "Uniones Adherentes", question: "¿Qué elemento del citoesqueleto une el cinturón de adhesión?", options: ["Filamentos de Actina", "Filamentos Intermedios", "Microtúbulos", "Lámina"], correct: 0, explanation: "Las cadherinas de la unión adherente se conectan intracelularmente con la actina." },
+    { topic: "Desmosomas", question: "¿Cómo se describen visualmente los desmosomas?", options: ["Como cremalleras.", "Como remaches o botones de soldadura.", "Como canales.", "Como poros."], correct: 1, explanation: "Son puntos de unión fuertes y puntuales, como remaches que unen dos chapas." },
+    { topic: "Desmosomas", question: "¿Qué filamentos se anclan a los desmosomas?", options: ["Actina", "Microtúbulos", "Filamentos Intermedios (ej. queratina).", "Colágeno"], correct: 2, explanation: "Esta conexión crea una red continua de filamentos intermedios a través del tejido, dando gran resistencia tensil." },
+    { topic: "Hemidesmosomas", question: "¿Qué diferencia un Hemidesmosoma de un Desmosoma?", options: ["El hemidesmosoma une célula con matriz (lámina basal), el desmosoma célula con célula.", "El hemidesmosoma usa cadherinas.", "El desmosoma usa integrinas.", "Son iguales."], correct: 0, explanation: "Hemidesmosoma ('mitad de desmosoma') ancla la base de la célula al sustrato usando integrinas." },
+    { topic: "Patología", question: "¿Qué ocurre en el Pénfigo (enfermedad autoinmune contra desmosomas)?", options: ["La piel se vuelve impermeable.", "Se forman ampollas porque las células de la piel se separan entre sí.", "La piel se endurece.", "No pasa nada."], correct: 1, explanation: "Al atacar las cadherinas de los desmosomas, se pierde la cohesión y la piel se deshace." },
+    { topic: "Uniones Gap", question: "¿Cuál es la función de las Uniones Comunicantes (Gap Junctions)?", options: ["Resistencia mecánica.", "Barrera impermeable.", "Comunicación directa citoplasma-citoplasma.", "Adhesión a matriz."], correct: 2, explanation: "Permiten el paso de iones y moléculas pequeñas entre células vecinas." },
+    { topic: "Uniones Gap", question: "¿Qué proteínas forman los canales de las Uniones Gap?", options: ["Conexinas", "Claudinas", "Cadherinas", "Integrinas"], correct: 0, explanation: "6 conexinas forman un conexón (hemicanal); dos conexones forman el canal completo." },
+    { topic: "Uniones Gap", question: "¿Qué tipo de acoplamiento permiten las uniones Gap?", options: ["Solo mecánico.", "Eléctrico y metabólico.", "Genético.", "Ninguno."], correct: 1, explanation: "Permiten que las células compartan metabolitos y que los impulsos eléctricos se propaguen (ej. corazón)." },
+    { topic: "Uniones Gap", question: "¿Son los canales Gap permanentes?", options: ["Sí, siempre abiertos.", "No, pueden abrirse o cerrarse (gating) en respuesta a señales (ej. pH, Ca2+).", "Nunca se abren.", "Se destruyen con el uso."], correct: 1, explanation: "La célula puede cerrar sus gap junctions para aislarse si una vecina muere (entrada masiva de Ca2+)." },
+    { topic: "Corazón", question: "¿Por qué el músculo cardíaco se contrae sincronizadamente?", options: ["Por las uniones estrechas.", "Por el flujo de iones a través de las Uniones Gap.", "Por la matriz extracelular.", "Por casualidad."], correct: 1, explanation: "Las uniones gap permiten que el potencial de acción pase directamente de célula a célula." },
+    { topic: "Resumen Uniones", question: "¿Qué unión usa integrinas?", options: ["Desmosoma", "Unión Adherente", "Hemidesmosoma", "Unión Gap"], correct: 2, explanation: "Es la única unión de anclaje de la lista que conecta con la matriz (lámina basal)." },
+    { topic: "Resumen Uniones", question: "¿Qué unión sella el espacio intercelular?", options: ["Desmosoma", "Unión Estrecha", "Hemidesmosoma", "Unión Gap"], correct: 1, explanation: "Es la 'junta de estanqueidad' del epitelio." },
+    { topic: "Resumen Uniones", question: "¿Qué unión conecta los filamentos de actina de dos células?", options: ["Desmosoma", "Unión Adherente", "Hemidesmosoma", "Unión Gap"], correct: 1, explanation: "La unión adherente (zonula adherens) es el anclaje célula-célula basado en actina." },
+    { topic: "Plantas", question: "¿Cuál es el equivalente funcional de las uniones Gap en las plantas?", options: ["Desmosomas", "Plasmodesmos", "Pared celular", "Estomas"], correct: 1, explanation: "Los plasmodesmos son canales revestidos de membrana que conectan citoplasmas vegetales a través de la pared." },
+    { topic: "Cáncer", question: "¿Qué relación hay entre cadherinas y cáncer?", options: ["Los tumores expresan más cadherinas.", "La pérdida de E-cadherina permite que las células se suelten y hagan metástasis.", "Las cadherinas matan al tumor.", "No hay relación."], correct: 1, explanation: "Para migrar, las células cancerosas deben romper sus uniones con las vecinas (transición epitelio-mesénquima)." },
+    { topic: "Leucocitos", question: "¿Qué deficiencia causa el 'síndrome de deficiencia de adhesión leucocitaria'?", options: ["Falta de integrinas beta-2.", "Falta de colágeno.", "Falta de actina.", "Falta de ATP."], correct: 0, explanation: "Sin integrinas funcionales, los glóbulos blancos no pueden adherirse firmemente y salir del vaso sanguíneo hacia la infección." },
+    { topic: "Piel", question: "¿Qué unión es vital para que la epidermis resista la fricción sin romperse?", options: ["Unión Gap", "Unión Estrecha", "Desmosoma", "Sinapsis"], correct: 2, explanation: "Los desmosomas (y filamentos intermedios) proporcionan la resistencia tensil necesaria." },
+    { topic: "MEC", question: "¿Qué vitamina es esencial para la síntesis correcta de colágeno (previniendo el escorbuto)?", options: ["Vitamina A", "Vitamina C", "Vitamina D", "Vitamina B12"], correct: 1, explanation: "La vitamina C es cofactor para la hidroxilación de la prolina, necesaria para la estabilidad de la hélice de colágeno." },
+    { topic: "General", question: "¿Qué define a un tejido?", options: ["Células aisladas.", "Un conjunto cooperativo de células y matriz con una función específica.", "Solo matriz extracelular.", "Solo proteínas."], correct: 1, explanation: "Es la definición básica: células + matriz trabajando juntas." }
 ];
 
-let currentQuestion = 0;
-let score = 0;
+// Inicialización de estado
+quizData.forEach(q => {
+    q.isMarked = false;
+    q.userCorrect = null;
+});
+
+let activeIndices = []; 
+let currentPlaylistIndex = 0;
+let sessionScore = 0;
 let answered = false;
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadQuestion();
+    startQuiz('all');
 });
 
-function loadQuestion() {
-    const container = document.getElementById('quiz-container');
-    const q = quizData[currentQuestion];
+function startQuiz(mode) {
+    activeIndices = [];
+
+    if (mode === 'all') {
+        quizData.forEach(q => q.userCorrect = null);
+        activeIndices = quizData.map((_, i) => i);
+    } 
+    else if (mode === 'failed') {
+        activeIndices = quizData.map((q, i) => q.userCorrect === false ? i : -1).filter(i => i !== -1);
+    } 
+    else if (mode === 'marked') {
+        activeIndices = quizData.map((q, i) => q.isMarked ? i : -1).filter(i => i !== -1);
+    } 
+    else if (mode === 'mixed') {
+        activeIndices = quizData.map((q, i) => (q.userCorrect === false || q.isMarked) ? i : -1).filter(i => i !== -1);
+    }
+
+    if (activeIndices.length === 0) {
+        alert("No hay preguntas disponibles para este modo.");
+        return;
+    }
+
+    currentPlaylistIndex = 0;
+    sessionScore = 0;
     
-    document.getElementById('q-progress').innerText = `Pregunta ${currentQuestion + 1} de ${quizData.length}`;
-    document.getElementById('score-display').innerText = `Puntuación: ${score}`;
+    document.getElementById('results-screen').style.display = 'none';
+    document.getElementById('quiz-container').style.display = 'block';
+    document.getElementById('statusBar').style.display = 'flex';
+    
+    loadQuestion();
+}
+
+function loadQuestion() {
+    answered = false;
+    const realIndex = activeIndices[currentPlaylistIndex];
+    const q = quizData[realIndex];
+    
+    document.getElementById('q-progress').innerText = `Pregunta ${currentPlaylistIndex + 1} de ${activeIndices.length}`;
+    document.getElementById('score-display').innerText = `Aciertos: ${sessionScore}`;
+
+    const container = document.getElementById('quiz-container');
+    const checkedAttr = q.isMarked ? 'checked' : '';
 
     let html = `
         <div class="question-card active">
+            <label class="bookmark-panel">
+                <input type="checkbox" onchange="toggleMark(${realIndex}, this)" ${checkedAttr}>
+                <span>Marcar</span>
+            </label>
+
             <div class="question-header">${q.topic}</div>
             <div class="question-text">${q.question}</div>
             <div class="options-list">
                 ${q.options.map((opt, i) => `
-                    <button class="option-btn" onclick="checkAnswer(${i}, ${q.correct}, this)">
+                    <button class="option-btn" onclick="checkAnswer(${i}, ${q.correct}, this, ${realIndex})">
                         ${String.fromCharCode(65+i)}. ${opt}
                     </button>
                 `).join('')}
@@ -708,10 +403,13 @@ function loadQuestion() {
     `;
     
     container.innerHTML = html;
-    answered = false;
 }
 
-function checkAnswer(selected, correct, btn) {
+function toggleMark(realIndex, checkbox) {
+    quizData[realIndex].isMarked = checkbox.checked;
+}
+
+function checkAnswer(selected, correct, btn, realIndex) {
     if(answered) return;
     answered = true;
 
@@ -722,24 +420,25 @@ function checkAnswer(selected, correct, btn) {
     allBtns.forEach(b => b.disabled = true);
 
     if(selected === correct) {
-        score++;
+        sessionScore++;
+        quizData[realIndex].userCorrect = true;
         btn.classList.add('correct');
-        feedback.innerHTML = `<strong style="color:var(--success)">¡Correcto!</strong> <div class="rationale">${quizData[currentQuestion].explanation}</div>`;
+        feedback.innerHTML = `<strong style="color:var(--success)">¡Correcto!</strong> <div class="rationale">${quizData[realIndex].explanation}</div>`;
     } else {
+        quizData[realIndex].userCorrect = false;
         btn.classList.add('incorrect');
         allBtns[correct].classList.add('correct');
-        feedback.innerHTML = `<strong style="color:var(--danger)">Incorrecto.</strong> <div class="rationale">${quizData[currentQuestion].explanation}</div>`;
+        feedback.innerHTML = `<strong style="color:var(--danger)">Incorrecto.</strong> <div class="rationale">${quizData[realIndex].explanation}</div>`;
     }
 
     feedback.classList.add('show');
     nextBtn.style.display = 'block';
-    
-    document.getElementById('score-display').innerText = `Puntuación: ${score}`;
+    document.getElementById('score-display').innerText = `Aciertos: ${sessionScore}`;
 }
 
 function nextQuestion() {
-    if(currentQuestion < quizData.length - 1) {
-        currentQuestion++;
+    if(currentPlaylistIndex < activeIndices.length - 1) {
+        currentPlaylistIndex++;
         loadQuestion();
     } else {
         showResults();
@@ -751,16 +450,33 @@ function showResults() {
     document.getElementById('quiz-container').style.display = 'none';
     document.getElementById('results-screen').style.display = 'block';
     
-    document.getElementById('final-number').innerText = `${score} / ${quizData.length}`;
+    document.getElementById('final-number').innerText = `${sessionScore} / ${activeIndices.length}`;
     
-    const percent = (score / quizData.length) * 100;
+    const percent = Math.round((sessionScore / activeIndices.length) * 100);
     let msg = "";
-    if(percent >= 90) msg = "¡Excelente! Nivel experto en histología celular.";
-    else if(percent >= 70) msg = "¡Muy bien! Tienes los conceptos claros.";
-    else if(percent >= 50) msg = "Aprobado. Repasa las moléculas de adhesión.";
-    else msg = "Necesitas estudiar más las relaciones célula-entorno.";
+    if(percent >= 90) msg = "¡Excelente!";
+    else if(percent >= 70) msg = "¡Muy bien!";
+    else if(percent >= 50) msg = "Aprobado.";
+    else msg = "Necesitas repasar.";
     
-    document.getElementById('final-text').innerText = msg;
+    document.getElementById('final-text').innerText = `${percent}% - ${msg}`;
+
+    // Stats
+    const totalFailed = quizData.filter(q => q.userCorrect === false).length;
+    const totalMarked = quizData.filter(q => q.isMarked === true).length;
+    const totalMixed = quizData.filter(q => q.userCorrect === false || q.isMarked).length;
+
+    document.getElementById('stats-box').innerHTML = `
+        <strong>Resumen Global:</strong><br>
+        Marcadas: ${totalMarked} | Falladas: ${totalFailed}
+    `;
+
+    document.getElementById('btn-failed').disabled = (totalFailed === 0);
+    document.getElementById('btn-marked').disabled = (totalMarked === 0);
+    document.getElementById('btn-mixed').disabled = (totalMixed === 0);
+    
+    document.getElementById('btn-failed').innerText = `❌ Repetir Falladas (${totalFailed})`;
+    document.getElementById('btn-marked').innerText = `⚠️ Repetir Marcadas (${totalMarked})`;
 }
 </script>
 
