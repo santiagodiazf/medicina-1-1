@@ -10,6 +10,7 @@
             --secondary: #e67e22;
             --success: #27ae60;
             --danger: #c0392b;
+            --warning: #f39c12;
             --light: #fdf2e9;
             --dark: #6e2c00;
         }
@@ -29,6 +30,7 @@
             border-radius: 12px;
             box-shadow: 0 5px 25px rgba(0,0,0,0.15);
             border-top: 5px solid var(--primary);
+            min-height: 600px;
         }
         header {
             text-align: center;
@@ -53,9 +55,31 @@
 
         .question-card {
             display: none;
+            position: relative; /* Para posicionar el marcador */
             animation: fadeIn 0.4s ease-out;
         }
         .question-card.active { display: block; }
+
+        /* ESTILOS DEL MARCADOR */
+        .bookmark-panel {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #fff3e0;
+            border: 1px solid #ffb74d;
+            color: #e65100;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s;
+            z-index: 10;
+        }
+        .bookmark-panel:hover { transform: scale(1.05); background: #ffe0b2; }
+        .bookmark-panel input { cursor: pointer; transform: scale(1.3); }
 
         .question-header {
             font-size: 0.9rem;
@@ -64,6 +88,7 @@
             margin-bottom: 10px;
             letter-spacing: 1px;
             font-weight: 700;
+            margin-top: 15px;
         }
 
         .question-text {
@@ -71,6 +96,7 @@
             margin-bottom: 25px;
             font-weight: 600;
             color: #2c3e50;
+            padding-right: 120px; /* Espacio para el marcador */
         }
 
         .options-list {
@@ -138,6 +164,7 @@
         }
         .nav-btn:hover { background: var(--secondary); transform: translateY(-2px); }
 
+        /* PANTALLA DE RESULTADOS */
         .results-view {
             text-align: center;
             display: none;
@@ -149,6 +176,42 @@
             margin: 20px 0;
             text-shadow: 2px 2px 0px #eee;
         }
+
+        .stats-summary {
+            background: #fff;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #555;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* GRID DE BOTONES DE ACCIÓN */
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .action-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-size: 1rem;
+        }
+        .action-btn:hover { transform: translateY(-3px); filter: brightness(110%); }
+        .action-btn:disabled { background-color: #bdc3c7 !important; cursor: not-allowed; transform: none; filter: none; }
+
+        .btn-restart { background-color: var(--primary); grid-column: span 2; }
+        .btn-failed { background-color: var(--danger); }
+        .btn-marked { background-color: var(--warning); color: #5d4037; }
+        .btn-mixed { background-color: var(--dark); grid-column: span 2; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -162,582 +225,188 @@
     </header>
 
     <div class="status-panel" id="statusBar">
-        <span id="q-progress">Pregunta 1 de 75</span>
-        <span id="score-display">Puntuación: 0</span>
+        <span id="q-progress">Cargando...</span>
+        <span id="score-display">Aciertos: 0</span>
     </div>
 
-    <div id="quiz-container">
-        </div>
+    <div id="quiz-container"></div>
 
     <div id="results-screen" class="results-view">
-        <h2>Examen Finalizado</h2>
-        <p>Has completado el temario de Biología Celular.</p>
-        <div class="final-score" id="final-number">0/75</div>
-        <p id="final-text" style="font-size: 1.2rem; margin-bottom: 30px;"></p>
-        <button class="nav-btn" style="display:inline-block; float:none;" onclick="location.reload()">Repetir Examen</button>
+        <h2>Sesión Finalizada</h2>
+        <div class="final-score" id="final-number">0/0</div>
+        <p id="final-text" style="font-size: 1.2rem; margin-bottom: 20px;"></p>
+        
+        <div class="stats-summary" id="stats-box"></div>
+
+        <div class="action-grid">
+            <button class="action-btn btn-restart" onclick="startQuiz('all')">🔄 Reiniciar Test Completo</button>
+            <button class="action-btn btn-failed" id="btn-failed" onclick="startQuiz('failed')">❌ Repetir Falladas</button>
+            <button class="action-btn btn-marked" id="btn-marked" onclick="startQuiz('marked')">⚠️ Repetir Marcadas</button>
+            <button class="action-btn btn-mixed" id="btn-mixed" onclick="startQuiz('mixed')">❌ + ⚠️ Repetir Falladas y Marcadas</button>
+        </div>
     </div>
 </div>
 
 <script>
 const quizData = [
     // --- 1.0 INTRODUCCIÓN A LA REPRODUCCIÓN (1-10) ---
-    {
-        topic: "Generalidades",
-        question: "¿Qué ventaja principal ofrece la reproducción sexual frente a la asexual?",
-        options: ["Es más rápida.", "Genera descendientes idénticos.", "Genera variabilidad genética, aumentando la ventaja competitiva.", "No requiere energía."],
-        correct: 2,
-        explanation: "La mezcla de genomas crea combinaciones nuevas que permiten la adaptación y evolución."
-    },
-    {
-        topic: "Células",
-        question: "¿Qué son las células somáticas?",
-        options: ["Los óvulos y espermatozoides.", "Todas las células del cuerpo excepto la línea germinal.", "Células sin núcleo.", "Células haploides."],
-        correct: 1,
-        explanation: "Son las células que forman el cuerpo y son diploides (2n), no participan en la reproducción sexual directa."
-    },
-    {
-        topic: "Células",
-        question: "¿Qué característica define a las células germinales?",
-        options: ["Son diploides y dan lugar a gametos mediante meiosis.", "Son haploides desde el nacimiento.", "Son células musculares.", "No tienen ADN."],
-        correct: 0,
-        explanation: "Son la línea celular especializada en las gónadas que sufrirá meiosis para crear gametos."
-    },
-    {
-        topic: "Genética",
-        question: "¿Qué son los cromosomas homólogos?",
-        options: ["Cromosomas idénticos formados por replicación.", "Pareja de cromosomas (uno paterno, otro materno) con los mismos genes pero posiblemente diferentes alelos.", "Cromosomas de especies diferentes.", "Cromátidas hermanas."],
-        correct: 1,
-        explanation: "Son el par 'equivalente' heredado de cada progenitor."
-    },
-    {
-        topic: "Genética",
-        question: "¿Qué es un Alelo?",
-        options: ["El centro del cromosoma.", "Una versión alternativa o variante de un gen.", "Un tipo de célula.", "Una proteína."],
-        correct: 1,
-        explanation: "Los alelos son las diferentes formas que puede tener un gen (ej. color de ojos azul vs marrón)."
-    },
-    {
-        topic: "Genética",
-        question: "¿Qué es un Locus?",
-        options: ["Una enfermedad genética.", "La posición física específica de un gen en un cromosoma.", "Un tipo de división celular.", "El núcleo del gameto."],
-        correct: 1,
-        explanation: "Es la 'dirección' o ubicación exacta de un gen dentro del mapa cromosómico."
-    },
-    {
-        topic: "Conceptos",
-        question: "¿Qué es la 'reserva génica' de una población?",
-        options: ["Un banco de esperma.", "La totalidad de la información genética disponible en la población.", "El ADN basura.", "Las células madre."],
-        correct: 1,
-        explanation: "Es el conjunto de todos los alelos de todos los individuos, la materia prima de la evolución."
-    },
-    {
-        topic: "Ploidía",
-        question: "¿Cuál es la ploidía de una célula somática humana típica?",
-        options: ["Haploide (n = 23).", "Diploide (2n = 46).", "Triploide.", "Tetraploide."],
-        correct: 1,
-        explanation: "Contiene dos juegos de cromosomas, uno de cada progenitor."
-    },
-    {
-        topic: "Ploidía",
-        question: "¿Cuál es la ploidía de un gameto humano normal?",
-        options: ["Diploide (2n).", "Haploide (n = 23).", "Poliploide.", "Aneuploide."],
-        correct: 1,
-        explanation: "Los gametos deben tener la mitad de cromosomas para restaurar el número diploide en la fecundación."
-    },
-    {
-        topic: "Reproducción",
-        question: "¿Qué proceso garantiza la formación de células con la mitad de la información genética?",
-        options: ["Mitosis.", "Meiosis.", "Fecundación.", "Clonación."],
-        correct: 1,
-        explanation: "La meiosis es la división reduccional exclusiva de la línea germinal."
-    },
+    { topic: "Generalidades", question: "¿Qué ventaja principal ofrece la reproducción sexual frente a la asexual?", options: ["Es más rápida.", "Genera descendientes idénticos.", "Genera variabilidad genética, aumentando la ventaja competitiva.", "No requiere energía."], correct: 2, explanation: "La mezcla de genomas crea combinaciones nuevas que permiten la adaptación y evolución." },
+    { topic: "Células", question: "¿Qué son las células somáticas?", options: ["Los óvulos y espermatozoides.", "Todas las células del cuerpo excepto la línea germinal.", "Células sin núcleo.", "Células haploides."], correct: 1, explanation: "Son las células que forman el cuerpo y son diploides (2n), no participan en la reproducción sexual directa." },
+    { topic: "Células", question: "¿Qué característica define a las células germinales?", options: ["Son diploides y dan lugar a gametos mediante meiosis.", "Son haploides desde el nacimiento.", "Son células musculares.", "No tienen ADN."], correct: 0, explanation: "Son la línea celular especializada en las gónadas que sufrirá meiosis para crear gametos." },
+    { topic: "Genética", question: "¿Qué son los cromosomas homólogos?", options: ["Cromosomas idénticos formados por replicación.", "Pareja de cromosomas (uno paterno, otro materno) con los mismos genes pero posiblemente diferentes alelos.", "Cromosomas de especies diferentes.", "Cromátidas hermanas."], correct: 1, explanation: "Son el par 'equivalente' heredado de cada progenitor." },
+    { topic: "Genética", question: "¿Qué es un Alelo?", options: ["El centro del cromosoma.", "Una versión alternativa o variante de un gen.", "Un tipo de célula.", "Una proteína."], correct: 1, explanation: "Los alelos son las diferentes formas que puede tener un gen (ej. color de ojos azul vs marrón)." },
+    { topic: "Genética", question: "¿Qué es un Locus?", options: ["Una enfermedad genética.", "La posición física específica de un gen en un cromosoma.", "Un tipo de división celular.", "El núcleo del gameto."], correct: 1, explanation: "Es la 'dirección' o ubicación exacta de un gen dentro del mapa cromosómico." },
+    { topic: "Conceptos", question: "¿Qué es la 'reserva génica' de una población?", options: ["Un banco de esperma.", "La totalidad de la información genética disponible en la población.", "El ADN basura.", "Las células madre."], correct: 1, explanation: "Es el conjunto de todos los alelos de todos los individuos, la materia prima de la evolución." },
+    { topic: "Ploidía", question: "¿Cuál es la ploidía de una célula somática humana típica?", options: ["Haploide (n = 23).", "Diploide (2n = 46).", "Triploide.", "Tetraploide."], correct: 1, explanation: "Contiene dos juegos de cromosomas, uno de cada progenitor." },
+    { topic: "Ploidía", question: "¿Cuál es la ploidía de un gameto humano normal?", options: ["Diploide (2n).", "Haploide (n = 23).", "Poliploide.", "Aneuploide."], correct: 1, explanation: "Los gametos deben tener la mitad de cromosomas para restaurar el número diploide en la fecundación." },
+    { topic: "Reproducción", question: "¿Qué proceso garantiza la formación de células con la mitad de la información genética?", options: ["Mitosis.", "Meiosis.", "Fecundación.", "Clonación."], correct: 1, explanation: "La meiosis es la división reduccional exclusiva de la línea germinal." },
 
     // --- 2.0 MEIOSIS (11-30) ---
-    {
-        topic: "General",
-        question: "¿Cuántas rondas de replicación de ADN y cuántas de división celular ocurren en la meiosis?",
-        options: ["1 replicación, 1 división.", "2 replicaciones, 2 divisiones.", "1 replicación, 2 divisiones.", "Sin replicación, 2 divisiones."],
-        correct: 2,
-        explanation: "El ADN se duplica una vez (Fase S previa) y luego hay dos divisiones nucleares consecutivas (I y II)."
-    },
-    {
-        topic: "Resultado",
-        question: "¿Cuál es el producto final de la meiosis completa a partir de una célula diploide?",
-        options: ["Dos células diploides idénticas.", "Cuatro células haploides genéticamente distintas.", "Dos células haploides.", "Cuatro células diploides."],
-        correct: 1,
-        explanation: "Se generan cuatro células (n) con combinaciones genéticas únicas."
-    },
-    {
-        topic: "Meiosis I",
-        question: "¿Qué se separa durante la Anafase I de la meiosis?",
-        options: ["Cromátidas hermanas.", "Cromosomas homólogos.", "El citoplasma.", "Los centrosomas."],
-        correct: 1,
-        explanation: "Es la división reduccional: los homólogos se segregan a polos opuestos, reduciendo la ploidía."
-    },
-    {
-        topic: "Profase I",
-        question: "¿Qué estructura proteica estabiliza el apareamiento de homólogos en la Profase I?",
-        options: ["Huso mitótico.", "Complejo Sinaptonémico.", "Anillo contráctil.", "Poros nucleares."],
-        correct: 1,
-        explanation: "Actúa como una 'cremallera' que mantiene alineados a los homólogos para la recombinación."
-    },
-    {
-        topic: "Profase I",
-        question: "¿Qué es el 'Crossing Over' o entrecruzamiento?",
-        options: ["El movimiento de los cromosomas.", "El intercambio de segmentos de ADN entre cromátidas no hermanas de cromosomas homólogos.", "La duplicación del ADN.", "La separación de cromátidas."],
-        correct: 1,
-        explanation: "Es un mecanismo clave de variabilidad que mezcla alelos maternos y paternos en el mismo cromosoma."
-    },
-    {
-        topic: "Profase I",
-        question: "¿Qué es un Quiasma?",
-        options: ["Un error genético.", "La conexión física visible en forma de cruz donde ocurrió el entrecruzamiento.", "El centro del cromosoma.", "Una proteína."],
-        correct: 1,
-        explanation: "Los quiasmas mantienen unidos a los homólogos hasta la Anafase I y evidencian la recombinación."
-    },
-    {
-        topic: "Profase I",
-        question: "¿Qué es un bivalente o tétrada?",
-        options: ["Dos cromosomas cualesquiera.", "La estructura formada por dos cromosomas homólogos apareados (4 cromátidas).", "Un cromosoma replicado.", "El núcleo."],
-        correct: 1,
-        explanation: "Es la unidad de segregación en la Meiosis I, compuesta por los dos homólogos unidos."
-    },
-    {
-        topic: "Variabilidad",
-        question: "¿Qué es el reordenamiento independiente (o segregación independiente)?",
-        options: ["La mutación del ADN.", "La distribución aleatoria de los homólogos paternos y maternos en la placa metafásica de la Meiosis I.", "El crossing over.", "La fecundación."],
-        correct: 1,
-        explanation: "Cada par de homólogos se orienta al azar, creando $2^{23}$ combinaciones posibles de cromosomas en humanos."
-    },
-    {
-        topic: "Meiosis I vs II",
-        question: "¿En qué se diferencia la Anafase I de la Anafase II?",
-        options: ["En la I se separan homólogos; en la II se separan cromátidas hermanas.", "En la I se separan cromátidas; en la II homólogos.", "Son iguales.", "En la II no hay separación."],
-        correct: 0,
-        explanation: "La Anafase I reduce el número de cromosomas; la Anafase II es similar a una mitosis (separa copias)."
-    },
-    {
-        topic: "Cohesinas",
-        question: "¿Cuándo se degradan las cohesinas de los brazos de los cromosomas en meiosis?",
-        options: ["En Anafase I.", "En Anafase II.", "En Profase I.", "Nunca."],
-        correct: 0,
-        explanation: "Esto permite separar los homólogos (resolviendo quiasmas), pero las cohesinas centroméricas persisten hasta Anafase II."
-    },
-    {
-        topic: "Errores",
-        question: "¿Qué es una Aneuploidía?",
-        options: ["Tener el número correcto de cromosomas.", "Una alteración en el número de cromosomas (ej. trisomía) por errores de segregación.", "Tener dos núcleos.", "Una célula poliploide."],
-        correct: 1,
-        explanation: "Es el resultado de una 'no disyunción' meiótica, causando síndromes como el de Down."
-    },
-    {
-        topic: "Errores",
-        question: "¿Cuál es la causa principal de las aneuploidías?",
-        options: ["Falta de nutrientes.", "Errores en la segregación meiótica (no disyunción).", "Exceso de crossing over.", "Polispermia."],
-        correct: 1,
-        explanation: "Si los cromosomas no se separan correctamente, un gameto recibe dos copias y el otro ninguna."
-    },
-    {
-        topic: "Meiosis II",
-        question: "¿Ocurre replicación del ADN antes de la Meiosis II?",
-        options: ["Sí, siempre.", "No, no hay fase S entre Meiosis I y II.", "A veces.", "Solo en espermatogénesis."],
-        correct: 1,
-        explanation: "Las células pasan directamente, garantizando la reducción de material genético a haploide."
-    },
-    {
-        topic: "Variabilidad",
-        question: "¿Cuántas combinaciones genéticas posibles genera el reordenamiento independiente en humanos (23 pares)?",
-        options: ["23.", "46.", "2 elevado a 23 (más de 8 millones).", "Infinitas."],
-        correct: 2,
-        explanation: "La combinatoria es $2^n$, donde n es el número haploide."
-    },
-    {
-        topic: "Definición",
-        question: "¿Qué significa que la meiosis es una 'división reduccional'?",
-        options: ["Que las células se hacen más pequeñas.", "Que el número de cromosomas se reduce a la mitad (2n -> n).", "Que el ADN se pierde.", "Que dura menos tiempo."],
-        correct: 1,
-        explanation: "Es la característica definitoria que permite el ciclo sexual (n + n = 2n)."
-    },
-    {
-        topic: "Interfase",
-        question: "¿Cómo se llama el periodo corto entre Meiosis I y II?",
-        options: ["Interfase.", "Intercinesis.", "G0.", "Profase."],
-        correct: 1,
-        explanation: "Es una pausa breve sin replicación de ADN."
-    },
-    {
-        topic: "Diferencia Mitosis",
-        question: "¿En qué división se emparejan los cromosomas homólogos?",
-        options: ["Mitosis.", "Meiosis I.", "Meiosis II.", "Todas."],
-        correct: 1,
-        explanation: "El apareamiento de homólogos es exclusivo de la Meiosis I; en mitosis y meiosis II se alinean individualmente."
-    },
-    {
-        topic: "Crossing Over",
-        question: "¿Qué genera el entrecruzamiento?",
-        options: ["Cromosomas recombinantes con mezcla de alelos paternos y maternos.", "Mutaciones.", "Dos cromosomas idénticos.", "Pérdida de genes."],
-        correct: 0,
-        explanation: "Rompe el ligamiento entre genes del mismo cromosoma, creando haplotipos nuevos."
-    },
-    {
-        topic: "Fases",
-        question: "¿En qué fase se hacen visibles los quiasmas?",
-        options: ["Leptoteno.", "Paquiteno.", "Diploteno/Diacinesis (final de Profase I).", "Anafase."],
-        correct: 2,
-        explanation: "Cuando el complejo sinaptonémico se disuelve, los homólogos quedan unidos solo por los puntos de cruce (quiasmas)."
-    },
-    {
-        topic: "Importancia",
-        question: "¿Qué pasaría si la meiosis no redujera el número de cromosomas?",
-        options: ["Nada.", "El número de cromosomas se duplicaría en cada generación (inviable).", "La evolución sería más rápida.", "No habría fecundación."],
-        correct: 1,
-        explanation: "La reducción es vital para mantener constante el cariotipo de la especie a través de las generaciones."
-    },
+    { topic: "General", question: "¿Cuántas rondas de replicación de ADN y cuántas de división celular ocurren en la meiosis?", options: ["1 replicación, 1 división.", "2 replicaciones, 2 divisiones.", "1 replicación, 2 divisiones.", "Sin replicación, 2 divisiones."], correct: 2, explanation: "El ADN se duplica una vez (Fase S previa) y luego hay dos divisiones nucleares consecutivas (I y II)." },
+    { topic: "Resultado", question: "¿Cuál es el producto final de la meiosis completa a partir de una célula diploide?", options: ["Dos células diploides idénticas.", "Cuatro células haploides genéticamente distintas.", "Dos células haploides.", "Cuatro células diploides."], correct: 1, explanation: "Se generan cuatro células (n) con combinaciones genéticas únicas." },
+    { topic: "Meiosis I", question: "¿Qué se separa durante la Anafase I de la meiosis?", options: ["Cromátidas hermanas.", "Cromosomas homólogos.", "El citoplasma.", "Los centrosomas."], correct: 1, explanation: "Es la división reduccional: los homólogos se segregan a polos opuestos, reduciendo la ploidía." },
+    { topic: "Profase I", question: "¿Qué estructura proteica estabiliza el apareamiento de homólogos en la Profase I?", options: ["Huso mitótico.", "Complejo Sinaptonémico.", "Anillo contráctil.", "Poros nucleares."], correct: 1, explanation: "Actúa como una 'cremallera' que mantiene alineados a los homólogos para la recombinación." },
+    { topic: "Profase I", question: "¿Qué es el 'Crossing Over' o entrecruzamiento?", options: ["El movimiento de los cromosomas.", "El intercambio de segmentos de ADN entre cromátidas no hermanas de cromosomas homólogos.", "La duplicación del ADN.", "La separación de cromátidas."], correct: 1, explanation: "Es un mecanismo clave de variabilidad que mezcla alelos maternos y paternos en el mismo cromosoma." },
+    { topic: "Profase I", question: "¿Qué es un Quiasma?", options: ["Un error genético.", "La conexión física visible en forma de cruz donde ocurrió el entrecruzamiento.", "El centro del cromosoma.", "Una proteína."], correct: 1, explanation: "Los quiasmas mantienen unidos a los homólogos hasta la Anafase I y evidencian la recombinación." },
+    { topic: "Profase I", question: "¿Qué es un bivalente o tétrada?", options: ["Dos cromosomas cualesquiera.", "La estructura formada por dos cromosomas homólogos apareados (4 cromátidas).", "Un cromosoma replicado.", "El núcleo."], correct: 1, explanation: "Es la unidad de segregación en la Meiosis I, compuesta por los dos homólogos unidos." },
+    { topic: "Variabilidad", question: "¿Qué es el reordenamiento independiente (o segregación independiente)?", options: ["La mutación del ADN.", "La distribución aleatoria de los homólogos paternos y maternos en la placa metafásica de la Meiosis I.", "El crossing over.", "La fecundación."], correct: 1, explanation: "Cada par de homólogos se orienta al azar, creando 2^23 combinaciones posibles de cromosomas en humanos." },
+    { topic: "Meiosis I vs II", question: "¿En qué se diferencia la Anafase I de la Anafase II?", options: ["En la I se separan homólogos; en la II se separan cromátidas hermanas.", "En la I se separan cromátidas; en la II homólogos.", "Son iguales.", "En la II no hay separación."], correct: 0, explanation: "La Anafase I reduce el número de cromosomas; la Anafase II es similar a una mitosis (separa copias)." },
+    { topic: "Cohesinas", question: "¿Cuándo se degradan las cohesinas de los brazos de los cromosomas en meiosis?", options: ["En Anafase I.", "En Anafase II.", "En Profase I.", "Nunca."], correct: 0, explanation: "Esto permite separar los homólogos (resolviendo quiasmas), pero las cohesinas centroméricas persisten hasta Anafase II." },
+    { topic: "Errores", question: "¿Qué es una Aneuploidía?", options: ["Tener el número correcto de cromosomas.", "Una alteración en el número de cromosomas (ej. trisomía) por errores de segregación.", "Tener dos núcleos.", "Una célula poliploide."], correct: 1, explanation: "Es el resultado de una 'no disyunción' meiótica, causando síndromes como el de Down." },
+    { topic: "Errores", question: "¿Cuál es la causa principal de las aneuploidías?", options: ["Falta de nutrientes.", "Errores en la segregación meiótica (no disyunción).", "Exceso de crossing over.", "Polispermia."], correct: 1, explanation: "Si los cromosomas no se separan correctamente, un gameto recibe dos copias y el otro ninguna." },
+    { topic: "Meiosis II", question: "¿Ocurre replicación del ADN antes de la Meiosis II?", options: ["Sí, siempre.", "No, no hay fase S entre Meiosis I y II.", "A veces.", "Solo en espermatogénesis."], correct: 1, explanation: "Las células pasan directamente, garantizando la reducción de material genético a haploide." },
+    { topic: "Variabilidad", question: "¿Cuántas combinaciones genéticas posibles genera el reordenamiento independiente en humanos (23 pares)?", options: ["23.", "46.", "2 elevado a 23 (más de 8 millones).", "Infinitas."], correct: 2, explanation: "La combinatoria es 2^n, donde n es el número haploide." },
+    { topic: "Definición", question: "¿Qué significa que la meiosis es una 'división reduccional'?", options: ["Que las células se hacen más pequeñas.", "Que el número de cromosomas se reduce a la mitad (2n -> n).", "Que el ADN se pierde.", "Que dura menos tiempo."], correct: 1, explanation: "Es la característica definitoria que permite el ciclo sexual (n + n = 2n)." },
+    { topic: "Interfase", question: "¿Cómo se llama el periodo corto entre Meiosis I y II?", options: ["Interfase.", "Intercinesis.", "G0.", "Profase."], correct: 1, explanation: "Es una pausa breve sin replicación de ADN." },
+    { topic: "Diferencia Mitosis", question: "¿En qué división se emparejan los cromosomas homólogos?", options: ["Mitosis.", "Meiosis I.", "Meiosis II.", "Todas."], correct: 1, explanation: "El apareamiento de homólogos es exclusivo de la Meiosis I; en mitosis y meiosis II se alinean individualmente." },
+    { topic: "Crossing Over", question: "¿Qué genera el entrecruzamiento?", options: ["Cromosomas recombinantes con mezcla de alelos paternos y maternos.", "Mutaciones.", "Dos cromosomas idénticos.", "Pérdida de genes."], correct: 0, explanation: "Rompe el ligamiento entre genes del mismo cromosoma, creando haplotipos nuevos." },
+    { topic: "Fases", question: "¿En qué fase se hacen visibles los quiasmas?", options: ["Leptoteno.", "Paquiteno.", "Diploteno/Diacinesis (final de Profase I).", "Anafase."], correct: 2, explanation: "Cuando el complejo sinaptonémico se disuelve, los homólogos quedan unidos solo por los puntos de cruce (quiasmas)." },
+    { topic: "Importancia", question: "¿Qué pasaría si la meiosis no redujera el número de cromosomas?", options: ["Nada.", "El número de cromosomas se duplicaría en cada generación (inviable).", "La evolución sería más rápida.", "No habría fecundación."], correct: 1, explanation: "La reducción es vital para mantener constante el cariotipo de la especie a través de las generaciones." },
 
     // --- 3.0 GAMETOGÉNESIS (31-50) ---
-    {
-        topic: "Espermatogénesis",
-        question: "¿Dónde ocurre la espermatogénesis?",
-        options: ["En el epidídimo.", "En las paredes de los túbulos seminíferos de los testículos.", "En la próstata.", "En el conducto deferente."],
-        correct: 1,
-        explanation: "El epitelio seminífero es el lugar de proliferación y meiosis masculina."
-    },
-    {
-        topic: "Espermatogénesis",
-        question: "¿Cuándo comienza la espermatogénesis en humanos?",
-        options: ["En el desarrollo fetal.", "Al nacer.", "En la pubertad.", "A los 40 años."],
-        correct: 2,
-        explanation: "Se inicia por estímulo hormonal (testosterona) en la pubertad y es continua."
-    },
-    {
-        topic: "Células de Sertoli",
-        question: "¿Qué función tienen las células de Sertoli?",
-        options: ["Producir testosterona.", "Dar soporte, nutrición y ambiente adecuado a las células germinales.", "Convertirse en espermatozoides.", "Producir moco."],
-        correct: 1,
-        explanation: "Son las células 'nodriza' del epitelio seminífero."
-    },
-    {
-        topic: "Células de Leydig",
-        question: "¿Qué producen las células de Leydig?",
-        options: ["Espermatozoides.", "Testosterona.", "Líquido seminal.", "FSH."],
-        correct: 1,
-        explanation: "Se encuentran en el intersticio y secretan la hormona masculina principal."
-    },
-    {
-        topic: "Proceso",
-        question: "¿Qué es la espermiogénesis?",
-        options: ["La división meiótica.", "La diferenciación de espermátidas (redondas) a espermatozoides (con flagelo) sin división celular.", "La salida del esperma.", "La fecundación."],
-        correct: 1,
-        explanation: "Es la fase final de maduración morfológica: formación de acrosoma, flagelo y condensación nuclear."
-    },
-    {
-        topic: "Rendimiento",
-        question: "¿Cuántos espermatozoides funcionales se obtienen de un espermatocito primario?",
-        options: ["Uno.", "Dos.", "Cuatro.", "Ocho."],
-        correct: 2,
-        explanation: "La meiosis masculina es simétrica y produce 4 gametos viables."
-    },
-    {
-        topic: "Ovogénesis",
-        question: "¿Cuándo comienza la ovogénesis?",
-        options: ["En la pubertad.", "En el periodo fetal (embrionario).", "En la menopausia.", "En cada menstruación."],
-        correct: 1,
-        explanation: "Las hembras inician la meiosis antes de nacer; nacen con una reserva finita de ovocitos detenidos."
-    },
-    {
-        topic: "Bloqueo 1",
-        question: "¿En qué fase se detienen los ovocitos primarios hasta la pubertad?",
-        options: ["Metafase II.", "Profase I (Diploteno).", "Anafase I.", "G1."],
-        correct: 1,
-        explanation: "Permanecen en este estado de latencia (dictiotena) durante años (infancia)."
-    },
-    {
-        topic: "Bloqueo 2",
-        question: "¿En qué fase se detiene el ovocito secundario ovulado?",
-        options: ["Profase I.", "Metafase II.", "Telofase II.", "Interfase."],
-        correct: 1,
-        explanation: "Solo completa la meiosis si es fecundado; si no, degenera en Metafase II."
-    },
-    {
-        topic: "Asimetría",
-        question: "¿Qué caracteriza a la división citoplasmática en la ovogénesis?",
-        options: ["Es igualitaria.", "Es asimétrica: genera un ovocito grande y cuerpos polares pequeños.", "No hay división.", "Genera 4 óvulos."],
-        correct: 1,
-        explanation: "El objetivo es conservar todo el citoplasma y nutrientes en una sola célula (el óvulo) para el embrión."
-    },
-    {
-        topic: "Rendimiento",
-        question: "¿Cuántos óvulos funcionales se obtienen de un ovocito primario?",
-        options: ["Cuatro.", "Dos.", "Uno (y 2-3 cuerpos polares).", "Ninguno."],
-        correct: 2,
-        explanation: "La asimetría sacrifica a las otras células hijas (cuerpos polares) para maximizar al óvulo."
-    },
-    {
-        topic: "Comparación",
-        question: "¿Qué proceso es continuo durante toda la vida adulta?",
-        options: ["Ovogénesis.", "Espermatogénesis.", "Ambos.", "Ninguno."],
-        correct: 1,
-        explanation: "Los hombres producen esperma continuamente; las mujeres tienen ciclos y una reserva agotable (menopausia)."
-    },
-    {
-        topic: "Duración",
-        question: "¿Cuánto dura el ciclo completo de espermatogénesis?",
-        options: ["24 horas.", "28 días.", "Aproximadamente 64-74 días.", "9 meses."],
-        correct: 2,
-        explanation: "Es un proceso largo de diferenciación."
-    },
-    {
-        topic: "Ovulación",
-        question: "¿Qué evento reinicia la meiosis del ovocito primario cada mes?",
-        options: ["La fecundación.", "El pico hormonal (LH) en la ovulación.", "La menstruación.", "El estrés."],
-        correct: 1,
-        explanation: "El estímulo hormonal de la pubertad permite que un grupo de ovocitos complete la Meiosis I."
-    },
-    {
-        topic: "Finalización",
-        question: "¿Qué es necesario para que el ovocito complete la Meiosis II?",
-        options: ["La ovulación.", "La fecundación (entrada del espermatozoide).", "La implantación.", "La menstruación."],
-        correct: 1,
-        explanation: "El contacto con el espermatozoide rompe el arresto en Metafase II."
-    },
-    {
-        topic: "Espermiogénesis",
-        question: "¿Qué orgánulo forma el acrosoma del espermatozoide?",
-        options: ["El núcleo.", "La mitocondria.", "El Aparato de Golgi.", "El retículo."],
-        correct: 2,
-        explanation: "El Golgi se modifica para formar la vesícula llena de enzimas en la cabeza del espermatozoide."
-    },
-    {
-        topic: "Espermiogénesis",
-        question: "¿Dónde se disponen las mitocondrias en el espermatozoide?",
-        options: ["En la cabeza.", "En la pieza media (cuello).", "En la cola.", "Se pierden."],
-        correct: 1,
-        explanation: "Se enrollan en espiral en el cuello para proporcionar ATP al flagelo."
-    },
-    {
-        topic: "Cuerpos Polares",
-        question: "¿Tienen función reproductiva los cuerpos polares?",
-        options: ["Sí, pueden ser fecundados.", "No, generalmente degeneran.", "Se convierten en placenta.", "Nutren al espermatozoide."],
-        correct: 1,
-        explanation: "Son subproductos genéticos sin citoplasma suficiente para el desarrollo."
-    },
-    {
-        topic: "Ploidía",
-        question: "¿Cuál es la ploidía de una espermátida?",
-        options: ["2n (Diploide).", "n (Haploide).", "4n.", "No tiene ADN."],
-        correct: 1,
-        explanation: "Ya ha terminado la meiosis, pero aún no se ha diferenciado morfológicamente."
-    },
-    {
-        topic: "Comparación",
-        question: "¿Qué gametogénesis tiene una fase de 'pausa' que puede durar 40 o 50 años?",
-        options: ["Espermatogénesis.", "Ovogénesis.", "Ambas.", "Ninguna."],
-        correct: 1,
-        explanation: "Un ovocito puede estar detenido en Profase I desde el feto hasta justo antes de la menopausia."
-    },
+    { topic: "Espermatogénesis", question: "¿Dónde ocurre la espermatogénesis?", options: ["En el epidídimo.", "En las paredes de los túbulos seminíferos de los testículos.", "En la próstata.", "En el conducto deferente."], correct: 1, explanation: "El epitelio seminífero es el lugar de proliferación y meiosis masculina." },
+    { topic: "Espermatogénesis", question: "¿Cuándo comienza la espermatogénesis en humanos?", options: ["En el desarrollo fetal.", "Al nacer.", "En la pubertad.", "A los 40 años."], correct: 2, explanation: "Se inicia por estímulo hormonal (testosterona) en la pubertad y es continua." },
+    { topic: "Células de Sertoli", question: "¿Qué función tienen las células de Sertoli?", options: ["Producir testosterona.", "Dar soporte, nutrición y ambiente adecuado a las células germinales.", "Convertirse en espermatozoides.", "Producir moco."], correct: 1, explanation: "Son las células 'nodriza' del epitelio seminífero." },
+    { topic: "Células de Leydig", question: "¿Qué producen las células de Leydig?", options: ["Espermatozoides.", "Testosterona.", "Líquido seminal.", "FSH."], correct: 1, explanation: "Se encuentran en el intersticio y secretan la hormona masculina principal." },
+    { topic: "Proceso", question: "¿Qué es la espermiogénesis?", options: ["La división meiótica.", "La diferenciación de espermátidas (redondas) a espermatozoides (con flagelo) sin división celular.", "La salida del esperma.", "La fecundación."], correct: 1, explanation: "Es la fase final de maduración morfológica: formación de acrosoma, flagelo y condensación nuclear." },
+    { topic: "Rendimiento", question: "¿Cuántos espermatozoides funcionales se obtienen de un espermatocito primario?", options: ["Uno.", "Dos.", "Cuatro.", "Ocho."], correct: 2, explanation: "La meiosis masculina es simétrica y produce 4 gametos viables." },
+    { topic: "Ovogénesis", question: "¿Cuándo comienza la ovogénesis?", options: ["En la pubertad.", "En el periodo fetal (embrionario).", "En la menopausia.", "En cada menstruación."], correct: 1, explanation: "Las hembras inician la meiosis antes de nacer; nacen con una reserva finita de ovocitos detenidos." },
+    { topic: "Bloqueo 1", question: "¿En qué fase se detienen los ovocitos primarios hasta la pubertad?", options: ["Metafase II.", "Profase I (Diploteno).", "Anafase I.", "G1."], correct: 1, explanation: "Permanecen en este estado de latencia (dictiotena) durante años (infancia)." },
+    { topic: "Bloqueo 2", question: "¿En qué fase se detiene el ovocito secundario ovulado?", options: ["Profase I.", "Metafase II.", "Telofase II.", "Interfase."], correct: 1, explanation: "Solo completa la meiosis si es fecundado; si no, degenera en Metafase II." },
+    { topic: "Asimetría", question: "¿Qué caracteriza a la división citoplasmática en la ovogénesis?", options: ["Es igualitaria.", "Es asimétrica: genera un ovocito grande y cuerpos polares pequeños.", "No hay división.", "Genera 4 óvulos."], correct: 1, explanation: "El objetivo es conservar todo el citoplasma y nutrientes en una sola célula (el óvulo) para el embrión." },
+    { topic: "Rendimiento", question: "¿Cuántos óvulos funcionales se obtienen de un ovocito primario?", options: ["Cuatro.", "Dos.", "Uno (y 2-3 cuerpos polares).", "Ninguno."], correct: 2, explanation: "La asimetría sacrifica a las otras células hijas (cuerpos polares) para maximizar al óvulo." },
+    { topic: "Comparación", question: "¿Qué proceso es continuo durante toda la vida adulta?", options: ["Ovogénesis.", "Espermatogénesis.", "Ambos.", "Ninguno."], correct: 1, explanation: "Los hombres producen esperma continuamente; las mujeres tienen ciclos y una reserva agotable (menopausia)." },
+    { topic: "Duración", question: "¿Cuánto dura el ciclo completo de espermatogénesis?", options: ["24 horas.", "28 días.", "Aproximadamente 64-74 días.", "9 meses."], correct: 2, explanation: "Es un proceso largo de diferenciación." },
+    { topic: "Ovulación", question: "¿Qué evento reinicia la meiosis del ovocito primario cada mes?", options: ["La fecundación.", "El pico hormonal (LH) en la ovulación.", "La menstruación.", "El estrés."], correct: 1, explanation: "El estímulo hormonal de la pubertad permite que un grupo de ovocitos complete la Meiosis I." },
+    { topic: "Finalización", question: "¿Qué es necesario para que el ovocito complete la Meiosis II?", options: ["La ovulación.", "La fecundación (entrada del espermatozoide).", "La implantación.", "La menstruación."], correct: 1, explanation: "El contacto con el espermatozoide rompe el arresto en Metafase II." },
+    { topic: "Espermiogénesis", question: "¿Qué orgánulo forma el acrosoma del espermatozoide?", options: ["El núcleo.", "La mitocondria.", "El Aparato de Golgi.", "El retículo."], correct: 2, explanation: "El Golgi se modifica para formar la vesícula llena de enzimas en la cabeza del espermatozoide." },
+    { topic: "Espermiogénesis", question: "¿Dónde se disponen las mitocondrias en el espermatozoide?", options: ["En la cabeza.", "En la pieza media (cuello).", "En la cola.", "Se pierden."], correct: 1, explanation: "Se enrollan en espiral en el cuello para proporcionar ATP al flagelo." },
+    { topic: "Cuerpos Polares", question: "¿Tienen función reproductiva los cuerpos polares?", options: ["Sí, pueden ser fecundados.", "No, generalmente degeneran.", "Se convierten en placenta.", "Nutren al espermatozoide."], correct: 1, explanation: "Son subproductos genéticos sin citoplasma suficiente para el desarrollo." },
+    { topic: "Ploidía", question: "¿Cuál es la ploidía de una espermátida?", options: ["2n (Diploide).", "n (Haploide).", "4n.", "No tiene ADN."], correct: 1, explanation: "Ya ha terminado la meiosis, pero aún no se ha diferenciado morfológicamente." },
+    { topic: "Comparación", question: "¿Qué gametogénesis tiene una fase de 'pausa' que puede durar 40 o 50 años?", options: ["Espermatogénesis.", "Ovogénesis.", "Ambas.", "Ninguno."], correct: 1, explanation: "Un ovocito puede estar detenido en Profase I desde el feto hasta justo antes de la menopausia." },
 
     // --- 4.0 FECUNDACIÓN (51-62) ---
-    {
-        topic: "Corona Radiada",
-        question: "¿Cómo atraviesa el espermatozoide la corona radiada?",
-        options: ["Por fuerza bruta.", "Gracias a la enzima hialuronidasa y el movimiento del flagelo.", "Esperando que se abra.", "Comiéndosela."],
-        correct: 1,
-        explanation: "La hialuronidasa digiere la matriz entre las células foliculares."
-    },
-    {
-        topic: "Zona Pelúcida",
-        question: "¿Qué es la Zona Pelúcida?",
-        options: ["La membrana del óvulo.", "Una matriz glicoproteica que rodea al ovocito.", "El núcleo del óvulo.", "Una capa de células."],
-        correct: 1,
-        explanation: "Es la cubierta protectora esencial para el reconocimiento específico de especie."
-    },
-    {
-        topic: "Reconocimiento",
-        question: "¿A qué receptor de la zona pelúcida se une el espermatozoide?",
-        options: ["ZP1.", "ZP2.", "ZP3.", "ZP4."],
-        correct: 2,
-        explanation: "ZP3 es la glicoproteína clave para el reconocimiento y la inducción de la reacción acrosómica."
-    },
-    {
-        topic: "Reacción Acrosómica",
-        question: "¿Qué ocurre en la reacción acrosómica?",
-        options: ["El espermatozoide pierde la cola.", "Se liberan enzimas hidrolíticas (acrosina) para perforar la zona pelúcida.", "El óvulo se divide.", "Se fusionan los núcleos."],
-        correct: 1,
-        explanation: "El acrosoma libera su contenido, digiriendo un túnel a través de la zona pelúcida."
-    },
-    {
-        topic: "Fusión",
-        question: "¿Qué sucede tras la penetración de la zona pelúcida?",
-        options: ["El espermatozoide muere.", "La membrana del espermatozoide se fusiona con la del ovocito.", "Se forma la placenta.", "Ocurre otra meiosis."],
-        correct: 1,
-        explanation: "Las membranas plasmáticas se fusionan y el contenido del espermatozoide entra al citoplasma."
-    },
-    {
-        topic: "Polispermia",
-        question: "¿Qué es el bloqueo de la polispermia?",
-        options: ["Impedir que el espermatozoide entre.", "Mecanismo para evitar la fecundación por más de un espermatozoide.", "Fecundar con muchos espermatozoides.", "Destruir el óvulo."],
-        correct: 1,
-        explanation: "Es vital para mantener la diploidía; la entrada de varios espermatozoides sería letal."
-    },
-    {
-        topic: "Reacción Cortical",
-        question: "¿Cómo se logra el bloqueo de la polispermia (Reacción Cortical)?",
-        options: ["Liberando gránulos corticales que endurecen la zona pelúcida y modifican ZP3.", "Cerrando la vagina.", "Matando a los espermatozoides.", "El óvulo se encoge."],
-        correct: 0,
-        explanation: "Las enzimas liberadas alteran la zona pelúcida haciéndola impenetrable para otros."
-    },
-    {
-        topic: "Activación",
-        question: "¿Qué efecto tiene la entrada del espermatozoide en el ovocito?",
-        options: ["Lo mata.", "Activa metabólicamente al ovocito y provoca la finalización de la Meiosis II.", "Lo duplica.", "Nada."],
-        correct: 1,
-        explanation: "El 'despertar' del óvulo incluye terminar su división y prepararse para el desarrollo."
-    },
-    {
-        topic: "Pronúcleos",
-        question: "¿Qué son los pronúcleos?",
-        options: ["Núcleos de células somáticas.", "Los núcleos haploides del óvulo y el espermatozoide antes de fusionarse dentro del cigoto.", "Cuerpos polares.", "Núcleos virales."],
-        correct: 1,
-        explanation: "Son los paquetes de ADN materno y paterno visibles en el cigoto antes de la singamia."
-    },
-    {
-        topic: "Singamia",
-        question: "¿Qué marca el final de la fecundación?",
-        options: ["La entrada del esperma.", "La fusión de los pronúcleos (singamia) para formar el cigoto diploide.", "La implantación.", "El nacimiento."],
-        correct: 1,
-        explanation: "Es el momento en que se restablece el genoma completo y único del nuevo individuo."
-    },
-    {
-        topic: "Mitocondrias",
-        question: "¿Qué ocurre con las mitocondrias del espermatozoide tras la fecundación?",
-        options: ["Se replican.", "Son degradadas; solo se conservan las maternas.", "Se fusionan con las maternas.", "Forman el núcleo."],
-        correct: 1,
-        explanation: "La herencia mitocondrial es materna; las paternas son eliminadas."
-    },
-    {
-        topic: "Definición",
-        question: "¿Qué es el Cigoto?",
-        options: ["Un gameto.", "La primera célula diploide del nuevo organismo.", "Un embrión de 8 células.", "Un feto."],
-        correct: 1,
-        explanation: "Es la célula totipotente resultante de la fecundación."
-    },
+    { topic: "Corona Radiada", question: "¿Cómo atraviesa el espermatozoide la corona radiada?", options: ["Por fuerza bruta.", "Gracias a la enzima hialuronidasa y el movimiento del flagelo.", "Esperando que se abra.", "Comiéndosela."], correct: 1, explanation: "La hialuronidasa digiere la matriz entre las células foliculares." },
+    { topic: "Zona Pelúcida", question: "¿Qué es la Zona Pelúcida?", options: ["La membrana del óvulo.", "Una matriz glicoproteica que rodea al ovocito.", "El núcleo del óvulo.", "Una capa de células."], correct: 1, explanation: "Es la cubierta protectora esencial para el reconocimiento específico de especie." },
+    { topic: "Reconocimiento", question: "¿A qué receptor de la zona pelúcida se une el espermatozoide?", options: ["ZP1.", "ZP2.", "ZP3.", "ZP4."], correct: 2, explanation: "ZP3 es la glicoproteína clave para el reconocimiento y la inducción de la reacción acrosómica." },
+    { topic: "Reacción Acrosómica", question: "¿Qué ocurre en la reacción acrosómica?", options: ["El espermatozoide pierde la cola.", "Se liberan enzimas hidrolíticas (acrosina) para perforar la zona pelúcida.", "El óvulo se divide.", "Se fusionan los núcleos."], correct: 1, explanation: "El acrosoma libera su contenido, digiriendo un túnel a través de la zona pelúcida." },
+    { topic: "Fusión", question: "¿Qué sucede tras la penetración de la zona pelúcida?", options: ["El espermatozoide muere.", "La membrana del espermatozoide se fusiona con la del ovocito.", "Se forma la placenta.", "Ocurre otra meiosis."], correct: 1, explanation: "Las membranas plasmáticas se fusionan y el contenido del espermatozoide entra al citoplasma." },
+    { topic: "Polispermia", question: "¿Qué es el bloqueo de la polispermia?", options: ["Impedir que el espermatozoide entre.", "Mecanismo para evitar la fecundación por más de un espermatozoide.", "Fecundar con muchos espermatozoides.", "Destruir el óvulo."], correct: 1, explanation: "Es vital para mantener la diploidía; la entrada de varios espermatozoides sería letal." },
+    { topic: "Reacción Cortical", question: "¿Cómo se logra el bloqueo de la polispermia (Reacción Cortical)?", options: ["Liberando gránulos corticales que endurecen la zona pelúcida y modifican ZP3.", "Cerrando la vagina.", "Matando a los espermatozoides.", "El óvulo se encoge."], correct: 0, explanation: "Las enzimas liberadas alteran la zona pelúcida haciéndola impenetrable para otros." },
+    { topic: "Activación", question: "¿Qué efecto tiene la entrada del espermatozoide en el ovocito?", options: ["Lo mata.", "Activa metabólicamente al ovocito y provoca la finalización de la Meiosis II.", "Lo duplica.", "Nada."], correct: 1, explanation: "El 'despertar' del óvulo incluye terminar su división y prepararse para el desarrollo." },
+    { topic: "Pronúcleos", question: "¿Qué son los pronúcleos?", options: ["Núcleos de células somáticas.", "Los núcleos haploides del óvulo y el espermatozoide antes de fusionarse dentro del cigoto.", "Cuerpos polares.", "Núcleos virales."], correct: 1, explanation: "Son los paquetes de ADN materno y paterno visibles en el cigoto antes de la singamia." },
+    { topic: "Singamia", question: "¿Qué marca el final de la fecundación?", options: ["La entrada del esperma.", "La fusión de los pronúcleos (singamia) para formar el cigoto diploide.", "La implantación.", "El nacimiento."], correct: 1, explanation: "Es el momento en que se restablece el genoma completo y único del nuevo individuo." },
+    { topic: "Mitocondrias", question: "¿Qué ocurre con las mitocondrias del espermatozoide tras la fecundación?", options: ["Se replican.", "Son degradadas; solo se conservan las maternas.", "Se fusionan con las maternas.", "Forman el núcleo."], correct: 1, explanation: "La herencia mitocondrial es materna; las paternas son eliminadas." },
+    { topic: "Definición", question: "¿Qué es el Cigoto?", options: ["Un gameto.", "La primera célula diploide del nuevo organismo.", "Un embrión de 8 células.", "Un feto."], correct: 1, explanation: "Es la célula totipotente resultante de la fecundación." },
 
     // --- 5.0 FENÓMENOS ESPECIALES Y TECNOLOGÍA (63-75) ---
-    {
-        topic: "Gemelos",
-        question: "¿Cómo se originan los gemelos dicigóticos ('fraternos')?",
-        options: ["Un óvulo se divide en dos.", "Fecundación de dos óvulos distintos por dos espermatozoides distintos.", "Clonación.", "Fecundación de un óvulo por dos espermatozoides."],
-        correct: 1,
-        explanation: "Son hermanos que coinciden en el tiempo; comparten el 50% de ADN como cualquier hermano."
-    },
-    {
-        topic: "Gemelos",
-        question: "¿Cómo se originan los gemelos monocigóticos ('idénticos')?",
-        options: ["Dos óvulos fecundados.", "Un único cigoto que se divide en dos embriones en etapas tempranas.", "Mutación genética.", "Fusión de dos embriones."],
-        correct: 1,
-        explanation: "Son clones naturales; comparten el 100% de su secuencia de ADN."
-    },
-    {
-        topic: "Gemelos",
-        question: "¿Qué tipo de gemelos son siempre del mismo sexo?",
-        options: ["Dicigóticos.", "Monocigóticos.", "Ambos.", "Ninguno."],
-        correct: 1,
-        explanation: "Al tener el mismo genoma (incluyendo XY o XX), tienen el mismo sexo."
-    },
-    {
-        topic: "Clonación",
-        question: "¿Qué técnica se usó para crear a la oveja Dolly?",
-        options: ["FIV.", "Transferencia Nuclear de Células Somáticas (TNCS).", "Bipartición embrionaria.", "Inseminación artificial."],
-        correct: 1,
-        explanation: "Se transfirió el núcleo de una célula adulta (ubre) a un óvulo enucleado."
-    },
-    {
-        topic: "Clonación",
-        question: "¿Qué demostró el experimento de Dolly?",
-        options: ["Que las ovejas no pueden clonarse.", "Que el núcleo de una célula diferenciada puede ser reprogramado para generar un organismo completo.", "Que el ADN se pierde al envejecer.", "Que se necesita esperma."],
-        correct: 1,
-        explanation: "Rompió el dogma de la irreversibilidad del desarrollo."
-    },
-    {
-        topic: "Clonación",
-        question: "¿Qué es la clonación terapéutica?",
-        options: ["Crear bebés.", "Crear embriones para obtener células madre compatibles y tratar enfermedades, no para nacer.", "Curar ovejas.", "Congelar óvulos."],
-        correct: 1,
-        explanation: "El objetivo es obtener tejidos para trasplantes, no individuos completos."
-    },
-    {
-        topic: "TRA",
-        question: "¿Qué es la Fecundación in Vitro (FIV)?",
-        options: ["Inyectar esperma en el útero.", "Fecundar óvulos con espermatozoides en el laboratorio (placa de cultivo).", "Clonación.", "Ecografía."],
-        correct: 1,
-        explanation: "La unión de gametos ocurre fuera del cuerpo, y luego se transfiere el embrión."
-    },
-    {
-        topic: "TRA",
-        question: "¿Qué es la ICSI?",
-        options: ["Inyección Intracitoplasmática de Espermatozoides.", "Inseminación Casera.", "Infección Celular.", "Implante de Cigoto."],
-        correct: 0,
-        explanation: "Es una variante de FIV donde se inyecta un solo espermatozoide directamente dentro del óvulo (útil en infertilidad masculina severa)."
-    },
-    {
-        topic: "TRA",
-        question: "¿Qué es el DGP (Diagnóstico Genético Preimplantacional)?",
-        options: ["Analizar el ADN de los padres.", "Analizar genéticamente una célula del embrión (FIV) antes de transferirlo al útero.", "Operar al feto.", "Elegir el nombre del bebé."],
-        correct: 1,
-        explanation: "Permite seleccionar embriones sanos libres de enfermedades genéticas o aneuploidías."
-    },
-    {
-        topic: "Epigenética",
-        question: "¿Por qué los gemelos idénticos pueden ser diferentes (ej. enfermedades) aunque tengan el mismo ADN?",
-        options: ["Tienen diferente ADN mitocondrial.", "Por influencias ambientales y cambios epigenéticos (metilación) a lo largo de la vida.", "No pueden ser diferentes.", "Uno es adoptado."],
-        correct: 1,
-        explanation: "El ambiente modifica la expresión de los genes (epigenoma) haciendo que diverjan con el tiempo."
-    },
-    {
-        topic: "Bipartición",
-        question: "¿Qué es la bipartición embrionaria?",
-        options: ["Clonación artificial dividiendo un embrión temprano en dos mitades.", "La división de bacterias.", "La muerte del embrión.", "La formación de gametos."],
-        correct: 0,
-        explanation: "Es una forma de inducir gemelos idénticos artificialmente (usado en ganadería)."
-    },
-    {
-        topic: "IA",
-        question: "¿Qué es la Inseminación Artificial?",
-        options: ["Fecundación en laboratorio.", "Depositar semen preparado en el útero de la mujer.", "Crear esperma sintético.", "Uso de robots."],
-        correct: 1,
-        explanation: "Es la técnica más sencilla, facilitando el encuentro de gametos dentro del cuerpo."
-    },
-    {
-        topic: "Resumen",
-        question: "¿Qué célula humana es haploide?",
-        options: ["Neurona.", "Hepatocito.", "Espermatozoide.", "Zigoto."],
-        correct: 2,
-        explanation: "Solo los gametos son haploides (n)."
-    }
+    { topic: "Gemelos", question: "¿Cómo se originan los gemelos dicigóticos ('fraternos')?", options: ["Un óvulo se divide en dos.", "Fecundación de dos óvulos distintos por dos espermatozoides distintos.", "Clonación.", "Fecundación de un óvulo por dos espermatozoides."], correct: 1, explanation: "Son hermanos que coinciden en el tiempo; comparten el 50% de ADN como cualquier hermano." },
+    { topic: "Gemelos", question: "¿Cómo se originan los gemelos monocigóticos ('idénticos')?", options: ["Dos óvulos fecundados.", "Un único cigoto que se divide en dos embriones en etapas tempranas.", "Mutación genética.", "Fusión de dos embriones."], correct: 1, explanation: "Son clones naturales; comparten el 100% de su secuencia de ADN." },
+    { topic: "Gemelos", question: "¿Qué tipo de gemelos son siempre del mismo sexo?", options: ["Dicigóticos.", "Monocigóticos.", "Ambos.", "Ninguno."], correct: 1, explanation: "Al tener el mismo genoma (incluyendo XY o XX), tienen el mismo sexo." },
+    { topic: "Clonación", question: "¿Qué técnica se usó para crear a la oveja Dolly?", options: ["FIV.", "Transferencia Nuclear de Células Somáticas (TNCS).", "Bipartición embrionaria.", "Inseminación artificial."], correct: 1, explanation: "Se transfirió el núcleo de una célula adulta (ubre) a un óvulo enucleado." },
+    { topic: "Clonación", question: "¿Qué demostró el experimento de Dolly?", options: ["Que las ovejas no pueden clonarse.", "Que el núcleo de una célula diferenciada puede ser reprogramado para generar un organismo completo.", "Que el ADN se pierde al envejecer.", "Que se necesita esperma."], correct: 1, explanation: "Rompió el dogma de la irreversibilidad del desarrollo." },
+    { topic: "Clonación", question: "¿Qué es la clonación terapéutica?", options: ["Crear bebés.", "Crear embriones para obtener células madre compatibles y tratar enfermedades, no para nacer.", "Curar ovejas.", "Congelar óvulos."], correct: 1, explanation: "El objetivo es obtener tejidos para trasplantes, no individuos completos." },
+    { topic: "TRA", question: "¿Qué es la Fecundación in Vitro (FIV)?", options: ["Inyectar esperma en el útero.", "Fecundar óvulos con espermatozoides en el laboratorio (placa de cultivo).", "Clonación.", "Ecografía."], correct: 1, explanation: "La unión de gametos ocurre fuera del cuerpo, y luego se transfiere el embrión." },
+    { topic: "TRA", question: "¿Qué es la ICSI?", options: ["Inyección Intracitoplasmática de Espermatozoides.", "Inseminación Casera.", "Infección Celular.", "Implante de Cigoto."], correct: 0, explanation: "Es una variante de FIV donde se inyecta un solo espermatozoide directamente dentro del óvulo (útil en infertilidad masculina severa)." },
+    { topic: "TRA", question: "¿Qué es el DGP (Diagnóstico Genético Preimplantacional)?", options: ["Analizar el ADN de los padres.", "Analizar genéticamente una célula del embrión (FIV) antes de transferirlo al útero.", "Operar al feto.", "Elegir el nombre del bebé."], correct: 1, explanation: "Permite seleccionar embriones sanos libres de enfermedades genéticas o aneuploidías." },
+    { topic: "Epigenética", question: "¿Por qué los gemelos idénticos pueden ser diferentes (ej. enfermedades) aunque tengan el mismo ADN?", options: ["Tienen diferente ADN mitocondrial.", "Por influencias ambientales y cambios epigenéticos (metilación) a lo largo de la vida.", "No pueden ser diferentes.", "Uno es adoptado."], correct: 1, explanation: "El ambiente modifica la expresión de los genes (epigenoma) haciendo que diverjan con el tiempo." },
+    { topic: "Bipartición", question: "¿Qué es la bipartición embrionaria?", options: ["Clonación artificial dividiendo un embrión temprano en dos mitades.", "La división de bacterias.", "La muerte del embrión.", "La formación de gametos."], correct: 0, explanation: "Es una forma de inducir gemelos idénticos artificialmente (usado en ganadería)." },
+    { topic: "IA", question: "¿Qué es la Inseminación Artificial?", options: ["Fecundación en laboratorio.", "Depositar semen preparado en el útero de la mujer.", "Crear esperma sintético.", "Uso de robots."], correct: 1, explanation: "Es la técnica más sencilla, facilitando el encuentro de gametos dentro del cuerpo." },
+    { topic: "Resumen", question: "¿Qué célula humana es haploide?", options: ["Neurona.", "Hepatocito.", "Espermatozoide.", "Zigoto."], correct: 2, explanation: "Solo los gametos son haploides (n)." }
 ];
 
-let currentQuestion = 0;
-let score = 0;
+// --- GESTIÓN DE ESTADO ---
+quizData.forEach(q => {
+    q.isMarked = false;
+    q.userCorrect = null;
+});
+
+let activeIndices = []; 
+let currentPlaylistIndex = 0;
+let sessionScore = 0;
 let answered = false;
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadQuestion();
+    startQuiz('all');
 });
 
-function loadQuestion() {
-    const container = document.getElementById('quiz-container');
-    const q = quizData[currentQuestion];
+function startQuiz(mode) {
+    activeIndices = [];
+
+    // Lógica para filtrar preguntas
+    if (mode === 'all') {
+        quizData.forEach(q => q.userCorrect = null); // Resetear respuestas
+        // Opcional: resetear marcas con quizData.forEach(q => q.isMarked = false);
+        activeIndices = quizData.map((_, i) => i);
+    } 
+    else if (mode === 'failed') {
+        activeIndices = quizData.map((q, i) => q.userCorrect === false ? i : -1).filter(i => i !== -1);
+    } 
+    else if (mode === 'marked') {
+        activeIndices = quizData.map((q, i) => q.isMarked ? i : -1).filter(i => i !== -1);
+    } 
+    else if (mode === 'mixed') {
+        activeIndices = quizData.map((q, i) => (q.userCorrect === false || q.isMarked) ? i : -1).filter(i => i !== -1);
+    }
+
+    if (activeIndices.length === 0) {
+        alert("No hay preguntas disponibles para este modo.");
+        return;
+    }
+
+    currentPlaylistIndex = 0;
+    sessionScore = 0;
     
-    document.getElementById('q-progress').innerText = `Pregunta ${currentQuestion + 1} de ${quizData.length}`;
-    document.getElementById('score-display').innerText = `Puntuación: ${score}`;
+    document.getElementById('results-screen').style.display = 'none';
+    document.getElementById('quiz-container').style.display = 'block';
+    document.getElementById('statusBar').style.display = 'flex';
+    
+    loadQuestion();
+}
+
+function loadQuestion() {
+    answered = false;
+    const realIndex = activeIndices[currentPlaylistIndex];
+    const q = quizData[realIndex];
+    
+    document.getElementById('q-progress').innerText = `Pregunta ${currentPlaylistIndex + 1} de ${activeIndices.length}`;
+    document.getElementById('score-display').innerText = `Aciertos: ${sessionScore}`;
+
+    const container = document.getElementById('quiz-container');
+    const checkedAttr = q.isMarked ? 'checked' : '';
 
     let html = `
         <div class="question-card active">
+            <label class="bookmark-panel">
+                <input type="checkbox" onchange="toggleMark(${realIndex}, this)" ${checkedAttr}>
+                <span>Marcar</span>
+            </label>
+
             <div class="question-header">${q.topic}</div>
             <div class="question-text">${q.question}</div>
             <div class="options-list">
                 ${q.options.map((opt, i) => `
-                    <button class="option-btn" onclick="checkAnswer(${i}, ${q.correct}, this)">
+                    <button class="option-btn" onclick="checkAnswer(${i}, ${q.correct}, this, ${realIndex})">
                         ${String.fromCharCode(65+i)}. ${opt}
                     </button>
                 `).join('')}
@@ -748,10 +417,13 @@ function loadQuestion() {
     `;
     
     container.innerHTML = html;
-    answered = false;
 }
 
-function checkAnswer(selected, correct, btn) {
+function toggleMark(realIndex, checkbox) {
+    quizData[realIndex].isMarked = checkbox.checked;
+}
+
+function checkAnswer(selected, correct, btn, realIndex) {
     if(answered) return;
     answered = true;
 
@@ -762,24 +434,25 @@ function checkAnswer(selected, correct, btn) {
     allBtns.forEach(b => b.disabled = true);
 
     if(selected === correct) {
-        score++;
+        sessionScore++;
+        quizData[realIndex].userCorrect = true;
         btn.classList.add('correct');
-        feedback.innerHTML = `<strong style="color:var(--success)">¡Correcto!</strong> <div class="rationale">${quizData[currentQuestion].explanation}</div>`;
+        feedback.innerHTML = `<strong style="color:var(--success)">¡Correcto!</strong> <div class="rationale">${quizData[realIndex].explanation}</div>`;
     } else {
+        quizData[realIndex].userCorrect = false;
         btn.classList.add('incorrect');
         allBtns[correct].classList.add('correct');
-        feedback.innerHTML = `<strong style="color:var(--danger)">Incorrecto.</strong> <div class="rationale">${quizData[currentQuestion].explanation}</div>`;
+        feedback.innerHTML = `<strong style="color:var(--danger)">Incorrecto.</strong> <div class="rationale">${quizData[realIndex].explanation}</div>`;
     }
 
     feedback.classList.add('show');
     nextBtn.style.display = 'block';
-    
-    document.getElementById('score-display').innerText = `Puntuación: ${score}`;
+    document.getElementById('score-display').innerText = `Aciertos: ${sessionScore}`;
 }
 
 function nextQuestion() {
-    if(currentQuestion < quizData.length - 1) {
-        currentQuestion++;
+    if(currentPlaylistIndex < activeIndices.length - 1) {
+        currentPlaylistIndex++;
         loadQuestion();
     } else {
         showResults();
@@ -791,16 +464,33 @@ function showResults() {
     document.getElementById('quiz-container').style.display = 'none';
     document.getElementById('results-screen').style.display = 'block';
     
-    document.getElementById('final-number').innerText = `${score} / ${quizData.length}`;
+    document.getElementById('final-number').innerText = `${sessionScore} / ${activeIndices.length}`;
     
-    const percent = (score / quizData.length) * 100;
+    const percent = Math.round((sessionScore / activeIndices.length) * 100);
     let msg = "";
-    if(percent >= 90) msg = "¡Brillante! Un cierre perfecto de asignatura.";
-    else if(percent >= 70) msg = "¡Muy bien! Estás listo para el examen final.";
-    else if(percent >= 50) msg = "Aprobado. Repasa los detalles de la meiosis.";
-    else msg = "Necesitas estudiar más este último bloque.";
+    if(percent >= 90) msg = "¡Excelente!";
+    else if(percent >= 70) msg = "¡Muy bien!";
+    else if(percent >= 50) msg = "Aprobado.";
+    else msg = "Necesitas repasar.";
     
-    document.getElementById('final-text').innerText = msg;
+    document.getElementById('final-text').innerText = `${percent}% - ${msg}`;
+
+    // Stats
+    const totalFailed = quizData.filter(q => q.userCorrect === false).length;
+    const totalMarked = quizData.filter(q => q.isMarked === true).length;
+    const totalMixed = quizData.filter(q => q.userCorrect === false || q.isMarked).length;
+
+    document.getElementById('stats-box').innerHTML = `
+        <strong>Resumen Global:</strong><br>
+        Marcadas: ${totalMarked} | Falladas: ${totalFailed}
+    `;
+
+    document.getElementById('btn-failed').disabled = (totalFailed === 0);
+    document.getElementById('btn-marked').disabled = (totalMarked === 0);
+    document.getElementById('btn-mixed').disabled = (totalMixed === 0);
+    
+    document.getElementById('btn-failed').innerText = `❌ Repetir Falladas (${totalFailed})`;
+    document.getElementById('btn-marked').innerText = `⚠️ Repetir Marcadas (${totalMarked})`;
 }
 </script>
 
