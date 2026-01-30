@@ -24,6 +24,7 @@
             max-width: 800px;
             padding: 30px;
             text-align: left;
+            position: relative; /* Para posicionar elementos absolutos */
         }
 
         .header {
@@ -44,6 +45,23 @@
             color: #2c3e50;
             font-weight: bold;
             font-size: 1.1em;
+        }
+
+        /* --- Estilos para el Marcador --- */
+        .mark-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #d35400;
+            cursor: pointer;
+            width: fit-content;
+        }
+        
+        .mark-container input {
+            margin-right: 8px;
+            transform: scale(1.3);
+            cursor: pointer;
         }
 
         .question {
@@ -116,19 +134,41 @@
             display: none;
         }
         
+        /* Botones de reinicio */
+        .retry-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
         .restart-btn {
             background-color: #95a5a6;
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 15px;
             border-radius: 6px;
             cursor: pointer;
-            margin-top: 20px;
             font-size: 1rem;
+            transition: opacity 0.2s;
         }
         
-        .restart-btn:hover {
-            background-color: #7f8c8d;
+        .restart-btn:hover { opacity: 0.9; }
+        .btn-full { background-color: #3498db; }
+        .btn-failed { background-color: #e74c3c; }
+        .btn-marked { background-color: #f39c12; }
+        .btn-mixed { background-color: #8e44ad; }
+        
+        .restart-btn:disabled {
+            background-color: #e0e0e0;
+            color: #aaa;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 600px) {
+            .retry-options {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -140,6 +180,11 @@
         <span class="score" id="score">Aciertos: 0</span>
     </div>
     
+    <label class="mark-container">
+        <input type="checkbox" id="mark-checkbox" onchange="toggleMark()">
+        <span>Marcar para revisar luego</span>
+    </label>
+    
     <div class="question" id="question-text">Cargando...</div>
     
     <div class="options" id="options-container"></div>
@@ -148,15 +193,24 @@
 </div>
 
 <div class="quiz-container result-container" id="result-box">
-    <h2>¡Quiz Completado!</h2>
-    <p style="font-size: 1.3em; margin: 20px 0;">Has acertado <span id="final-score" style="font-weight:bold; color:#27ae60;"></span> de <span id="total-questions"></span></p>
-    <button class="restart-btn" onclick="restartQuiz()">Volver a intentar</button>
+    <h2>¡Sesión Completada!</h2>
+    <p style="font-size: 1.3em; margin: 20px 0;">
+        Nota acumulada: <span id="final-score" style="font-weight:bold; color:#27ae60;"></span> / <span id="total-questions"></span>
+    </p>
+    <p id="mode-info" style="color: #7f8c8d; font-size: 0.9em;"></p>
+
+    <h3>¿Qué deseas hacer ahora?</h3>
+    <div class="retry-options">
+        <button class="restart-btn btn-full" onclick="initQuiz('all')">🔄 Repetir Completo</button>
+        <button class="restart-btn btn-failed" id="btn-retry-failed" onclick="initQuiz('failed')">❌ Repetir Falladas</button>
+        <button class="restart-btn btn-marked" id="btn-retry-marked" onclick="initQuiz('marked')">🚩 Repetir Marcadas</button>
+        <button class="restart-btn btn-mixed" id="btn-retry-mixed" onclick="initQuiz('mixed')">❌ + 🚩 Falladas y Marcadas</button>
+    </div>
 </div>
 
 <script>
     // Preguntas extraídas del documento unificado sevilla y granada.docx
-    // Bloque 1 (1-36) y Bloque 2 (1-44) para sumar 80 preguntas.
-    const questions = [
+    const rawQuestions = [
         // --- BLOQUE 1: Biología Celular ---
         { q: "¿Cuál de los siguientes orgánulos contiene las enzimas oxidativas para la degradación de lípidos y sustancias tóxicas?", options: ["lisosomas", "endosoma", "peroxisoma", "RE"], correct: 2 },
         { q: "Los hemidesmosomas son un tipo de unión:", options: ["célula-célula con anclaje de filamentos intermedios", "célula-matriz con anclaje de microfilamentos de actina", "célula-célula con anclaje de microfilamentos de actina", "célula-matriz con anclaje de filamentos intermedios"], correct: 3 },
@@ -242,10 +296,17 @@
         { q: "El blastocisto se implanta por la zona del:", options: ["Polo embrionario.", "Polo abembrionario.", "Citotrofoblasto.", "Blastocele."], correct: 0 }
     ];
 
-    let currentQuestionIndex = 0;
-    let score = 0;
+    // Inicializamos el estado de las preguntas
+    // state: null (sin responder), 'correct', 'incorrect'
+    // marked: boolean
+    let questions = rawQuestions.map(q => ({...q, state: null, marked: false}));
+
+    // Variables de control del quiz
+    let quizIndices = []; // Índices de las preguntas que se van a mostrar en esta ronda
+    let currentStep = 0;  // Posición actual dentro de quizIndices
     let answered = false;
 
+    // Referencias al DOM
     const questionElement = document.getElementById("question-text");
     const optionsContainer = document.getElementById("options-container");
     const nextBtn = document.getElementById("next-btn");
@@ -254,17 +315,58 @@
     const quizBox = document.getElementById("quiz-box");
     const resultBox = document.getElementById("result-box");
     const finalScore = document.getElementById("final-score");
-    const totalQuestions = document.getElementById("total-questions");
+    const totalQuestionsSpan = document.getElementById("total-questions");
+    const markCheckbox = document.getElementById("mark-checkbox");
+    const modeInfo = document.getElementById("mode-info");
+
+    // Función para iniciar el Quiz con un modo específico
+    function initQuiz(mode = 'all') {
+        // 1. Definir qué preguntas entran en esta ronda
+        if (mode === 'all') {
+            // Reinicio total: limpiamos estados
+            questions = rawQuestions.map(q => ({...q, state: null, marked: false}));
+            quizIndices = questions.map((_, i) => i);
+            modeInfo.innerText = "Modo: Test Completo";
+        } else if (mode === 'failed') {
+            quizIndices = questions.map((q, i) => i).filter(i => questions[i].state === 'incorrect');
+            modeInfo.innerText = "Modo: Repasar Falladas";
+        } else if (mode === 'marked') {
+            quizIndices = questions.map((q, i) => i).filter(i => questions[i].marked);
+            modeInfo.innerText = "Modo: Repasar Marcadas";
+        } else if (mode === 'mixed') {
+            quizIndices = questions.map((q, i) => i).filter(i => questions[i].state === 'incorrect' || questions[i].marked);
+            modeInfo.innerText = "Modo: Falladas + Marcadas";
+        }
+
+        if (quizIndices.length === 0) {
+            alert("No hay preguntas en esta categoría para repasar.");
+            return;
+        }
+
+        currentStep = 0;
+        
+        // Mostrar caja del quiz, ocultar resultados
+        quizBox.style.display = "block";
+        resultBox.style.display = "none";
+        
+        loadQuestion();
+        updateScoreDisplay();
+    }
 
     function loadQuestion() {
         answered = false;
         nextBtn.style.display = "none";
         
-        const currentQuestion = questions[currentQuestionIndex];
+        // Obtener el índice real de la pregunta en el array principal
+        const realIndex = quizIndices[currentStep];
+        const currentQuestion = questions[realIndex];
         
         // Actualizar textos
-        questionElement.innerText = `${currentQuestionIndex + 1}. ${currentQuestion.q}`;
-        progressText.innerText = `Pregunta ${currentQuestionIndex + 1} de ${questions.length}`;
+        questionElement.innerText = `${realIndex + 1}. ${currentQuestion.q}`;
+        progressText.innerText = `Pregunta ${currentStep + 1} de ${quizIndices.length}`;
+        
+        // Configurar checkbox de marcado
+        markCheckbox.checked = currentQuestion.marked;
         
         // Limpiar opciones anteriores
         optionsContainer.innerHTML = "";
@@ -279,22 +381,30 @@
         });
     }
 
+    function toggleMark() {
+        const realIndex = quizIndices[currentStep];
+        questions[realIndex].marked = markCheckbox.checked;
+    }
+
     function checkAnswer(selectedIndex, selectedButton) {
         if (answered) return;
         answered = true;
 
-        const currentQuestion = questions[currentQuestionIndex];
+        const realIndex = quizIndices[currentStep];
+        const currentQuestion = questions[realIndex];
         const allButtons = optionsContainer.children;
 
         if (selectedIndex === currentQuestion.correct) {
             selectedButton.classList.add("correct");
-            score++;
-            scoreText.innerText = `Aciertos: ${score}`;
+            currentQuestion.state = 'correct';
         } else {
             selectedButton.classList.add("incorrect");
             // Mostrar la correcta
             allButtons[currentQuestion.correct].classList.add("correct");
+            currentQuestion.state = 'incorrect';
         }
+        
+        updateScoreDisplay();
 
         // Deshabilitar todos los botones
         for (let btn of allButtons) {
@@ -307,61 +417,73 @@
     }
 
     function nextQuestion() {
-        currentQuestionIndex++;
-        if (currentQuestionIndex < questions.length) {
+        currentStep++;
+        if (currentStep < quizIndices.length) {
             loadQuestion();
         } else {
             showResults();
         }
     }
 
+    function getGlobalScore() {
+        return questions.filter(q => q.state === 'correct').length;
+    }
+    
+    function updateScoreDisplay() {
+        scoreText.innerText = `Aciertos Globales: ${getGlobalScore()}`;
+    }
+
     function showResults() {
         quizBox.style.display = "none";
         resultBox.style.display = "block";
-        finalScore.innerText = score;
-        totalQuestions.innerText = questions.length;
+        
+        // Calcular contadores para habilitar/deshabilitar botones
+        const failedCount = questions.filter(q => q.state === 'incorrect').length;
+        const markedCount = questions.filter(q => q.marked).length;
+        const mixedCount = questions.filter(q => q.state === 'incorrect' || q.marked).length;
+
+        finalScore.innerText = getGlobalScore();
+        totalQuestionsSpan.innerText = questions.length;
+
+        // Configurar estado de botones
+        document.getElementById('btn-retry-failed').disabled = (failedCount === 0);
+        document.getElementById('btn-retry-failed').innerText = `❌ Repetir Falladas (${failedCount})`;
+        
+        document.getElementById('btn-retry-marked').disabled = (markedCount === 0);
+        document.getElementById('btn-retry-marked').innerText = `🚩 Repetir Marcadas (${markedCount})`;
+        
+        document.getElementById('btn-retry-mixed').disabled = (mixedCount === 0);
+        document.getElementById('btn-retry-mixed').innerText = `❌ + 🚩 Falladas y Marcadas (${mixedCount})`;
     }
 
-    function restartQuiz() {
-        currentQuestionIndex = 0;
-        score = 0;
-        scoreText.innerText = "Aciertos: 0";
-        quizBox.style.display = "block";
-        resultBox.style.display = "none";
-        loadQuestion();
-    }
-
-    // Iniciar el quiz
-    loadQuestion();
+    // Iniciar el quiz la primera vez
+    initQuiz('all');
 </script>
+
 <script>
 (function() {
-    // 1. Obtener ID del examen
+    // Código para gestionar localStorage y comunicación con índice externo
     const params = new URLSearchParams(window.location.search);
     const testId = params.get('id');
 
     if (testId) {
-        // 2. Vigilar cuando aparece la caja de resultados
         const resultBox = document.getElementById('result-box');
         
-        // Creamos un observador que detecta cambios en el estilo (display: none -> block)
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
-                // Si la caja de resultados se hace visible
                 if (resultBox.style.display === 'block') {
                     
-                    // A. Leer la puntuación que calculó el test
-                    // El test pone el número de aciertos en el span id="final-score"
                     const scoreText = document.getElementById('final-score').innerText;
-                    // Limpiamos el texto por si dice "50 / 80" o solo "50"
-                    const aciertos = parseInt(scoreText.split('/')[0]);
+                    const aciertos = parseInt(scoreText);
                     
-                    // B. Calcular porcentaje (usamos la variable 'questions' que ya existe en tu test)
-                    const total = questions.length;
+                    // Usamos rawQuestions.length para el total siempre
+                    const total = rawQuestions.length;
                     const porcentaje = Math.round((aciertos / total) * 100);
 
-                    // C. Guardar datos
+                    // Guardar datos
                     let intentos = parseInt(localStorage.getItem('intentos_' + testId) || 0);
+                    // Solo incrementamos intento si acabamos el test completo o la nota mejora sustancialmente
+                    // Para simplificar, lo guardamos cada vez que se ve la pantalla de resultados
                     localStorage.setItem('intentos_' + testId, intentos + 1);
 
                     let notaMax = localStorage.getItem('nota_' + testId);
@@ -369,7 +491,6 @@
                         localStorage.setItem('nota_' + testId, porcentaje);
                     }
 
-                    // D. Añadir botón de "Volver" si no existe
                     if (!document.getElementById('btn-volver-menu')) {
                         const btn = document.createElement('button');
                         btn.id = 'btn-volver-menu';
@@ -382,7 +503,6 @@
             });
         });
 
-        // Iniciar la vigilancia
         observer.observe(resultBox, { attributes: true, attributeFilter: ['style'] });
     }
 })();
