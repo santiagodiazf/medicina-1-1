@@ -12,6 +12,7 @@
             --dark: #2c3e50;
             --success: #27ae60;
             --error: #c0392b;
+            --warning: #f1c40f;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -29,6 +30,7 @@
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             border-top: 5px solid var(--primary);
+            min-height: 600px;
         }
         header {
             text-align: center;
@@ -53,9 +55,31 @@
 
         .question-card {
             display: none;
+            position: relative; /* Necesario para posicionar la marca */
             animation: fadeIn 0.4s ease-out;
         }
         .question-card.active { display: block; }
+
+        /* ESTILOS DE LA PESTAÑA DE MARCAR */
+        .bookmark-panel {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #fff9c4;
+            border: 1px solid #fbc02d;
+            color: #f57f17;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s;
+            z-index: 10;
+        }
+        .bookmark-panel:hover { transform: scale(1.05); background: #fff176; }
+        .bookmark-panel input { cursor: pointer; transform: scale(1.3); }
 
         .question-header {
             font-size: 0.9rem;
@@ -64,12 +88,14 @@
             margin-bottom: 10px;
             letter-spacing: 1px;
             font-weight: 700;
+            margin-top: 15px;
         }
 
         .question-text {
             font-size: 1.3rem;
             margin-bottom: 25px;
             font-weight: 600;
+            padding-right: 120px; /* Espacio para la marca */
         }
 
         .options-list {
@@ -135,6 +161,7 @@
         }
         .nav-btn:hover { background: var(--secondary); }
 
+        /* PANTALLA DE RESULTADOS */
         .results-view {
             text-align: center;
             display: none;
@@ -145,6 +172,42 @@
             color: var(--primary);
             margin: 20px 0;
         }
+
+        .stats-summary {
+            background: #fff;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #555;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* GRID DE BOTONES DE ACCIÓN */
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .action-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-size: 1rem;
+        }
+        .action-btn:hover { transform: translateY(-3px); filter: brightness(110%); }
+        .action-btn:disabled { background-color: #bdc3c7 !important; cursor: not-allowed; transform: none; filter: none; }
+
+        .btn-restart { background-color: var(--primary); grid-column: span 2; }
+        .btn-failed { background-color: var(--error); }
+        .btn-marked { background-color: var(--warning); color: #444; }
+        .btn-mixed { background-color: var(--dark); grid-column: span 2; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -158,7 +221,7 @@
     </header>
 
     <div class="status-bar" id="statusBar">
-        <span id="q-progress">Pregunta 1 de 50</span>
+        <span id="q-progress">Cargando...</span>
         <span id="score-display">Aciertos: 0</span>
     </div>
 
@@ -166,398 +229,163 @@
         </div>
 
     <div id="results-screen" class="results-view">
-        <h2>Examen Finalizado</h2>
-        <p>Has completado el test de patología celular.</p>
-        <div class="final-score" id="final-number">0/50</div>
-        <p id="final-text" style="font-size: 1.2rem; margin-bottom: 30px;"></p>
-        <button class="nav-btn" style="display:inline-block; float:none;" onclick="location.reload()">Repetir Examen</button>
+        <h2>Sesión Finalizada</h2>
+        <div class="final-score" id="final-number">0/0</div>
+        <p id="final-text" style="font-size: 1.2rem; margin-bottom: 20px;"></p>
+        
+        <div class="stats-summary" id="stats-box"></div>
+
+        <div class="action-grid">
+            <button class="action-btn btn-restart" onclick="startQuiz('all')">🔄 Reiniciar Test Completo</button>
+            <button class="action-btn btn-failed" id="btn-failed" onclick="startQuiz('failed')">❌ Repetir Falladas</button>
+            <button class="action-btn btn-marked" id="btn-marked" onclick="startQuiz('marked')">⚠️ Repetir Marcadas</button>
+            <button class="action-btn btn-mixed" id="btn-mixed" onclick="startQuiz('mixed')">❌ + ⚠️ Repetir Falladas y Marcadas</button>
+        </div>
     </div>
 </div>
 
 <script>
 const quizData = [
     // --- BLOQUE 2: Mutaciones, Reparación y Splicing ---
-    {
-        topic: "Mutaciones",
-        question: "¿Cuál es la causa molecular de la Anemia Drepanocítica (falciforme)?",
-        options: ["Una deleción en el cromosoma 21.", "Una mutación de un único nucleótido en el gen de la hemoglobina.", "Un error en el splicing del gen SMN1.", "La infección por un retrovirus."],
-        correct: 1,
-        explanation: "Es el ejemplo clásico de enfermedad por mutación puntual, que provoca la deformación de los glóbulos rojos."
-    },
-    {
-        topic: "Cáncer - Reparación ADN",
-        question: "Los defectos en el sistema de reparación de apareamientos erróneos (mismatch repair) predisponen fuertemente a:",
-        options: ["Cáncer de colon.", "Anemia falciforme.", "Atrofia Muscular Espinal.", "Progeria."],
-        correct: 0,
-        explanation: "La incapacidad de corregir errores de replicación acumula mutaciones que conducen al cáncer de colon hereditario."
-    },
-    {
-        topic: "Atrofia Muscular Espinal",
-        question: "¿Qué defecto molecular causa la Atrofia Muscular Espinal (SMA)?",
-        options: ["La duplicación del gen de la miostatina.", "Mutaciones o deleciones en el gen SMN1 y un splicing ineficiente del gen SMN2.", "La pérdida de los telómeros.", "La sobreexpresión de p53."],
-        correct: 1,
-        explanation: "La enfermedad se debe a la falta de proteína SMN funcional, agravada porque la copia de respaldo (SMN2) excluye el exón 7."
-    },
-    {
-        topic: "Terapia SMA",
-        question: "¿Cómo funciona el fármaco Nusinersen (Spinraza®) para tratar la SMA?",
-        options: ["Es un antibiótico que mata bacterias.", "Es un oligonucleótido antisentido que corrige el splicing del gen SMN2 para incluir el exón 7.", "Repara el ADN dañado mediante recombinación homóloga.", "Inhibe la apoptosis de las neuronas."],
-        correct: 1,
-        explanation: "El fármaco modula el procesamiento del pre-ARNm de SMN2 para producir proteína funcional."
-    },
-    {
-        topic: "Cáncer - Mutaciones",
-        question: "¿Qué tipo de mutaciones pueden conducir al desarrollo de cáncer si afectan a genes de control de división?",
-        options: ["Mutaciones en células germinales.", "Mutaciones en células somáticas.", "Mutaciones silenciosas.", "Mutaciones en el ADN mitocondrial."],
-        correct: 1,
-        explanation: "El cáncer surge de la acumulación de mutaciones en células del cuerpo (somáticas) que pierden el control del ciclo."
-    },
-    {
-        topic: "Daño ADN",
-        question: "¿Qué lesión en el ADN es causada comúnmente por la radiación ultravioleta (UV) solar y puede llevar a cáncer de piel si no se repara?",
-        options: ["Desaminación de citosina.", "Dímeros de timina.", "Rotura de doble cadena.", "Pérdida de telómeros."],
-        correct: 1,
-        explanation: "La luz UV provoca enlaces covalentes entre timinas adyacentes, deformando la hélice."
-    },
-    {
-        topic: "Reparación ADN",
-        question: "¿Qué mecanismo de reparación de roturas bicatenarias es propenso a errores y puede causar mutaciones (cicatrices genéticas)?",
-        options: ["Recombinación homóloga.", "Unión de extremos no homólogos (NHEJ).", "Corrección de pruebas.", "Escisión de base."],
-        correct: 1,
-        explanation: "NHEJ une los extremos rotos rápidamente pero a menudo pierde nucleótidos, generando mutaciones."
-    },
+    { topic: "Mutaciones", question: "¿Cuál es la causa molecular de la Anemia Drepanocítica (falciforme)?", options: ["Una deleción en el cromosoma 21.", "Una mutación de un único nucleótido en el gen de la hemoglobina.", "Un error en el splicing del gen SMN1.", "La infección por un retrovirus."], correct: 1, explanation: "Es el ejemplo clásico de enfermedad por mutación puntual, que provoca la deformación de los glóbulos rojos." },
+    { topic: "Cáncer - Reparación ADN", question: "Los defectos en el sistema de reparación de apareamientos erróneos (mismatch repair) predisponen fuertemente a:", options: ["Cáncer de colon.", "Anemia falciforme.", "Atrofia Muscular Espinal.", "Progeria."], correct: 0, explanation: "La incapacidad de corregir errores de replicación acumula mutaciones que conducen al cáncer de colon hereditario." },
+    { topic: "Atrofia Muscular Espinal", question: "¿Qué defecto molecular causa la Atrofia Muscular Espinal (SMA)?", options: ["La duplicación del gen de la miostatina.", "Mutaciones o deleciones en el gen SMN1 y un splicing ineficiente del gen SMN2.", "La pérdida de los telómeros.", "La sobreexpresión de p53."], correct: 1, explanation: "La enfermedad se debe a la falta de proteína SMN funcional, agravada porque la copia de respaldo (SMN2) excluye el exón 7." },
+    { topic: "Terapia SMA", question: "¿Cómo funciona el fármaco Nusinersen (Spinraza®) para tratar la SMA?", options: ["Es un antibiótico que mata bacterias.", "Es un oligonucleótido antisentido que corrige el splicing del gen SMN2 para incluir el exón 7.", "Repara el ADN dañado mediante recombinación homóloga.", "Inhibe la apoptosis de las neuronas."], correct: 1, explanation: "El fármaco modula el procesamiento del pre-ARNm de SMN2 para producir proteína funcional." },
+    { topic: "Cáncer - Mutaciones", question: "¿Qué tipo de mutaciones pueden conducir al desarrollo de cáncer si afectan a genes de control de división?", options: ["Mutaciones en células germinales.", "Mutaciones en células somáticas.", "Mutaciones silenciosas.", "Mutaciones en el ADN mitocondrial."], correct: 1, explanation: "El cáncer surge de la acumulación de mutaciones en células del cuerpo (somáticas) que pierden el control del ciclo." },
+    { topic: "Daño ADN", question: "¿Qué lesión en el ADN es causada comúnmente por la radiación ultravioleta (UV) solar y puede llevar a cáncer de piel si no se repara?", options: ["Desaminación de citosina.", "Dímeros de timina.", "Rotura de doble cadena.", "Pérdida de telómeros."], correct: 1, explanation: "La luz UV provoca enlaces covalentes entre timinas adyacentes, deformando la hélice." },
+    { topic: "Reparación ADN", question: "¿Qué mecanismo de reparación de roturas bicatenarias es propenso a errores y puede causar mutaciones (cicatrices genéticas)?", options: ["Recombinación homóloga.", "Unión de extremos no homólogos (NHEJ).", "Corrección de pruebas.", "Escisión de base."], correct: 1, explanation: "NHEJ une los extremos rotos rápidamente pero a menudo pierde nucleótidos, generando mutaciones." },
 
     // --- BLOQUE 3: Regulación Génica y Virus ---
-    {
-        topic: "Virus - VIH",
-        question: "¿Por qué el VIH-1 evoluciona y genera resistencia tan rápidamente en el paciente?",
-        options: ["Porque su polimerasa corrige errores.", "Porque su transcriptasa inversa no corrige errores, generando una alta tasa de mutación.", "Porque tiene un genoma de ADN estable.", "Porque no entra en el núcleo."],
-        correct: 1,
-        explanation: "La falta de corrección de pruebas de la enzima viral permite una variabilidad enorme para evadir al sistema inmune."
-    },
-    {
-        topic: "Virus - SARS-CoV-2",
-        question: "¿Qué característica del SARS-CoV-2 explica que genere variantes en lugar de cepas completamente nuevas rápidamente?",
-        options: ["Su polimerasa tiene actividad de corrección de pruebas, manteniendo la tasa de mutación relativamente baja.", "Muta más rápido que el VIH.", "Es un virus de ADN.", "Se integra en el genoma humano."],
-        correct: 0,
-        explanation: "A diferencia de otros virus ARN, los coronavirus corrigen errores, lo que limita su velocidad de mutación."
-    },
-    {
-        topic: "Cáncer - Epigenética",
-        question: "¿Cómo puede la hipermetilación del ADN contribuir al cáncer?",
-        options: ["Activando oncogenes.", "Silenciando genes supresores de tumores (inactivando su expresión).", "Reparando el ADN.", "Aumentando la síntesis de proteínas."],
-        correct: 1,
-        explanation: "La metilación en promotores 'apaga' genes que deberían frenar la división celular."
-    },
-    {
-        topic: "Variación Genética",
-        question: "¿Qué variación genética en humanos confiere resistencia a la malaria (paludismo)?",
-        options: ["Intolerancia a la lactosa.", "Mutaciones asociadas a la anemia falciforme (en heterocigosis).", "Duplicación del gen de la hemoglobina.", "Pérdida del gen p53."],
-        correct: 1,
-        explanation: "Los portadores del rasgo falciforme tienen una ventaja de supervivencia frente al parásito de la malaria."
-    },
-    {
-        topic: "Terapia Génica",
-        question: "¿Para qué enfermedad se ha aprobado el uso de la tecnología CRISPR-Cas como terapia génica?",
-        options: ["Gripe común.", "Anemia falciforme (sickle cell).", "Diabetes tipo 2.", "Hipertensión."],
-        correct: 1,
-        explanation: "CRISPR se usa para editar células madre hematopoyéticas y corregir el defecto de la hemoglobina."
-    },
-    {
-        topic: "Wnt y Cáncer",
-        question: "¿Qué patología se asocia a la activación descontrolada de la vía de señalización Wnt en el intestino?",
-        options: ["Cáncer colorrectal.", "Úlcera gástrica.", "Celiaquía.", "Diabetes."],
-        correct: 0,
-        explanation: "La vía Wnt mantiene a las células madre; su sobreactivación genera pólipos y tumores."
-    },
+    { topic: "Virus - VIH", question: "¿Por qué el VIH-1 evoluciona y genera resistencia tan rápidamente en el paciente?", options: ["Porque su polimerasa corrige errores.", "Porque su transcriptasa inversa no corrige errores, generando una alta tasa de mutación.", "Porque tiene un genoma de ADN estable.", "Porque no entra en el núcleo."], correct: 1, explanation: "La falta de corrección de pruebas de la enzima viral permite una variabilidad enorme para evadir al sistema inmune." },
+    { topic: "Virus - SARS-CoV-2", question: "¿Qué característica del SARS-CoV-2 explica que genere variantes en lugar de cepas completamente nuevas rápidamente?", options: ["Su polimerasa tiene actividad de corrección de pruebas, manteniendo la tasa de mutación relativamente baja.", "Muta más rápido que el VIH.", "Es un virus de ADN.", "Se integra en el genoma humano."], correct: 0, explanation: "A diferencia de otros virus ARN, los coronavirus corrigen errores, lo que limita su velocidad de mutación." },
+    { topic: "Cáncer - Epigenética", question: "¿Cómo puede la hipermetilación del ADN contribuir al cáncer?", options: ["Activando oncogenes.", "Silenciando genes supresores de tumores (inactivando su expresión).", "Reparando el ADN.", "Aumentando la síntesis de proteínas."], correct: 1, explanation: "La metilación en promotores 'apaga' genes que deberían frenar la división celular." },
+    { topic: "Variación Genética", question: "¿Qué variación genética en humanos confiere resistencia a la malaria (paludismo)?", options: ["Intolerancia a la lactosa.", "Mutaciones asociadas a la anemia falciforme (en heterocigosis).", "Duplicación del gen de la hemoglobina.", "Pérdida del gen p53."], correct: 1, explanation: "Los portadores del rasgo falciforme tienen una ventaja de supervivencia frente al parásito de la malaria." },
+    { topic: "Terapia Génica", question: "¿Para qué enfermedad se ha aprobado el uso de la tecnología CRISPR-Cas como terapia génica?", options: ["Gripe común.", "Anemia falciforme (sickle cell).", "Diabetes tipo 2.", "Hipertensión."], correct: 1, explanation: "CRISPR se usa para editar células madre hematopoyéticas y corregir el defecto de la hemoglobina." },
+    { topic: "Wnt y Cáncer", question: "¿Qué patología se asocia a la activación descontrolada de la vía de señalización Wnt en el intestino?", options: ["Cáncer colorrectal.", "Úlcera gástrica.", "Celiaquía.", "Diabetes."], correct: 0, explanation: "La vía Wnt mantiene a las células madre; su sobreactivación genera pólipos y tumores." },
 
     // --- BLOQUE 4: Núcleo y Enfermedades ---
-    {
-        topic: "Patología Nuclear",
-        question: "En la Atrofia Muscular Espinal (SMA), ¿qué estructura nuclear se pierde o desorganiza?",
-        options: ["El nucléolo.", "Los Cuerpos de Cajal.", "La lámina nuclear.", "Los poros nucleares."],
-        correct: 1,
-        explanation: "La proteína SMN es vital para la formación de los Cuerpos de Cajal; sin ella, estos centros de splicing fallan."
-    },
-    {
-        topic: "Virus y Núcleo",
-        question: "¿Cómo manipula el Adenovirus la maquinaria nuclear para su beneficio?",
-        options: ["Destruye la envoltura nuclear.", "Secuestra la proteína coilina de los Cuerpos de Cajal para exportar sus ARNm virales.", "Bloquea el poro nuclear.", "Inhibe la transcripción."],
-        correct: 1,
-        explanation: "El virus usa los componentes de los cuerpos nucleares como 'salvoconducto' para su replicación."
-    },
-    {
-        topic: "Degradación Proteica",
-        question: "¿Qué cuerpo nuclear se forma bajo condiciones de estrés proteolítico para degradar proteínas?",
-        options: ["Clastosoma.", "Nucléolo.", "Speckle.", "Cuerpo de Barr."],
-        correct: 0,
-        explanation: "Los clastosomas son ricos en proteasomas y aparecen cuando la célula necesita eliminar muchas proteínas."
-    },
+    { topic: "Patología Nuclear", question: "En la Atrofia Muscular Espinal (SMA), ¿qué estructura nuclear se pierde o desorganiza?", options: ["El nucléolo.", "Los Cuerpos de Cajal.", "La lámina nuclear.", "Los poros nucleares."], correct: 1, explanation: "La proteína SMN es vital para la formación de los Cuerpos de Cajal; sin ella, estos centros de splicing fallan." },
+    { topic: "Virus y Núcleo", question: "¿Cómo manipula el Adenovirus la maquinaria nuclear para su beneficio?", options: ["Destruye la envoltura nuclear.", "Secuestra la proteína coilina de los Cuerpos de Cajal para exportar sus ARNm virales.", "Bloquea el poro nuclear.", "Inhibe la transcripción."], correct: 1, explanation: "El virus usa los componentes de los cuerpos nucleares como 'salvoconducto' para su replicación." },
+    { topic: "Degradación Proteica", question: "¿Qué cuerpo nuclear se forma bajo condiciones de estrés proteolítico para degradar proteínas?", options: ["Clastosoma.", "Nucléolo.", "Speckle.", "Cuerpo de Barr."], correct: 0, explanation: "Los clastosomas son ricos en proteasomas y aparecen cuando la célula necesita eliminar muchas proteínas." },
 
     // --- BLOQUE 5: Citoesqueleto y Orgánulos ---
-    {
-        topic: "Mitocondrias",
-        question: "¿Qué consecuencia tiene la disfunción de la cadena respiratoria mitocondrial?",
-        options: ["Aumento de la síntesis de ATP.", "Producción excesiva de lactato y fallo energético (enfermedades mitocondriales).", "Mejora del rendimiento muscular.", "División celular acelerada."],
-        correct: 1,
-        explanation: "Sin fosforilación oxidativa, la célula depende de la glucólisis anaerobia, generando ácido láctico y poca energía."
-    },
-    {
-        topic: "Citoesqueleto",
-        question: "¿Qué ocurre en la distrofia muscular si falla la conexión entre el citoesqueleto y la matriz?",
-        options: ["El músculo se hace más fuerte.", "La membrana celular se rompe durante la contracción por falta de soporte mecánico.", "La célula no puede dividirse.", "Aumenta el calcio en el núcleo."],
-        correct: 1,
-        explanation: "La falta de proteínas de anclaje (como distrofina/integrinas) hace que la célula muscular sea frágil al estrés mecánico."
-    },
-    {
-        topic: "Citoesqueleto",
-        question: "¿Cómo actúan fármacos como el Taxol en el tratamiento del cáncer?",
-        options: ["Rompen el ADN.", "Estabilizan los microtúbulos, impidiendo la formación del huso mitótico y la división celular.", "Inhiben la síntesis de proteínas.", "Bloquean la glucólisis."],
-        correct: 1,
-        explanation: "Al congelar la dinámica de los microtúbulos, la célula cancerosa no puede separar sus cromosomas y muere."
-    },
-    {
-        topic: "Filamentos Intermedios",
-        question: "¿Qué patología cutánea se asocia a defectos en los filamentos intermedios (queratinas) o desmosomas?",
-        options: ["Psoriasis.", "Fragilidad de la piel y formación de ampollas (ej. Epidermólisis bullosa).", "Cáncer de piel.", "Acné."],
-        correct: 1,
-        explanation: "Sin la resistencia mecánica de los filamentos intermedios, la piel se rompe ante el mínimo roce."
-    },
+    { topic: "Mitocondrias", question: "¿Qué consecuencia tiene la disfunción de la cadena respiratoria mitocondrial?", options: ["Aumento de la síntesis de ATP.", "Producción excesiva de lactato y fallo energético (enfermedades mitocondriales).", "Mejora del rendimiento muscular.", "División celular acelerada."], correct: 1, explanation: "Sin fosforilación oxidativa, la célula depende de la glucólisis anaerobia, generando ácido láctico y poca energía." },
+    { topic: "Citoesqueleto", question: "¿Qué ocurre en la distrofia muscular si falla la conexión entre el citoesqueleto y la matriz?", options: ["El músculo se hace más fuerte.", "La membrana celular se rompe durante la contracción por falta de soporte mecánico.", "La célula no puede dividirse.", "Aumenta el calcio en el núcleo."], correct: 1, explanation: "La falta de proteínas de anclaje (como distrofina/integrinas) hace que la célula muscular sea frágil al estrés mecánico." },
+    { topic: "Citoesqueleto", question: "¿Cómo actúan fármacos como el Taxol en el tratamiento del cáncer?", options: ["Rompen el ADN.", "Estabilizan los microtúbulos, impidiendo la formación del huso mitótico y la división celular.", "Inhiben la síntesis de proteínas.", "Bloquean la glucólisis."], correct: 1, explanation: "Al congelar la dinámica de los microtúbulos, la célula cancerosa no puede separar sus cromosomas y muere." },
+    { topic: "Filamentos Intermedios", question: "¿Qué patología cutánea se asocia a defectos en los filamentos intermedios (queratinas) o desmosomas?", options: ["Psoriasis.", "Fragilidad de la piel y formación de ampollas (ej. Epidermólisis bullosa).", "Cáncer de piel.", "Acné."], correct: 1, explanation: "Sin la resistencia mecánica de los filamentos intermedios, la piel se rompe ante el mínimo roce." },
 
     // --- BLOQUE 6: Adhesión y Matriz ---
-    {
-        topic: "Metástasis",
-        question: "¿Qué cambio en la adhesión celular es clave para que un tumor se vuelva metastásico?",
-        options: ["Aumento de cadherinas.", "Pérdida de E-cadherina, permitiendo que las células se desprendan del tumor primario.", "Unión más fuerte a la matriz.", "Formación de uniones gap."],
-        correct: 1,
-        explanation: "Para migrar a otros órganos, las células cancerosas deben romper sus uniones con las vecinas."
-    },
-    {
-        topic: "Matriz Extracelular",
-        question: "¿Qué enfermedad es causada por la deficiencia de Vitamina C, afectando a la síntesis de colágeno?",
-        options: ["Raquitismo.", "Escorbuto.", "Osteoporosis.", "Artritis."],
-        correct: 1,
-        explanation: "Sin vitamina C, el colágeno es inestable, provocando debilidad en vasos sanguíneos, piel y encías."
-    },
-    {
-        topic: "Uniones Celulares",
-        question: "¿Qué enfermedad autoinmune ataca a los desmosomas de la piel (pénfigo)?",
-        options: ["Lupus.", "Pénfigo vulgar (ampollas por pérdida de adhesión celular).", "Vitíligo.", "Dermatitis."],
-        correct: 1,
-        explanation: "Los anticuerpos destruyen las cadherinas desmosomales, separando los queratinocitos."
-    },
-    {
-        topic: "Integrinas",
-        question: "¿Qué problema causa la deficiencia en integrinas en los leucocitos?",
-        options: ["Incapacidad para adherirse al endotelio y migrar a los tejidos infectados (inmunodeficiencia).", "Anemia.", "Coagulación excesiva.", "Alergias."],
-        correct: 0,
-        explanation: "Sin integrinas, los glóbulos blancos no pueden 'frenar' y salir de la sangre para combatir infecciones."
-    },
+    { topic: "Metástasis", question: "¿Qué cambio en la adhesión celular es clave para que un tumor se vuelva metastásico?", options: ["Aumento de cadherinas.", "Pérdida de E-cadherina, permitiendo que las células se desprendan del tumor primario.", "Unión más fuerte a la matriz.", "Formación de uniones gap."], correct: 1, explanation: "Para migrar a otros órganos, las células cancerosas deben romper sus uniones con las vecinas." },
+    { topic: "Matriz Extracelular", question: "¿Qué enfermedad es causada por la deficiencia de Vitamina C, afectando a la síntesis de colágeno?", options: ["Raquitismo.", "Escorbuto.", "Osteoporosis.", "Artritis."], correct: 1, explanation: "Sin vitamina C, el colágeno es inestable, provocando debilidad en vasos sanguíneos, piel y encías." },
+    { topic: "Uniones Celulares", question: "¿Qué enfermedad autoinmune ataca a los desmosomas de la piel (pénfigo)?", options: ["Lupus.", "Pénfigo vulgar (ampollas por pérdida de adhesión celular).", "Vitíligo.", "Dermatitis."], correct: 1, explanation: "Los anticuerpos destruyen las cadherinas desmosomales, separando los queratinocitos." },
+    { topic: "Integrinas", question: "¿Qué problema causa la deficiencia en integrinas en los leucocitos?", options: ["Incapacidad para adherirse al endotelio y migrar a los tejidos infectados (inmunodeficiencia).", "Anemia.", "Coagulación excesiva.", "Alergias."], correct: 0, explanation: "Sin integrinas, los glóbulos blancos no pueden 'frenar' y salir de la sangre para combatir infecciones." },
 
     // --- BLOQUE 7: Comunicación y Muerte Celular ---
-    {
-        topic: "Cáncer - Señalización",
-        question: "Las mutaciones que activan permanentemente la proteína Ras (siempre unida a GTP) causan:",
-        options: ["Apoptosis.", "Proliferación celular descontrolada (Cáncer).", "Diferenciación celular.", "Parada del ciclo celular."],
-        correct: 1,
-        explanation: "Ras es un oncogén clave; si no se apaga, envía señales continuas de división."
-    },
-    {
-        topic: "Cáncer - Supresores",
-        question: "¿Por qué se llama a p53 el 'guardián del genoma'?",
-        options: ["Porque repara el ADN.", "Porque detiene el ciclo celular o induce apoptosis si hay daño en el ADN, previniendo el cáncer.", "Porque acelera la mitosis.", "Porque protege los telómeros."],
-        correct: 1,
-        explanation: "La pérdida de función de p53 es la mutación más común en cánceres humanos, permitiendo la supervivencia de células dañadas."
-    },
-    {
-        topic: "Apoptosis",
-        question: "¿Qué enfermedad puede surgir si la apoptosis es excesiva?",
-        options: ["Cáncer.", "Enfermedades neurodegenerativas (ej. Alzheimer, Parkinson) o daño post-infarto.", "Hipertrofia muscular.", "Sindactilia."],
-        correct: 1,
-        explanation: "La muerte celular no deseada lleva a la pérdida de tejido funcional (neuronas, cardiomiocitos)."
-    },
-    {
-        topic: "Apoptosis",
-        question: "¿Qué enfermedad surge si la apoptosis es defectuosa o insuficiente?",
-        options: ["Sida.", "Atrofia muscular.", "Cáncer o enfermedades autoinmunes.", "Infarto."],
-        correct: 2,
-        explanation: "Si las células dañadas o autorreactivas no se suicidan, pueden formar tumores o atacar al propio cuerpo."
-    },
-    {
-        topic: "Señalización",
-        question: "¿Qué efecto tiene la mutación que inactiva el gen de la Miostatina?",
-        options: ["Atrofia muscular.", "Hipertrofia muscular masiva (crecimiento muscular excesivo).", "Obesidad.", "Enanismo."],
-        correct: 1,
-        explanation: "La miostatina frena el crecimiento muscular; sin ella, el músculo crece sin control (ej. vacas 'azul belga')."
-    },
-    {
-        topic: "Necrosis",
-        question: "¿Por qué la necrosis es perjudicial para el organismo a diferencia de la apoptosis?",
-        options: ["Porque gasta energía.", "Porque la célula explota liberando contenido tóxico e induciendo inflamación.", "Porque reduce el número de células.", "Porque es lenta."],
-        correct: 1,
-        explanation: "La rotura de la membrana en necrosis vierte enzimas que dañan a las células vecinas, causando inflamación."
-    },
-    {
-        topic: "Receptores de Muerte",
-        question: "¿Cómo elimina el sistema inmune a células infectadas por virus?",
-        options: ["Fagocitándolas vivas.", "Activando receptores de muerte (Fas) en la célula diana para inducir apoptosis.", "Bloqueando sus poros.", "Quitándoles el oxígeno."],
-        correct: 1,
-        explanation: "Los linfocitos T 'ordenan' a la célula infectada que se suicide mediante la vía extrínseca."
-    },
+    { topic: "Cáncer - Señalización", question: "Las mutaciones que activan permanentemente la proteína Ras (siempre unida a GTP) causan:", options: ["Apoptosis.", "Proliferación celular descontrolada (Cáncer).", "Diferenciación celular.", "Parada del ciclo celular."], correct: 1, explanation: "Ras es un oncogén clave; si no se apaga, envía señales continuas de división." },
+    { topic: "Cáncer - Supresores", question: "¿Por qué se llama a p53 el 'guardián del genoma'?", options: ["Porque repara el ADN.", "Porque detiene el ciclo celular o induce apoptosis si hay daño en el ADN, previniendo el cáncer.", "Porque acelera la mitosis.", "Porque protege los telómeros."], correct: 1, explanation: "La pérdida de función de p53 es la mutación más común en cánceres humanos, permitiendo la supervivencia de células dañadas." },
+    { topic: "Apoptosis", question: "¿Qué enfermedad puede surgir si la apoptosis es excesiva?", options: ["Cáncer.", "Enfermedades neurodegenerativas (ej. Alzheimer, Parkinson) o daño post-infarto.", "Hipertrofia muscular.", "Sindactilia."], correct: 1, explanation: "La muerte celular no deseada lleva a la pérdida de tejido funcional (neuronas, cardiomiocitos)." },
+    { topic: "Apoptosis", question: "¿Qué enfermedad surge si la apoptosis es defectuosa o insuficiente?", options: ["Sida.", "Atrofia muscular.", "Cáncer o enfermedades autoinmunes.", "Infarto."], correct: 2, explanation: "Si las células dañadas o autorreactivas no se suicidan, pueden formar tumores o atacar al propio cuerpo." },
+    { topic: "Señalización", question: "¿Qué efecto tiene la mutación que inactiva el gen de la Miostatina?", options: ["Atrofia muscular.", "Hipertrofia muscular masiva (crecimiento muscular excesivo).", "Obesidad.", "Enanismo."], correct: 1, explanation: "La miostatina frena el crecimiento muscular; sin ella, el músculo crece sin control (ej. vacas 'azul belga')." },
+    { topic: "Necrosis", question: "¿Por qué la necrosis es perjudicial para el organismo a diferencia de la apoptosis?", options: ["Porque gasta energía.", "Porque la célula explota liberando contenido tóxico e induciendo inflamación.", "Porque reduce el número de células.", "Porque es lenta."], correct: 1, explanation: "La rotura de la membrana en necrosis vierte enzimas que dañan a las células vecinas, causando inflamación." },
+    { topic: "Receptores de Muerte", question: "¿Cómo elimina el sistema inmune a células infectadas por virus?", options: ["Fagocitándolas vivas.", "Activando receptores de muerte (Fas) en la célula diana para inducir apoptosis.", "Bloqueando sus poros.", "Quitándoles el oxígeno."], correct: 1, explanation: "Los linfocitos T 'ordenan' a la célula infectada que se suicide mediante la vía extrínseca." },
 
     // --- BLOQUE 8: Ciclo Celular ---
-    {
-        topic: "Cáncer - Ciclo",
-        question: "¿Qué es un oncogén?",
-        options: ["Un gen que detiene el ciclo.", "Una forma mutada de un gen normal (protooncogén) que estimula la división celular de forma excesiva.", "Un gen de reparación.", "Un gen viral."],
-        correct: 1,
-        explanation: "Actúa como un 'acelerador atascado' del ciclo celular."
-    },
-    {
-        topic: "Cáncer - Rb",
-        question: "¿Qué ocurre si la proteína Retinoblastoma (Rb) pierde su función?",
-        options: ["La célula no puede dividirse.", "El ciclo celular no se detiene en G1, permitiendo la proliferación incontrolada (Retinoblastoma).", "La célula entra en apoptosis.", "No pasa nada."],
-        correct: 1,
-        explanation: "Rb es un supresor tumoral que frena el ciclo; sin él, la célula entra en fase S sin control."
-    },
-    {
-        topic: "Telomerasa",
-        question: "¿Qué papel juega la telomerasa en el cáncer?",
-        options: ["Mata a las células cancerosas.", "Se reactiva en células tumorales, permitiendo que se dividan indefinidamente (inmortalidad).", "Acorta los telómeros.", "Repara mutaciones."],
-        correct: 1,
-        explanation: "La reactivación de la telomerasa evita el envejecimiento celular, permitiendo el crecimiento infinito del tumor."
-    },
-    {
-        topic: "Aneuploidía",
-        question: "¿Qué fallo en el ciclo celular causa aneuploidía (número incorrecto de cromosomas)?",
-        options: ["Fallo en el punto de control del huso mitótico.", "Fallo en la replicación.", "Fallo en G1.", "Fallo en la citocinesis."],
-        correct: 0,
-        explanation: "Si el checkpoint de metafase falla, los cromosomas se reparten desigualmente, rasgo típico de células tumorales."
-    },
+    { topic: "Cáncer - Ciclo", question: "¿Qué es un oncogén?", options: ["Un gen que detiene el ciclo.", "Una forma mutada de un gen normal (protooncogén) que estimula la división celular de forma excesiva.", "Un gen de reparación.", "Un gen viral."], correct: 1, explanation: "Actúa como un 'acelerador atascado' del ciclo celular." },
+    { topic: "Cáncer - Rb", question: "¿Qué ocurre si la proteína Retinoblastoma (Rb) pierde su función?", options: ["La célula no puede dividirse.", "El ciclo celular no se detiene en G1, permitiendo la proliferación incontrolada (Retinoblastoma).", "La célula entra en apoptosis.", "No pasa nada."], correct: 1, explanation: "Rb es un supresor tumoral que frena el ciclo; sin él, la célula entra en fase S sin control." },
+    { topic: "Telomerasa", question: "¿Qué papel juega la telomerasa en el cáncer?", options: ["Mata a las células cancerosas.", "Se reactiva en células tumorales, permitiendo que se dividan indefinidamente (inmortalidad).", "Acorta los telómeros.", "Repara mutaciones."], correct: 1, explanation: "La reactivación de la telomerasa evita el envejecimiento celular, permitiendo el crecimiento infinito del tumor." },
+    { topic: "Aneuploidía", question: "¿Qué fallo en el ciclo celular causa aneuploidía (número incorrecto de cromosomas)?", options: ["Fallo en el punto de control del huso mitótico.", "Fallo en la replicación.", "Fallo en G1.", "Fallo en la citocinesis."], correct: 0, explanation: "Si el checkpoint de metafase falla, los cromosomas se reparten desigualmente, rasgo típico de células tumorales." },
 
     // --- BLOQUE 9: Reproducción y Genética Médica ---
-    {
-        topic: "Aneuploidías",
-        question: "¿Qué es la trisomía 21 (Síndrome de Down)?",
-        options: ["Una enfermedad mitocondrial.", "Una aneuploidía causada por la no disyunción de cromosomas durante la meiosis.", "Una infección viral.", "Un defecto de splicing."],
-        correct: 1,
-        explanation: "Es la patología cromosómica más común, resultado de un error en la segregación meiótica."
-    },
-    {
-        topic: "Infertilidad",
-        question: "¿Qué técnica de reproducción asistida se usa para tratar la infertilidad masculina severa (pocos espermatozoides)?",
-        options: ["Inseminación artificial.", "ICSI (Inyección Intracitoplasmática de Espermatozoides).", "Clonación.", "Terapia hormonal."],
-        correct: 1,
-        explanation: "Permite fecundar el óvulo inyectando un único espermatozoide directamente, puenteando problemas de movilidad o número."
-    },
-    {
-        topic: "Enfermedades Mitocondriales",
-        question: "¿Cómo se heredan las enfermedades causadas por mutaciones en el ADN mitocondrial?",
-        options: ["Herencia mendeliana recesiva.", "Herencia exclusivamente materna.", "Herencia paterna.", "Herencia ligada al sexo."],
-        correct: 1,
-        explanation: "Las mitocondrias del cigoto provienen del óvulo, por lo que las madres transmiten estas enfermedades a todos sus hijos."
-    },
-    {
-        topic: "DGP",
-        question: "¿Cuál es el objetivo médico del Diagnóstico Genético Preimplantacional (DGP)?",
-        options: ["Clonar humanos.", "Seleccionar embriones libres de enfermedades genéticas graves antes de transferirlos al útero.", "Modificar el ADN del embrión.", "Elegir el color de ojos."],
-        correct: 1,
-        explanation: "Evita la transmisión de enfermedades hereditarias (como SMA o Huntington) en familias de riesgo."
-    },
-    {
-        topic: "Edad Materna",
-        question: "¿Qué riesgo aumenta significativamente con la edad materna avanzada?",
-        options: ["Gemelaridad dicigótica y aneuploidías (debido al largo arresto meiótico).", "Infecciones.", "Mutaciones mitocondriales.", "Cáncer de útero."],
-        correct: 0,
-        explanation: "Los ovocitos 'viejos' tienen más errores de segregación tras décadas detenidos en profase I."
-    },
-    {
-        topic: "Clonación Terapéutica",
-        question: "¿Cuál es el fin de la clonación terapéutica (Transferencia Nuclear)?",
-        options: ["Crear copias de personas.", "Obtener células madre compatibles con el paciente para tratar enfermedades (medicina regenerativa).", "Mejorar la raza.", "Producir fármacos."],
-        correct: 1,
-        explanation: "Busca generar tejidos de repuesto que no sean rechazados por el sistema inmune del paciente."
-    },
-    {
-        topic: "Patología Meiótica",
-        question: "¿Qué ocurre si hay un error en el 'Crossing Over'?",
-        options: ["Nada.", "Puede causar deleciones, duplicaciones o translocaciones cromosómicas patológicas.", "La célula se divide más rápido.", "Se forman clones."],
-        correct: 1,
-        explanation: "Un intercambio desigual de ADN genera cromosomas defectuosos que causan síndromes genéticos."
-    },
-    {
-        topic: "Virus - Retrovirus",
-        question: "Los retrovirus como el VIH son patógenos persistentes porque:",
-        options: ["Se integran en el genoma del huésped (provirus) y permanecen latentes.", "Son muy grandes.", "Tienen ADN circular.", "No usan proteínas."],
-        correct: 0,
-        explanation: "La integración en el ADN celular hace que la infección sea crónica e incurable por métodos estándar."
-    },
-    {
-        topic: "Lisosomas",
-        question: "¿Qué grupo de enfermedades se debe a defectos en las enzimas de los lisosomas?",
-        options: ["Enfermedades de almacenamiento lisosomal (ej. Tay-Sachs).", "Diabetes.", "Gripe.", "Raquitismo."],
-        correct: 0,
-        explanation: "Si el lisosoma no puede digerir, se acumulan desechos en la célula causando toxicidad y muerte celular (conceptualmente implícito en función lisosomal)."
-    },
-    {
-        topic: "Cáncer - General",
-        question: "Desde el punto de vista celular, el cáncer se define como:",
-        options: ["Una infección.", "Una enfermedad de proliferación celular incontrolada e invasiva.", "Una muerte celular excesiva.", "Un fallo mitocondrial."],
-        correct: 1,
-        explanation: "Es la pérdida de la homeostasis entre división y muerte celular, rompiendo las reglas sociales del tejido."
-    },
-    {
-        topic: "Priones",
-        question: "¿Qué son las enfermedades priónicas (como las vacas locas)? (Concepto de plegamiento)",
-        options: ["Virus.", "Enfermedades causadas por proteínas mal plegadas que inducen el mal plegamiento en otras.", "Bacterias.", "Hongos."],
-        correct: 1,
-        explanation: "Relacionado con el control de calidad de proteínas (chaperonas/proteasoma), donde una forma tóxica propaga la enfermedad."
-    },
-    {
-        topic: "Epigenética y Salud",
-        question: "¿Pueden los factores ambientales (dieta, estrés) causar enfermedades alterando el epigenoma?",
-        options: ["No, solo cambian el ADN.", "Sí, modificando patrones de metilación/histonas que afectan la expresión génica a largo plazo.", "Solo en el embarazo.", "Es un mito."],
-        correct: 1,
-        explanation: "Es la base de muchas enfermedades complejas donde el ambiente 'enciende' o 'apaga' genes de riesgo."
-    },
-    {
-        topic: "Terapia",
-        question: "¿Qué ventaja tienen las células iPS (inducidas) para tratar enfermedades?",
-        options: ["Son más baratas.", "Son autólogas (del propio paciente), evitando el rechazo inmune.", "Vienen de embriones.", "Son artificiales."],
-        correct: 1,
-        explanation: "Permiten medicina personalizada y regenerativa sin los problemas éticos o de rechazo de las embrionarias."
-    },
-    {
-        topic: "Resumen",
-        question: "¿Por qué 'La Medicina comienza en la Célula'?",
-        options: ["Es un eslogan publicitario.", "Porque toda patología tiene su origen en la disfunción de los mecanismos moleculares y celulares.", "Porque las células son pequeñas.", "No es cierto."],
-        correct: 1,
-        explanation: "Entender la célula es el único camino para entender la causa raíz de la enfermedad y diseñar curas racionales."
-    }
+    { topic: "Aneuploidías", question: "¿Qué es la trisomía 21 (Síndrome de Down)?", options: ["Una enfermedad mitocondrial.", "Una aneuploidía causada por la no disyunción de cromosomas durante la meiosis.", "Una infección viral.", "Un defecto de splicing."], correct: 1, explanation: "Es la patología cromosómica más común, resultado de un error en la segregación meiótica." },
+    { topic: "Infertilidad", question: "¿Qué técnica de reproducción asistida se usa para tratar la infertilidad masculina severa (pocos espermatozoides)?", options: ["Inseminación artificial.", "ICSI (Inyección Intracitoplasmática de Espermatozoides).", "Clonación.", "Terapia hormonal."], correct: 1, explanation: "Permite fecundar el óvulo inyectando un único espermatozoide directamente, puenteando problemas de movilidad o número." },
+    { topic: "Enfermedades Mitocondriales", question: "¿Cómo se heredan las enfermedades causadas por mutaciones en el ADN mitocondrial?", options: ["Herencia mendeliana recesiva.", "Herencia exclusivamente materna.", "Herencia paterna.", "Herencia ligada al sexo."], correct: 1, explanation: "Las mitocondrias del cigoto provienen del óvulo, por lo que las madres transmiten estas enfermedades a todos sus hijos." },
+    { topic: "DGP", question: "¿Cuál es el objetivo médico del Diagnóstico Genético Preimplantacional (DGP)?", options: ["Clonar humanos.", "Seleccionar embriones libres de enfermedades genéticas graves antes de transferirlos al útero.", "Modificar el ADN del embrión.", "Elegir el color de ojos."], correct: 1, explanation: "Evita la transmisión de enfermedades hereditarias (como SMA o Huntington) en familias de riesgo." },
+    { topic: "Edad Materna", question: "¿Qué riesgo aumenta significativamente con la edad materna avanzada?", options: ["Gemelaridad dicigótica y aneuploidías (debido al largo arresto meiótico).", "Infecciones.", "Mutaciones mitocondriales.", "Cáncer de útero."], correct: 0, explanation: "Los ovocitos 'viejos' tienen más errores de segregación tras décadas detenidos en profase I." },
+    { topic: "Clonación Terapéutica", question: "¿Cuál es el fin de la clonación terapéutica (Transferencia Nuclear)?", options: ["Crear copias de personas.", "Obtener células madre compatibles con el paciente para tratar enfermedades (medicina regenerativa).", "Mejorar la raza.", "Producir fármacos."], correct: 1, explanation: "Busca generar tejidos de repuesto que no sean rechazados por el sistema inmune del paciente." },
+    { topic: "Patología Meiótica", question: "¿Qué ocurre si hay un error en el 'Crossing Over'?", options: ["Nada.", "Puede causar deleciones, duplicaciones o translocaciones cromosómicas patológicas.", "La célula se divide más rápido.", "Se forman clones."], correct: 1, explanation: "Un intercambio desigual de ADN genera cromosomas defectuosos que causan síndromes genéticos." },
+    { topic: "Virus - Retrovirus", question: "Los retrovirus como el VIH son patógenos persistentes porque:", options: ["Se integran en el genoma del huésped (provirus) y permanecen latentes.", "Son muy grandes.", "Tienen ADN circular.", "No usan proteínas."], correct: 0, explanation: "La integración en el ADN celular hace que la infección sea crónica e incurable por métodos estándar." },
+    { topic: "Lisosomas", question: "¿Qué grupo de enfermedades se debe a defectos en las enzimas de los lisosomas?", options: ["Enfermedades de almacenamiento lisosomal (ej. Tay-Sachs).", "Diabetes.", "Gripe.", "Raquitismo."], correct: 0, explanation: "Si el lisosoma no puede digerir, se acumulan desechos en la célula causando toxicidad y muerte celular." },
+    { topic: "Cáncer - General", question: "Desde el punto de vista celular, el cáncer se define como:", options: ["Una infección.", "Una enfermedad de proliferación celular incontrolada e invasiva.", "Una muerte celular excesiva.", "Un fallo mitocondrial."], correct: 1, explanation: "Es la pérdida de la homeostasis entre división y muerte celular, rompiendo las reglas sociales del tejido." },
+    { topic: "Priones", question: "¿Qué son las enfermedades priónicas (como las vacas locas)? (Concepto de plegamiento)", options: ["Virus.", "Enfermedades causadas por proteínas mal plegadas que inducen el mal plegamiento en otras.", "Bacterias.", "Hongos."], correct: 1, explanation: "Relacionado con el control de calidad de proteínas (chaperonas/proteasoma), donde una forma tóxica propaga la enfermedad." },
+    { topic: "Epigenética y Salud", question: "¿Pueden los factores ambientales (dieta, estrés) causar enfermedades alterando el epigenoma?", options: ["No, solo cambian el ADN.", "Sí, modificando patrones de metilación/histonas que afectan la expresión génica a largo plazo.", "Solo en el embarazo.", "Es un mito."], correct: 1, explanation: "Es la base de muchas enfermedades complejas donde el ambiente 'enciende' o 'apaga' genes de riesgo." },
+    { topic: "Terapia", question: "¿Qué ventaja tienen las células iPS (inducidas) para tratar enfermedades?", options: ["Son más baratas.", "Son autólogas (del propio paciente), evitando el rechazo inmune.", "Vienen de embriones.", "Son artificiales."], correct: 1, explanation: "Permiten medicina personalizada y regenerativa sin los problemas éticos o de rechazo de las embrionarias." },
+    { topic: "Resumen", question: "¿Por qué 'La Medicina comienza en la Célula'?", options: ["Es un eslogan publicitario.", "Porque toda patología tiene su origen en la disfunción de los mecanismos moleculares y celulares.", "Porque las células son pequeñas.", "No es cierto."], correct: 1, explanation: "Entender la célula es el único camino para entender la causa raíz de la enfermedad y diseñar curas racionales." }
 ];
 
-let currentQuestion = 0;
-let score = 0;
+// --- GESTIÓN DE ESTADO Y LISTAS DE REPRODUCCIÓN ---
+quizData.forEach(q => {
+    q.isMarked = false;
+    q.userCorrect = null; // null: sin responder, true: acierto, false: fallo
+});
+
+let activeIndices = []; 
+let currentPlaylistIndex = 0;
+let sessionScore = 0;
 let answered = false;
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadQuestion();
+    startQuiz('all');
 });
 
-function loadQuestion() {
-    const container = document.getElementById('quiz-container');
-    const q = quizData[currentQuestion];
+function startQuiz(mode) {
+    activeIndices = [];
+
+    // Lógica para crear la "lista de reproducción" según el modo
+    if (mode === 'all') {
+        quizData.forEach(q => q.userCorrect = null); // Resetear respuestas
+        // Opcional: resetear marcas con quizData.forEach(q => q.isMarked = false);
+        activeIndices = quizData.map((_, i) => i);
+    } 
+    else if (mode === 'failed') {
+        activeIndices = quizData.map((q, i) => q.userCorrect === false ? i : -1).filter(i => i !== -1);
+    } 
+    else if (mode === 'marked') {
+        activeIndices = quizData.map((q, i) => q.isMarked ? i : -1).filter(i => i !== -1);
+    } 
+    else if (mode === 'mixed') {
+        activeIndices = quizData.map((q, i) => (q.userCorrect === false || q.isMarked) ? i : -1).filter(i => i !== -1);
+    }
+
+    if (activeIndices.length === 0) {
+        alert("No hay preguntas disponibles para este modo.");
+        return;
+    }
+
+    currentPlaylistIndex = 0;
+    sessionScore = 0;
     
-    document.getElementById('q-progress').innerText = `Pregunta ${currentQuestion + 1} de ${quizData.length}`;
-    document.getElementById('score-display').innerText = `Aciertos: ${score}`;
+    // UI Updates
+    document.getElementById('results-screen').style.display = 'none';
+    document.getElementById('quiz-container').style.display = 'block';
+    document.getElementById('statusBar').style.display = 'flex';
+    
+    loadQuestion();
+}
+
+function loadQuestion() {
+    answered = false;
+    // Obtener el índice real en el array de datos
+    const realIndex = activeIndices[currentPlaylistIndex];
+    const q = quizData[realIndex];
+    
+    document.getElementById('q-progress').innerText = `Pregunta ${currentPlaylistIndex + 1} de ${activeIndices.length}`;
+    document.getElementById('score-display').innerText = `Aciertos: ${sessionScore}`;
+
+    const container = document.getElementById('quiz-container');
+    const checkedAttr = q.isMarked ? 'checked' : '';
 
     let html = `
         <div class="question-card active">
+            <label class="bookmark-panel">
+                <input type="checkbox" onchange="toggleMark(${realIndex}, this)" ${checkedAttr}>
+                <span>Marcar/Duda</span>
+            </label>
+
             <div class="question-header">${q.topic}</div>
             <div class="question-text">${q.question}</div>
             <div class="options-list">
                 ${q.options.map((opt, i) => `
-                    <button class="option-btn" onclick="checkAnswer(${i}, ${q.correct}, this)">
+                    <button class="option-btn" onclick="checkAnswer(${i}, ${q.correct}, this, ${realIndex})">
                         ${String.fromCharCode(65+i)}. ${opt}
                     </button>
                 `).join('')}
@@ -568,10 +396,13 @@ function loadQuestion() {
     `;
     
     container.innerHTML = html;
-    answered = false;
 }
 
-function checkAnswer(selected, correct, btn) {
+function toggleMark(realIndex, checkbox) {
+    quizData[realIndex].isMarked = checkbox.checked;
+}
+
+function checkAnswer(selected, correct, btn, realIndex) {
     if(answered) return;
     answered = true;
 
@@ -582,24 +413,25 @@ function checkAnswer(selected, correct, btn) {
     allBtns.forEach(b => b.disabled = true);
 
     if(selected === correct) {
-        score++;
+        sessionScore++;
+        quizData[realIndex].userCorrect = true; // Guardar acierto
         btn.classList.add('correct');
-        feedback.innerHTML = `<strong style="color:var(--success)">¡Correcto!</strong> <div class="rationale">${quizData[currentQuestion].explanation}</div>`;
+        feedback.innerHTML = `<strong style="color:var(--success)">¡Correcto!</strong> <div class="rationale">${quizData[realIndex].explanation}</div>`;
     } else {
+        quizData[realIndex].userCorrect = false; // Guardar fallo
         btn.classList.add('incorrect');
         allBtns[correct].classList.add('correct');
-        feedback.innerHTML = `<strong style="color:var(--error)">Incorrecto.</strong> <div class="rationale">${quizData[currentQuestion].explanation}</div>`;
+        feedback.innerHTML = `<strong style="color:var(--error)">Incorrecto.</strong> <div class="rationale">${quizData[realIndex].explanation}</div>`;
     }
 
     feedback.classList.add('show');
     nextBtn.style.display = 'block';
-    
-    document.getElementById('score-display').innerText = `Aciertos: ${score}`;
+    document.getElementById('score-display').innerText = `Aciertos: ${sessionScore}`;
 }
 
 function nextQuestion() {
-    if(currentQuestion < quizData.length - 1) {
-        currentQuestion++;
+    if(currentPlaylistIndex < activeIndices.length - 1) {
+        currentPlaylistIndex++;
         loadQuestion();
     } else {
         showResults();
@@ -611,16 +443,34 @@ function showResults() {
     document.getElementById('quiz-container').style.display = 'none';
     document.getElementById('results-screen').style.display = 'block';
     
-    document.getElementById('final-number').innerText = `${score} / ${quizData.length}`;
+    document.getElementById('final-number').innerText = `${sessionScore} / ${activeIndices.length}`;
     
-    const percent = (score / quizData.length) * 100;
+    const percent = Math.round((sessionScore / activeIndices.length) * 100);
     let msg = "";
-    if(percent >= 90) msg = "¡Excelente! Nivel clínico experto.";
-    else if(percent >= 70) msg = "¡Muy bien! Dominas la base médica.";
-    else if(percent >= 50) msg = "Aprobado. Repasa las patologías moleculares.";
-    else msg = "Necesitas reforzar la conexión entre célula y enfermedad.";
+    if(percent >= 90) msg = "¡Excelente!";
+    else if(percent >= 70) msg = "¡Muy bien!";
+    else if(percent >= 50) msg = "Aprobado.";
+    else msg = "Necesitas repasar.";
     
-    document.getElementById('final-text').innerText = msg;
+    document.getElementById('final-text').innerText = `${percent}% - ${msg}`;
+
+    // Calcular estadísticas para habilitar botones
+    const totalFailed = quizData.filter(q => q.userCorrect === false).length;
+    const totalMarked = quizData.filter(q => q.isMarked === true).length;
+    const totalMixed = quizData.filter(q => q.userCorrect === false || q.isMarked).length;
+
+    document.getElementById('stats-box').innerHTML = `
+        <strong>Resumen Global:</strong><br>
+        Marcadas: ${totalMarked} | Falladas: ${totalFailed}
+    `;
+
+    // Habilitar/Deshabilitar botones según si hay preguntas
+    document.getElementById('btn-failed').disabled = (totalFailed === 0);
+    document.getElementById('btn-marked').disabled = (totalMarked === 0);
+    document.getElementById('btn-mixed').disabled = (totalMixed === 0);
+    
+    document.getElementById('btn-failed').innerText = `❌ Repetir Falladas (${totalFailed})`;
+    document.getElementById('btn-marked').innerText = `⚠️ Repetir Marcadas (${totalMarked})`;
 }
 </script>
 
