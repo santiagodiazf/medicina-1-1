@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PORTAL DE ESTUDIO - MEDICINA</title>
+    <title>PORTAL GENERAL - MEDICINA</title>
     <style>
         :root {
             --bg-color: #fdfbf7;
             --text-color: #2c3e50;
             
-            /* Colores de Asignaturas */
-            --ana-color: #2980b9; /* Azul Anatomía */
-            --bio-color: #27ae60; /* Verde Biología */
-            --fis-color: #8e44ad; /* Violeta Física */
-            --bq-color: #c2185b;  /* Rosa Bioquímica */
+            /* Colores identificativos por Curso */
+            --curso1-color: #34495e; /* Gris Azulado para 1º */
+            --curso2-color: #d35400; /* Naranja quemado para 2º (Ejemplo) */
+            --curso3-color: #8e44ad; /* Violeta para 3º (Ejemplo) */
+            --curso4-color: #27ae60; /* Verde para 4º (Ejemplo) */
         }
 
         body {
@@ -34,141 +34,147 @@
             text-transform: uppercase;
             letter-spacing: 3px;
             text-align: center;
-            color: #34495e;
-            border-bottom: 5px solid #34495e;
+            color: #2c3e50;
+            border-bottom: 5px solid #2c3e50;
             padding-bottom: 15px;
         }
 
-        /* Nuevo estilo para el nombre del autor */
         .author-text {
             font-size: 1.4rem;
             color: #2c3e50;
             font-weight: 600;
             margin-top: 10px;
-            margin-bottom: 10px;
-            background-color: #e8eaf6; /* Fondo suave */
+            margin-bottom: 40px;
+            background-color: #e8eaf6;
             padding: 8px 24px;
             border-radius: 50px;
-        }
-
-        p.subtitle {
-            font-size: 1.1rem;
-            color: #7f8c8d;
-            margin-bottom: 50px;
             text-align: center;
-            font-weight: 300;
         }
 
-        /* Rejilla Principal */
-        .portal-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+        /* Contenedor de cada Curso (Año) */
+        .course-section {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1000px;
+            margin-bottom: 60px;
         }
 
-        /* Tarjetas de Asignatura */
-        .subject-card {
+        .course-title {
+            font-size: 1.8rem;
+            color: var(--text-color);
+            margin-bottom: 20px;
+            padding-left: 15px;
+            border-left: 5px solid; /* El color se define inline o por clase */
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        /* Rejilla de Cuatrimestres */
+        .semester-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        /* Tarjetas de Cuatrimestre */
+        .semester-card {
             background-color: #ffffff;
-            border-radius: 20px;
-            padding: 40px 30px;
+            border-radius: 15px;
+            padding: 30px;
             text-align: center;
             text-decoration: none;
             color: var(--text-color);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             transition: all 0.3s ease;
-            border-top: 10px solid gray;
+            border: 1px solid rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 220px;
             position: relative;
             overflow: hidden;
         }
 
-        .subject-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        .semester-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            background-color: #fff;
         }
 
+        /* Icono decorativo */
         .icon {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            transition: transform 0.3s ease;
+            font-size: 3rem;
+            margin-bottom: 15px;
         }
 
-        .subject-card:hover .icon {
-            transform: scale(1.1);
+        .semester-card h3 {
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: 600;
         }
 
-        .subject-card h2 {
-            margin: 0 0 10px 0;
-            font-size: 1.8rem;
-            text-transform: uppercase;
-        }
-
-        .subject-card span {
-            font-size: 1rem;
+        .semester-card span {
+            font-size: 0.9rem;
             color: #95a5a6;
-            line-height: 1.4;
+            margin-top: 8px;
         }
 
-        /* Estilos Específicos */
-        
-        /* Anatomía */
-        .card-ana { border-top-color: var(--ana-color); }
-        .card-ana h2 { color: var(--ana-color); }
-
-        /* Biología */
-        .card-bio { border-top-color: var(--bio-color); }
-        .card-bio h2 { color: var(--bio-color); }
-
-        /* Física */
-        .card-fis { border-top-color: var(--fis-color); }
-        .card-fis h2 { color: var(--fis-color); }
-
-        /* Bioquímica */
-        .card-bq { border-top-color: var(--bq-color); }
-        .card-bq h2 { color: var(--bq-color); }
+        /* Estado "Próximamente" para enlaces vacíos */
+        .disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background-color: #f9f9f9;
+        }
+        .disabled:hover {
+            transform: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
 
     </style>
 </head>
 <body>
 
-    <h1>Portal de Medicina</h1>
+    <h1>Grado en Medicina</h1>
     
     <div class="author-text">Recursos de estudio de Santi Díaz</div>
-    
-    <p class="subtitle">Selecciona tu asignatura para comenzar</p>
 
-    <div class="portal-grid">
+    <div class="course-section">
+        <div class="course-title" style="border-color: var(--curso1-color); color: var(--curso1-color);">
+            Primero
+        </div>
         
-        <a href="INDICE ANATOMIA.html" class="subject-card card-ana">
-            <div class="icon">🦴</div>
-            <h2>Anatomía</h2>
-            <span>Vivero, Plataforma y<br>Bloques Temáticos</span>
-        </a>
+        <div class="semester-grid">
+            <a href="index primero primer cuatrimestre.html" class="semester-card">
+                <div class="icon">📚</div>
+                <h3 style="color: var(--curso1-color)">1er Cuatrimestre</h3>
+                <span>Anatomía, Biología, Física, Bioquímica</span>
+            </a>
 
-        <a href="INDICE BILOGIA.html" class="subject-card card-bio">
-            <div class="icon">🧬</div>
-            <h2>Biología</h2>
-            <span>TF, Series Temáticas y<br>Sevilla/Granada</span>
-        </a>
+            <a href="#" class="semester-card disabled">
+                <div class="icon">⏳</div>
+                <h3 style="color: var(--curso1-color)">2do Cuatrimestre</h3>
+                <span>Próximamente</span>
+            </a>
+        </div>
+    </div>
 
-        <a href="INDICE FISICA.html" class="subject-card card-fis">
-            <div class="icon">⚛️</div>
-            <h2>Física Médica</h2>
-            <span>Simuladores Generales y<br>Bloques Secuenciales</span>
-        </a>
+    <div class="course-section">
+        <div class="course-title" style="border-color: var(--curso2-color); color: var(--curso2-color);">
+            Segundo
+        </div>
+        
+        <div class="semester-grid">
+            <a href="#" class="semester-card disabled">
+                <div class="icon">🔒</div>
+                <h3 style="color: var(--curso2-color)">1er Cuatrimestre</h3>
+                <span>No disponible aún</span>
+            </a>
 
-        <a href="INDICE BIOQUIMICA.html" class="subject-card card-bq">
-            <div class="icon">🧪</div>
-            <h2>Bioquímica</h2>
-            <span>Banco de Preguntas<br>Bloques 1 al 6</span>
-        </a>
-
+            <a href="#" class="semester-card disabled">
+                <div class="icon">🔒</div>
+                <h3 style="color: var(--curso2-color)">2do Cuatrimestre</h3>
+                <span>No disponible aún</span>
+            </a>
+        </div>
     </div>
 
 </body>
