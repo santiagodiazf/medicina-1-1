@@ -6,12 +6,14 @@
     <title>Examen Bloque 3 - Regulación Génica (Medicina Cádiz)</title>
     <style>
         :root {
-            --primary-color: #0056b3; /* Azul Medicina */
+            --primary-color: #0056b3;
             --secondary-color: #f0f8ff;
             --correct-color: #d4edda;
             --correct-text: #155724;
             --incorrect-color: #f8d7da;
             --incorrect-text: #721c24;
+            --warning-bg: #fff3cd;
+            --warning-text: #856404;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -35,16 +37,9 @@
             margin-bottom: 20px;
             padding-bottom: 10px;
         }
-        h1 {
-            color: var(--primary-color);
-            margin: 0;
-            font-size: 1.8rem;
-        }
-        .professors {
-            font-style: italic;
-            color: #666;
-            margin-top: 5px;
-        }
+        h1 { color: var(--primary-color); margin: 0; font-size: 1.8rem; }
+        .professors { font-style: italic; color: #666; margin-top: 5px; }
+        
         .stats-bar {
             display: flex;
             justify-content: space-between;
@@ -55,22 +50,42 @@
             font-weight: bold;
             border: 1px solid #cce5ff;
         }
+
         .question-card {
-            display: none; /* Oculto por defecto */
+            display: none;
             animation: fadeIn 0.5s;
+            position: relative; /* Para posicionar la marca */
         }
-        .question-card.active {
-            display: block;
+        .question-card.active { display: block; }
+
+        /* Estilo para el marcador (Pestaña) */
+        .bookmark-panel {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #fff3cd;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #ffeeba;
+            font-size: 0.9rem;
+            color: #856404;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
         }
+        .bookmark-panel:hover { background: #ffe8a1; }
+        .bookmark-checkbox { margin-right: 8px; transform: scale(1.2); cursor: pointer; }
+
         .question-text {
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 20px;
+            padding-right: 150px; /* Espacio para que el texto no tape la marca */
         }
-        .options-grid {
-            display: grid;
-            gap: 10px;
-        }
+
+        .options-grid { display: grid; gap: 10px; }
+        
         .option-btn {
             padding: 15px;
             border: 2px solid #e0e0e0;
@@ -86,9 +101,8 @@
             background-color: #f8f9fa;
             border-color: var(--primary-color);
         }
-        .option-btn:disabled {
-            cursor: default;
-        }
+        .option-btn:disabled { cursor: default; opacity: 0.7; }
+        
         .option-btn.correct {
             background-color: var(--correct-color);
             border-color: var(--correct-text);
@@ -99,15 +113,14 @@
             border-color: var(--incorrect-text);
             color: var(--incorrect-text);
         }
+
         .feedback {
             margin-top: 20px;
             padding: 15px;
             border-radius: 8px;
             display: none;
         }
-        .feedback.show {
-            display: block;
-        }
+        .feedback.show { display: block; }
         .feedback-correct {
             background-color: var(--correct-color);
             color: var(--correct-text);
@@ -118,6 +131,7 @@
             color: var(--incorrect-text);
             border-left: 5px solid var(--incorrect-text);
         }
+
         .navigation {
             margin-top: 20px;
             display: flex;
@@ -131,19 +145,40 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 1rem;
-            display: none; /* Se muestra tras responder */
+            display: none;
         }
-        .nav-btn:hover {
-            background-color: #004494;
-        }
+        .nav-btn:hover { background-color: #004494; }
+
         .results-summary {
             text-align: center;
             display: none;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        
+        /* Grid de botones finales */
+        .action-buttons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
         }
+        .action-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.2s;
+        }
+        .action-btn:hover { transform: translateY(-2px); }
+        .action-btn:disabled { background-color: #ccc !important; cursor: not-allowed; transform: none; }
+        
+        .btn-restart { background-color: var(--primary-color); grid-column: span 2; }
+        .btn-failed { background-color: #dc3545; }
+        .btn-marked { background-color: #ffc107; color: #333; }
+        .btn-mixed { background-color: #6f42c1; grid-column: span 2; }
+
         .topic-tag {
             display: inline-block;
             background: #e9ecef;
@@ -153,685 +188,507 @@
             color: #495057;
             margin-bottom: 10px;
         }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>Examen Bloque 3: Control y Regulación de la Expresión Génica</h1>
-        <div class="professors">Profesoras: Meritxell Llorca Torralba y Ana Muñoz-Manchado</div>
+        <h1>Examen Bloque 3: Regulación Génica</h1>
+        <div class="professors">Medicina Cádiz - Llorca & Muñoz-Manchado</div>
     </header>
 
-    <div class="stats-bar">
-        <div id="progress">Pregunta 1 de 75</div>
-        <div id="score">Aciertos: 0</div>
+    <div class="stats-bar" id="statsBar">
+        <div id="progress">Cargando...</div>
+        <div id="score">Aciertos sesión: 0</div>
     </div>
 
-    <div id="quiz-area">
-        </div>
+    <div id="quiz-area"></div>
 
     <div id="results" class="results-summary">
-        <h2>Examen Finalizado</h2>
-        <p>Has completado las 75 preguntas del Bloque 3.</p>
-        <p style="font-size: 2rem; font-weight: bold;" id="final-score">0/75</p>
-        <p id="final-percent"></p>
-        <button class="nav-btn" style="display:inline-block;" onclick="location.reload()">Reiniciar Test</button>
+        <h2>Sesión Finalizada</h2>
+        <div style="font-size: 3rem; font-weight: bold; color: var(--primary-color);" id="final-score"></div>
+        <p id="final-msg"></p>
+        
+        <div id="stats-summary" style="margin: 20px 0; color: #555;"></div>
+
+        <div class="action-buttons-grid">
+            <button class="action-btn btn-restart" onclick="startQuiz('all')">🔄 Reiniciar Test Completo (Borrar todo)</button>
+            <button class="action-btn btn-failed" id="btn-failed" onclick="startQuiz('failed')">❌ Repetir Falladas</button>
+            <button class="action-btn btn-marked" id="btn-marked" onclick="startQuiz('marked')">⚠️ Repetir Marcadas</button>
+            <button class="action-btn btn-mixed" id="btn-mixed" onclick="startQuiz('mixed')">❌ + ⚠️ Repetir Falladas y Marcadas</button>
+        </div>
     </div>
 </div>
 
 <script>
+// --- DATOS DE LAS PREGUNTAS ---
 const questions = [
     // --- INTRODUCCIÓN Y CONCEPTOS BÁSICOS (1-8) ---
     {
         topic: "Diferenciación",
         question: "¿Cómo se explica que una neurona y una célula hepática del mismo individuo sean diferentes si tienen el mismo ADN?",
-        options: [
-            "Tienen genomas distintos.",
-            "Realizan expresión génica diferencial.",
-            "La neurona no tiene núcleo.",
-            "La célula hepática elimina genes innecesarios."
-        ],
+        options: ["Tienen genomas distintos.", "Realizan expresión génica diferencial.", "La neurona no tiene núcleo.", "La célula hepática elimina genes innecesarios."],
         correct: 1,
         explanation: "La identidad celular depende de qué genes están 'encendidos' o 'apagados' (expresión diferencial), no de tener diferente ADN."
     },
     {
         topic: "Definiciones",
         question: "¿Qué es el transcriptoma?",
-        options: [
-            "El conjunto completo de proteínas de una célula.",
-            "El conjunto completo de moléculas de ARN presentes en una célula en un momento dado.",
-            "El conjunto de todos los genes del ADN.",
-            "La maquinaria de degradación de proteínas."
-        ],
+        options: ["El conjunto completo de proteínas de una célula.", "El conjunto completo de moléculas de ARN presentes en una célula en un momento dado.", "El conjunto de todos los genes del ADN.", "La maquinaria de degradación de proteínas."],
         correct: 1,
         explanation: "El transcriptoma refleja qué genes se están transcribiendo activamente a ARN."
     },
     {
         topic: "Definiciones",
         question: "¿Qué refleja el proteoma de una célula?",
-        options: [
-            "La intención de la célula.",
-            "El conjunto de genes silenciados.",
-            "La acción o funciones que se están ejecutando (conjunto de proteínas).",
-            "La cantidad de ADN basura."
-        ],
+        options: ["La intención de la célula.", "El conjunto de genes silenciados.", "La acción o funciones que se están ejecutando (conjunto de proteínas).", "La cantidad de ADN basura."],
         correct: 2,
         explanation: "Mientras el transcriptoma refleja la intención, el proteoma (proteínas activas) refleja la función real."
     },
     {
         topic: "Regulación",
         question: "¿Cuál es el principal punto de control de la expresión génica en la mayoría de las células?",
-        options: [
-            "La traducción.",
-            "El transporte del ARN.",
-            "La transcripción (síntesis de ARN).",
-            "La degradación proteica."
-        ],
+        options: ["La traducción.", "El transporte del ARN.", "La transcripción (síntesis de ARN).", "La degradación proteica."],
         correct: 2,
         explanation: "Controlar la transcripción es el paso más eficiente para no desperdiciar recursos sintetizando intermediarios innecesarios."
     },
     {
         topic: "Diferenciación",
         question: "Aproximadamente, ¿qué fracción de sus genes expresa una célula diferenciada típica?",
-        options: [
-            "El 100% de sus genes.",
-            "Alrededor del 10%.",
-            "Aproximadamente la mitad de sus genes codificantes.",
-            "Solo 1 gen."
-        ],
+        options: ["El 100% de sus genes.", "Alrededor del 10%.", "Aproximadamente la mitad de sus genes codificantes.", "Solo 1 gen."],
         correct: 2,
         explanation: "Se estima que expresan alrededor del 50% de su repertorio génico para mantener funciones básicas y especializadas."
     },
-    
     // --- REGULACIÓN EN PROCARIOTAS (Operón Lac) (9-16) ---
     {
         topic: "Operón Lac",
         question: "¿Qué es un operón?",
-        options: [
-            "Un solo gen controlado por muchos promotores.",
-            "Un conjunto de genes transcritos como una sola unidad bajo el control de un único promotor.",
-            "Una proteína reguladora.",
-            "Un tipo de ARN bacteriano."
-        ],
+        options: ["Un solo gen controlado por muchos promotores.", "Un conjunto de genes transcritos como una sola unidad bajo el control de un único promotor.", "Una proteína reguladora.", "Un tipo de ARN bacteriano."],
         correct: 1,
         explanation: "Es una estrategia bacteriana eficiente para regular genes relacionados funcionalmente en bloque."
     },
     {
         topic: "Operón Lac",
         question: "¿Cuál es la fuente de energía preferida por E. coli?",
-        options: [
-            "Lactosa",
-            "Glucosa",
-            "Proteínas",
-            "Lípidos"
-        ],
+        options: ["Lactosa", "Glucosa", "Proteínas", "Lípidos"],
         correct: 1,
         explanation: "La bacteria prefiere glucosa; solo usará lactosa si la glucosa no está disponible."
     },
     {
         topic: "Operón Lac",
         question: "¿Qué proteína impide la transcripción del Operón Lac en ausencia de lactosa?",
-        options: [
-            "La ARN polimerasa.",
-            "El activador CAP.",
-            "El Represor Lac.",
-            "La permeasa."
-        ],
+        options: ["La ARN polimerasa.", "El activador CAP.", "El Represor Lac.", "La permeasa."],
         correct: 2,
         explanation: "El Represor Lac se une al operador y bloquea físicamente a la ARN polimerasa."
     },
     {
         topic: "Operón Lac",
         question: "¿Qué molécula señalizadora aumenta cuando escasea la glucosa?",
-        options: [
-            "Lactosa",
-            "AMP cíclico (AMPc)",
-            "ATP",
-            "Represor"
-        ],
+        options: ["Lactosa", "AMP cíclico (AMPc)", "ATP", "Represor"],
         correct: 1,
         explanation: "El AMPc actúa como señal de 'hambre' de glucosa, activando a la proteína CAP."
     },
     {
         topic: "Operón Lac",
         question: "¿Qué hace el complejo CAP-AMPc?",
-        options: [
-            "Reprime el operón.",
-            "Degrada la lactosa.",
-            "Actúa como activador ayudando a la ARN polimerasa a iniciar la transcripción.",
-            "Exporta glucosa."
-        ],
+        options: ["Reprime el operón.", "Degrada la lactosa.", "Actúa como activador ayudando a la ARN polimerasa a iniciar la transcripción.", "Exporta glucosa."],
         correct: 2,
         explanation: "CAP es un activador que recluta a la polimerasa para asegurar una transcripción eficiente cuando falta glucosa."
     },
     {
         topic: "Operón Lac",
         question: "¿Cuál es la condición óptima para la máxima expresión del Operón Lac?",
-        options: [
-            "Presencia de glucosa y ausencia de lactosa.",
-            "Presencia de glucosa y presencia de lactosa.",
-            "Ausencia de glucosa y ausencia de lactosa.",
-            "Ausencia de glucosa y presencia de lactosa."
-        ],
+        options: ["Presencia de glucosa y ausencia de lactosa.", "Presencia de glucosa y presencia de lactosa.", "Ausencia de glucosa y ausencia de lactosa.", "Ausencia de glucosa y presencia de lactosa."],
         correct: 3,
         explanation: "Sin glucosa (CAP activo) y con lactosa (Represor inactivo) se dan las condiciones para máxima transcripción."
     },
-
     // --- REGULACIÓN EN EUCARIOTAS Y CROMATINA (17-28) ---
     {
         topic: "Eucariotas",
         question: "¿Qué son los Factores de Transcripción o Reguladores?",
-        options: [
-            "Proteínas que reconocen y se unen a secuencias específicas del ADN.",
-            "Partes del ribosoma.",
-            "Enzimas que degradan ADN.",
-            "Secuencias de ARN."
-        ],
+        options: ["Proteínas que reconocen y se unen a secuencias específicas del ADN.", "Partes del ribosoma.", "Enzimas que degradan ADN.", "Secuencias de ARN."],
         correct: 0,
         explanation: "Son proteínas que leen la secuencia de ADN (surco mayor) para activar o reprimir genes."
     },
     {
         topic: "Eucariotas",
         question: "¿Cómo se llaman las secuencias de ADN que aumentan la transcripción y pueden estar lejos del gen?",
-        options: [
-            "Promotores",
-            "Potenciadores (Enhancers)",
-            "Represores (Silencers)",
-            "Exones"
-        ],
+        options: ["Promotores", "Potenciadores (Enhancers)", "Represores (Silencers)", "Exones"],
         correct: 1,
         explanation: "Los enhancers pueden actuar a miles de pares de bases de distancia gracias al plegamiento del ADN."
     },
     {
         topic: "Cromatina",
         question: "¿Qué efecto tiene la acetilación de las histonas (mediada por HATs)?",
-        options: [
-            "Condensa la cromatina e impide la transcripción.",
-            "No tiene efecto.",
-            "Relaja la cromatina y favorece la transcripción.",
-            "Provoca mutaciones."
-        ],
+        options: ["Condensa la cromatina e impide la transcripción.", "No tiene efecto.", "Relaja la cromatina y favorece la transcripción.", "Provoca mutaciones."],
         correct: 2,
         explanation: "Añadir grupos acetilo elimina la carga positiva de las histonas, aflojando su unión al ADN."
     },
     {
         topic: "Cromatina",
         question: "¿Qué hacen los complejos remodeladores de la cromatina?",
-        options: [
-            "Sintetizan ADN.",
-            "Utilizan ATP para deslizar los nucleosomas y exponer el ADN.",
-            "Degradan histonas.",
-            "Unen intrones."
-        ],
+        options: ["Sintetizan ADN.", "Utilizan ATP para deslizar los nucleosomas y exponer el ADN.", "Degradan histonas.", "Unen intrones."],
         correct: 1,
         explanation: "Mueven físicamente los nucleosomas para que la maquinaria de transcripción pueda acceder al promotor."
     },
     {
         topic: "Regulación",
         question: "¿Qué es el 'código de histonas'?",
-        options: [
-            "La secuencia de aminoácidos de la histona.",
-            "El patrón de modificaciones químicas (acetilación, metilación) en las colas de las histonas.",
-            "El código genético del ADN.",
-            "Un tipo de ARN."
-        ],
+        options: ["La secuencia de aminoácidos de la histona.", "El patrón de modificaciones químicas (acetilación, metilación) en las colas de las histonas.", "El código genético del ADN.", "Un tipo de ARN."],
         correct: 1,
         explanation: "Son marcas químicas que indican a la célula si una región del genoma debe ser leída o silenciada."
     },
     {
         topic: "Control Combinatorio",
         question: "¿Qué principio explica que con pocos reguladores se generen muchos tipos celulares?",
-        options: [
-            "Control combinatorio.",
-            "Replicación semiconservadora.",
-            "Splicing alternativo.",
-            "Mutación aleatoria."
-        ],
+        options: ["Control combinatorio.", "Replicación semiconservadora.", "Splicing alternativo.", "Mutación aleatoria."],
         correct: 0,
         explanation: "Los reguladores actúan en combinaciones diferentes; como letras del alfabeto formando palabras distintas."
     },
     {
         topic: "Control Combinatorio",
         question: "¿Cuántos reguladores se estima que controlan los ~24,000 genes humanos?",
-        options: [
-            "Unos 24,000 (uno por gen).",
-            "Unos 100.",
-            "Unos 1,000.",
-            "Millones."
-        ],
+        options: ["Unos 24,000 (uno por gen).", "Unos 100.", "Unos 1,000.", "Millones."],
         correct: 2,
         explanation: "Aproximadamente 1,000 factores de transcripción combinados son suficientes para la complejidad humana."
     },
-
     // --- DIFERENCIACIÓN, MEMORIA Y CÉLULAS MADRE (29-42) ---
     {
         topic: "Potencia Celular",
         question: "¿Qué define a una célula Totipotente?",
-        options: [
-            "Puede generar cualquier tipo celular, incluyendo tejidos extraembrionarios (placenta).",
-            "Solo genera células de la sangre.",
-            "Puede generar las tres capas germinales pero no placenta.",
-            "No puede dividirse."
-        ],
+        options: ["Puede generar cualquier tipo celular, incluyendo tejidos extraembrionarios (placenta).", "Solo genera células de la sangre.", "Puede generar las tres capas germinales pero no placenta.", "No puede dividirse."],
         correct: 0,
         explanation: "El cigoto es totipotente; tiene el potencial máximo para formar un organismo completo y sus anexos."
     },
     {
         topic: "Potencia Celular",
         question: "¿Qué define a una célula Pluripotente (como las ESC)?",
-        options: [
-            "Genera tejidos extraembrionarios.",
-            "Genera células de las tres capas germinales (ectodermo, mesodermo, endodermo), pero no un organismo completo por sí sola.",
-            "Solo genera un tipo celular.",
-            "Es una célula diferenciada."
-        ],
+        options: ["Genera tejidos extraembrionarios.", "Genera células de las tres capas germinales (ectodermo, mesodermo, endodermo), pero no un organismo completo por sí sola.", "Solo genera un tipo celular.", "Es una célula diferenciada."],
         correct: 1,
         explanation: "Las células madre embrionarias son pluripotentes: pueden formar cualquier tejido del cuerpo, pero no placenta."
     },
     {
         topic: "Potencia Celular",
         question: "¿Qué es una célula Multipotente?",
-        options: [
-            "Puede diferenciarse en múltiples tipos, pero limitados a un linaje (ej. sangre).",
-            "Es igual que una pluripotente.",
-            "Es una célula cancerosa.",
-            "Solo genera piel."
-        ],
+        options: ["Puede diferenciarse en múltiples tipos, pero limitados a un linaje (ej. sangre).", "Es igual que una pluripotente.", "Es una célula cancerosa.", "Solo genera piel."],
         correct: 0,
         explanation: "Ejemplo: Células madre hematopoyéticas, que dan lugar a glóbulos rojos, blancos y plaquetas, pero no a neuronas."
     },
     {
         topic: "Memoria Celular",
         question: "¿Cuál es un mecanismo de 'memoria celular' (herencia epigenética)?",
-        options: [
-            "Mutación del ADN.",
-            "Retroalimentación positiva de un regulador maestro.",
-            "Pérdida de mitocondrias.",
-            "Cambio en la secuencia de nucleótidos."
-        ],
+        options: ["Mutación del ADN.", "Retroalimentación positiva de un regulador maestro.", "Pérdida de mitocondrias.", "Cambio en la secuencia de nucleótidos."],
         correct: 1,
         explanation: "Si una proteína A activa su propio gen, las células hijas heredarán la proteína A y seguirán activando el gen."
     },
     {
         topic: "Epigenética",
         question: "¿Qué efecto tiene generalmente la metilación del ADN (en citosinas)?",
-        options: [
-            "Activa la transcripción.",
-            "Silencia la expresión génica.",
-            "Provoca la replicación.",
-            "Degrada el ADN."
-        ],
+        options: ["Activa la transcripción.", "Silencia la expresión génica.", "Provoca la replicación.", "Degrada el ADN."],
         correct: 1,
         explanation: "La metilación de citosinas en islas CpG suele atraer proteínas que condensan la cromatina y apagan genes."
     },
     {
         topic: "Epigenética",
         question: "¿La herencia epigenética altera la secuencia de ADN?",
-        options: [
-            "Sí, cambia las bases.",
-            "No, son cambios heredables en la expresión sin cambiar la secuencia.",
-            "Solo en bacterias.",
-            "Depende del gen."
-        ],
+        options: ["Sí, cambia las bases.", "No, son cambios heredables en la expresión sin cambiar la secuencia.", "Solo en bacterias.", "Depende del gen."],
         correct: 1,
         explanation: "Epigenética significa 'sobre la genética'; cambia el fenotipo sin cambiar el genotipo."
     },
     {
         topic: "Reprogramación",
         question: "¿Qué son las iPS (Células Madre Pluripotentes Inducidas)?",
-        options: [
-            "Células madre embrionarias naturales.",
-            "Células adultas reprogramadas artificialmente a un estado pluripotente.",
-            "Células del hígado.",
-            "Clones de oveja Dolly."
-        ],
+        options: ["Células madre embrionarias naturales.", "Células adultas reprogramadas artificialmente a un estado pluripotente.", "Células del hígado.", "Clones de oveja Dolly."],
         correct: 1,
         explanation: "Mediante factores de transcripción (Yamanaka factors), una célula adulta puede 'rejuvenecer' a un estado tipo embrionario."
     },
     {
         topic: "Reprogramación",
         question: "¿Qué demuestra la conversión directa de fibroblasto a neurona?",
-        options: [
-            "Que la diferenciación es irreversible.",
-            "Que la identidad celular depende de los reguladores que expresa y es plástica.",
-            "Que el ADN se pierde en la diferenciación.",
-            "Que las neuronas son células madre."
-        ],
+        options: ["Que la diferenciación es irreversible.", "Que la identidad celular depende de los reguladores que expresa y es plástica.", "Que el ADN se pierde en la diferenciación.", "Que las neuronas son células madre."],
         correct: 1,
         explanation: "Demuestra que el estado diferenciado se mantiene por proteínas reguladoras y puede cambiarse manipulándolas."
     },
-
     // --- CONTROL POST-TRANSCRIPCIONAL (43-55) ---
     {
         topic: "ARN no codificante",
         question: "¿Qué son los ARN no codificantes (ncRNA)?",
-        options: [
-            "ARN que no se traduce a proteína pero tiene función propia.",
-            "ARN basura sin función.",
-            "ARNm mal formados.",
-            "Virus."
-        ],
+        options: ["ARN que no se traduce a proteína pero tiene función propia.", "ARN basura sin función.", "ARNm mal formados.", "Virus."],
         correct: 0,
         explanation: "Incluyen ARNt, ARNr, y reguladores como miRNA, siRNA y lncRNA."
     },
     {
         topic: "miRNA",
         question: "¿Cuál es la función principal de los microARN (miRNA)?",
-        options: [
-            "Codificar proteínas pequeñas.",
-            "Regular la expresión génica degradando ARNm o bloqueando su traducción.",
-            "Servir de molde para el ADN.",
-            "Formar ribosomas."
-        ],
+        options: ["Codificar proteínas pequeñas.", "Regular la expresión génica degradando ARNm o bloqueando su traducción.", "Servir de molde para el ADN.", "Formar ribosomas."],
         correct: 1,
         explanation: "Los miRNA guían al complejo RISC hacia ARNm complementarios para silenciarlos."
     },
     {
         topic: "miRNA",
         question: "¿Qué complejo proteico utilizan los miRNA para actuar?",
-        options: [
-            "RISC (Complejo de Silenciamiento Inducido por ARN).",
-            "Proteasoma.",
-            "Ribosoma.",
-            "Spliceosoma."
-        ],
+        options: ["RISC (Complejo de Silenciamiento Inducido por ARN).", "Proteasoma.", "Ribosoma.", "Spliceosoma."],
         correct: 0,
         explanation: "El miRNA se carga en RISC y actúa como guía de búsqueda."
     },
     {
         topic: "siRNA",
         question: "¿Cuál es el origen principal del sistema de interferencia por ARN (siRNA)?",
-        options: [
-            "Regulación del desarrollo.",
-            "Mecanismo de defensa contra virus (ARN de doble cadena) y transposones.",
-            "Síntesis de energía.",
-            "Respiración celular."
-        ],
+        options: ["Regulación del desarrollo.", "Mecanismo de defensa contra virus (ARN de doble cadena) y transposones.", "Síntesis de energía.", "Respiración celular."],
         correct: 1,
         explanation: "Las células reconocen el ARN de doble cadena (típico de virus) como extraño y lo usan para destruir al invasor."
     },
     {
         topic: "siRNA",
         question: "¿Qué enzima corta el ARN de doble cadena extraño en fragmentos pequeños (siRNA)?",
-        options: [
-            "Dicer",
-            "Polimerasa",
-            "Ligasa",
-            "Helicasa"
-        ],
+        options: ["Dicer", "Polimerasa", "Ligasa", "Helicasa"],
         correct: 0,
         explanation: "Dicer 'trocea' el ARN viral en pequeños fragmentos que luego arman a RISC."
     },
     {
         topic: "lncRNA",
         question: "¿Qué longitud mínima definen a los ARN largos no codificantes (lncRNA)?",
-        options: [
-            "Más de 20 nucleótidos.",
-            "Más de 200 nucleótidos.",
-            "Más de 1000 nucleótidos.",
-            "Menos de 20 nucleótidos."
-        ],
+        options: ["Más de 20 nucleótidos.", "Más de 200 nucleótidos.", "Más de 1000 nucleótidos.", "Menos de 20 nucleótidos."],
         correct: 1,
         explanation: "Se clasifican como largos si superan los 200 nucleótidos, diferenciándose de los pequeños miRNA/siRNA."
     },
     {
         topic: "lncRNA",
         question: "¿Qué función cumple el lncRNA llamado Xist?",
-        options: [
-            "Activar el cromosoma Y.",
-            "Silenciar e inactivar uno de los cromosomas X en hembras de mamíferos.",
-            "Degradar ARNm.",
-            "Sintetizar proteínas."
-        ],
+        options: ["Activar el cromosoma Y.", "Silenciar e inactivar uno de los cromosomas X en hembras de mamíferos.", "Degradar ARNm.", "Sintetizar proteínas."],
         correct: 1,
         explanation: "Xist recubre el cromosoma X del que se transcribe, reclutando maquinaria para condensarlo (Cuerpo de Barr)."
     },
     {
         topic: "lncRNA",
         question: "¿Cómo actúan los lncRNA como 'esponjas'?",
-        options: [
-            "Absorben agua.",
-            "Secuestran miRNA para evitar que silencien sus dianas.",
-            "Limpian la célula de desechos.",
-            "Absorben glucosa."
-        ],
+        options: ["Absorben agua.", "Secuestran miRNA para evitar que silencien sus dianas.", "Limpian la célula de desechos.", "Absorben glucosa."],
         correct: 1,
         explanation: "Al unirse a los miRNA, los 'distraen' o secuestran, permitiendo que los ARNm diana de esos miRNA se expresen."
     },
-
     // --- DINÁMICA Y EVOLUCIÓN DEL GENOMA (56-65) ---
     {
         topic: "Variación Genética",
         question: "¿Cuál es la fuente última de variación genética y evolución?",
-        options: [
-            "La mitosis.",
-            "La estabilidad del ADN.",
-            "Las mutaciones.",
-            "La alimentación."
-        ],
+        options: ["La mitosis.", "La estabilidad del ADN.", "Las mutaciones.", "La alimentación."],
         correct: 2,
         explanation: "Los cambios en la secuencia de ADN (mutaciones) generan la diversidad sobre la que actúa la selección."
     },
     {
         topic: "Mutaciones",
         question: "¿Qué es una mutación puntual?",
-        options: [
-            "Cambio en un único nucleótido.",
-            "Duplicación de un cromosoma entero.",
-            "Pérdida de un brazo cromosómico.",
-            "Fusión de dos células."
-        ],
+        options: ["Cambio en un único nucleótido.", "Duplicación de un cromosoma entero.", "Pérdida de un brazo cromosómico.", "Fusión de dos células."],
         correct: 0,
         explanation: "Es el cambio más simple, por error de replicación o reparación."
     },
     {
         topic: "Mutaciones",
         question: "¿Dónde suelen tener mayor impacto evolutivo las mutaciones?",
-        options: [
-            "En intrones.",
-            "En el ADN regulatorio (cambiando cuándo o dónde se expresa un gen).",
-            "En regiones intergénicas.",
-            "En el telómero."
-        ],
+        options: ["En intrones.", "En el ADN regulatorio (cambiando cuándo o dónde se expresa un gen).", "En regiones intergénicas.", "En el telómero."],
         correct: 1,
         explanation: "Cambiar la regulación permite usar los mismos genes de formas nuevas (ej. resistencia a lactosa en adultos)."
     },
     {
         topic: "Evolución",
         question: "¿Qué mecanismo permite generar nuevos genes con funciones novedosas?",
-        options: [
-            "Duplicación génica y divergencia.",
-            "Reparación del ADN.",
-            "Transcripción.",
-            "Traducción."
-        ],
+        options: ["Duplicación génica y divergencia.", "Reparación del ADN.", "Transcripción.", "Traducción."],
         correct: 0,
         explanation: "Una copia mantiene la función original, liberando a la otra copia para acumular mutaciones y adquirir nuevas funciones."
     },
     {
         topic: "Ejemplo Evolución",
         question: "¿Qué familia de genes es un ejemplo clásico de duplicación y divergencia?",
-        options: [
-            "La familia de las globinas.",
-            "El gen de la insulina.",
-            "El ARN ribosomal.",
-            "El gen p53."
-        ],
+        options: ["La familia de las globinas.", "El gen de la insulina.", "El ARN ribosomal.", "El gen p53."],
         correct: 0,
         explanation: "Las globinas (alfa, beta, mioglobina) surgieron de un ancestro común y se especializaron en distintas etapas/tejidos."
     },
     {
         topic: "Exones",
         question: "¿Qué es el reordenamiento de exones (Exon Shuffling)?",
-        options: [
-            "Eliminar exones durante el splicing.",
-            "Mezclar exones de diferentes genes para crear proteínas con nuevas combinaciones de dominios.",
-            "Duplicar intrones.",
-            "Un error de traducción."
-        ],
+        options: ["Eliminar exones durante el splicing.", "Mezclar exones de diferentes genes para crear proteínas con nuevas combinaciones de dominios.", "Duplicar intrones.", "Un error de traducción."],
         correct: 1,
         explanation: "Permite una evolución rápida de proteínas modulares, combinando dominios funcionales preexistentes."
     },
-
     // --- VIRUS Y CRISPR (66-75) ---
     {
         topic: "Virus",
         question: "¿Qué es un virus?",
-        options: [
-            "Una célula procariota.",
-            "Un pequeño genoma (ADN o ARN) en una cubierta proteica que requiere una célula huésped.",
-            "Un orgánulo celular.",
-            "Una proteína tóxica."
-        ],
+        options: ["Una célula procariota.", "Un pequeño genoma (ADN o ARN) en una cubierta proteica que requiere una célula huésped.", "Un orgánulo celular.", "Una proteína tóxica."],
         correct: 1,
         explanation: "Son parásitos intracelulares obligados; no tienen maquinaria propia para reproducirse."
     },
     {
         topic: "SARS-CoV-2",
         question: "¿Por qué el SARS-CoV-2 tiene una tasa de mutación relativamente baja para ser un virus de ARN?",
-        options: [
-            "Porque su polimerasa tiene actividad de corrección de pruebas.",
-            "Porque es un virus de ADN.",
-            "Porque no se replica.",
-            "Porque usa la polimerasa humana."
-        ],
+        options: ["Porque su polimerasa tiene actividad de corrección de pruebas.", "Porque es un virus de ADN.", "Porque no se replica.", "Porque usa la polimerasa humana."],
         correct: 0,
         explanation: "A diferencia de la mayoría de virus ARN, los coronavirus tienen un mecanismo para corregir errores, favoreciendo su estabilidad."
     },
     {
         topic: "VIH",
         question: "¿Por qué el VIH (retrovirus) evoluciona tan rápido?",
-        options: [
-            "Porque su transcriptasa inversa no corrige errores.",
-            "Porque tiene corrección de pruebas.",
-            "Porque es un virus de ADN estable.",
-            "Porque infecta bacterias."
-        ],
+        options: ["Porque su transcriptasa inversa no corrige errores.", "Porque tiene corrección de pruebas.", "Porque es un virus de ADN estable.", "Porque infecta bacterias."],
         correct: 0,
         explanation: "La falta de corrección y la presión inmune generan una altísima variabilidad viral."
     },
     {
         topic: "Elementos Móviles",
         question: "¿Qué son los elementos genéticos móviles?",
-        options: [
-            "Genes que saltan de un genoma a otro.",
-            "Paquetes de información genética que se mueven dentro del genoma.",
-            "Ribosomas móviles.",
-            "Células sanguíneas."
-        ],
+        options: ["Genes que saltan de un genoma a otro.", "Paquetes de información genética que se mueven dentro del genoma.", "Ribosomas móviles.", "Células sanguíneas."],
         correct: 1,
         explanation: "Contribuyen a la evolución y plasticidad del genoma (transposones)."
     },
     {
         topic: "CRISPR-Cas",
         question: "¿Cuál es la función original del sistema CRISPR-Cas en la naturaleza?",
-        options: [
-            "Edición genética en humanos.",
-            "Inmunidad adaptativa en bacterias contra virus.",
-            "Síntesis de proteínas.",
-            "Replicación del ADN bacteriano."
-        ],
+        options: ["Edición genética en humanos.", "Inmunidad adaptativa en bacterias contra virus.", "Síntesis de proteínas.", "Replicación del ADN bacteriano."],
         correct: 1,
         explanation: "Las bacterias guardan fragmentos de virus en su locus CRISPR para reconocerlos y cortarlos en futuras infecciones."
     },
     {
         topic: "CRISPR-Cas",
         question: "¿Cómo se ha adaptado CRISPR para la tecnología?",
-        options: [
-            "Como herramienta de edición genética precisa guiada por ARN.",
-            "Para crear vacunas de ARN.",
-            "Para secuenciar genomas.",
-            "Para clonar ovejas."
-        ],
+        options: ["Como herramienta de edición genética precisa guiada por ARN.", "Para crear vacunas de ARN.", "Para secuenciar genomas.", "Para clonar ovejas."],
         correct: 0,
         explanation: "Permite dirigir la proteína Cas9 a cualquier secuencia de ADN usando un ARN guía sintético para cortar y editar."
     },
     {
         topic: "CRISPR-Cas",
         question: "¿Qué componente guía a la proteína Cas al sitio específico del ADN?",
-        options: [
-            "Una proteína guía.",
-            "Una molécula de ARN guía.",
-            "Un lípido.",
-            "La polimerasa."
-        ],
+        options: ["Una proteína guía.", "Una molécula de ARN guía.", "Un lípido.", "La polimerasa."],
         correct: 1,
         explanation: "La especificidad de CRISPR reside en la secuencia del ARN guía complementaria a la diana."
     },
     {
         topic: "Concepto Clave",
         question: "¿Qué es la terapia génica con CRISPR?",
-        options: [
-            "Uso de virus para matar bacterias.",
-            "Edición o corrección de genes defectuosos en pacientes (ej. anemia falciforme).",
-            "Uso de antibióticos.",
-            "Transfusión de sangre."
-        ],
+        options: ["Uso de virus para matar bacterias.", "Edición o corrección de genes defectuosos en pacientes (ej. anemia falciforme).", "Uso de antibióticos.", "Transfusión de sangre."],
         correct: 1,
         explanation: "Ya es una realidad clínica para curar enfermedades genéticas modificando el ADN del paciente."
     },
     {
         topic: "Concepto Clave",
         question: "¿Cuál es la diferencia entre un virus ARN como el SARS-CoV-2 y un retrovirus como el VIH?",
-        options: [
-            "El SARS-CoV-2 se integra en el genoma, el VIH no.",
-            "El VIH se integra en el genoma del huésped (como provirus), el SARS-CoV-2 no suele hacerlo.",
-            "El VIH es de ADN.",
-            "No hay diferencia."
-        ],
+        options: ["El SARS-CoV-2 se integra en el genoma, el VIH no.", "El VIH se integra en el genoma del huésped (como provirus), el SARS-CoV-2 no suele hacerlo.", "El VIH es de ADN.", "No hay diferencia."],
         correct: 1,
         explanation: "El VIH usa transcriptasa inversa para hacer ADN e integrarse; SARS-CoV-2 replica su ARN en el citoplasma."
     },
     {
         topic: "Repaso General",
         question: "Resumen: ¿Qué mecanismo permite que una célula madre 'recuerde' su estado a través de las divisiones?",
-        options: [
-            "Herencia mendeliana.",
-            "Herencia epigenética.",
-            "Selección natural.",
-            "Deriva génica."
-        ],
+        options: ["Herencia mendeliana.", "Herencia epigenética.", "Selección natural.", "Deriva génica."],
         correct: 1,
         explanation: "La metilación y modificación de histonas se copian durante la división, perpetuando la identidad celular."
     }
 ];
 
-let currentQuestionIndex = 0;
-let score = 0;
+// --- GESTIÓN DE ESTADO ---
+// Inicializamos propiedades extra en las preguntas
+questions.forEach(q => {
+    q.isMarked = false;       // Estado de marca
+    q.userCorrect = null;     // null: no respondida, true: correcta, false: incorrecta
+});
+
+let activeIndices = []; // Lista de los índices de las preguntas activas (playlist)
+let currentPlaylistIndex = 0; // Puntero dentro de la playlist
+let sessionScore = 0;
 let answered = false;
 
-const quizArea = document.getElementById('quiz-area');
-const progressEl = document.getElementById('progress');
-const scoreEl = document.getElementById('score');
-const resultsArea = document.getElementById('results');
-const finalScoreEl = document.getElementById('final-score');
-const finalPercentEl = document.getElementById('final-percent');
+// Al cargar
+document.addEventListener('DOMContentLoaded', () => {
+    startQuiz('all');
+});
 
-function loadQuestion() {
-    answered = false;
-    if (currentQuestionIndex >= questions.length) {
-        showResults();
+// --- FUNCIÓN PRINCIPAL DE CONTROL ---
+function startQuiz(mode) {
+    activeIndices = [];
+    
+    // 1. Crear la lista de reproducción según el modo
+    if (mode === 'all') {
+        // Reinicio total: limpiamos respuestas
+        questions.forEach(q => q.userCorrect = null);
+        // Nota: ¿Limpiamos las marcas? Normalmente un "Reiniciar Test" borra todo.
+        questions.forEach(q => q.isMarked = false);
+        
+        activeIndices = questions.map((_, i) => i);
+    } 
+    else if (mode === 'failed') {
+        activeIndices = questions
+            .map((q, i) => q.userCorrect === false ? i : -1)
+            .filter(i => i !== -1);
+    } 
+    else if (mode === 'marked') {
+        activeIndices = questions
+            .map((q, i) => q.isMarked ? i : -1)
+            .filter(i => i !== -1);
+    } 
+    else if (mode === 'mixed') {
+        // Falladas O marcadas
+        activeIndices = questions
+            .map((q, i) => (q.userCorrect === false || q.isMarked) ? i : -1)
+            .filter(i => i !== -1);
+    }
+
+    // 2. Comprobaciones
+    if (activeIndices.length === 0) {
+        alert("No hay preguntas para este modo (ej. no has fallado o marcado ninguna).");
         return;
     }
 
-    const q = questions[currentQuestionIndex];
-    progressEl.textContent = `Pregunta ${currentQuestionIndex + 1} de ${questions.length}`;
+    // 3. Resetear contadores de sesión
+    currentPlaylistIndex = 0;
+    sessionScore = 0;
     
+    // 4. UI
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('quiz-area').style.display = 'block';
+    document.getElementById('statsBar').style.display = 'flex';
+    
+    loadQuestion();
+}
+
+function loadQuestion() {
+    answered = false;
+    
+    // Obtenemos el índice REAL de la pregunta en la base de datos
+    const realIndex = activeIndices[currentPlaylistIndex];
+    const q = questions[realIndex];
+    
+    document.getElementById('progress').textContent = `Pregunta ${currentPlaylistIndex + 1} de ${activeIndices.length}`;
+    document.getElementById('score').textContent = `Aciertos sesión: ${sessionScore}`;
+
+    // Renderizado
+    const quizArea = document.getElementById('quiz-area');
+    
+    // Checkbox state
+    const markedChecked = q.isMarked ? 'checked' : '';
+
     let html = `
         <div class="question-card active">
+            
+            <label class="bookmark-panel">
+                <input type="checkbox" class="bookmark-checkbox" onchange="toggleMark(${realIndex}, this)" ${markedChecked}>
+                <span>Marcar para revisar</span>
+            </label>
+
             <div class="topic-tag">${q.topic}</div>
             <div class="question-text">${q.question}</div>
+            
             <div class="options-grid">
-                ${q.options.map((opt, index) => `
-                    <button class="option-btn" onclick="checkAnswer(${index}, ${q.correct})">
-                        ${opt}
+                ${q.options.map((opt, i) => `
+                    <button class="option-btn" onclick="checkAnswer(${i}, ${q.correct}, this, ${realIndex})">
+                        ${String.fromCharCode(65+i)}. ${opt}
                     </button>
                 `).join('')}
             </div>
-            <div id="feedback-${currentQuestionIndex}" class="feedback"></div>
+            
+            <div id="feedback" class="feedback"></div>
+            
             <div class="navigation">
-                <button id="next-btn-${currentQuestionIndex}" class="nav-btn" onclick="nextQuestion()">Siguiente →</button>
+                <button id="next-btn" class="nav-btn" onclick="nextQuestion()">Siguiente →</button>
             </div>
         </div>
     `;
@@ -839,56 +696,85 @@ function loadQuestion() {
     quizArea.innerHTML = html;
 }
 
-function checkAnswer(selected, correct) {
+// Función para marcar/desmarcar (se guarda en el objeto global)
+function toggleMark(realIndex, checkbox) {
+    questions[realIndex].isMarked = checkbox.checked;
+}
+
+function checkAnswer(selected, correct, btn, realIndex) {
     if (answered) return;
     answered = true;
 
-    const buttons = document.querySelectorAll('.option-btn');
-    const feedbackEl = document.getElementById(`feedback-${currentQuestionIndex}`);
-    const nextBtn = document.getElementById(`next-btn-${currentQuestionIndex}`);
+    const btns = document.querySelectorAll('.option-btn');
+    const feedbackEl = document.getElementById('feedback');
+    const nextBtn = document.getElementById('next-btn');
+
+    // Deshabilitar botones
+    btns.forEach(b => b.disabled = true);
 
     if (selected === correct) {
-        buttons[selected].classList.add('correct');
+        sessionScore++;
+        questions[realIndex].userCorrect = true; // Guardar estado
+        btn.classList.add('correct');
         feedbackEl.className = 'feedback feedback-correct show';
-        feedbackEl.innerHTML = `<strong>¡Correcto!</strong> ${questions[currentQuestionIndex].explanation}`;
-        score++;
+        feedbackEl.innerHTML = `<strong>¡Correcto!</strong> ${questions[realIndex].explanation}`;
     } else {
-        buttons[selected].classList.add('incorrect');
-        buttons[correct].classList.add('correct');
+        questions[realIndex].userCorrect = false; // Guardar estado fallo
+        btn.classList.add('incorrect');
+        btns[correct].classList.add('correct');
         feedbackEl.className = 'feedback feedback-incorrect show';
-        feedbackEl.innerHTML = `<strong>Incorrecto.</strong> ${questions[currentQuestionIndex].explanation}`;
+        feedbackEl.innerHTML = `<strong>Incorrecto.</strong> ${questions[realIndex].explanation}`;
     }
 
-    scoreEl.textContent = `Aciertos: ${score}`;
+    document.getElementById('score').textContent = `Aciertos sesión: ${sessionScore}`;
     nextBtn.style.display = 'inline-block';
-    
-    // Deshabilitar botones
-    buttons.forEach(btn => btn.disabled = true);
 }
 
 function nextQuestion() {
-    currentQuestionIndex++;
-    loadQuestion();
+    if (currentPlaylistIndex < activeIndices.length - 1) {
+        currentPlaylistIndex++;
+        loadQuestion();
+    } else {
+        showResults();
+    }
 }
 
 function showResults() {
-    quizArea.innerHTML = '';
-    resultsArea.style.display = 'block';
-    finalScoreEl.textContent = `${score} / ${questions.length}`;
-    const percent = Math.round((score / questions.length) * 100);
+    document.getElementById('quiz-area').style.display = 'none';
+    document.getElementById('statsBar').style.display = 'none';
+    document.getElementById('results').style.display = 'block';
+
+    const percent = Math.round((sessionScore / activeIndices.length) * 100);
+    document.getElementById('final-score').textContent = `${sessionScore} / ${activeIndices.length}`;
     
-    let message = "";
-    if(percent >= 90) message = "¡Excelente! Dominas la Regulación Génica.";
-    else if(percent >= 70) message = "Muy bien, estás preparado.";
-    else if(percent >= 50) message = "Aprobado, pero repasa los mecanismos de control.";
-    else message = "Necesitas estudiar más el Bloque 3.";
+    // Mensaje motivacional
+    let msg = "";
+    if(percent >= 90) msg = "¡Excelente!";
+    else if(percent >= 70) msg = "Muy bien.";
+    else if(percent >= 50) msg = "Aprobado.";
+    else msg = "Sigue repasando.";
+    document.getElementById('final-msg').textContent = `${percent}% - ${msg}`;
+
+    // Estadísticas globales para habilitar botones
+    const totalFailed = questions.filter(q => q.userCorrect === false).length;
+    const totalMarked = questions.filter(q => q.isMarked === true).length;
+    const totalMixed = questions.filter(q => q.userCorrect === false || q.isMarked).length;
+
+    document.getElementById('stats-summary').innerHTML = `
+        <strong>Resumen Global:</strong><br>
+        Preguntas marcadas para revisión: ${totalMarked}<br>
+        Preguntas falladas (histórico): ${totalFailed}
+    `;
+
+    // Habilitar/Deshabilitar botones
+    document.getElementById('btn-failed').disabled = (totalFailed === 0);
+    document.getElementById('btn-marked').disabled = (totalMarked === 0);
+    document.getElementById('btn-mixed').disabled = (totalMixed === 0);
     
-    finalPercentEl.textContent = `${percent}% - ${message}`;
+    // Actualizar textos con contadores
+    document.getElementById('btn-failed').innerHTML = `❌ Repetir Falladas (${totalFailed})`;
+    document.getElementById('btn-marked').innerHTML = `⚠️ Repetir Marcadas (${totalMarked})`;
 }
-
-// Iniciar el examen
-loadQuestion();
-
 </script>
 
 </body>
