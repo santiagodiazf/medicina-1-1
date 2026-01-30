@@ -23,16 +23,43 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-height: 200px;
         }
         .question-block {
             margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 1px solid #eee;
+            position: relative; /* Para posicionar el marcador */
         }
+        
+        /* Estilos para el marcador (Pestaña) */
+        .mark-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 0.9em;
+            background-color: #f8f9fa;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .mark-container:hover {
+            background-color: #e2e6ea;
+        }
+        .mark-container input {
+            cursor: pointer;
+            transform: scale(1.2);
+        }
+
         .question-title {
             font-size: 1.1em;
             margin-bottom: 15px;
             font-weight: 600;
+            padding-right: 120px; /* Espacio para que el texto no tape el marcador */
         }
         .options-list {
             list-style-type: none;
@@ -88,1366 +115,758 @@
             pointer-events: none;
             opacity: 0.8;
         }
+
+        /* Panel de Resultados y Botones de Reintento */
+        #results-panel {
+            display: none; /* Oculto por defecto */
+            text-align: center;
+            margin-top: 40px;
+            padding: 30px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-top: 5px solid #2c3e50;
+        }
+        .retry-buttons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .retry-btn {
+            padding: 15px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: opacity 0.2s;
+        }
+        .retry-btn:hover { opacity: 0.9; }
+        .btn-full { background-color: #3498db; }
+        .btn-failed { background-color: #e74c3c; }
+        .btn-marked { background-color: #f39c12; }
+        .btn-mixed { background-color: #9b59b6; }
+        
+        .btn-finish-main {
+            background: #2c3e50; 
+            color: white; 
+            border: none; 
+            padding: 15px 30px; 
+            font-size: 1.2em; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: bold;
+            margin-top: 40px;
+            display: block;
+            width: 100%;
+        }
+
+        @media (max-width: 600px) {
+            .retry-buttons-grid { grid-template-columns: 1fr; }
+            .question-title { padding-right: 0; margin-top: 40px; }
+            .mark-container { width: 100%; box-sizing: border-box; justify-content: flex-end; border: none; background: transparent; }
+        }
     </style>
 </head>
 <body>
 
-    <h1>Test Bloque X: Genética Humana y Genómica</h1>
+    <h1 id="quiz-title">Test Bloque X: Genética Humana y Genómica</h1>
+    
     <div class="quiz-container" id="quiz">
         </div>
 
+    <button id="btn-finish" class="btn-finish-main">
+        🏁 Finalizar Corrección
+    </button>
+
+    <div id="results-panel">
+        <h2>📊 Resultados</h2>
+        <p id="score-text" style="font-size: 1.2em; margin: 20px 0;"></p>
+        
+        <h3>¿Qué deseas hacer ahora?</h3>
+        <div class="retry-buttons-grid">
+            <button class="retry-btn btn-full" onclick="retryQuiz('all')">🔄 Repetir Completo</button>
+            <button class="retry-btn btn-failed" onclick="retryQuiz('failed')">❌ Repetir Falladas</button>
+            <button class="retry-btn btn-marked" onclick="retryQuiz('marked')">🔖 Repetir Marcadas</button>
+            <button class="retry-btn btn-mixed" onclick="retryQuiz('mixed')">❌ + 🔖 Falladas y Marcadas</button>
+        </div>
+        <br>
+        <button onclick="window.location.href='index.html'" style="background:transparent; border:1px solid #666; padding:10px; border-radius:4px; cursor:pointer;">Volver al Menú Principal</button>
+    </div>
+
     <script>
-        const questions = [
+        // Definición de preguntas
+        const questionsSource = [
   {
     "id": "1",
     "text": "En el estudio de la Genómica Biomédica Humana, cuando un solo genotipo influye en múltiples rasgos fenotípicos no relacionados (características distintas), se hace referencia al concepto de:",
     "options": [
-      {
-        "text": "Poligenia.",
-        "correct": false
-      },
-      {
-        "text": "Epistasis.",
-        "correct": false
-      },
-      {
-        "text": "Expresividad variable.",
-        "correct": false
-      },
-      {
-        "text": "Pleiotropía.",
-        "correct": true
-      }
+      { "text": "Poligenia.", "correct": false },
+      { "text": "Epistasis.", "correct": false },
+      { "text": "Expresividad variable.", "correct": false },
+      { "text": "Pleiotropía.", "correct": true }
     ]
   },
   {
     "id": "2",
     "text": "La correlación genotipo/fenotipo se modula por diversos factores. El concepto de Penetrancia se refiere específicamente a:",
     "options": [
-      {
-        "text": "El grado o la intensidad con la que se manifiesta un rasgo genético en los individuos portadores del genotipo.",
-        "correct": false
-      },
-      {
-        "text": "La interacción entre múltiples genes que contribuyen a un único rasgo cuantitativo.",
-        "correct": false
-      },
-      {
-        "text": "La probabilidad de que un individuo que posee un genotipo asociado a una enfermedad manifieste el fenotipo correspondiente.",
-        "correct": true
-      },
-      {
-        "text": "El efecto dominante negativo de una mutación que se expresa con pérdida de función.",
-        "correct": false
-      }
+      { "text": "El grado o la intensidad con la que se manifiesta un rasgo genético en los individuos portadores del genotipo.", "correct": false },
+      { "text": "La interacción entre múltiples genes que contribuyen a un único rasgo cuantitativo.", "correct": false },
+      { "text": "La probabilidad de que un individuo que posee un genotipo asociado a una enfermedad manifieste el fenotipo correspondiente.", "correct": true },
+      { "text": "El efecto dominante negativo de una mutación que se expresa con pérdida de función.", "correct": false }
     ]
   },
   {
     "id": "3",
     "text": "¿Cuál de los siguientes patrones hereditarios está asociado a genes localizados en los autosomas y requiere que la secuencia genética alterada o ausente tenga un efecto fenotípico independientemente de la presencia del alelo en el otro cromosoma, es decir, el gen va en dosis doble en las células diploides?",
     "options": [
-      {
-        "text": "Ligado al cromosoma X recesivo.",
-        "correct": false
-      },
-      {
-        "text": "Mitocondrial.",
-        "correct": false
-      },
-      {
-        "text": "Autosómico dominante.",
-        "correct": true
-      },
-      {
-        "text": "Autosómico recesivo.",
-        "correct": false
-      }
+      { "text": "Ligado al cromosoma X recesivo.", "correct": false },
+      { "text": "Mitocondrial.", "correct": false },
+      { "text": "Autosómico dominante.", "correct": true },
+      { "text": "Autosómico recesivo.", "correct": false }
     ]
   },
   {
     "id": "4",
     "text": "La variabilidad genética esencial para la adaptación y evolución es generada principalmente en organismos superiores a través de:",
     "options": [
-      {
-        "text": "La reproducción asexual y la acumulación de mutaciones puntuales.",
-        "correct": false
-      },
-      {
-        "text": "La Reproducción sexual, mediante la recombinación y la segregación independiente de cromosomas.",
-        "correct": true
-      },
-      {
-        "text": "La metilación del ADN en regiones promotoras.",
-        "correct": false
-      },
-      {
-        "text": "La duplicación de genomas completos por endomitosis.",
-        "correct": false
-      }
+      { "text": "La reproducción asexual y la acumulación de mutaciones puntuales.", "correct": false },
+      { "text": "La Reproducción sexual, mediante la recombinación y la segregación independiente de cromosomas.", "correct": true },
+      { "text": "La metilación del ADN en regiones promotoras.", "correct": false },
+      { "text": "La duplicación de genomas completos por endomitosis.", "correct": false }
     ]
   },
   {
     "id": "5",
     "text": "Los Alelos son:",
     "options": [
-      {
-        "text": "Diferentes tipos de células.",
-        "correct": false
-      },
-      {
-        "text": "Las formas alternativas o variantes de un mismo gen que ocupan el mismo locus.",
-        "correct": true
-      },
-      {
-        "text": "Cromosomas homólogos.",
-        "correct": false
-      },
-      {
-        "text": "Proteínas reguladoras.",
-        "correct": false
-      }
+      { "text": "Diferentes tipos de células.", "correct": false },
+      { "text": "Las formas alternativas o variantes de un mismo gen que ocupan el mismo locus.", "correct": true },
+      { "text": "Cromosomas homólogos.", "correct": false },
+      { "text": "Proteínas reguladoras.", "correct": false }
     ]
   },
   {
     "id": "6",
     "text": "Un individuo Homocigoto para un gen específico:",
     "options": [
-      {
-        "text": "Tiene dos alelos idénticos en ambos cromosomas homólogos.",
-        "correct": true
-      },
-      {
-        "text": "Tiene dos alelos diferentes.",
-        "correct": false
-      },
-      {
-        "text": "Solo tiene un alelo (ej. cromosoma X en varones).",
-        "correct": false
-      },
-      {
-        "text": "No tiene el gen.",
-        "correct": false
-      }
+      { "text": "Tiene dos alelos idénticos en ambos cromosomas homólogos.", "correct": true },
+      { "text": "Tiene dos alelos diferentes.", "correct": false },
+      { "text": "Solo tiene un alelo (ej. cromosoma X en varones). " , "correct": false },
+      { "text": "No tiene el gen.", "correct": false }
     ]
   },
   {
     "id": "7",
     "text": "Un individuo Heterocigoto para un gen específico:",
     "options": [
-      {
-        "text": "Tiene dos alelos idénticos.",
-        "correct": false
-      },
-      {
-        "text": "Tiene dos alelos diferentes (ej. uno normal y uno mutado) en los cromosomas homólogos.",
-        "correct": true
-      },
-      {
-        "text": "Es hemicigoto.",
-        "correct": false
-      },
-      {
-        "text": "Es triploide.",
-        "correct": false
-      }
+      { "text": "Tiene dos alelos idénticos.", "correct": false },
+      { "text": "Tiene dos alelos diferentes (ej. uno normal y uno mutado) en los cromosomas homólogos.", "correct": true },
+      { "text": "Es hemicigoto.", "correct": false },
+      { "text": "Es triploide.", "correct": false }
     ]
   },
   {
     "id": "8",
     "text": "La herencia Ligada al Cromosoma X recesiva se caracteriza porque:",
     "options": [
-      {
-        "text": "Afecta por igual a hombres y mujeres.",
-        "correct": false
-      },
-      {
-        "text": "Afecta principalmente a los varones (hemicigotos), mientras que las mujeres suelen ser portadoras sanas.",
-        "correct": true
-      },
-      {
-        "text": "Se transmite de padre a hijo varón.",
-        "correct": false
-      },
-      {
-        "text": "Requiere mutación en ambas copias en el varón.",
-        "correct": false
-      }
+      { "text": "Afecta por igual a hombres y mujeres.", "correct": false },
+      { "text": "Afecta principalmente a los varones (hemicigotos), mientras que las mujeres suelen ser portadoras sanas.", "correct": true },
+      { "text": "Se transmite de padre a hijo varón.", "correct": false },
+      { "text": "Requiere mutación en ambas copias en el varón.", "correct": false }
     ]
   },
   {
     "id": "9",
     "text": "La herencia Mitocondrial se transmite exclusivamente:",
     "options": [
-      {
-        "text": "Por el padre.",
-        "correct": false
-      },
-      {
-        "text": "Por la madre a todos sus hijos (varones y mujeres).",
-        "correct": true
-      },
-      {
-        "text": "Por los abuelos.",
-        "correct": false
-      },
-      {
-        "text": "Aleatoriamente.",
-        "correct": false
-      }
+      { "text": "Por el padre.", "correct": false },
+      { "text": "Por la madre a todos sus hijos (varones y mujeres).", "correct": true },
+      { "text": "Por los abuelos.", "correct": false },
+      { "text": "Aleatoriamente.", "correct": false }
     ]
   },
   {
     "id": "10",
     "text": "Los rasgos Poligénicos o Multifactoriales son aquellos:",
     "options": [
-      {
-        "text": "Determinados por un solo gen.",
-        "correct": false
-      },
-      {
-        "text": "Determinados por la interacción de múltiples genes y factores ambientales (rasgos cuantitativos como la altura).",
-        "correct": true
-      },
-      {
-        "text": "Que no se heredan.",
-        "correct": false
-      },
-      {
-        "text": "Exclusivos de bacterias.",
-        "correct": false
-      }
+      { "text": "Determinados por un solo gen.", "correct": false },
+      { "text": "Determinados por la interacción de múltiples genes y factores ambientales (rasgos cuantitativos como la altura).", "correct": true },
+      { "text": "Que no se heredan.", "correct": false },
+      { "text": "Exclusivos de bacterias.", "correct": false }
     ]
   },
   {
     "id": "11",
     "text": "La Haploinsuficiencia ocurre cuando:",
     "options": [
-      {
-        "text": "Hay demasiadas copias del gen.",
-        "correct": false
-      },
-      {
-        "text": "Una sola copia funcional del gen (50% de producto) no es suficiente para mantener el fenotipo normal.",
-        "correct": true
-      },
-      {
-        "text": "El gen está silenciado.",
-        "correct": false
-      },
-      {
-        "text": "El alelo mutado mejora la función.",
-        "correct": false
-      }
+      { "text": "Hay demasiadas copias del gen.", "correct": false },
+      { "text": "Una sola copia funcional del gen (50% de producto) no es suficiente para mantener el fenotipo normal.", "correct": true },
+      { "text": "El gen está silenciado.", "correct": false },
+      { "text": "El alelo mutado mejora la función.", "correct": false }
     ]
   },
   {
     "id": "12",
     "text": "El efecto Dominante Negativo se produce cuando:",
     "options": [
-      {
-        "text": "El alelo mutado no se expresa.",
-        "correct": false
-      },
-      {
-        "text": "La proteína mutada interfiere o daña la función de la proteína normal producida por el otro alelo.",
-        "correct": true
-      },
-      {
-        "text": "El alelo normal domina.",
-        "correct": false
-      },
-      {
-        "text": "Hay una deleción completa.",
-        "correct": false
-      }
+      { "text": "El alelo mutado no se expresa.", "correct": false },
+      { "text": "La proteína mutada interfiere o daña la función de la proteína normal producida por el otro alelo.", "correct": true },
+      { "text": "El alelo normal domina.", "correct": false },
+      { "text": "Hay una deleción completa.", "correct": false }
     ]
   },
   {
     "id": "13",
     "text": "Una mutación de Ganancia de Función (Gain-of-Function) suele ser:",
     "options": [
-      {
-        "text": "Recesiva.",
-        "correct": false
-      },
-      {
-        "text": "Dominante, ya que la proteína adquiere una actividad nueva o tóxica.",
-        "correct": true
-      },
-      {
-        "text": "Silenciosa.",
-        "correct": false
-      },
-      {
-        "text": "Beneficiosa siempre.",
-        "correct": false
-      }
+      { "text": "Recesiva.", "correct": false },
+      { "text": "Dominante, ya que la proteína adquiere una actividad nueva o tóxica.", "correct": true },
+      { "text": "Silenciosa.", "correct": false },
+      { "text": "Beneficiosa siempre.", "correct": false }
     ]
   },
   {
     "id": "14",
     "text": "Una mutación de Pérdida de Función (Loss-of-Function) suele ser:",
     "options": [
-      {
-        "text": "Dominante.",
-        "correct": false
-      },
-      {
-        "text": "Recesiva (si hay haplosuficiencia), requiriendo que ambos alelos estén afectados para mostrar el fenotipo.",
-        "correct": true
-      },
-      {
-        "text": "Letal siempre.",
-        "correct": false
-      },
-      {
-        "text": "Codominante.",
-        "correct": false
-      }
+      { "text": "Dominante.", "correct": false },
+      { "text": "Recesiva (si hay haplosuficiencia), requiriendo que ambos alelos estén afectados para mostrar el fenotipo.", "correct": true },
+      { "text": "Letal siempre.", "correct": false },
+      { "text": "Codominante.", "correct": false }
     ]
   },
   {
     "id": "15",
     "text": "La Codominancia se observa cuando:",
     "options": [
-      {
-        "text": "Un alelo oculta al otro.",
-        "correct": false
-      },
-      {
-        "text": "Ambos alelos se expresan y sus fenotipos se manifiestan simultáneamente (ej. grupo sanguíneo AB).",
-        "correct": true
-      },
-      {
-        "text": "El fenotipo es intermedio.",
-        "correct": false
-      },
-      {
-        "text": "El gen está en el cromosoma Y.",
-        "correct": false
-      }
+      { "text": "Un alelo oculta al otro.", "correct": false },
+      { "text": "Ambos alelos se expresan y sus fenotipos se manifiestan simultáneamente (ej. grupo sanguíneo AB).", "correct": true },
+      { "text": "El fenotipo es intermedio.", "correct": false },
+      { "text": "El gen está en el cromosoma Y.", "correct": false }
     ]
   },
   {
     "id": "16",
     "text": "Una Mutación Puntual (SNP) implica:",
     "options": [
-      {
-        "text": "La pérdida de un cromosoma.",
-        "correct": false
-      },
-      {
-        "text": "El cambio de un solo nucleótido en la secuencia de ADN.",
-        "correct": true
-      },
-      {
-        "text": "La inversión de un segmento grande.",
-        "correct": false
-      },
-      {
-        "text": "La duplicación del genoma.",
-        "correct": false
-      }
+      { "text": "La pérdida de un cromosoma.", "correct": false },
+      { "text": "El cambio de un solo nucleótido en la secuencia de ADN.", "correct": true },
+      { "text": "La inversión de un segmento grande.", "correct": false },
+      { "text": "La duplicación del genoma.", "correct": false }
     ]
   },
   {
     "id": "17",
     "text": "Una mutación Frameshift (cambio de marco de lectura) es causada por:",
     "options": [
-      {
-        "text": "Sustitución de nucleótidos.",
-        "correct": false
-      },
-      {
-        "text": "Inserción o deleción de un número de nucleótidos que no es múltiplo de 3, alterando toda la secuencia proteica posterior.",
-        "correct": true
-      },
-      {
-        "text": "Metilación.",
-        "correct": false
-      },
-      {
-        "text": "Crossing-over.",
-        "correct": false
-      }
+      { "text": "Sustitución de nucleótidos.", "correct": false },
+      { "text": "Inserción o deleción de un número de nucleótidos que no es múltiplo de 3, alterando toda la secuencia proteica posterior.", "correct": true },
+      { "text": "Metilación.", "correct": false },
+      { "text": "Crossing-over.", "correct": false }
     ]
   },
   {
     "id": "18",
     "text": "Una mutación Missense (de sentido erróneo) provoca:",
     "options": [
-      {
-        "text": "Un codón de parada prematuro.",
-        "correct": false
-      },
-      {
-        "text": "El cambio de un aminoácido por otro en la proteína.",
-        "correct": true
-      },
-      {
-        "text": "Ningún cambio en la proteína.",
-        "correct": false
-      },
-      {
-        "text": "La eliminación del gen.",
-        "correct": false
-      }
+      { "text": "Un codón de parada prematuro.", "correct": false },
+      { "text": "El cambio de un aminoácido por otro en la proteína.", "correct": true },
+      { "text": "Ningún cambio en la proteína.", "correct": false },
+      { "text": "La eliminación del gen.", "correct": false }
     ]
   },
   {
     "id": "19",
     "text": "Una mutación Nonsense (sin sentido) introduce:",
     "options": [
-      {
-        "text": "Un aminoácido diferente.",
-        "correct": false
-      },
-      {
-        "text": "Un codón de parada (stop) prematuro, generando una proteína truncada.",
-        "correct": true
-      },
-      {
-        "text": "Un intrón.",
-        "correct": false
-      },
-      {
-        "text": "Una repetición.",
-        "correct": false
-      }
+      { "text": "Un aminoácido diferente.", "correct": false },
+      { "text": "Un codón de parada (stop) prematuro, generando una proteína truncada.", "correct": true },
+      { "text": "Un intrón.", "correct": false },
+      { "text": "Una repetición.", "correct": false }
     ]
   },
   {
     "id": "20",
     "text": "Una mutación Sinónima (silenciosa):",
     "options": [
-      {
-        "text": "Cambia el aminoácido.",
-        "correct": false
-      },
-      {
-        "text": "No cambia la secuencia de aminoácidos de la proteína (debido a la degeneración del código genético).",
-        "correct": true
-      },
-      {
-        "text": "Causa enfermedad siempre.",
-        "correct": false
-      },
-      {
-        "text": "Altera el splicing.",
-        "correct": false
-      }
+      { "text": "Cambia el aminoácido.", "correct": false },
+      { "text": "No cambia la secuencia de aminoácidos de la proteína (debido a la degeneración del código genético).", "correct": true },
+      { "text": "Causa enfermedad siempre.", "correct": false },
+      { "text": "Altera el splicing.", "correct": false }
     ]
   },
   {
     "id": "21",
     "text": "Las Variantes de Número de Copias (CNV) son:",
     "options": [
-      {
-        "text": "Mutaciones puntuales.",
-        "correct": false
-      },
-      {
-        "text": "Variaciones estructurales donde segmentos de ADN (kb a Mb) están duplicados o delecionados en comparación con el genoma de referencia.",
-        "correct": true
-      },
-      {
-        "text": "Cambios epigenéticos.",
-        "correct": false
-      },
-      {
-        "text": "ARN no codificante.",
-        "correct": false
-      }
+      { "text": "Mutaciones puntuales.", "correct": false },
+      { "text": "Variaciones estructurales donde segmentos de ADN (kb a Mb) están duplicados o delecionados en comparación con el genoma de referencia.", "correct": true },
+      { "text": "Cambios epigenéticos.", "correct": false },
+      { "text": "ARN no codificante.", "correct": false }
     ]
   },
   {
     "id": "22",
     "text": "Una Deleción cromosómica implica:",
     "options": [
-      {
-        "text": "La ganancia de material genético.",
-        "correct": false
-      },
-      {
-        "text": "La pérdida de un segmento cromosómico.",
-        "correct": true
-      },
-      {
-        "text": "El intercambio entre cromosomas.",
-        "correct": false
-      },
-      {
-        "text": "La inversión de un segmento.",
-        "correct": false
-      }
+      { "text": "La ganancia de material genético.", "correct": false },
+      { "text": "La pérdida de un segmento cromosómico.", "correct": true },
+      { "text": "El intercambio entre cromosomas.", "correct": false },
+      { "text": "La inversión de un segmento.", "correct": false }
     ]
   },
   {
     "id": "23",
     "text": "Una Duplicación cromosómica implica:",
     "options": [
-      {
-        "text": "La pérdida de genes.",
-        "correct": false
-      },
-      {
-        "text": "La presencia de una copia extra de un segmento cromosómico (ganancia de material).",
-        "correct": true
-      },
-      {
-        "text": "La fusión de cromosomas.",
-        "correct": false
-      },
-      {
-        "text": "La separación de cromátidas.",
-        "correct": false
-      }
+      { "text": "La pérdida de genes.", "correct": false },
+      { "text": "La presencia de una copia extra de un segmento cromosómico (ganancia de material).", "correct": true },
+      { "text": "La fusión de cromosomas.", "correct": false },
+      { "text": "La separación de cromátidas.", "correct": false }
     ]
   },
   {
     "id": "24",
     "text": "Una Inversión cromosómica:",
     "options": [
-      {
-        "text": "Cambia el número de genes.",
-        "correct": false
-      },
-      {
-        "text": "Invierte la orientación de un segmento cromosómico (giro de 180 grados).",
-        "correct": true
-      },
-      {
-        "text": "Duplica el centrómero.",
-        "correct": false
-      },
-      {
-        "text": "Elimina telómeros.",
-        "correct": false
-      }
+      { "text": "Cambia el número de genes.", "correct": false },
+      { "text": "Invierte la orientación de un segmento cromosómico (giro de 180 grados).", "correct": true },
+      { "text": "Duplica el centrómero.", "correct": false },
+      { "text": "Elimina telómeros.", "correct": false }
     ]
   },
   {
     "id": "25",
     "text": "Una Translocación cromosómica implica:",
     "options": [
-      {
-        "text": "Mutación puntual.",
-        "correct": false
-      },
-      {
-        "text": "El intercambio de segmentos entre cromosomas no homólogos.",
-        "correct": true
-      },
-      {
-        "text": "La pérdida de un cromosoma completo.",
-        "correct": false
-      },
-      {
-        "text": "La replicación del ADN.",
-        "correct": false
-      }
+      { "text": "Mutación puntual.", "correct": false },
+      { "text": "El intercambio de segmentos entre cromosomas no homólogos.", "correct": true },
+      { "text": "La pérdida de un cromosoma completo.", "correct": false },
+      { "text": "La replicación del ADN.", "correct": false }
     ]
   },
   {
     "id": "26",
     "text": "La Expresividad Variable se refiere a:",
     "options": [
-      {
-        "text": "Si se tiene o no la enfermedad (penetrancia).",
-        "correct": false
-      },
-      {
-        "text": "El grado o intensidad de las manifestaciones clínicas (fenotipo) en individuos con el mismo genotipo.",
-        "correct": true
-      },
-      {
-        "text": "La frecuencia de la mutación en la población.",
-        "correct": false
-      },
-      {
-        "text": "El tipo de herencia.",
-        "correct": false
-      }
+      { "text": "Si se tiene o no la enfermedad (penetrancia).", "correct": false },
+      { "text": "El grado o intensidad de las manifestaciones clínicas (fenotipo) en individuos con el mismo genotipo.", "correct": true },
+      { "text": "La frecuencia de la mutación en la población.", "correct": false },
+      { "text": "El tipo de herencia.", "correct": false }
     ]
   },
   {
     "id": "27",
     "text": "La Anticipación Genética es un fenómeno donde:",
     "options": [
-      {
-        "text": "La enfermedad desaparece con las generaciones.",
-        "correct": false
-      },
-      {
-        "text": "La enfermedad aparece a una edad más temprana y/o con mayor gravedad en generaciones sucesivas (ej. expansión de tripletes).",
-        "correct": true
-      },
-      {
-        "text": "La enfermedad salta generaciones.",
-        "correct": false
-      },
-      {
-        "text": "Solo afecta a mujeres.",
-        "correct": false
-      }
+      { "text": "La enfermedad desaparece con las generaciones.", "correct": false },
+      { "text": "La enfermedad aparece a una edad más temprana y/o con mayor gravedad en generaciones sucesivas (ej. expansión de tripletes).", "correct": true },
+      { "text": "La enfermedad salta generaciones.", "correct": false },
+      { "text": "Solo afecta a mujeres.", "correct": false }
     ]
   },
   {
     "id": "28",
     "text": "El Mosaico Genético (Mosaicismo) se define por la presencia de:",
     "options": [
-      {
-        "text": "Genes de diferentes especies.",
-        "correct": false
-      },
-      {
-        "text": "Dos o más líneas celulares con diferente genotipo en un mismo individuo, derivadas de un único cigoto.",
-        "correct": true
-      },
-      {
-        "text": "Células fusionadas.",
-        "correct": false
-      },
-      {
-        "text": "Cromosomas extra.",
-        "correct": false
-      }
+      { "text": "Genes de diferentes especies.", "correct": false },
+      { "text": "Dos o más líneas celulares con diferente genotipo en un mismo individuo, derivadas de un único cigoto.", "correct": true },
+      { "text": "Células fusionadas.", "correct": false },
+      { "text": "Cromosomas extra.", "correct": false }
     ]
   },
   {
     "id": "29",
     "text": "Una Quimera es un individuo compuesto por:",
     "options": [
-      {
-        "text": "Células mutadas.",
-        "correct": false
-      },
-      {
-        "text": "Células derivadas de dos o más cigotos distintos que se fusionaron.",
-        "correct": true
-      },
-      {
-        "text": "Células clonadas.",
-        "correct": false
-      },
-      {
-        "text": "Células tumorales.",
-        "correct": false
-      }
+      { "text": "Células mutadas.", "correct": false },
+      { "text": "Células derivadas de dos o más cigotos distintos que se fusionaron.", "correct": true },
+      { "text": "Células clonadas.", "correct": false },
+      { "text": "Células tumorales.", "correct": false }
     ]
   },
   {
     "id": "30",
     "text": "La Epigenética estudia cambios heredables en la expresión génica que:",
     "options": [
-      {
-        "text": "Implican cambios en la secuencia de ADN.",
-        "correct": false
-      },
-      {
-        "text": "No implican cambios en la secuencia de ADN (ej. metilación, modificación de histonas).",
-        "correct": true
-      },
-      {
-        "text": "Son irreversibles.",
-        "correct": false
-      },
-      {
-        "text": "Ocurren solo en bacterias.",
-        "correct": false
-      }
+      { "text": "Implican cambios en la secuencia de ADN.", "correct": false },
+      { "text": "No implican cambios en la secuencia de ADN (ej. metilación, modificación de histonas).", "correct": true },
+      { "text": "Son irreversibles.", "correct": false },
+      { "text": "Ocurren solo en bacterias.", "correct": false }
     ]
   },
   {
     "id": "31",
     "text": "Los Estudios de Asociación del Genoma Completo (GWAS) buscan:",
     "options": [
-      {
-        "text": "Secuenciar un gen específico.",
-        "correct": false
-      },
-      {
-        "text": "Identificar variantes genéticas (SNPs) asociadas estadísticamente con un rasgo o enfermedad en toda la población.",
-        "correct": true
-      },
-      {
-        "text": "Clonar individuos.",
-        "correct": false
-      },
-      {
-        "text": "Modificar el ADN.",
-        "correct": false
-      }
+      { "text": "Secuenciar un gen específico.", "correct": false },
+      { "text": "Identificar variantes genéticas (SNPs) asociadas estadísticamente con un rasgo o enfermedad en toda la población.", "correct": true },
+      { "text": "Clonar individuos.", "correct": false },
+      { "text": "Modificar el ADN.", "correct": false }
     ]
   },
   {
     "id": "32",
     "text": "Un Manhattan Plot es una representación gráfica utilizada en GWAS para visualizar:",
     "options": [
-      {
-        "text": "El cariotipo.",
-        "correct": false
-      },
-      {
-        "text": "Los SNPs significativamente asociados con el rasgo (picos altos indican asociación fuerte).",
-        "correct": true
-      },
-      {
-        "text": "La estructura del ADN.",
-        "correct": false
-      },
-      {
-        "text": "La expresión de proteínas.",
-        "correct": false
-      }
+      { "text": "El cariotipo.", "correct": false },
+      { "text": "Los SNPs significativamente asociados con el rasgo (picos altos indican asociación fuerte).", "correct": true },
+      { "text": "La estructura del ADN.", "correct": false },
+      { "text": "La expresión de proteínas.", "correct": false }
     ]
   },
   {
     "id": "33",
     "text": "El Desequilibrio de Ligamiento (LD) se refiere a:",
     "options": [
-      {
-        "text": "La segregación independiente perfecta.",
-        "correct": false
-      },
-      {
-        "text": "La asociación no aleatoria de alelos en diferentes loci (se heredan juntos más frecuentemente de lo esperado).",
-        "correct": true
-      },
-      {
-        "text": "La falta de genes.",
-        "correct": false
-      },
-      {
-        "text": "La mutación constante.",
-        "correct": false
-      }
+      { "text": "La segregación independiente perfecta.", "correct": false },
+      { "text": "La asociación no aleatoria de alelos en diferentes loci (se heredan juntos más frecuentemente de lo esperado).", "correct": true },
+      { "text": "La falta de genes.", "correct": false },
+      { "text": "La mutación constante.", "correct": false }
     ]
   },
   {
     "id": "34",
     "text": "Un Haplotipo es:",
     "options": [
-      {
-        "text": "Un solo gen.",
-        "correct": false
-      },
-      {
-        "text": "Un conjunto de variantes genéticas (alelos) en un cromosoma que se heredan juntas como un bloque.",
-        "correct": true
-      },
-      {
-        "text": "Un fenotipo raro.",
-        "correct": false
-      },
-      {
-        "text": "Un tipo de célula.",
-        "correct": false
-      }
+      { "text": "Un solo gen.", "correct": false },
+      { "text": "Un conjunto de variantes genéticas (alelos) en un cromosoma que se heredan juntas como un bloque.", "correct": true },
+      { "text": "Un fenotipo raro.", "correct": false },
+      { "text": "Un tipo de célula.", "correct": false }
     ]
   },
   {
     "id": "35",
     "text": "El Puntaje de Riesgo Poligénico (PRS) estima:",
     "options": [
-      {
-        "text": "El riesgo de una enfermedad monogénica.",
-        "correct": false
-      },
-      {
-        "text": "La predisposición genética de un individuo a un rasgo complejo sumando el efecto de múltiples variantes de riesgo.",
-        "correct": true
-      },
-      {
-        "text": "La edad de muerte.",
-        "correct": false
-      },
-      {
-        "text": "El número de hijos.",
-        "correct": false
-      }
+      { "text": "El riesgo de una enfermedad monogénica.", "correct": false },
+      { "text": "La predisposición genética de un individuo a un rasgo complejo sumando el efecto de múltiples variantes de riesgo.", "correct": true },
+      { "text": "La edad de muerte.", "correct": false },
+      { "text": "El número de hijos.", "correct": false }
     ]
   },
   {
     "id": "36",
     "text": "La Farmacogenómica estudia:",
     "options": [
-      {
-        "text": "Cómo fabricar fármacos.",
-        "correct": false
-      },
-      {
-        "text": "Cómo la variabilidad genética de un individuo afecta su respuesta a los fármacos (eficacia y toxicidad).",
-        "correct": true
-      },
-      {
-        "text": "El precio de los medicamentos.",
-        "correct": false
-      },
-      {
-        "text": "La anatomía.",
-        "correct": false
-      }
+      { "text": "Cómo fabricar fármacos.", "correct": false },
+      { "text": "Cómo la variabilidad genética de un individuo afecta su respuesta a los fármacos (eficacia y toxicidad).", "correct": true },
+      { "text": "El precio de los medicamentos.", "correct": false },
+      { "text": "La anatomía.", "correct": false }
     ]
   },
   {
     "id": "37",
     "text": "La Medicina de Precisión (o Personalizada) busca:",
     "options": [
-      {
-        "text": "Tratar a todos los pacientes igual.",
-        "correct": false
-      },
-      {
-        "text": "Adaptar el tratamiento médico a las características individuales (genéticas, ambientales, estilo de vida) de cada paciente.",
-        "correct": true
-      },
-      {
-        "text": "Usar solo medicina alternativa.",
-        "correct": false
-      },
-      {
-        "text": "Eliminar la cirugía.",
-        "correct": false
-      }
+      { "text": "Tratar a todos los pacientes igual.", "correct": false },
+      { "text": "Adaptar el tratamiento médico a las características individuales (genéticas, ambientales, estilo de vida) de cada paciente.", "correct": true },
+      { "text": "Usar solo medicina alternativa.", "correct": false },
+      { "text": "Eliminar la cirugía.", "correct": false }
     ]
   },
   {
     "id": "38",
     "text": "La Secuenciación de Nueva Generación (NGS) permite:",
     "options": [
-      {
-        "text": "Secuenciar un solo gen lentamente.",
-        "correct": false
-      },
-      {
-        "text": "Secuenciar masivamente millones de fragmentos de ADN en paralelo (rápido y costo-efectivo).",
-        "correct": true
-      },
-      {
-        "text": "Ver los cromosomas al microscopio.",
-        "correct": false
-      },
-      {
-        "text": "Clonar personas.",
-        "correct": false
-      }
+      { "text": "Secuenciar un solo gen lentamente.", "correct": false },
+      { "text": "Secuenciar masivamente millones de fragmentos de ADN en paralelo (rápido y costo-efectivo).", "correct": true },
+      { "text": "Ver los cromosomas al microscopio.", "correct": false },
+      { "text": "Clonar personas.", "correct": false }
     ]
   },
   {
     "id": "39",
     "text": "El Exoma es la parte del genoma que:",
     "options": [
-      {
-        "text": "No codifica proteínas.",
-        "correct": false
-      },
-      {
-        "text": "Corresponde a los exones (regiones codificantes de proteínas), representando ~1-2% del genoma pero albergando la mayoría de mutaciones patogénicas.",
-        "correct": true
-      },
-      {
-        "text": "Contiene intrones.",
-        "correct": false
-      },
-      {
-        "text": "Es ADN basura.",
-        "correct": false
-      }
+      { "text": "No codifica proteínas.", "correct": false },
+      { "text": "Corresponde a los exones (regiones codificantes de proteínas), representando ~1-2% del genoma pero albergando la mayoría de mutaciones patogénicas.", "correct": true },
+      { "text": "Contiene intrones.", "correct": false },
+      { "text": "Es ADN basura.", "correct": false }
     ]
   },
   {
     "id": "40",
     "text": "La Secuenciación del Genoma Completo (WGS) analiza:",
     "options": [
-      {
-        "text": "Solo los exones.",
-        "correct": false
-      },
-      {
-        "text": "Casi toda la secuencia de ADN del individuo (codificante y no codificante).",
-        "correct": true
-      },
-      {
-        "text": "Solo el ADN mitocondrial.",
-        "correct": false
-      },
-      {
-        "text": "Solo el cromosoma X.",
-        "correct": false
-      }
+      { "text": "Solo los exones.", "correct": false },
+      { "text": "Casi toda la secuencia de ADN del individuo (codificante y no codificante).", "correct": true },
+      { "text": "Solo el ADN mitocondrial.", "correct": false },
+      { "text": "Solo el cromosoma X.", "correct": false }
     ]
   },
   {
     "id": "41",
     "text": "Una Variante de Significado Incierto (VUS) es un hallazgo genético donde:",
     "options": [
-      {
-        "text": "Se sabe que causa enfermedad.",
-        "correct": false
-      },
-      {
-        "text": "No hay suficiente evidencia para clasificarla como benigna o patogénica.",
-        "correct": true
-      },
-      {
-        "text": "Es claramente benigna.",
-        "correct": false
-      },
-      {
-        "text": "Es un error de laboratorio.",
-        "correct": false
-      }
+      { "text": "Se sabe que causa enfermedad.", "correct": false },
+      { "text": "No hay suficiente evidencia para clasificarla como benigna o patogénica.", "correct": true },
+      { "text": "Es claramente benigna.", "correct": false },
+      { "text": "Es un error de laboratorio.", "correct": false }
     ]
   },
   {
     "id": "42",
     "text": "Una variante Patogénica es aquella que:",
     "options": [
-      {
-        "text": "No causa enfermedad.",
-        "correct": false
-      },
-      {
-        "text": "Está confirmada como causa de la enfermedad o trastorno.",
-        "correct": true
-      },
-      {
-        "text": "Es común en la población.",
-        "correct": false
-      },
-      {
-        "text": "Es silenciosa.",
-        "correct": false
-      }
+      { "text": "No causa enfermedad.", "correct": false },
+      { "text": "Está confirmada como causa de la enfermedad o trastorno.", "correct": true },
+      { "text": "Es común en la población.", "correct": false },
+      { "text": "Es silenciosa.", "correct": false }
     ]
   },
   {
     "id": "43",
     "text": "Una variante Benigna es aquella que:",
     "options": [
-      {
-        "text": "Causa enfermedad grave.",
-        "correct": false
-      },
-      {
-        "text": "No está asociada con enfermedad y es generalmente común o inocua.",
-        "correct": true
-      },
-      {
-        "text": "Es letal.",
-        "correct": false
-      },
-      {
-        "text": "Es nueva.",
-        "correct": false
-      }
+      { "text": "Causa enfermedad grave.", "correct": false },
+      { "text": "No está asociada con enfermedad y es generalmente común o inocua.", "correct": true },
+      { "text": "Es letal.", "correct": false },
+      { "text": "Es nueva.", "correct": false }
     ]
   },
   {
     "id": "44",
     "text": "Un Hallazgo Incidental (o secundario) en genómica es:",
     "options": [
-      {
-        "text": "El diagnóstico buscado.",
-        "correct": false
-      },
-      {
-        "text": "El descubrimiento de una variante patogénica no relacionada con el motivo original de la prueba (ej. predisposición a cáncer en un test de autismo).",
-        "correct": true
-      },
-      {
-        "text": "Un error técnico.",
-        "correct": false
-      },
-      {
-        "text": "Una variante benigna.",
-        "correct": false
-      }
+      { "text": "El diagnóstico buscado.", "correct": false },
+      { "text": "El descubrimiento de una variante patogénica no relacionada con el motivo original de la prueba (ej. predisposición a cáncer en un test de autismo).", "correct": true },
+      { "text": "Un error técnico.", "correct": false },
+      { "text": "Una variante benigna.", "correct": false }
     ]
   },
   {
     "id": "45",
     "text": "El Asesoramiento Genético es un proceso de:",
     "options": [
-      {
-        "text": "Terapia psicológica.",
-        "correct": false
-      },
-      {
-        "text": "Comunicación para ayudar a los pacientes a entender y adaptarse a las implicaciones médicas, psicológicas y familiares de la contribución genética a la enfermedad.",
-        "correct": true
-      },
-      {
-        "text": "Ingeniería genética.",
-        "correct": false
-      },
-      {
-        "text": "Venta de pruebas.",
-        "correct": false
-      }
+      { "text": "Terapia psicológica.", "correct": false },
+      { "text": "Comunicación para ayudar a los pacientes a entender y adaptarse a las implicaciones médicas, psicológicas y familiares de la contribución genética a la enfermedad.", "correct": true },
+      { "text": "Ingeniería genética.", "correct": false },
+      { "text": "Venta de pruebas.", "correct": false }
     ]
   },
   {
     "id": "46",
     "text": "La Herencia Multifactorial implica que el fenotipo es resultado de:",
     "options": [
-      {
-        "text": "Un solo factor.",
-        "correct": false
-      },
-      {
-        "text": "La interacción compleja de factores genéticos (poligenia) y ambientales.",
-        "correct": true
-      },
-      {
-        "text": "Solo el ambiente.",
-        "correct": false
-      },
-      {
-        "text": "Mala suerte.",
-        "correct": false
-      }
+      { "text": "Un solo factor.", "correct": false },
+      { "text": "La interacción compleja de factores genéticos (poligenia) y ambientales.", "correct": true },
+      { "text": "Solo el ambiente.", "correct": false },
+      { "text": "Mala suerte.", "correct": false }
     ]
   },
   {
     "id": "47",
     "text": "La Heredabilidad es una medida estadística que estima:",
     "options": [
-      {
-        "text": "Si una enfermedad es genética.",
-        "correct": false
-      },
-      {
-        "text": "La proporción de la variación fenotípica total en una población que es atribuible a la variación genética.",
-        "correct": true
-      },
-      {
-        "text": "La gravedad de la enfermedad.",
-        "correct": false
-      },
-      {
-        "text": "Cuántos genes están implicados.",
-        "correct": false
-      }
+      { "text": "Si una enfermedad es genética.", "correct": false },
+      { "text": "La proporción de la variación fenotípica total en una población que es atribuible a la variación genética.", "correct": true },
+      { "text": "La gravedad de la enfermedad.", "correct": false },
+      { "text": "Cuántos genes están implicados.", "correct": false }
     ]
   },
   {
     "id": "48",
     "text": "El Ambiente Compartido se refiere a:",
     "options": [
-      {
-        "text": "El clima global.",
-        "correct": false
-      },
-      {
-        "text": "Factores ambientales comunes a los miembros de una familia (ej. dieta familiar, nivel socioeconómico).",
-        "correct": true
-      },
-      {
-        "text": "El ambiente uterino.",
-        "correct": false
-      },
-      {
-        "text": "El azar.",
-        "correct": false
-      }
+      { "text": "El clima global.", "correct": false },
+      { "text": "Factores ambientales comunes a los miembros de una familia (ej. dieta familiar, nivel socioeconómico).", "correct": true },
+      { "text": "El ambiente uterino.", "correct": false },
+      { "text": "El azar.", "correct": false }
     ]
   },
   {
     "id": "49",
     "text": "El Ambiente No Compartido (o único) se refiere a:",
     "options": [
-      {
-        "text": "Factores genéticos.",
-        "correct": false
-      },
-      {
-        "text": "Experiencias y factores ambientales específicos de un individuo, no compartidos con familiares (ej. amigos, accidentes).",
-        "correct": true
-      },
-      {
-        "text": "La casa familiar.",
-        "correct": false
-      },
-      {
-        "text": "El ADN.",
-        "correct": false
-      }
+      { "text": "Factores genéticos.", "correct": false },
+      { "text": "Experiencias y factores ambientales específicos de un individuo, no compartidos con familiares (ej. amigos, accidentes).", "correct": true },
+      { "text": "La casa familiar.", "correct": false },
+      { "text": "El ADN.", "correct": false }
     ]
   },
   {
     "id": "50",
     "text": "La Interacción Gen-Ambiente (GxE) ocurre cuando:",
     "options": [
-      {
-        "text": "Los genes y el ambiente actúan independientemente.",
-        "correct": false
-      },
-      {
-        "text": "El efecto de un genotipo sobre el fenotipo depende del entorno, o el efecto del entorno depende del genotipo.",
-        "correct": true
-      },
-      {
-        "text": "El ambiente muta los genes.",
-        "correct": false
-      },
-      {
-        "text": "Los genes cambian el ambiente.",
-        "correct": false
-      }
+      { "text": "Los genes y el ambiente actúan independientemente.", "correct": false },
+      { "text": "El efecto de un genotipo sobre el fenotipo depende del entorno, o el efecto del entorno depende del genotipo.", "correct": true },
+      { "text": "El ambiente muta los genes.", "correct": false },
+      { "text": "Los genes cambian el ambiente.", "correct": false }
     ]
   },
   {
     "id": "51",
     "text": "La Epistasis es un fenómeno donde:",
     "options": [
-      {
-        "text": "Un gen funciona solo.",
-        "correct": false
-      },
-      {
-        "text": "El efecto de un gen es modificado o enmascarado por uno o más genes diferentes (interacción gen-gen).",
-        "correct": true
-      },
-      {
-        "text": "El gen salta.",
-        "correct": false
-      },
-      {
-        "text": "No hay herencia.",
-        "correct": false
-      }
+      { "text": "Un gen funciona solo.", "correct": false },
+      { "text": "El efecto de un gen es modificado o enmascarado por uno o más genes diferentes (interacción gen-gen).", "correct": true },
+      { "text": "El gen salta.", "correct": false },
+      { "text": "No hay herencia.", "correct": false }
     ]
   },
   {
     "id": "52",
     "text": "Un Locus (plural Loci) es:",
     "options": [
-      {
-        "text": "Un tipo de célula.",
-        "correct": false
-      },
-      {
-        "text": "La posición física específica de un gen o secuencia de ADN en un cromosoma.",
-        "correct": true
-      },
-      {
-        "text": "Una enfermedad.",
-        "correct": false
-      },
-      {
-        "text": "Un insecto.",
-        "correct": false
-      }
+      { "text": "Un tipo de célula.", "correct": false },
+      { "text": "La posición física específica de un gen o secuencia de ADN en un cromosoma.", "correct": true },
+      { "text": "Una enfermedad.", "correct": false },
+      { "text": "Un insecto.", "correct": false }
     ]
   },
   {
     "id": "53",
     "text": "Un Alelo Nulo es una variante que:",
     "options": [
-      {
-        "text": "Produce proteína normal.",
-        "correct": false
-      },
-      {
-        "text": "Resulta en la ausencia completa del producto génico o de su función.",
-        "correct": true
-      },
-      {
-        "text": "Es dominante.",
-        "correct": false
-      },
-      {
-        "text": "Es beneficioso.",
-        "correct": false
-      }
+      { "text": "Produce proteína normal.", "correct": false },
+      { "text": "Resulta en la ausencia completa del producto génico o de su función.", "correct": true },
+      { "text": "Es dominante.", "correct": false },
+      { "text": "Es beneficioso.", "correct": false }
     ]
   },
   {
     "id": "54",
     "text": "La Heterogeneidad Genética se refiere a que:",
     "options": [
-      {
-        "text": "Todos los pacientes tienen la misma mutación.",
-        "correct": false
-      },
-      {
-        "text": "Diferentes mutaciones (en el mismo gen o en genes diferentes) pueden causar el mismo fenotipo o enfermedad clínica.",
-        "correct": true
-      },
-      {
-        "text": "La genética es simple.",
-        "correct": false
-      },
-      {
-        "text": "Solo hay un gen.",
-        "correct": false
-      }
+      { "text": "Todos los pacientes tienen la misma mutación.", "correct": false },
+      { "text": "Diferentes mutaciones (en el mismo gen o en genes diferentes) pueden causar el mismo fenotipo o enfermedad clínica.", "correct": true },
+      { "text": "La genética es simple.", "correct": false },
+      { "text": "Solo hay un gen.", "correct": false }
     ]
   },
   {
     "id": "55",
     "text": "Las modificaciones epigenéticas son un componente clave en la modulación del fenotipo. ¿Cuándo se transmiten estas modificaciones a la descendencia mediante herencia?",
     "options": [
-      {
-        "text": "Siempre que causen un frameshift en el mRNA.",
-        "correct": false
-      },
-      {
-        "text": "Siempre que afecten al sistema endocrino.",
-        "correct": false
-      },
-      {
-        "text": "Solo las que afectan a las células germinales.",
-        "correct": true
-      },
-      {
-        "text": "Cuando se asocian con mutaciones dominante negativas.",
-        "correct": false
-      }
+      { "text": "Siempre que causen un frameshift en el mRNA.", "correct": false },
+      { "text": "Siempre que afecten al sistema endocrino.", "correct": false },
+      { "text": "Solo las que afectan a las células germinales.", "correct": true },
+      { "text": "Cuando se asocian con mutaciones dominante negativas.", "correct": false }
     ]
   },
   {
     "id": "56",
     "text": "La homeostasis y la plasticidad funcional son mecanismos regulados por la causalidad descendente, necesarios para:",
     "options": [
-      {
-        "text": "Evitar la recombinación entre haplotipos.",
-        "correct": false
-      },
-      {
-        "text": "La síntesis de proteínas truncadas.",
-        "correct": false
-      },
-      {
-        "text": "Ajustes fisiológicos, adaptación y respuesta a la fatiga o al esfuerzo.",
-        "correct": true
-      },
-      {
-        "text": "El mapeo de rasgos cuantitativos.",
-        "correct": false
-      }
+      { "text": "Evitar la recombinación entre haplotipos.", "correct": false },
+      { "text": "La síntesis de proteínas truncadas.", "correct": false },
+      { "text": "Ajustes fisiológicos, adaptación y respuesta a la fatiga o al esfuerzo.", "correct": true },
+      { "text": "El mapeo de rasgos cuantitativos.", "correct": false }
     ]
   },
   {
     "id": "57",
     "text": "El proceso de Histogénesis (formación de tejidos) está directamente vinculado en el esquema de causalidad y desarrollo con:",
     "options": [
-      {
-        "text": "Las poblaciones de células madre (stem cells) y la regulación del número y fenotipos celulares.",
-        "correct": true
-      },
-      {
-        "text": "La prevalencia de enfermedades monogénicas.",
-        "correct": false
-      },
-      {
-        "text": "Los mecanismos de gain-of-function.",
-        "correct": false
-      },
-      {
-        "text": "La determinación del locus cromosómico.",
-        "correct": false
-      }
+      { "text": "Las poblaciones de células madre (stem cells) y la regulación del número y fenotipos celulares.", "correct": true },
+      { "text": "La prevalencia de enfermedades monogénicas.", "correct": false },
+      { "text": "Los mecanismos de gain-of-function.", "correct": false },
+      { "text": "La determinación del locus cromosómico.", "correct": false }
     ]
   },
   {
     "id": "58",
     "text": "El fenotipo de un organismo resulta de la interacción compleja de tres elementos fundamentales, que son:",
     "options": [
-      {
-        "text": "Haploinsuficiencia, penetrancia y expresividad.",
-        "correct": false
-      },
-      {
-        "text": "DNA, RNA y proteínas.",
-        "correct": false
-      },
-      {
-        "text": "Información genética, información epigenética y el entorno.",
-        "correct": true
-      },
-      {
-        "text": "Sistemas endocrino, nervioso e inmune.",
-        "correct": false
-      }
+      { "text": "Haploinsuficiencia, penetrancia y expresividad.", "correct": false },
+      { "text": "DNA, RNA y proteínas.", "correct": false },
+      { "text": "Información genética, información epigenética y el entorno.", "correct": true },
+      { "text": "Sistemas endocrino, nervioso e inmune.", "correct": false }
     ]
   },
   {
     "id": "59",
     "text": "La regulación por retroalimentación (feed back regulation) entre el genoma y el comportamiento/estructura celular es un componente de:",
     "options": [
-      {
-        "text": "La segregación independiente de alelos.",
-        "correct": false
-      },
-      {
-        "text": "El diagnóstico genético por PCR.",
-        "correct": false
-      },
-      {
-        "text": "Los mecanismos de causalidad ascendente y descendente que modulan el fenotipo.",
-        "correct": true
-      },
-      {
-        "text": "El patrón de herencia ligado a Y.",
-        "correct": false
-      }
+      { "text": "La segregación independiente de alelos.", "correct": false },
+      { "text": "El diagnóstico genético por PCR.", "correct": false },
+      { "text": "Los mecanismos de causalidad ascendente y descendente que modulan el fenotipo.", "correct": true },
+      { "text": "El patrón de herencia ligado a Y.", "correct": false }
     ]
   },
   {
     "id": "60",
     "text": "En el marco de la Genómica Biomédica Humana, la plasticidad sináptica y conectiva es un ejemplo de ajuste regulado por:",
     "options": [
-      {
-        "text": "La necesidad de una proteína tetramérica funcional.",
-        "correct": false
-      },
-      {
-        "text": "Los estudios de asociación del genoma completo (GWAS).",
-        "correct": false
-      },
-      {
-        "text": "La causalidad descendente mediada por el sistema nervioso y el comportamiento.",
-        "correct": true
-      },
-      {
-        "text": "El requisito de que los SNPs caigan en secuencias codificantes.",
-        "correct": false
-      }
+      { "text": "La necesidad de una proteína tetramérica funcional.", "correct": false },
+      { "text": "Los estudios de asociación del genoma completo (GWAS).", "correct": false },
+      { "text": "La causalidad descendente mediada por el sistema nervioso y el comportamiento.", "correct": true },
+      { "text": "El requisito de que los SNPs caigan en secuencias codificantes.", "correct": false }
     ]
   }
 ];
+
+        // Añadimos propiedades de estado a las preguntas
+        const questions = questionsSource.map(q => ({
+            ...q,
+            userMarked: false,
+            userFailed: false,
+            userAnswered: false, // para saber si ya la ha intentado
+            shuffledOptions: null // guardamos el orden mezclado
+        }));
 
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [array[i], array[j]] = [array[j], array[i]];
             }
+            return array;
         }
 
-        function renderQuiz() {
+        // Renderiza el quiz con un subconjunto de preguntas (o todas)
+        function renderQuiz(questionsToRender) {
             const quizContainer = document.getElementById('quiz');
             quizContainer.innerHTML = '';
+            
+            // Ocultar resultados si estamos repitiendo
+            document.getElementById('results-panel').style.display = 'none';
+            document.getElementById('btn-finish').style.display = 'block';
 
-            questions.forEach((q, index) => {
+            if(questionsToRender.length === 0) {
+                quizContainer.innerHTML = '<p style="text-align:center; padding:20px;">No hay preguntas que coincidan con este criterio.</p>';
+                document.getElementById('btn-finish').style.display = 'none';
+                document.getElementById('results-panel').style.display = 'block';
+                return;
+            }
+
+            questionsToRender.forEach((q) => {
                 const questionBlock = document.createElement('div');
                 questionBlock.className = 'question-block';
 
+                // Pestaña para MARCAR
+                const markContainer = document.createElement('label');
+                markContainer.className = 'mark-container';
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = q.userMarked;
+                checkbox.onchange = function() {
+                    q.userMarked = this.checked;
+                };
+                markContainer.appendChild(checkbox);
+                markContainer.appendChild(document.createTextNode(" Marcar"));
+                questionBlock.appendChild(markContainer);
+
+                // Título
                 const title = document.createElement('div');
                 title.className = 'question-title';
+                // Usamos q.id original para identificar la pregunta
                 title.innerText = `${q.id}. ${q.text}`;
                 questionBlock.appendChild(title);
 
-                // Clonar opciones para no modificar el orden original
-                let currentOptions = [...q.options];
-                shuffleArray(currentOptions);
+                // Si no hemos mezclado las opciones aún, lo hacemos ahora
+                if (!q.shuffledOptions) {
+                    q.shuffledOptions = shuffleArray([...q.options]);
+                }
 
                 const optionsList = document.createElement('ul');
                 optionsList.className = 'options-list';
 
-                currentOptions.forEach(opt => {
+                q.shuffledOptions.forEach(opt => {
                     const li = document.createElement('li');
                     li.className = 'option-item';
                     
@@ -1456,17 +875,24 @@
                     btn.innerText = opt.text;
                     
                     btn.onclick = function() {
+                        // Marcar que el usuario ha respondido
+                        q.userAnswered = true;
+
                         // Deshabilitar todos los botones de esta pregunta
                         const allBtns = optionsList.querySelectorAll('.option-btn');
                         allBtns.forEach(b => b.classList.add('disabled'));
 
                         if (opt.correct) {
                             btn.classList.add('correct');
+                            // Si acierta a la primera y no tenía fallo previo, userFailed se mantiene false
                         } else {
                             btn.classList.add('incorrect');
+                            // Marcamos como fallada
+                            q.userFailed = true;
+                            
                             // Resaltar la correcta
                             allBtns.forEach(b => {
-                                // Buscar el botón con la respuesta correcta
+                                // Buscar el texto original
                                 const originalOpt = q.options.find(o => o.correct);
                                 if (b.innerText === originalOpt.text) {
                                     b.classList.add('correct');
@@ -1484,64 +910,125 @@
             });
         }
 
-        // Renderizar al cargar
-        renderQuiz();
-    </script>
-<div style="text-align: center; margin-top: 40px; padding: 20px; background: #eee; border-radius: 8px;">
-    <button id="btn-finish" style="background: #2c3e50; color: white; border: none; padding: 15px 30px; font-size: 1.2em; border-radius: 6px; cursor: pointer; font-weight: bold;">
-        🏁 Finalizar y Guardar Nota
-    </button>
-</div>
+        // Renderizar inicial (todas las preguntas)
+        renderQuiz(questions);
 
-<script>
-    // Lógica para capturar el ID desde la URL (viene del index.html)
-    const urlParams = new URLSearchParams(window.location.search);
-    const testID = urlParams.get('id'); // Ej: 'bio-1'
+        // Lógica de Finalización
+        const urlParams = new URLSearchParams(window.location.search);
+        const testID = urlParams.get('id');
 
-    document.getElementById('btn-finish').onclick = function() {
-        if (!testID) {
-            alert("⚠️ Nota: Abre este test desde el 'index.html' para que se guarde tu progreso.");
-        }
-
-        const allBlocks = document.querySelectorAll('.question-block');
-        let totalQuestions = allBlocks.length;
-        let correctas = 0;
-
-        allBlocks.forEach(block => {
-            // Buscamos si hay algún botón con clase 'incorrect' (usuario falló)
-            const hasIncorrect = block.querySelector('button.incorrect');
-            // Buscamos si hay algún botón con clase 'correct' (usuario acertó o se reveló)
-            const hasCorrect = block.querySelector('button.correct');
+        document.getElementById('btn-finish').onclick = function() {
+            // Nota: Aquí calculamos sobre el TOTAL de preguntas originales para la nota, 
+            // o sobre las que se están mostrando?
+            // Generalmente la nota oficial es del primer intento completo, 
+            // pero aquí mostraremos el resultado de la sesión actual.
             
-            // Lógica: Si hay un verde Y NO hay un rojo, el usuario acertó a la primera.
-            // Si hay un rojo, falló. Si no hay nada, no contestó.
-            if (hasCorrect && !hasIncorrect) {
-                correctas++;
+            // Calculamos aciertos sobre las preguntas que se están mostrando actualmente en pantalla
+            const currentBlocks = document.querySelectorAll('.question-block');
+            let answeredCount = 0;
+            let currentCorrect = 0;
+            
+            // Recorremos el DOM actual para ver qué pasó en esta "ronda"
+            currentBlocks.forEach(block => {
+                const hasIncorrect = block.querySelector('.incorrect');
+                const hasCorrect = block.querySelector('.correct'); // botón seleccionado correcto o revelado
+                
+                // Si hay un botón seleccionado (disabled)
+                if (block.querySelector('.disabled')) {
+                    answeredCount++;
+                    // Si el usuario clickó la correcta (clase 'correct' en el clickeado) 
+                    // Y NO hay clase 'incorrect' (no falló)
+                    // Nota: Mi lógica de pintado pone 'correct' a la correcta siempre si se falla.
+                    // Pero el botón clickeado tendrá 'incorrect' si se falla.
+                    if (!hasIncorrect) {
+                        currentCorrect++;
+                    }
+                }
+            });
+
+            const totalCurrent = currentBlocks.length;
+            const notaFinal = totalCurrent > 0 ? Math.round((currentCorrect / totalCurrent) * 100) : 0;
+            
+            // Mostrar Panel
+            document.getElementById('btn-finish').style.display = 'none';
+            const resultsPanel = document.getElementById('results-panel');
+            resultsPanel.style.display = 'block';
+            
+            document.getElementById('score-text').innerHTML = 
+                `Has acertado <b>${currentCorrect}</b> de <b>${totalCurrent}</b> preguntas visibles.<br>Nota de este intento: <b>${notaFinal}%</b>`;
+            
+            // Scroll hacia el resultado
+            resultsPanel.scrollIntoView({behavior: "smooth"});
+
+            // Guardar nota solo si es el test completo original (opcional)
+            if (testID && questions.length === totalCurrent) {
+                let intentos = parseInt(localStorage.getItem(`intentos_${testID}`) || 0);
+                localStorage.setItem(`intentos_${testID}`, intentos + 1);
+                let notaAnterior = localStorage.getItem(`nota_${testID}`);
+                if (!notaAnterior || notaFinal > parseInt(notaAnterior)) {
+                    localStorage.setItem(`nota_${testID}`, notaFinal);
+                }
             }
-        });
+        };
 
-        const notaFinal = Math.round((correctas / totalQuestions) * 100);
-        
-        // Mensaje de resultado
-        alert(`📊 Resultado:\n\nHas acertado ${correctas} de ${totalQuestions}.\nTu nota es: ${notaFinal}%`);
+        // Función para Repetir/Filtrar
+        function retryQuiz(mode) {
+            let filteredQuestions = [];
 
-        if (testID) {
-            // 1. Guardar Intento
-            let intentos = parseInt(localStorage.getItem(`intentos_${testID}`) || 0);
-            localStorage.setItem(`intentos_${testID}`, intentos + 1);
-
-            // 2. Guardar Mejor Nota (solo si es mayor a la anterior)
-            let notaAnterior = localStorage.getItem(`nota_${testID}`);
-            if (!notaAnterior || notaFinal > parseInt(notaAnterior)) {
-                localStorage.setItem(`nota_${testID}`, notaFinal);
+            if (mode === 'all') {
+                // Resetear todo el estado para empezar de cero
+                questions.forEach(q => {
+                    q.userFailed = false;
+                    q.userMarked = false; // Opcional: ¿Desmarcar al reiniciar completo? Normalmente sí.
+                    q.userAnswered = false;
+                    q.shuffledOptions = null; // Re-mezclar opciones
+                });
+                filteredQuestions = questions;
+            } 
+            else if (mode === 'failed') {
+                filteredQuestions = questions.filter(q => q.userFailed);
+                // Reseteamos el estado visual de estas preguntas para poder re-contestarlas
+                filteredQuestions.forEach(q => {
+                    q.userAnswered = false; 
+                    q.shuffledOptions = null;
+                    // Mantenemos q.userFailed = true en el objeto global? 
+                    // No, si queremos re-evaluarlo, lo ponemos a false temporalmente 
+                    // o simplemente confiamos en el renderizado nuevo.
+                    // Pero para que cuente como acierto en la nueva ronda:
+                    // La lógica de render usa propiedades limpias.
+                });
+            } 
+            else if (mode === 'marked') {
+                filteredQuestions = questions.filter(q => q.userMarked);
+                filteredQuestions.forEach(q => {
+                    q.userAnswered = false;
+                    q.shuffledOptions = null;
+                });
+            }
+            else if (mode === 'mixed') {
+                // Falladas O Marcadas
+                filteredQuestions = questions.filter(q => q.userFailed || q.userMarked);
+                filteredQuestions.forEach(q => {
+                    q.userAnswered = false;
+                    q.shuffledOptions = null;
+                });
             }
 
-            // 3. Volver al menú
-            if(confirm("¿Quieres volver al menú principal?")) {
-                window.location.href = 'index.html';
-            }
+            renderQuiz(filteredQuestions);
+            
+            // Actualizar título
+            const modeTitles = {
+                'all': 'Test Completo',
+                'failed': 'Repaso de Fallos',
+                'marked': 'Repaso de Marcadas',
+                'mixed': 'Repaso (Falladas + Marcadas)'
+            };
+            document.getElementById('quiz-title').innerText = `Modo: ${modeTitles[mode]}`;
+            
+            // Scroll arriba
+            window.scrollTo(0,0);
         }
-    };
-</script>
+
+    </script>
 </body>
 </html>
