@@ -16,22 +16,50 @@
         h1 {
             text-align: center;
             color: #2c3e50;
+            margin-bottom: 30px;
         }
         .quiz-container {
             background: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-height: 200px;
         }
         .question-block {
             margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 1px solid #eee;
+            position: relative; /* Necesario para posicionar el marcador */
         }
+        
+        /* ESTILO NUEVO: Pestaña para Marcar */
+        .mark-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .mark-container:hover {
+            background-color: #e2e6ea;
+        }
+        .mark-container input {
+            cursor: pointer;
+            transform: scale(1.2);
+        }
+
         .question-title {
             font-size: 1.1em;
             margin-bottom: 15px;
             font-weight: 600;
+            padding-right: 100px; /* Espacio para que el texto no tape el marcador */
         }
         .options-list {
             list-style-type: none;
@@ -87,16 +115,80 @@
             pointer-events: none;
             opacity: 0.8;
         }
+
+        /* ESTILO NUEVO: Panel de Resultados */
+        #results-panel {
+            display: none; /* Oculto por defecto */
+            text-align: center;
+            margin-top: 40px;
+            padding: 30px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-top: 5px solid #2c3e50;
+        }
+        .retry-buttons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .retry-btn {
+            padding: 15px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: opacity 0.2s;
+        }
+        .retry-btn:hover { opacity: 0.9; }
+        
+        .btn-full { background-color: #3498db; }    /* Azul */
+        .btn-failed { background-color: #e74c3c; }  /* Rojo */
+        .btn-marked { background-color: #f39c12; }  /* Naranja */
+        .btn-mixed { background-color: #9b59b6; }   /* Morado */
+
+        /* Responsive para botones */
+        @media (max-width: 600px) {
+            .retry-buttons-grid { grid-template-columns: 1fr; }
+            .question-title { padding-right: 0; margin-top: 35px; }
+            .mark-container { width: 100%; border: none; background: transparent; justify-content: flex-end; }
+        }
     </style>
 </head>
 <body>
 
-    <h1>Test Bloque II: Cromosomas, Replicación, Transcripción y Traducción</h1>
+    <h1 id="quiz-title">Test Bloque II: Cromosomas, Replicación, Transcripción y Traducción</h1>
+    
     <div class="quiz-container" id="quiz">
         </div>
 
+    <div style="text-align: center; margin-top: 40px; padding: 20px; background: #eee; border-radius: 8px;" id="finish-container">
+        <button id="btn-finish" style="background: #2c3e50; color: white; border: none; padding: 15px 30px; font-size: 1.2em; border-radius: 6px; cursor: pointer; font-weight: bold;">
+            🏁 Finalizar y Ver Resultados
+        </button>
+    </div>
+
+    <div id="results-panel">
+        <h2>📊 Resultados</h2>
+        <p id="score-text" style="font-size: 1.2em; margin: 20px 0;"></p>
+        
+        <h3>¿Qué deseas hacer ahora?</h3>
+        <div class="retry-buttons-grid">
+            <button class="retry-btn btn-full" onclick="retryQuiz('all')">🔄 Repetir Completo</button>
+            <button class="retry-btn btn-failed" onclick="retryQuiz('failed')">❌ Repetir Falladas</button>
+            <button class="retry-btn btn-marked" onclick="retryQuiz('marked')">🔖 Repetir Marcadas</button>
+            <button class="retry-btn btn-mixed" onclick="retryQuiz('mixed')">❌ + 🔖 Falladas y Marcadas</button>
+        </div>
+        <br>
+        <button onclick="window.location.href='index.html'" style="background:transparent; border:1px solid #666; padding:8px 15px; border-radius:4px; cursor:pointer;">Volver al Menú Principal</button>
+    </div>
+
     <script>
-        const questions = [
+        // Datos crudos de las preguntas
+        const rawQuestions = [
             {
                 "text": "1. En términos moleculares, ¿cuál de los siguientes enunciados define de manera más precisa un gen?",
                 "options": [
@@ -549,6 +641,16 @@
             }
         ];
 
+        // Añadimos estado a las preguntas (Marcada, Fallada, Respondida)
+        // También guardamos opciones mezcladas para que no cambien de orden si el usuario marca/desmarca (opcional, pero buena práctica)
+        const questions = rawQuestions.map(q => ({
+            ...q,
+            userMarked: false,
+            userFailed: false,
+            userAnswered: false,
+            shuffledOptions: null 
+        }));
+
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -556,27 +658,56 @@
             }
         }
 
-        function renderQuiz() {
+        // Renderiza una lista específica de preguntas
+        function renderQuiz(questionsToRender) {
             const quizContainer = document.getElementById('quiz');
             quizContainer.innerHTML = '';
+            
+            // Ocultar resultados si estamos repitiendo
+            document.getElementById('results-panel').style.display = 'none';
+            document.getElementById('finish-container').style.display = 'block';
 
-            questions.forEach((q, index) => {
+            if(questionsToRender.length === 0) {
+                quizContainer.innerHTML = '<p style="text-align:center; padding:20px; font-style:italic;">No hay preguntas que coincidan con este criterio.</p>';
+                document.getElementById('finish-container').style.display = 'none';
+                document.getElementById('results-panel').style.display = 'block';
+                return;
+            }
+
+            questionsToRender.forEach((q) => {
                 const questionBlock = document.createElement('div');
                 questionBlock.className = 'question-block';
 
+                // --- Pestaña "Marcar" ---
+                const markContainer = document.createElement('label');
+                markContainer.className = 'mark-container';
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = q.userMarked;
+                checkbox.onchange = function() {
+                    q.userMarked = this.checked;
+                };
+                markContainer.appendChild(checkbox);
+                markContainer.appendChild(document.createTextNode(" Marcar"));
+                questionBlock.appendChild(markContainer);
+
+                // --- Título ---
                 const title = document.createElement('div');
                 title.className = 'question-title';
                 title.innerText = q.text;
                 questionBlock.appendChild(title);
 
-                // Clonar opciones para no modificar el orden original si se recarga
-                let currentOptions = [...q.options];
-                shuffleArray(currentOptions);
+                // --- Opciones ---
+                // Si no tienen orden mezclado asignado, lo creamos ahora
+                if (!q.shuffledOptions) {
+                    q.shuffledOptions = [...q.options];
+                    shuffleArray(q.shuffledOptions);
+                }
 
                 const optionsList = document.createElement('ul');
                 optionsList.className = 'options-list';
 
-                currentOptions.forEach(opt => {
+                q.shuffledOptions.forEach(opt => {
                     const li = document.createElement('li');
                     li.className = 'option-item';
                     
@@ -585,18 +716,23 @@
                     btn.innerText = opt.text;
                     
                     btn.onclick = function() {
+                        // Marcar como respondida
+                        q.userAnswered = true;
+
                         // Deshabilitar todos los botones de esta pregunta
                         const allBtns = optionsList.querySelectorAll('.option-btn');
                         allBtns.forEach(b => b.classList.add('disabled'));
 
                         if (opt.correct) {
                             btn.classList.add('correct');
+                            // Si acierta a la primera y no estaba marcada como fallada previamente, se queda así.
                         } else {
                             btn.classList.add('incorrect');
+                            // Marcar en el objeto que el usuario falló esta pregunta
+                            q.userFailed = true;
+
                             // Resaltar la correcta
                             allBtns.forEach(b => {
-                                // Buscar el botón que tiene el texto de la opción correcta
-                                // (Método simple comparando texto)
                                 const originalOpt = q.options.find(o => o.correct);
                                 if (b.innerText === originalOpt.text) {
                                     b.classList.add('correct');
@@ -614,64 +750,108 @@
             });
         }
 
-        // Renderizar al cargar
-        renderQuiz();
-    </script>
-<div style="text-align: center; margin-top: 40px; padding: 20px; background: #eee; border-radius: 8px;">
-    <button id="btn-finish" style="background: #2c3e50; color: white; border: none; padding: 15px 30px; font-size: 1.2em; border-radius: 6px; cursor: pointer; font-weight: bold;">
-        🏁 Finalizar y Guardar Nota
-    </button>
-</div>
+        // Renderizar inicial (todas)
+        renderQuiz(questions);
 
-<script>
-    // Lógica para capturar el ID desde la URL (viene del index.html)
-    const urlParams = new URLSearchParams(window.location.search);
-    const testID = urlParams.get('id'); // Ej: 'bio-1'
+        // Lógica de Finalización
+        const urlParams = new URLSearchParams(window.location.search);
+        const testID = urlParams.get('id');
 
-    document.getElementById('btn-finish').onclick = function() {
-        if (!testID) {
-            alert("⚠️ Nota: Abre este test desde el 'index.html' para que se guarde tu progreso.");
-        }
+        document.getElementById('btn-finish').onclick = function() {
+            // Nota: Calculamos la nota basada en lo que se está viendo en pantalla
+            const currentBlocks = document.querySelectorAll('.question-block');
+            let totalCurrent = currentBlocks.length;
+            let currentCorrect = 0;
 
-        const allBlocks = document.querySelectorAll('.question-block');
-        let totalQuestions = allBlocks.length;
-        let correctas = 0;
+            // Revisamos el DOM actual para contar aciertos en esta "ronda"
+            currentBlocks.forEach(block => {
+                // Si tiene botones deshabilitados, se respondió
+                if (block.querySelector('.disabled')) {
+                    // Si NO hay botón incorrecto, es un acierto
+                    const hasIncorrect = block.querySelector('.incorrect');
+                    if (!hasIncorrect) {
+                        currentCorrect++;
+                    }
+                }
+            });
 
-        allBlocks.forEach(block => {
-            // Buscamos si hay algún botón con clase 'incorrect' (usuario falló)
-            const hasIncorrect = block.querySelector('button.incorrect');
-            // Buscamos si hay algún botón con clase 'correct' (usuario acertó o se reveló)
-            const hasCorrect = block.querySelector('button.correct');
+            const notaFinal = totalCurrent > 0 ? Math.round((currentCorrect / totalCurrent) * 100) : 0;
+
+            // Mostrar Panel de Resultados
+            document.getElementById('finish-container').style.display = 'none';
+            const resultsPanel = document.getElementById('results-panel');
+            resultsPanel.style.display = 'block';
             
-            // Lógica: Si hay un verde Y NO hay un rojo, el usuario acertó a la primera.
-            // Si hay un rojo, falló. Si no hay nada, no contestó.
-            if (hasCorrect && !hasIncorrect) {
-                correctas++;
+            document.getElementById('score-text').innerHTML = 
+                `Has acertado <b>${currentCorrect}</b> de <b>${totalCurrent}</b> preguntas visibles.<br>Nota de este intento: <b>${notaFinal}%</b>`;
+            
+            // Scroll suave hacia los resultados
+            resultsPanel.scrollIntoView({behavior: "smooth"});
+
+            // Guardar Nota (Solo si es el test completo original para no sobrescribir con notas parciales de repasos)
+            if (testID && totalCurrent === questions.length) {
+                let intentos = parseInt(localStorage.getItem(`intentos_${testID}`) || 0);
+                localStorage.setItem(`intentos_${testID}`, intentos + 1);
+
+                let notaAnterior = localStorage.getItem(`nota_${testID}`);
+                if (!notaAnterior || notaFinal > parseInt(notaAnterior)) {
+                    localStorage.setItem(`nota_${testID}`, notaFinal);
+                }
             }
-        });
+        };
 
-        const notaFinal = Math.round((correctas / totalQuestions) * 100);
-        
-        // Mensaje de resultado
-        alert(`📊 Resultado:\n\nHas acertado ${correctas} de ${totalQuestions}.\nTu nota es: ${notaFinal}%`);
+        // --- Lógica de Repetición ---
+        function retryQuiz(mode) {
+            let filteredQuestions = [];
 
-        if (testID) {
-            // 1. Guardar Intento
-            let intentos = parseInt(localStorage.getItem(`intentos_${testID}`) || 0);
-            localStorage.setItem(`intentos_${testID}`, intentos + 1);
-
-            // 2. Guardar Mejor Nota (solo si es mayor a la anterior)
-            let notaAnterior = localStorage.getItem(`nota_${testID}`);
-            if (!notaAnterior || notaFinal > parseInt(notaAnterior)) {
-                localStorage.setItem(`nota_${testID}`, notaFinal);
+            if (mode === 'all') {
+                // Reinicio total
+                questions.forEach(q => {
+                    q.userFailed = false;
+                    q.userMarked = false; // Opcional: ¿Desmarcar al reiniciar todo? Normalmente sí.
+                    q.userAnswered = false;
+                    q.shuffledOptions = null; // Re-mezclar
+                });
+                filteredQuestions = questions;
+            } 
+            else if (mode === 'failed') {
+                filteredQuestions = questions.filter(q => q.userFailed);
+                // Reseteamos visualmente estas preguntas para re-intentarlas
+                filteredQuestions.forEach(q => {
+                    q.userAnswered = false; 
+                    q.shuffledOptions = null;
+                });
+            } 
+            else if (mode === 'marked') {
+                filteredQuestions = questions.filter(q => q.userMarked);
+                filteredQuestions.forEach(q => {
+                    q.userAnswered = false;
+                    q.shuffledOptions = null;
+                });
+            }
+            else if (mode === 'mixed') {
+                // Falladas O Marcadas
+                filteredQuestions = questions.filter(q => q.userFailed || q.userMarked);
+                filteredQuestions.forEach(q => {
+                    q.userAnswered = false;
+                    q.shuffledOptions = null;
+                });
             }
 
-            // 3. Volver al menú
-            if(confirm("¿Quieres volver al menú principal?")) {
-                window.location.href = 'index.html';
-            }
+            renderQuiz(filteredQuestions);
+
+            // Actualizar título para dar contexto
+            const modeTitles = {
+                'all': 'Test Completo',
+                'failed': 'Repaso de Fallos',
+                'marked': 'Repaso de Marcadas',
+                'mixed': 'Repaso (Falladas + Marcadas)'
+            };
+            document.getElementById('quiz-title').innerText = `Modo: ${modeTitles[mode]}`;
+            
+            // Subir al inicio
+            window.scrollTo(0,0);
         }
-    };
-</script>
+    </script>
 </body>
 </html>
