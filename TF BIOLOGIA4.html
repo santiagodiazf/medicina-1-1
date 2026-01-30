@@ -6,12 +6,14 @@
     <title>Examen Bloque 4 - Núcleo Interfásico (Medicina Cádiz)</title>
     <style>
         :root {
-            --primary-color: #0056b3; /* Azul Medicina */
+            --primary-color: #0056b3;
             --secondary-color: #f0f8ff;
             --correct-color: #d4edda;
             --correct-text: #155724;
             --incorrect-color: #f8d7da;
             --incorrect-text: #721c24;
+            --mark-bg: #fff3cd;
+            --mark-text: #856404;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -28,6 +30,7 @@
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            min-height: 500px;
         }
         header {
             text-align: center;
@@ -56,16 +59,45 @@
             border: 1px solid #cce5ff;
         }
         .question-card {
-            display: none; /* Oculto por defecto */
+            display: none;
             animation: fadeIn 0.5s;
+            position: relative; /* Para posicionar la marca */
         }
         .question-card.active {
             display: block;
         }
+        
+        /* Estilos para la pestaña de Marcar */
+        .bookmark-panel {
+            position: absolute;
+            top: -10px;
+            right: 0;
+            background: var(--mark-bg);
+            color: var(--mark-text);
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #ffeeba;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        .bookmark-panel:hover {
+            transform: scale(1.05);
+        }
+        .bookmark-checkbox {
+            margin-right: 8px;
+            transform: scale(1.3);
+            cursor: pointer;
+        }
+
         .question-text {
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 20px;
+            padding-top: 20px; /* Espacio para la marca */
+            padding-right: 140px; /* Espacio lateral para la marca */
         }
         .options-grid {
             display: grid;
@@ -88,6 +120,7 @@
         }
         .option-btn:disabled {
             cursor: default;
+            opacity: 0.7;
         }
         .option-btn.correct {
             background-color: var(--correct-color);
@@ -131,15 +164,43 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 1rem;
-            display: none; /* Se muestra tras responder */
+            display: none;
         }
         .nav-btn:hover {
             background-color: #004494;
         }
+        
         .results-summary {
             text-align: center;
             display: none;
+            padding: 20px;
         }
+
+        /* Estilos para los botones finales */
+        .action-buttons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .action-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.2s;
+        }
+        .action-btn:hover { transform: translateY(-3px); }
+        .action-btn:disabled { background-color: #ccc; cursor: not-allowed; transform: none; }
+        
+        .btn-restart { background-color: var(--primary-color); grid-column: span 2; }
+        .btn-failed { background-color: #dc3545; }
+        .btn-marked { background-color: #ffc107; color: #333; }
+        .btn-mixed { background-color: #6f42c1; grid-column: span 2; }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -159,1021 +220,723 @@
 
 <div class="container">
     <header>
-        <h1>Examen Bloque 4: Arquitectura y Dinámica del Núcleo</h1>
+        <h1>Examen Bloque 4: Núcleo Interfásico</h1>
         <div class="professors">Profesoras: Meritxell Llorca Torralba y Ana Muñoz-Manchado</div>
     </header>
 
-    <div class="stats-bar">
-        <div id="progress">Pregunta 1 de 75</div>
-        <div id="score">Aciertos: 0</div>
+    <div class="stats-bar" id="statsBar">
+        <div id="progress">Cargando...</div>
+        <div id="score">Aciertos sesión: 0</div>
     </div>
 
-    <div id="quiz-area">
-        </div>
+    <div id="quiz-area"></div>
 
     <div id="results" class="results-summary">
-        <h2>Examen Finalizado</h2>
-        <p>Has completado las 75 preguntas del Bloque 4.</p>
-        <p style="font-size: 2rem; font-weight: bold;" id="final-score">0/75</p>
+        <h2>Sesión Finalizada</h2>
+        <div style="font-size: 3rem; font-weight: bold; color: var(--primary-color);" id="final-score"></div>
         <p id="final-percent"></p>
-        <button class="nav-btn" style="display:inline-block;" onclick="location.reload()">Reiniciar Test</button>
+        
+        <div id="stats-summary" style="margin: 20px 0; color: #555;"></div>
+
+        <div class="action-buttons-grid">
+            <button class="action-btn btn-restart" onclick="startQuiz('all')">🔄 Reiniciar Test Completo (Borrar todo)</button>
+            <button class="action-btn btn-failed" id="btn-failed" onclick="startQuiz('failed')">❌ Repetir Falladas</button>
+            <button class="action-btn btn-marked" id="btn-marked" onclick="startQuiz('marked')">⚠️ Repetir Marcadas</button>
+            <button class="action-btn btn-mixed" id="btn-mixed" onclick="startQuiz('mixed')">❌ + ⚠️ Repetir Falladas y Marcadas</button>
+        </div>
     </div>
 </div>
 
 <script>
-// Base de datos de 75 preguntas extraídas del temario Bloque 4
+// Base de datos de preguntas
 const questions = [
     // --- TEMA: Generalidades y Envoltura Nuclear ---
     {
         topic: "Introducción",
         question: "¿Cuál es la función principal que define al núcleo celular?",
-        options: [
-            "Ser el sitio de síntesis de lípidos.",
-            "Actuar como centro de control separando la replicación/transcripción de la traducción.",
-            "Generar energía en forma de ATP.",
-            "Degradar proteínas citoplasmáticas."
-        ],
+        options: ["Ser el sitio de síntesis de lípidos.", "Actuar como centro de control separando la replicación/transcripción de la traducción.", "Generar energía en forma de ATP.", "Degradar proteínas citoplasmáticas."],
         correct: 1,
         explanation: "El núcleo compartimenta el material genético, permitiendo regular procesos incompatibles como la transcripción y traducción."
     },
     {
         topic: "Envoltura Nuclear",
         question: "¿De qué estructura membranosa es contigua la membrana nuclear externa?",
-        options: [
-            "Del Aparato de Golgi.",
-            "De la membrana plasmática.",
-            "Del Retículo Endoplásmico (RE).",
-            "De la mitocondria."
-        ],
+        options: ["Del Aparato de Golgi.", "De la membrana plasmática.", "Del Retículo Endoplásmico (RE).", "De la mitocondria."],
         correct: 2,
         explanation: "La membrana externa se continúa directamente con el RE y a menudo tiene ribosomas adheridos."
     },
     {
         topic: "Lámina Nuclear",
         question: "¿Qué estructura recubre la cara interna de la envoltura nuclear proporcionando soporte mecánico?",
-        options: [
-            "El córtex de actina.",
-            "La Lámina Nuclear.",
-            "Los microtúbulos.",
-            "La matriz extracelular."
-        ],
+        options: ["El córtex de actina.", "La Lámina Nuclear.", "Los microtúbulos.", "La matriz extracelular."],
         correct: 1,
         explanation: "La lámina nuclear es una malla de filamentos intermedios que da soporte estructural a la envoltura."
     },
     {
         topic: "Lámina Nuclear",
         question: "¿De qué tipo de proteínas está formada la lámina nuclear?",
-        options: [
-            "Tubulinas.",
-            "Actina G.",
-            "Filamentos intermedios (laminas).",
-            "Colágeno."
-        ],
+        options: ["Tubulinas.", "Actina G.", "Filamentos intermedios (laminas).", "Colágeno."],
         correct: 2,
         explanation: "Las láminas nucleares pertenecen a la familia de los filamentos intermedios del citoesqueleto."
     },
     {
         topic: "Lámina Nuclear",
         question: "¿Cuál es una función clave de la lámina nuclear además del soporte mecánico?",
-        options: [
-            "Sintetizar ATP.",
-            "Servir como punto de anclaje para la cromatina.",
-            "Transportar lípidos.",
-            "Degradar ARN."
-        ],
+        options: ["Sintetizar ATP.", "Servir como punto de anclaje para la cromatina.", "Transportar lípidos.", "Degradar ARN."],
         correct: 1,
         explanation: "La lámina organiza el genoma proporcionando sitios de anclaje para los cromosomas en la periferia."
     },
     {
         topic: "Complejo del Poro",
         question: "¿Qué estructura media el transporte entre el núcleo y el citoplasma?",
-        options: [
-            "Los canales iónicos.",
-            "El Complejo del Poro Nuclear (NPC).",
-            "Las bombas de sodio-potasio.",
-            "Los transportadores GLUT."
-        ],
+        options: ["Los canales iónicos.", "El Complejo del Poro Nuclear (NPC).", "Las bombas de sodio-potasio.", "Los transportadores GLUT."],
         correct: 1,
         explanation: "Los NPCs son las únicas puertas para el tráfico de moléculas entre ambos compartimentos."
     },
     {
         topic: "Complejo del Poro",
         question: "Aproximadamente, ¿cuántas proteínas distintas (nucleoporinas) forman un NPC?",
-        options: [
-            "Unas 5.",
-            "Unas 30.",
-            "Más de 100.",
-            "Solo 1."
-        ],
+        options: ["Unas 5.", "Unas 30.", "Más de 100.", "Solo 1."],
         correct: 1,
         explanation: "Es una megaestructura compleja formada por unas 30 proteínas diferentes llamadas nucleoporinas."
     },
     {
         topic: "Transporte Nuclear",
         question: "¿Qué moléculas pueden pasar libremente por difusión pasiva a través del poro?",
-        options: [
-            "Proteínas grandes (>60kDa).",
-            "Ribosomas completos.",
-            "Moléculas hidrosolubles pequeñas.",
-            "Cromosomas."
-        ],
+        options: ["Proteínas grandes (>60kDa).", "Ribosomas completos.", "Moléculas hidrosolubles pequeñas.", "Cromosomas."],
         correct: 2,
         explanation: "El poro permite la difusión libre de iones y moléculas pequeñas; las grandes requieren transporte activo."
     },
     {
         topic: "Transporte Nuclear",
         question: "¿Cómo se importan las proteínas destinadas a la membrana nuclear interna?",
-        options: [
-            "A través del poro nuclear directamente.",
-            "Viajan por el sistema de secreción (RE) y luego se integran por difusión lateral desde la membrana externa.",
-            "Son sintetizadas dentro del núcleo.",
-            "Atraviesan la bicapa lipídica directamente."
-        ],
+        options: ["A través del poro nuclear directamente.", "Viajan por el sistema de secreción (RE) y luego se integran por difusión lateral desde la membrana externa.", "Son sintetizadas dentro del núcleo.", "Atraviesan la bicapa lipídica directamente."],
         correct: 1,
         explanation: "Primero se insertan en la membrana del RE y luego difunden lateralmente hacia la membrana interna."
     },
     {
         topic: "Transporte Nuclear",
         question: "¿Qué proteínas receptoras reconocen las señales de localización nuclear (NLS) para la entrada?",
-        options: [
-            "Exportinas.",
-            "Importinas.",
-            "Histonas.",
-            "Lamininas."
-        ],
+        options: ["Exportinas.", "Importinas.", "Histonas.", "Lamininas."],
         correct: 1,
         explanation: "Las importinas son los receptores que cargan la proteína en el citosol y la introducen al núcleo."
     },
-
     // --- TEMA: Mecanismo Ran-GTPasa ---
     {
         topic: "Ciclo Ran",
         question: "¿Qué GTPasa monomérica proporciona la energía y direccionalidad al transporte nuclear?",
-        options: [
-            "Ras.",
-            "Rho.",
-            "Ran.",
-            "Rab."
-        ],
+        options: ["Ras.", "Rho.", "Ran.", "Rab."],
         correct: 2,
         explanation: "El ciclo de Ran-GTP/GDP es el motor energético del transporte nucleocitoplasmático."
     },
     {
         topic: "Ciclo Ran",
         question: "¿Dónde se encuentra la mayor concentración de Ran-GTP?",
-        options: [
-            "En el citosol.",
-            "En el núcleo.",
-            "En el espacio perinuclear.",
-            "En la mitocondria."
-        ],
+        options: ["En el citosol.", "En el núcleo.", "En el espacio perinuclear.", "En la mitocondria."],
         correct: 1,
         explanation: "Ran-GTP es abundante en el núcleo debido a la presencia del factor GEF (intercambiador) en la cromatina."
     },
     {
         topic: "Ciclo Ran",
         question: "¿Qué ocurre cuando una Importina cargada llega al núcleo y se encuentra con Ran-GTP?",
-        options: [
-            "Se une a Ran-GTP y libera su carga (la proteína importada).",
-            "Degrada a Ran-GTP.",
-            "Se une más fuertemente a su carga.",
-            "Sale inmediatamente del núcleo sin soltar la carga."
-        ],
+        options: ["Se une a Ran-GTP y libera su carga (la proteína importada).", "Degrada a Ran-GTP.", "Se une más fuertemente a su carga.", "Sale inmediatamente del núcleo sin soltar la carga."],
         correct: 0,
         explanation: "La unión de Ran-GTP a la importina provoca un cambio conformacional que fuerza la liberación de la carga."
     },
     {
         topic: "Ciclo Ran",
         question: "¿Dónde se localiza la proteína GAP (activadora de la GTPasa) que induce la hidrólisis de GTP a GDP?",
-        options: [
-            "Exclusivamente en el núcleo.",
-            "Exclusivamente en el citosol.",
-            "En el nucléolo.",
-            "En la membrana interna."
-        ],
+        options: ["Exclusivamente en el núcleo.", "Exclusivamente en el citosol.", "En el nucléolo.", "En la membrana interna."],
         correct: 1,
         explanation: "Ran-GAP está en el citosol, asegurando que fuera del núcleo Ran esté en forma GDP."
     },
     {
         topic: "Ciclo Ran",
         question: "¿Qué le sucede a la Importina unida a Ran-GTP tras liberar la carga?",
-        options: [
-            "Se degrada.",
-            "Vuelve al citosol a través del poro.",
-            "Se queda en el núcleo permanentemente.",
-            "Se une al ADN."
-        ],
+        options: ["Se degrada.", "Vuelve al citosol a través del poro.", "Se queda en el núcleo permanentemente.", "Se une al ADN."],
         correct: 1,
         explanation: "El complejo Importina-Ran-GTP se exporta al citosol para reciclar la importina."
     },
     {
         topic: "Ciclo Ran",
         question: "¿Qué ocurre en el citosol con el complejo Importina-Ran-GTP exportado?",
-        options: [
-            "Ran hidroliza el GTP a GDP (ayudado por GAP) y libera a la importina.",
-            "La importina se fosforila.",
-            "Ran se convierte en ATP.",
-            "Se une una nueva carga inmediatamente sin soltar Ran."
-        ],
+        options: ["Ran hidroliza el GTP a GDP (ayudado por GAP) y libera a la importina.", "La importina se fosforila.", "Ran se convierte en ATP.", "Se une una nueva carga inmediatamente sin soltar Ran."],
         correct: 0,
         explanation: "La hidrólisis de GTP en el citosol disocia el complejo, dejando a la importina libre para otro ciclo."
     },
-
     // --- TEMA: Cuerpos Nucleares ---
     {
         topic: "Cuerpos Nucleares",
         question: "¿Qué característica física distingue a los cuerpos nucleares?",
-        options: [
-            "Están rodeados por una doble membrana lipídica.",
-            "Son condensados funcionales sin membrana (separación de fases).",
-            "Están hechos de ADN puro.",
-            "Son estáticos y nunca cambian."
-        ],
+        options: ["Están rodeados por una doble membrana lipídica.", "Son condensados funcionales sin membrana (separación de fases).", "Están hechos de ADN puro.", "Son estáticos y nunca cambian."],
         correct: 1,
         explanation: "Se forman por separación de fases líquido-líquido, concentrando proteínas y ARN sin barrera física."
     },
     {
         topic: "Nucléolo",
         question: "¿Cuál es la función principal del nucléolo?",
-        options: [
-            "Almacenamiento de lípidos.",
-            "Fábrica de ribosomas (biogénesis ribosomal).",
-            "Degradación de proteínas.",
-            "Replicación del ADN viral."
-        ],
+        options: ["Almacenamiento de lípidos.", "Fábrica de ribosomas (biogénesis ribosomal).", "Degradación de proteínas.", "Replicación del ADN viral."],
         correct: 1,
         explanation: "Es el sitio donde se transcriben los ARNr y se ensamblan las subunidades ribosómicas."
     },
     {
         topic: "Nucléolo",
         question: "¿Qué componentes se ensamblan en el nucléolo?",
-        options: [
-            "Proteínas de la lámina.",
-            "ARNr y proteínas ribosómicas importadas del citoplasma.",
-            "Histonas y ADN.",
-            "Factores de splicing."
-        ],
+        options: ["Proteínas de la lámina.", "ARNr y proteínas ribosómicas importadas del citoplasma.", "Histonas y ADN.", "Factores de splicing."],
         correct: 1,
         explanation: "Las proteínas ribosómicas entran al núcleo, van al nucléolo, se unen al ARNr y forman las subunidades."
     },
     {
         topic: "Cuerpos de Cajal",
         question: "¿Cuál es la proteína de andamiaje característica de los Cuerpos de Cajal?",
-        options: [
-            "Laminina.",
-            "Coilina (p80-coilina).",
-            "Actina.",
-            "Tubulina."
-        ],
+        options: ["Laminina.", "Coilina (p80-coilina).", "Actina.", "Tubulina."],
         correct: 1,
         explanation: "La p80-coilina es el marcador y componente estructural esencial de los Cuerpos de Cajal."
     },
     {
         topic: "Cuerpos de Cajal",
         question: "¿Cuál es la función principal de los Cuerpos de Cajal?",
-        options: [
-            "Síntesis de ATP.",
-            "Biogénesis y maduración de snRNPs (maquinaria de splicing).",
-            "Almacenamiento de factores de splicing maduros.",
-            "Degradación de ribosomas."
-        ],
+        options: ["Síntesis de ATP.", "Biogénesis y maduración de snRNPs (maquinaria de splicing).", "Almacenamiento de factores de splicing maduros.", "Degradación de ribosomas."],
         correct: 1,
         explanation: "Son centros de ensamblaje donde las snRNP maduran antes de usarse en el splicing."
     },
     {
         topic: "Patología",
         question: "¿Qué enfermedad neurodegenerativa está ligada a la disfunción de los Cuerpos de Cajal?",
-        options: [
-            "Alzheimer.",
-            "Atrofia Muscular Espinal (AME).",
-            "Parkinson.",
-            "Esclerosis Múltiple."
-        ],
+        options: ["Alzheimer.", "Atrofia Muscular Espinal (AME).", "Parkinson.", "Esclerosis Múltiple."],
         correct: 1,
         explanation: "La proteína SMN, defectuosa en AME, interactúa con la coilina y es vital para la integridad de estos cuerpos."
     },
     {
         topic: "Cuerpos de Cajal",
         question: "¿Cómo manipulan algunos virus (como el Adenovirus) a los Cuerpos de Cajal?",
-        options: [
-            "Los destruyen para obtener energía.",
-            "Secuestran la coilina para facilitar la exportación de sus propios ARNm virales.",
-            "Los usan para esconderse del sistema inmune.",
-            "Los usan para replicar su ADN."
-        ],
+        options: ["Los destruyen para obtener energía.", "Secuestran la coilina para facilitar la exportación de sus propios ARNm virales.", "Los usan para esconderse del sistema inmune.", "Los usan para replicar su ADN."],
         correct: 1,
         explanation: "Usan la coilina como 'salvoconducto' para sacar su material genético fuera del núcleo."
     },
     {
         topic: "Nuclear Speckles",
         question: "¿Qué son las Manchas Nucleares o Nuclear Speckles?",
-        options: [
-            "Sitios de síntesis de ribosomas.",
-            "Depósitos o almacenes de factores de splicing maduros listos para usarse.",
-            "Centros de biogénesis de snRNP.",
-            "Zonas de ADN basura."
-        ],
+        options: ["Sitios de síntesis de ribosomas.", "Depósitos o almacenes de factores de splicing maduros listos para usarse.", "Centros de biogénesis de snRNP.", "Zonas de ADN basura."],
         correct: 1,
         explanation: "A diferencia de los Cuerpos de Cajal (biogénesis), los Speckles almacenan los factores ya formados."
     },
     {
         topic: "Nuclear Speckles",
         question: "¿Dónde se suelen localizar las Manchas Nucleares?",
-        options: [
-            "En el nucléolo.",
-            "En los espacios intercromatínicos, cerca de regiones de transcripción activa.",
-            "Pegados a la lámina nuclear.",
-            "Fuera del núcleo."
-        ],
+        options: ["En el nucléolo.", "En los espacios intercromatínicos, cerca de regiones de transcripción activa.", "Pegados a la lámina nuclear.", "Fuera del núcleo."],
         correct: 1,
         explanation: "Están estratégicamente ubicados para suministrar factores de splicing a los genes activos cercanos."
     },
     {
         topic: "Clastosoma",
         question: "¿Cuál es la función del Clastosoma?",
-        options: [
-            "Síntesis de ADN.",
-            "Sitio de degradación proteica nuclear (contiene proteasomas).",
-            "Procesamiento del extremo 3' del ARNm.",
-            "Almacenamiento de histonas."
-        ],
+        options: ["Síntesis de ADN.", "Sitio de degradación proteica nuclear (contiene proteasomas).", "Procesamiento del extremo 3' del ARNm.", "Almacenamiento de histonas."],
         correct: 1,
         explanation: "Son cuerpos ricos en proteasomas que se forman bajo estrés proteolítico para degradar proteínas."
     },
     {
         topic: "Cuerpos de Escisión",
         question: "¿Qué función tiene el Cuerpo de Escisión (Cleavage Body)?",
-        options: [
-            "Procesamiento del extremo 3' de los pre-ARNm (poliadenilación).",
-            "Inicio de la replicación.",
-            "Unión de intrones.",
-            "Transporte de iones."
-        ],
+        options: ["Procesamiento del extremo 3' de los pre-ARNm (poliadenilación).", "Inicio de la replicación.", "Unión de intrones.", "Transporte de iones."],
         correct: 0,
         explanation: "Concentran factores necesarios para cortar y poliadenilar el extremo final de los transcritos."
     },
-
     // --- TEMA: Cromatina y Organización ---
     {
         topic: "Organización Cromatina",
         question: "¿Cómo se organiza el ADN en el núcleo interfásico?",
-        options: [
-            "Mezclado aleatoriamente como un plato de espaguetis.",
-            "Organizado en territorios cromosómicos definidos.",
-            "Todo concentrado en el nucléolo.",
-            "Pegado exclusivamente a la envoltura nuclear."
-        ],
+        options: ["Mezclado aleatoriamente como un plato de espaguetis.", "Organizado en territorios cromosómicos definidos.", "Todo concentrado en el nucléolo.", "Pegado exclusivamente a la envoltura nuclear."],
         correct: 1,
         explanation: "Cada cromosoma ocupa un espacio físico concreto y no se mezcla al azar con los demás."
     },
     {
         topic: "Eucromatina",
         question: "¿Qué caracteriza a la eucromatina?",
-        options: [
-            "Es muy compacta y electrodensa.",
-            "Es menos condensada y transcripcionalmente activa.",
-            "Se localiza solo en la periferia nuclear.",
-            "No contiene genes."
-        ],
+        options: ["Es muy compacta y electrodensa.", "Es menos condensada y transcripcionalmente activa.", "Se localiza solo en la periferia nuclear.", "No contiene genes."],
         correct: 1,
         explanation: "Es la forma abierta del ADN que permite el acceso de la maquinaria de transcripción."
     },
     {
         topic: "Heterocromatina",
         question: "¿Qué caracteriza a la heterocromatina?",
-        options: [
-            "Es transcripcionalmente muy activa.",
-            "Es altamente condensada y generalmente silenciada.",
-            "Es rica en genes housekeeping.",
-            "Se encuentra en el centro del núcleo mayoritariamente."
-        ],
+        options: ["Es transcripcionalmente muy activa.", "Es altamente condensada y generalmente silenciada.", "Es rica en genes housekeeping.", "Se encuentra en el centro del núcleo mayoritariamente."],
         correct: 1,
         explanation: "Su alta compactación impide el acceso a los factores de transcripción, silenciando los genes."
     },
     {
         topic: "Regulación Cromatina",
         question: "¿Qué efecto tiene la acetilación de histonas en la cromatina?",
-        options: [
-            "La compacta más.",
-            "Relaja la estructura (abre la cromatina) favoreciendo la expresión.",
-            "No tiene efecto.",
-            "Provoca la degradación del ADN."
-        ],
+        options: ["La compacta más.", "Relaja la estructura (abre la cromatina) favoreciendo la expresión.", "No tiene efecto.", "Provoca la degradación del ADN."],
         correct: 1,
         explanation: "La acetilación neutraliza cargas positivas, debilitando la unión histona-ADN y abriendo la estructura."
     },
     {
         topic: "Regulación Cromatina",
         question: "¿Qué realizan los complejos remodeladores de cromatina?",
-        options: [
-            "Cortan el ADN.",
-            "Usan ATP para deslizar o desplazar nucleosomas.",
-            "Sintetizan histonas.",
-            "Unen el ADN a la lámina."
-        ],
+        options: ["Cortan el ADN.", "Usan ATP para deslizar o desplazar nucleosomas.", "Sintetizan histonas.", "Unen el ADN a la lámina."],
         correct: 1,
         explanation: "Son motores moleculares que cambian la posición de los nucleosomas para exponer u ocultar secuencias."
     },
     {
         topic: "Organización",
         question: "¿Qué son los dominios o bucles de cromatina?",
-        options: [
-            "Errores de plegamiento.",
-            "Estructuras que acercan regiones reguladoras (enhancers) a sus genes diana.",
-            "Zonas de ADN roto.",
-            "Proteínas de andamiaje."
-        ],
+        options: ["Errores de plegamiento.", "Estructuras que acercan regiones reguladoras (enhancers) a sus genes diana.", "Zonas de ADN roto.", "Proteínas de andamiaje."],
         correct: 1,
         explanation: "El ADN se pliega en bucles para facilitar la interacción entre regiones distantes del genoma."
     },
     {
         topic: "Nucleosoma",
         question: "¿Qué es un nucleosoma?",
-        options: [
-            "Un tipo de ARN.",
-            "La unidad básica de cromatina: ADN enrollado en un octámero de histonas.",
-            "Un cuerpo nuclear.",
-            "Un poro nuclear."
-        ],
+        options: ["Un tipo de ARN.", "La unidad básica de cromatina: ADN enrollado en un octámero de histonas.", "Un cuerpo nuclear.", "Un poro nuclear."],
         correct: 1,
         explanation: "Es el primer nivel de empaquetamiento, con ~147 pares de bases alrededor de las histonas."
     },
-    
-    // --- PREGUNTAS MIXTAS/REPASO (para llegar a 75) ---
+    // --- PREGUNTAS MIXTAS/REPASO ---
     {
         topic: "Envoltura",
         question: "¿Qué estructura separa físicamente el nucleoplasma del citoplasma?",
-        options: [
-            "La membrana plasmática.",
-            "La doble membrana de la envoltura nuclear.",
-            "La lámina nuclear sola.",
-            "El citoesqueleto."
-        ],
+        options: ["La membrana plasmática.", "La doble membrana de la envoltura nuclear.", "La lámina nuclear sola.", "El citoesqueleto."],
         correct: 1,
         explanation: "La envoltura nuclear, compuesta por dos membranas, es la barrera física."
     },
     {
         topic: "Transporte",
         question: "¿Qué molécula marca la dirección del transporte nuclear?",
-        options: [
-            "ATP.",
-            "El gradiente de concentración de Ran-GTP/Ran-GDP.",
-            "La concentración de calcio.",
-            "El pH."
-        ],
+        options: ["ATP.", "El gradiente de concentración de Ran-GTP/Ran-GDP.", "La concentración de calcio.", "El pH."],
         correct: 1,
         explanation: "La asimetría de Ran (GTP dentro, GDP fuera) dicta si se carga o descarga la mercancía."
     },
     {
         topic: "Transporte",
         question: "¿Qué nucleótido está unido a Ran en el núcleo?",
-        options: [
-            "ATP",
-            "GTP",
-            "GDP",
-            "ADP"
-        ],
+        options: ["ATP", "GTP", "GDP", "ADP"],
         correct: 1,
         explanation: "En el núcleo reside el factor GEF que carga a Ran con GTP."
     },
     {
         topic: "Transporte",
         question: "¿Qué nucleótido está unido a Ran en el citosol?",
-        options: [
-            "ATP",
-            "GTP",
-            "GDP",
-            "ADP"
-        ],
+        options: ["ATP", "GTP", "GDP", "ADP"],
         correct: 2,
         explanation: "En el citosol reside la proteína GAP que estimula la hidrólisis a GDP."
     },
     {
         topic: "Nucléolo",
         question: "¿Tiene membrana el nucléolo?",
-        options: [
-            "Sí, doble.",
-            "Sí, simple.",
-            "No, es un condensado sin membrana.",
-            "A veces."
-        ],
+        options: ["Sí, doble.", "Sí, simple.", "No, es un condensado sin membrana.", "A veces."],
         correct: 2,
         explanation: "Como todos los cuerpos nucleares, carece de membrana lipídica."
     },
     {
         topic: "Cuerpos Nucleares",
         question: "¿Qué proceso físico forma los cuerpos nucleares?",
-        options: [
-            "Cristalización.",
-            "Separación de fases líquido-líquido.",
-            "Polimerización covalente.",
-            "Fusión de membranas."
-        ],
+        options: ["Cristalización.", "Separación de fases líquido-líquido.", "Polimerización covalente.", "Fusión de membranas."],
         correct: 1,
         explanation: "Se comportan como gotas de aceite en agua, concentrando componentes dinámicamente."
     },
     {
         topic: "Cuerpos de Cajal",
         question: "¿Quién describió por primera vez los 'cuerpos accesorios' (hoy Cajal bodies)?",
-        options: [
-            "Ramón y Cajal (1903).",
-            "Watson y Crick.",
-            "Robert Hooke.",
-            "Virchow."
-        ],
+        options: ["Ramón y Cajal (1903).", "Watson y Crick.", "Robert Hooke.", "Virchow."],
         correct: 0,
         explanation: "El neurocientífico español Santiago Ramón y Cajal los observó en neuronas."
     },
     {
         topic: "Lámina",
         question: "¿Qué familia de proteínas del citoesqueleto forman la lámina?",
-        options: [
-            "Microtúbulos.",
-            "Microfilamentos de actina.",
-            "Filamentos intermedios.",
-            "Miosinas."
-        ],
+        options: ["Microtúbulos.", "Microfilamentos de actina.", "Filamentos intermedios.", "Miosinas."],
         correct: 2,
         explanation: "Las láminas nucleares son filamentos intermedios tipo V."
     },
     {
         topic: "Transporte",
         question: "¿Qué secuencia debe tener una proteína para entrar al núcleo?",
-        options: [
-            "Señal de retención en RE.",
-            "Señal de Localización Nuclear (NLS).",
-            "Señal de exportación.",
-            "Péptido señal hidrofóbico."
-        ],
+        options: ["Señal de retención en RE.", "Señal de Localización Nuclear (NLS).", "Señal de exportación.", "Péptido señal hidrofóbico."],
         correct: 1,
         explanation: "La NLS (Nuclear Localization Signal) es el 'ticket' de entrada reconocido por las importinas."
     },
     {
         topic: "Transporte",
         question: "La hidrólisis de GTP en el transporte nuclear la realiza:",
-        options: [
-            "La importina.",
-            "El poro nuclear.",
-            "La proteína Ran.",
-            "El ADN."
-        ],
+        options: ["La importina.", "El poro nuclear.", "La proteína Ran.", "El ADN."],
         correct: 2,
         explanation: "Ran es una GTPasa; ella misma hidroliza el GTP cuando es activada por GAP."
     },
     {
         topic: "Estructura Poro",
         question: "¿Qué simetría tiene el complejo del poro nuclear?",
-        options: [
-            "Esférica.",
-            "Octogonal (simetría de 8).",
-            "Cuadrada.",
-            "Irregular."
-        ],
+        options: ["Esférica.", "Octogonal (simetría de 8).", "Cuadrada.", "Irregular."],
         correct: 1,
         explanation: "Tiene una estructura de anillo con simetría rotacional óctuple."
     },
     {
         topic: "Cromatina",
         question: "¿Qué región del núcleo suele ser rica en heterocromatina?",
-        options: [
-            "El centro exacto.",
-            "La periferia, asociada a la lámina nuclear (LADs).",
-            "Alrededor de los poros.",
-            "Dentro del nucléolo."
-        ],
+        options: ["El centro exacto.", "La periferia, asociada a la lámina nuclear (LADs).", "Alrededor de los poros.", "Dentro del nucléolo."],
         correct: 1,
         explanation: "La heterocromatina suele anclarse a la lámina nuclear en la periferia (Lámina-Associated Domains)."
     },
     {
         topic: "Genética",
         question: "¿Qué contiene el núcleo además de ADN?",
-        options: [
-            "Solo agua.",
-            "Gran cantidad de proteínas y distintos tipos de ARN.",
-            "Mitocondrias.",
-            "Lisosomas."
-        ],
+        options: ["Solo agua.", "Gran cantidad de proteínas y distintos tipos de ARN.", "Mitocondrias.", "Lisosomas."],
         correct: 1,
         explanation: "Es un entorno bioquímico complejo con maquinaria de replicación, transcripción y procesamiento."
     },
     {
         topic: "Nucléolo",
         question: "¿Qué tipo de ARN polimerasa es muy activa en el nucléolo?",
-        options: [
-            "ARN Polimerasa II (ARNm).",
-            "ARN Polimerasa I (ARNr).",
-            "ADN Polimerasa.",
-            "Transcriptasa inversa."
-        ],
+        options: ["ARN Polimerasa II (ARNm).", "ARN Polimerasa I (ARNr).", "ADN Polimerasa.", "Transcriptasa inversa."],
         correct: 1,
         explanation: "La Pol I sintetiza los precursores de ARN ribosómico en el nucléolo."
     },
     {
         topic: "Cuerpos de Cajal",
         question: "La proteína SMN, relacionada con la AME, es vital para:",
-        options: [
-            "La replicación del ADN.",
-            "El ensamblaje de snRNPs en los Cuerpos de Cajal.",
-            "La síntesis de lípidos.",
-            "La estructura del poro."
-        ],
+        options: ["La replicación del ADN.", "El ensamblaje de snRNPs en los Cuerpos de Cajal.", "La síntesis de lípidos.", "La estructura del poro."],
         correct: 1,
         explanation: "Sin SMN, la biogénesis de la maquinaria de splicing falla."
     },
     {
         topic: "Speckles",
         question: "¿Qué diferencia funcional principal hay entre Cajal bodies y Speckles?",
-        options: [
-            "Cajal = Biogénesis/Maduración; Speckles = Almacenamiento.",
-            "Cajal = Almacenamiento; Speckles = Degradación.",
-            "Cajal = ADN; Speckles = ARN.",
-            "No hay diferencia."
-        ],
+        options: ["Cajal = Biogénesis/Maduración; Speckles = Almacenamiento.", "Cajal = Almacenamiento; Speckles = Degradación.", "Cajal = ADN; Speckles = ARN.", "No hay diferencia."],
         correct: 0,
         explanation: "Cajal es la fábrica de montaje; Speckles es el almacén de piezas terminadas."
     },
     {
         topic: "Regulación",
         question: "¿Qué es el 'Código de Histonas'?",
-        options: [
-            "La secuencia de ADN de los genes de histonas.",
-            "La combinación específica de modificaciones químicas en las colas de histonas que dicta el estado de la cromatina.",
-            "Un código secreto para entrar al núcleo.",
-            "El número de nucleosomas."
-        ],
+        options: ["La secuencia de ADN de los genes de histonas.", "La combinación específica de modificaciones químicas en las colas de histonas que dicta el estado de la cromatina.", "Un código secreto para entrar al núcleo.", "El número de nucleosomas."],
         correct: 1,
         explanation: "Las marcas (acetilo, metilo, fosfato) crean un lenguaje que recluta proteínas reguladoras."
     },
     {
         topic: "Clastosoma",
         question: "¿Cuándo suelen aparecer o aumentar los clastosomas?",
-        options: [
-            "Durante la mitosis.",
-            "Bajo condiciones de alto estrés proteolítico.",
-            "Cuando la célula duerme.",
-            "En la diferenciación."
-        ],
+        options: ["Durante la mitosis.", "Bajo condiciones de alto estrés proteolítico.", "Cuando la célula duerme.", "En la diferenciación."],
         correct: 1,
         explanation: "Se forman para degradar componentes rápidamente cuando es necesario."
     },
     {
         topic: "Exportación",
         question: "¿Qué necesitan las proteínas para salir del núcleo?",
-        options: [
-            "Una señal de retención.",
-            "Una Señal de Exportación Nuclear (NES).",
-            "Ser muy pequeñas.",
-            "Perder su estructura."
-        ],
+        options: ["Una señal de retención.", "Una Señal de Exportación Nuclear (NES).", "Ser muy pequeñas.", "Perder su estructura."],
         correct: 1,
         explanation: "La NES es reconocida por las exportinas para sacar la carga al citosol."
     },
     {
         topic: "Importina",
         question: "¿Qué hace la importina en el citosol?",
-        options: [
-            "Suelta la carga.",
-            "Se une a la carga (proteína con NLS).",
-            "Se une a Ran-GTP.",
-            "Se degrada."
-        ],
+        options: ["Suelta la carga.", "Se une a la carga (proteína con NLS).", "Se une a Ran-GTP.", "Se degrada."],
         correct: 1,
         explanation: "En el citosol (donde Ran-GTP es bajo), la importina tiene alta afinidad por su carga y la atrapa."
     },
     {
         topic: "Envoltura",
         question: "¿Qué ocurre con la envoltura nuclear durante la mitosis?",
-        options: [
-            "Se hace más gruesa.",
-            "Se desensambla (se rompe) para liberar los cromosomas.",
-            "Permanece intacta.",
-            "Se fusiona con la mitocondria."
-        ],
+        options: ["Se hace más gruesa.", "Se desensambla (se rompe) para liberar los cromosomas.", "Permanece intacta.", "Se fusiona con la mitocondria."],
         correct: 1,
         explanation: "La fosforilación de la lámina provoca el desensamblaje de la envoltura para permitir la segregación cromosómica."
     },
     {
         topic: "Poro Nuclear",
         question: "Las proteínas que forman el poro tienen regiones desordenadas que forman:",
-        options: [
-            "Una pared rígida.",
-            "Un gel selectivo o malla dentro del canal.",
-            "Unas compuertas metálicas.",
-            "Unas hélices alfa."
-        ],
+        options: ["Una pared rígida.", "Un gel selectivo o malla dentro del canal.", "Unas compuertas metálicas.", "Unas hélices alfa."],
         correct: 1,
         explanation: "Los dominios FG (fenilalanina-glicina) forman una red tipo gel que bloquea el paso no específico."
     },
     {
         topic: "Nucleosoma",
         question: "¿Cuántos pares de bases de ADN rodean un nucleosoma típico?",
-        options: [
-            "Aproximadamente 147 pb.",
-            "1000 pb.",
-            "50 pb.",
-            "1 millón de pb."
-        ],
+        options: ["Aproximadamente 147 pb.", "1000 pb.", "50 pb.", "1 millón de pb."],
         correct: 0,
         explanation: "El ADN da casi 1.7 vueltas alrededor del octámero, abarcando 147 pares de bases."
     },
     {
         topic: "Cromatina",
         question: "¿Qué enzima añade grupos acetilo a las histonas?",
-        options: [
-            "Histona Desacetilasa (HDAC).",
-            "Histona Acetiltransferasa (HAT).",
-            "ADN Polimerasa.",
-            "Ligasa."
-        ],
+        options: ["Histona Desacetilasa (HDAC).", "Histona Acetiltransferasa (HAT).", "ADN Polimerasa.", "Ligasa."],
         correct: 1,
         explanation: "Las HAT añaden acetilo, promoviendo la relajación de la cromatina (eucromatina)."
     },
     {
         topic: "Cromatina",
         question: "¿Qué enzima elimina grupos acetilo de las histonas?",
-        options: [
-            "Histona Acetiltransferasa (HAT).",
-            "Histona Desacetilasa (HDAC).",
-            "Ran-GAP.",
-            "Nucleasa."
-        ],
+        options: ["Histona Acetiltransferasa (HAT).", "Histona Desacetilasa (HDAC).", "Ran-GAP.", "Nucleasa."],
         correct: 1,
         explanation: "Las HDAC quitan el acetilo, promoviendo la condensación (heterocromatina) y el silenciamiento."
     },
     {
         topic: "Nucleoplasma",
         question: "¿Qué es el nucleoplasma?",
-        options: [
-            "El citoplasma de la célula.",
-            "El medio interno del núcleo donde flota la cromatina.",
-            "La membrana nuclear.",
-            "El espacio perinuclear."
-        ],
+        options: ["El citoplasma de la célula.", "El medio interno del núcleo donde flota la cromatina.", "La membrana nuclear.", "El espacio perinuclear."],
         correct: 1,
         explanation: "Es el equivalente nuclear del citosol, conteniendo agua, iones y factores solubles."
     },
     {
         topic: "Lámina",
         question: "¿Qué enfermedad se asocia a mutaciones en la lámina nuclear (Laminopatías)?",
-        options: [
-            "Gripe.",
-            "Progeria (envejecimiento acelerado).",
-            "Diabetes.",
-            "Miopía."
-        ],
+        options: ["Gripe.", "Progeria (envejecimiento acelerado).", "Diabetes.", "Miopía."],
         correct: 1,
         explanation: "La Progeria de Hutchinson-Gilford es causada por defectos en la Lámina A, afectando la estabilidad nuclear."
     },
     {
         topic: "Poro",
         question: "¿Puede el ARN salir del núcleo?",
-        options: [
-            "No, nunca.",
-            "Sí, como complejos ribonucleoproteicos (RNP) a través del poro.",
-            "Solo si se rompe la membrana.",
-            "Solo el ADN sale."
-        ],
+        options: ["No, nunca.", "Sí, como complejos ribonucleoproteicos (RNP) a través del poro.", "Solo si se rompe la membrana.", "Solo el ADN sale."],
         correct: 1,
         explanation: "El ARNm maduro se exporta activamente a través de los poros para ser traducido."
     },
     {
         topic: "Cuerpos Nucleares",
         question: "¿Por qué los cuerpos nucleares aumentan la eficiencia de procesos?",
-        options: [
-            "Porque calientan el núcleo.",
-            "Porque concentran reactivos (proteínas y ARN) en un espacio reducido.",
-            "Porque tienen membranas impermeables.",
-            "Porque eliminan el ADN."
-        ],
+        options: ["Porque calientan el núcleo.", "Porque concentran reactivos (proteínas y ARN) en un espacio reducido.", "Porque tienen membranas impermeables.", "Porque eliminan el ADN."],
         correct: 1,
         explanation: "Al concentrar los componentes necesarios, aumentan la velocidad de reacción (ley de acción de masas)."
     },
     {
         topic: "Nucléolo",
         question: "¿Cuántos nucléolos puede tener una célula?",
-        options: [
-            "Siempre uno.",
-            "Uno o varios, dependiendo de la actividad celular.",
-            "Ninguno.",
-            "Cientos."
-        ],
+        options: ["Siempre uno.", "Uno o varios, dependiendo de la actividad celular.", "Ninguno.", "Cientos."],
         correct: 1,
         explanation: "El número y tamaño varían según la demanda de síntesis de proteínas (más demanda = nucléolos más grandes/numerosos)."
     },
     {
         topic: "General",
         question: "¿Es el núcleo un compartimento estático?",
-        options: [
-            "Sí, es un almacén rígido.",
-            "No, es altamente dinámico y organizado.",
-            "Solo se mueve en mitosis.",
-            "Es sólido."
-        ],
+        options: ["Sí, es un almacén rígido.", "No, es altamente dinámico y organizado.", "Solo se mueve en mitosis.", "Es sólido."],
         correct: 1,
         explanation: "La cromatina se mueve, los cuerpos nucleares se forman y disuelven, y el transporte es constante."
     },
     {
         topic: "Importina",
         question: "¿La importina necesita energía ATP directa para unirse a la carga?",
-        options: [
-            "Sí.",
-            "No, la unión es por afinidad; la energía se gasta en el ciclo de Ran.",
-            "Usa luz.",
-            "Usa calor."
-        ],
+        options: ["Sí.", "No, la unión es por afinidad; la energía se gasta en el ciclo de Ran.", "Usa luz.", "Usa calor."],
         correct: 1,
         explanation: "El transporte es activo globalmente, pero la unión inicial es bioquímica; el gasto energético es del sistema Ran."
     },
     {
         topic: "Cuerpos de Escisión",
         question: "¿Con qué otro cuerpo nuclear suelen asociarse físicamente los cuerpos de Cajal?",
-        options: [
-            "Con el nucléolo.",
-            "Con los clastosomas.",
-            "Con las mitocondrias.",
-            "Con el Golgi."
-        ],
+        options: ["Con el nucléolo.", "Con los clastosomas.", "Con las mitocondrias.", "Con el Golgi."],
         correct: 0,
         explanation: "A menudo se encuentran cerca o en contacto con el nucléolo, coordinando biogénesis."
     },
     {
         topic: "Transporte",
         question: "¿Qué ion gradiente impulsa el transporte nuclear?",
-        options: [
-            "Sodio.",
-            "Potasio.",
-            "Ninguno, lo impulsa el gradiente de Ran-GTP.",
-            "Calcio."
-        ],
+        options: ["Sodio.", "Potasio.", "Ninguno, lo impulsa el gradiente de Ran-GTP.", "Calcio."],
         correct: 2,
         explanation: "No es un gradiente iónico de membrana, sino un gradiente molecular de la forma de Ran."
     },
     {
         topic: "Poro",
         question: "El lado del poro que mira al núcleo tiene una estructura llamada:",
-        options: [
-            "Cesta o canasta nuclear.",
-            "Antena.",
-            "Filamentos citoplasmáticos.",
-            "Anillo externo."
-        ],
+        options: ["Cesta o canasta nuclear.", "Antena.", "Filamentos citoplasmáticos.", "Anillo externo."],
         correct: 0,
         explanation: "La 'nuclear basket' es la estructura asimétrica en la cara nuclear del poro."
     },
     {
         topic: "Cromatina",
         question: "¿Qué es un 'Territorio Cromosómico'?",
-        options: [
-            "Una zona donde no hay ADN.",
-            "El espacio específico y no solapante que ocupa cada cromosoma en el núcleo.",
-            "Una zona de guerra celular.",
-            "El sitio del nucléolo."
-        ],
+        options: ["Una zona donde no hay ADN.", "El espacio específico y no solapante que ocupa cada cromosoma en el núcleo.", "Una zona de guerra celular.", "El sitio del nucléolo."],
         correct: 1,
         explanation: "Los cromosomas no están enredados al azar, sino que cada uno reside en su propia 'parcela'."
     },
     {
         topic: "Resumen",
         question: "¿Qué elemento actúa como 'esqueleto' interno del núcleo?",
-        options: [
-            "Microtúbulos.",
-            "Lámina Nuclear.",
-            "ADN.",
-            "Ribosomas."
-        ],
+        options: ["Microtúbulos.", "Lámina Nuclear.", "ADN.", "Ribosomas."],
         correct: 1,
         explanation: "La lámina aporta la rigidez y forma al núcleo."
     },
     {
         topic: "Resumen",
         question: "¿Qué define el límite entre núcleo y citoplasma?",
-        options: [
-            "La lámina.",
-            "La cromatina.",
-            "La envoltura nuclear.",
-            "El nucléolo."
-        ],
+        options: ["La lámina.", "La cromatina.", "La envoltura nuclear.", "El nucléolo."],
         correct: 2,
         explanation: "La doble membrana es la frontera definitiva."
     },
     {
         topic: "Resumen",
         question: "¿Qué ocurre en los espacios intercromatínicos?",
-        options: [
-            "Nada.",
-            "Se acumulan factores de procesamiento (Speckles) y ocurre transporte.",
-            "Se almacena grasa.",
-            "Hay vacío."
-        ],
+        options: ["Nada.", "Se acumulan factores de procesamiento (Speckles) y ocurre transporte.", "Se almacena grasa.", "Hay vacío."],
         correct: 1,
         explanation: "Son canales entre territorios cromosómicos donde se facilita el tráfico y procesamiento de ARN."
     },
     {
         topic: "Repaso",
         question: "¿Qué significa que el transporte sea 'selectivo'?",
-        options: [
-            "Que entra todo.",
-            "Que solo entra lo que tiene la 'llave' (señal) correcta.",
-            "Que solo sale agua.",
-            "Que es aleatorio."
-        ],
+        options: ["Que entra todo.", "Que solo entra lo que tiene la 'llave' (señal) correcta.", "Que solo sale agua.", "Que es aleatorio."],
         correct: 1,
         explanation: "Solo las macromoléculas con NLS o NES válidas pueden cruzar el poro de forma facilitada."
     }
 ];
 
-let currentQuestionIndex = 0;
-let score = 0;
+// --- GESTIÓN DE ESTADO ---
+// Inicializamos propiedades extra
+questions.forEach(q => {
+    q.isMarked = false;       
+    q.userCorrect = null;     // null: no respondida, true: correcta, false: incorrecta
+});
+
+let activeIndices = []; 
+let currentPlaylistIndex = 0; 
+let sessionScore = 0;
 let answered = false;
 
-const quizArea = document.getElementById('quiz-area');
-const progressEl = document.getElementById('progress');
-const scoreEl = document.getElementById('score');
-const resultsArea = document.getElementById('results');
-const finalScoreEl = document.getElementById('final-score');
-const finalPercentEl = document.getElementById('final-percent');
+// Al cargar
+document.addEventListener('DOMContentLoaded', () => {
+    startQuiz('all');
+});
 
-function loadQuestion() {
-    answered = false;
-    if (currentQuestionIndex >= questions.length) {
-        showResults();
+// Función Principal: Iniciar/Reiniciar con modos
+function startQuiz(mode) {
+    activeIndices = [];
+    
+    if (mode === 'all') {
+        // Reinicio total
+        questions.forEach(q => q.userCorrect = null);
+        questions.forEach(q => q.isMarked = false); // Opcional: limpiar marcas
+        activeIndices = questions.map((_, i) => i);
+    } 
+    else if (mode === 'failed') {
+        activeIndices = questions.map((q, i) => q.userCorrect === false ? i : -1).filter(i => i !== -1);
+    } 
+    else if (mode === 'marked') {
+        activeIndices = questions.map((q, i) => q.isMarked ? i : -1).filter(i => i !== -1);
+    } 
+    else if (mode === 'mixed') {
+        activeIndices = questions.map((q, i) => (q.userCorrect === false || q.isMarked) ? i : -1).filter(i => i !== -1);
+    }
+
+    if (activeIndices.length === 0) {
+        alert("No hay preguntas para este modo.");
         return;
     }
 
-    const q = questions[currentQuestionIndex];
-    progressEl.textContent = `Pregunta ${currentQuestionIndex + 1} de ${questions.length}`;
+    currentPlaylistIndex = 0;
+    sessionScore = 0;
     
-    let html = `
-        <div class="question-card active">
-            <div class="topic-tag">${q.topic}</div>
-            <div class="question-text">${q.question}</div>
-            <div class="options-grid">
-                ${q.options.map((opt, index) => `
-                    <button class="option-btn" onclick="checkAnswer(${index}, ${q.correct})">
-                        ${opt}
-                    </button>
-                `).join('')}
-            </div>
-            <div id="feedback-${currentQuestionIndex}" class="feedback"></div>
-            <div class="navigation">
-                <button id="next-btn-${currentQuestionIndex}" class="nav-btn" onclick="nextQuestion()">Siguiente →</button>
-            </div>
-        </div>
-    `;
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('quiz-area').style.display = 'block';
+    document.getElementById('statsBar').style.display = 'flex';
     
-    quizArea.innerHTML = html;
-}
-
-function checkAnswer(selected, correct) {
-    if (answered) return;
-    answered = true;
-
-    const buttons = document.querySelectorAll('.option-btn');
-    const feedbackEl = document.getElementById(`feedback-${currentQuestionIndex}`);
-    const nextBtn = document.getElementById(`next-btn-${currentQuestionIndex}`);
-
-    if (selected === correct) {
-        buttons[selected].classList.add('correct');
-        feedbackEl.className = 'feedback feedback-correct show';
-        feedbackEl.innerHTML = `<strong>¡Correcto!</strong> ${questions[currentQuestionIndex].explanation}`;
-        score++;
-    } else {
-        buttons[selected].classList.add('incorrect');
-        buttons[correct].classList.add('correct');
-        feedbackEl.className = 'feedback feedback-incorrect show';
-        feedbackEl.innerHTML = `<strong>Incorrecto.</strong> ${questions[currentQuestionIndex].explanation}`;
-    }
-
-    scoreEl.textContent = `Aciertos: ${score}`;
-    nextBtn.style.display = 'inline-block';
-    
-    // Deshabilitar botones
-    buttons.forEach(btn => btn.disabled = true);
-}
-
-function nextQuestion() {
-    currentQuestionIndex++;
     loadQuestion();
 }
 
-function showResults() {
-    quizArea.innerHTML = '';
-    resultsArea.style.display = 'block';
-    finalScoreEl.textContent = `${score} / ${questions.length}`;
-    const percent = Math.round((score / questions.length) * 100);
+function loadQuestion() {
+    answered = false;
+    const realIndex = activeIndices[currentPlaylistIndex];
+    const q = questions[realIndex];
     
-    let message = "";
-    if(percent >= 90) message = "¡Excelente! Dominas la arquitectura nuclear.";
-    else if(percent >= 70) message = "Muy bien, conceptos claros.";
-    else if(percent >= 50) message = "Aprobado, pero repasa los cuerpos nucleares.";
-    else message = "Necesitas estudiar más el Bloque 4.";
-    
-    finalPercentEl.textContent = `${percent}% - ${message}`;
+    document.getElementById('progress').textContent = `Pregunta ${currentPlaylistIndex + 1} de ${activeIndices.length}`;
+    document.getElementById('score').textContent = `Aciertos sesión: ${sessionScore}`;
+
+    const quizArea = document.getElementById('quiz-area');
+    const markedChecked = q.isMarked ? 'checked' : '';
+
+    let html = `
+        <div class="question-card active">
+            <label class="bookmark-panel">
+                <input type="checkbox" class="bookmark-checkbox" onchange="toggleMark(${realIndex}, this)" ${markedChecked}>
+                <span>Marcar</span>
+            </label>
+
+            <div class="topic-tag">${q.topic}</div>
+            <div class="question-text">${q.question}</div>
+            <div class="options-grid">
+                ${q.options.map((opt, i) => `
+                    <button class="option-btn" onclick="checkAnswer(${i}, ${q.correct}, this, ${realIndex})">
+                        ${String.fromCharCode(65+i)}. ${opt}
+                    </button>
+                `).join('')}
+            </div>
+            <div id="feedback" class="feedback"></div>
+            <div class="navigation">
+                <button id="next-btn" class="nav-btn" onclick="nextQuestion()">Siguiente →</button>
+            </div>
+        </div>
+    `;
+    quizArea.innerHTML = html;
 }
 
-// Iniciar el examen
-loadQuestion();
+function toggleMark(realIndex, checkbox) {
+    questions[realIndex].isMarked = checkbox.checked;
+}
 
+function checkAnswer(selected, correct, btn, realIndex) {
+    if (answered) return;
+    answered = true;
+
+    const btns = document.querySelectorAll('.option-btn');
+    const feedbackEl = document.getElementById('feedback');
+    const nextBtn = document.getElementById('next-btn');
+
+    btns.forEach(b => b.disabled = true);
+
+    if (selected === correct) {
+        sessionScore++;
+        questions[realIndex].userCorrect = true;
+        btn.classList.add('correct');
+        feedbackEl.className = 'feedback feedback-correct show';
+        feedbackEl.innerHTML = `<strong>¡Correcto!</strong> ${questions[realIndex].explanation}`;
+    } else {
+        questions[realIndex].userCorrect = false;
+        btn.classList.add('incorrect');
+        btns[correct].classList.add('correct');
+        feedbackEl.className = 'feedback feedback-incorrect show';
+        feedbackEl.innerHTML = `<strong>Incorrecto.</strong> ${questions[realIndex].explanation}`;
+    }
+
+    document.getElementById('score').textContent = `Aciertos sesión: ${sessionScore}`;
+    nextBtn.style.display = 'inline-block';
+}
+
+function nextQuestion() {
+    if (currentPlaylistIndex < activeIndices.length - 1) {
+        currentPlaylistIndex++;
+        loadQuestion();
+    } else {
+        showResults();
+    }
+}
+
+function showResults() {
+    document.getElementById('quiz-area').style.display = 'none';
+    document.getElementById('statsBar').style.display = 'none';
+    document.getElementById('results').style.display = 'block';
+
+    const percent = Math.round((sessionScore / activeIndices.length) * 100);
+    document.getElementById('final-score').textContent = `${sessionScore} / ${activeIndices.length}`;
+    
+    let msg = "";
+    if(percent >= 90) msg = "¡Excelente!";
+    else if(percent >= 70) msg = "Muy bien.";
+    else if(percent >= 50) msg = "Aprobado.";
+    else msg = "Sigue repasando.";
+    document.getElementById('final-percent').textContent = `${percent}% - ${msg}`;
+
+    // Calcular estadísticas globales
+    const totalFailed = questions.filter(q => q.userCorrect === false).length;
+    const totalMarked = questions.filter(q => q.isMarked === true).length;
+    const totalMixed = questions.filter(q => q.userCorrect === false || q.isMarked).length;
+
+    document.getElementById('stats-summary').innerHTML = `
+        <strong>Resumen Global:</strong><br>
+        Preguntas marcadas para revisión: ${totalMarked}<br>
+        Preguntas falladas (histórico): ${totalFailed}
+    `;
+
+    document.getElementById('btn-failed').disabled = (totalFailed === 0);
+    document.getElementById('btn-marked').disabled = (totalMarked === 0);
+    document.getElementById('btn-mixed').disabled = (totalMixed === 0);
+    
+    document.getElementById('btn-failed').innerHTML = `❌ Repetir Falladas (${totalFailed})`;
+    document.getElementById('btn-marked').innerHTML = `⚠️ Repetir Marcadas (${totalMarked})`;
+}
 </script>
 
 </body>
