@@ -10,6 +10,7 @@
             --secondary: #1abc9c;
             --success: #2ecc71;
             --danger: #e74c3c;
+            --warning: #f1c40f;
             --light: #fdfefe;
             --dark: #2c3e50;
             --bg: #e8f6f3;
@@ -29,6 +30,7 @@
             padding: 40px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            min-height: 600px;
         }
         header {
             text-align: center;
@@ -53,9 +55,31 @@
 
         .question-card {
             display: none;
+            position: relative; /* Necesario para posicionar la marca */
             animation: slideIn 0.4s ease-out;
         }
         .question-card.active { display: block; }
+
+        /* ESTILOS DE LA PESTAÑA DE MARCAR */
+        .bookmark-panel {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #fff9c4;
+            border: 1px solid #fbc02d;
+            color: #f57f17;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s;
+            z-index: 10;
+        }
+        .bookmark-panel:hover { transform: scale(1.05); background: #fff176; }
+        .bookmark-panel input { cursor: pointer; transform: scale(1.3); }
 
         .question-header {
             font-size: 0.85rem;
@@ -64,12 +88,14 @@
             margin-bottom: 10px;
             font-weight: 700;
             letter-spacing: 1px;
+            margin-top: 15px;
         }
 
         .question-text {
             font-size: 1.25rem;
             margin-bottom: 25px;
             font-weight: 600;
+            padding-right: 120px; /* Espacio para que el texto no tape la marca */
         }
 
         .options-list {
@@ -86,7 +112,6 @@
             text-align: left;
             font-size: 1.05rem;
             transition: all 0.2s;
-            position: relative;
         }
 
         .option-btn:hover:not(:disabled) {
@@ -136,6 +161,7 @@
         }
         .nav-btn:hover { background: var(--secondary); transform: translateY(-2px); }
 
+        /* PANTALLA DE RESULTADOS */
         .results-view {
             text-align: center;
             display: none;
@@ -161,6 +187,41 @@
             transition: width 0.3s;
         }
 
+        .stats-summary {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: #555;
+            display: inline-block;
+            text-align: left;
+        }
+
+        /* GRID DE BOTONES DE ACCIÓN */
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .action-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-size: 1rem;
+        }
+        .action-btn:hover { transform: translateY(-3px); filter: brightness(110%); }
+        .action-btn:disabled { background-color: #bdc3c7 !important; cursor: not-allowed; transform: none; filter: none; }
+
+        .btn-restart { background-color: var(--primary); grid-column: span 2; }
+        .btn-failed { background-color: var(--danger); }
+        .btn-marked { background-color: var(--warning); color: #444; }
+        .btn-mixed { background-color: var(--dark); grid-column: span 2; }
+
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -173,7 +234,7 @@
     </header>
 
     <div class="status-panel" id="statusBar">
-        <span id="q-progress">Pregunta 1 de 75</span>
+        <span id="q-progress">Cargando...</span>
         <span id="score-display">Aciertos: 0</span>
     </div>
     <div class="progress-ring"><div class="progress-fill" id="progressBar"></div></div>
@@ -183,576 +244,184 @@
 
     <div id="results-screen" class="results-view">
         <h2>Examen Finalizado</h2>
-        <p>Has completado el bloque sobre Señalización, Células Madre y Apoptosis.</p>
-        <div class="final-score" id="final-number">0/75</div>
-        <p id="final-text" style="font-size: 1.2rem; margin-bottom: 30px;"></p>
-        <button class="nav-btn" style="display:inline-block; float:none;" onclick="location.reload()">Reiniciar Examen</button>
+        <div class="final-score" id="final-number">0/0</div>
+        <p id="final-text" style="font-size: 1.2rem; margin-bottom: 20px;"></p>
+        
+        <div class="stats-summary" id="stats-box"></div>
+
+        <div class="action-grid">
+            <button class="action-btn btn-restart" onclick="startQuiz('all')">🔄 Reiniciar Test Completo</button>
+            <button class="action-btn btn-failed" id="btn-failed" onclick="startQuiz('failed')">❌ Repetir Falladas</button>
+            <button class="action-btn btn-marked" id="btn-marked" onclick="startQuiz('marked')">⚠️ Repetir Marcadas</button>
+            <button class="action-btn btn-mixed" id="btn-mixed" onclick="startQuiz('mixed')">❌ + ⚠️ Repetir Falladas y Marcadas</button>
+        </div>
     </div>
 </div>
 
 <script>
 const quizData = [
     // --- 7.1 SEÑALIZACIÓN CELULAR (1-25) ---
-    {
-        topic: "Introducción",
-        question: "¿Qué es la transducción de señal?",
-        options: ["El transporte de señales eléctricas por el axón.", "El proceso de convertir una señal extracelular en una respuesta intracelular específica.", "La duplicación del ADN.", "La síntesis de proteínas."],
-        correct: 1,
-        explanation: "Es el mecanismo de 'traducción' o conversión de un tipo de señal (externa) a otro (interna) para generar una respuesta."
-    },
-    {
-        topic: "Tipos de Señalización",
-        question: "¿Qué tipo de señalización implica la liberación de hormonas al torrente sanguíneo para actuar en células lejanas?",
-        options: ["Paracrina", "Sináptica", "Endocrina", "Dependiente de contacto"],
-        correct: 2,
-        explanation: "La señalización endocrina es de largo alcance y utiliza el sistema circulatorio."
-    },
-    {
-        topic: "Tipos de Señalización",
-        question: "¿Qué caracteriza a la señalización paracrina?",
-        options: ["Las señales actúan como mediadores locales sobre células vecinas.", "La célula se señala a sí misma.", "Requiere contacto físico.", "Es exclusiva de neuronas."],
-        correct: 0,
-        explanation: "La señal difunde localmente a través del fluido extracelular para afectar a las células cercanas."
-    },
-    {
-        topic: "Tipos de Señalización",
-        question: "¿Qué tipo de señalización es la más rápida y precisa, actuando sobre una célula postsináptica?",
-        options: ["Endocrina", "Autocrina", "Sináptica", "Yuxtacrina"],
-        correct: 2,
-        explanation: "La señalización neuronal o sináptica es rápida y dirigida específicamente a una célula diana."
-    },
-    {
-        topic: "Tipos de Señalización",
-        question: "¿Cómo se llama la señalización donde la célula responde a una señal que ella misma ha producido?",
-        options: ["Endocrina", "Autocrina", "Paracrina", "Dependiente de contacto"],
-        correct: 1,
-        explanation: "Es una forma de auto-regulación común en células cancerosas y durante el desarrollo."
-    },
-    {
-        topic: "Tipos de Señalización",
-        question: "¿Qué tipo de señalización requiere que la molécula señalizadora permanezca unida a la membrana de la célula emisora?",
-        options: ["Endocrina", "Dependiente de contacto (Yuxtacrina)", "Paracrina", "Sináptica"],
-        correct: 1,
-        explanation: "Implica una interacción física directa entre la molécula señalizadora de membrana y el receptor de la célula vecina."
-    },
-    {
-        topic: "Moléculas Señal",
-        question: "¿Qué tipo de moléculas señalizadoras pueden atravesar la membrana plasmática y unirse a receptores intracelulares?",
-        options: ["Moléculas grandes e hidrofílicas.", "Proteínas grandes.", "Moléculas pequeñas o hidrofóbicas (ej. hormonas esteroides).", "Iones cargados."],
-        correct: 2,
-        explanation: "Al ser hidrofóbicas, difunden a través de la bicapa lipídica y actúan dentro de la célula (receptores nucleares)."
-    },
-    {
-        topic: "Moléculas Señal",
-        question: "¿Dónde se encuentran los receptores para moléculas grandes o hidrofílicas?",
-        options: ["En el núcleo.", "En el citosol.", "En la superficie celular (membrana plasmática).", "En la mitocondria."],
-        correct: 2,
-        explanation: "Estas moléculas no pueden cruzar la membrana, por lo que requieren receptores de superficie para transmitir el mensaje."
-    },
-    {
-        topic: "Interruptores Moleculares",
-        question: "¿Cuáles son los dos mecanismos principales por los que las proteínas actúan como interruptores moleculares?",
-        options: ["Hidrólisis y Condensación.", "Fosforilación y Unión a GTP.", "Transcripción y Traducción.", "Mitosis y Meiosis."],
-        correct: 1,
-        explanation: "Se activan/inactivan añadiendo fosfato (quinasas/fosfatasas) o uniendo GTP (proteínas de unión a GTP)."
-    },
-    {
-        topic: "Interruptores Moleculares",
-        question: "¿Qué enzima añade un grupo fosfato a una proteína (activándola generalmente)?",
-        options: ["Fosfatasa", "Quinasa", "GTPasa", "Proteasa"],
-        correct: 1,
-        explanation: "Las proteína-quinasas transfieren un grupo fosfato del ATP a la proteína diana."
-    },
-    {
-        topic: "Interruptores Moleculares",
-        question: "¿Qué enzima elimina el grupo fosfato de una proteína (apagando la señal)?",
-        options: ["Quinasa", "Ligasa", "Fosfatasa", "Polimerasa"],
-        correct: 2,
-        explanation: "Las fosfatasas eliminan el fosfato, revirtiendo el efecto de la quinasa."
-    },
-    {
-        topic: "Interruptores Moleculares",
-        question: "¿Cuándo está activa una proteína de unión a GTP?",
-        options: ["Cuando tiene unido GDP.", "Cuando tiene unido GTP.", "Cuando no tiene nucleótido.", "Cuando está fosforilada."],
-        correct: 1,
-        explanation: "La forma unida a GTP es la activa; la hidrólisis a GDP la apaga."
-    },
-    {
-        topic: "Receptores de Superficie",
-        question: "¿Qué receptor convierte una señal química directamente en una señal eléctrica?",
-        options: ["Receptor acoplado a Proteína G (GPCR).", "Receptor Tirosina Quinasa (RTK).", "Receptor acoplado a canales iónicos.", "Receptor nuclear."],
-        correct: 2,
-        explanation: "Al abrirse por ligando, permite el flujo de iones, cambiando el potencial de membrana."
-    },
-    {
-        topic: "GPCRs",
-        question: "¿Qué activa un Receptor Acoplado a Proteína G (GPCR) al unir su ligando?",
-        options: ["Una enzima quinasa intrínseca.", "Una proteína G trimérica intracelular.", "Un canal iónico directamente.", "La transcripción de genes."],
-        correct: 1,
-        explanation: "El receptor activa a la proteína G, que luego se disocia para activar enzimas o canales."
-    },
-    {
-        topic: "GPCRs",
-        question: "¿Qué enzima es activada por la proteína G en la vía del AMPc?",
-        options: ["Fosfolipasa C", "Adenilato ciclasa", "Proteína Quinasa C (PKC)", "MAP quinasa"],
-        correct: 1,
-        explanation: "La Adenilato ciclasa sintetiza AMP cíclico (segundo mensajero) a partir de ATP."
-    },
-    {
-        topic: "GPCRs",
-        question: "¿Qué segundos mensajeros genera la Fosfolipasa C al ser activada por una proteína G?",
-        options: ["AMPc y GMPc.", "IP3 (Inositol trifosfato) y DAG (Diacilglicerol).", "Ca2+ y Na+.", "ATP y ADP."],
-        correct: 1,
-        explanation: "El IP3 libera calcio del RE y el DAG activa la PKC en la membrana."
-    },
-    {
-        topic: "GPCRs",
-        question: "¿Qué efecto tiene el IP3 en la célula?",
-        options: ["Activa la adenilato ciclasa.", "Abre canales de Ca2+ en el Retículo Endoplásmico, liberando calcio al citosol.", "Se une al ADN.", "Degrada proteínas."],
-        correct: 1,
-        explanation: "El IP3 es el ligando que abre los canales de calcio del almacén intracelular (RE)."
-    },
-    {
-        topic: "RTKs",
-        question: "¿Qué caracteriza a los Receptores Tirosina Quinasa (RTKs)?",
-        options: ["Tienen actividad enzimática intrínseca (quinasa) o se asocian a enzimas.", "Abren canales de sodio.", "Usan proteínas G triméricas.", "Están en el núcleo."],
-        correct: 0,
-        explanation: "Al activarse, se fosforilan a sí mismos (autofosforilación) en residuos de tirosina."
-    },
-    {
-        topic: "RTKs",
-        question: "¿Qué pequeña GTPasa es activada frecuentemente por los RTKs?",
-        options: ["Ran", "Ras", "Rab", "Rho"],
-        correct: 1,
-        explanation: "Ras es una proteína interruptor clave que inicia la cascada de las MAP-quinasas."
-    },
-    {
-        topic: "RTKs",
-        question: "¿Qué cascada de señalización es activada por Ras y es crucial para la proliferación celular?",
-        options: ["Cascada de caspasas.", "Cascada de MAP-quinasas.", "Cascada de coagulación.", "Vía Wnt."],
-        correct: 1,
-        explanation: "La vía MAP-quinasa (Mitogen-Activated Protein Kinase) transmite señales desde la membrana al núcleo para estimular la división."
-    },
-    {
-        topic: "RTKs",
-        question: "¿Qué quinasa es clave en la vía de señalización que promueve el crecimiento celular y la supervivencia (vía PI3K)?",
-        options: ["Akt (o PKB).", "PKA.", "PKC.", "CaMK."],
-        correct: 0,
-        explanation: "Akt fosforila dianas que inhiben la apoptosis y promueven el crecimiento."
-    },
-    {
-        topic: "Integración",
-        question: "¿Cómo decide una célula su destino (dividirse, diferenciarse, morir)?",
-        options: ["Siguiendo una sola señal.", "Mediante la integración simultánea de múltiples señales.", "Al azar.", "Dependiendo solo de sus nutrientes."],
-        correct: 1,
-        explanation: "La célula procesa e integra una combinación compleja de señales para tomar decisiones ('cross-talk')."
-    },
-    {
-        topic: "Sinapsis",
-        question: "¿Qué tipo de sinapsis permite el flujo directo de iones entre células (bidireccional)?",
-        options: ["Sinapsis química.", "Sinapsis eléctrica (uniones gap).", "Sinapsis hormonal.", "Sinapsis lenta."],
-        correct: 1,
-        explanation: "Las uniones gap conectan los citoplasmas, permitiendo una transmisión eléctrica instantánea."
-    },
-    {
-        topic: "Sinapsis",
-        question: "¿Qué molécula media la señalización en una sinapsis química?",
-        options: ["Una hormona.", "Un neurotransmisor.", "Un lípido.", "Un anticuerpo."],
-        correct: 1,
-        explanation: "El neurotransmisor se libera a la hendidura sináptica y se une a receptores postsinápticos."
-    },
-    {
-        topic: "Señalización",
-        question: "¿Qué gas actúa como molécula señalizadora paracrina atravesando membranas?",
-        options: ["Oxígeno (O2).", "Óxido Nítrico (NO).", "Dióxido de carbono (CO2).", "Helio."],
-        correct: 1,
-        explanation: "El NO relaja el músculo liso de los vasos sanguíneos (vasodilatación) actuando intracelularmente."
-    },
+    { topic: "Introducción", question: "¿Qué es la transducción de señal?", options: ["El transporte de señales eléctricas por el axón.", "El proceso de convertir una señal extracelular en una respuesta intracelular específica.", "La duplicación del ADN.", "La síntesis de proteínas."], correct: 1, explanation: "Es el mecanismo de 'traducción' o conversión de un tipo de señal (externa) a otro (interna) para generar una respuesta." },
+    { topic: "Tipos de Señalización", question: "¿Qué tipo de señalización implica la liberación de hormonas al torrente sanguíneo para actuar en células lejanas?", options: ["Paracrina", "Sináptica", "Endocrina", "Dependiente de contacto"], correct: 2, explanation: "La señalización endocrina es de largo alcance y utiliza el sistema circulatorio." },
+    { topic: "Tipos de Señalización", question: "¿Qué caracteriza a la señalización paracrina?", options: ["Las señales actúan como mediadores locales sobre células vecinas.", "La célula se señala a sí misma.", "Requiere contacto físico.", "Es exclusiva de neuronas."], correct: 0, explanation: "La señal difunde localmente a través del fluido extracelular para afectar a las células cercanas." },
+    { topic: "Tipos de Señalización", question: "¿Qué tipo de señalización es la más rápida y precisa, actuando sobre una célula postsináptica?", options: ["Endocrina", "Autocrina", "Sináptica", "Yuxtacrina"], correct: 2, explanation: "La señalización neuronal o sináptica es rápida y dirigida específicamente a una célula diana." },
+    { topic: "Tipos de Señalización", question: "¿Cómo se llama la señalización donde la célula responde a una señal que ella misma ha producido?", options: ["Endocrina", "Autocrina", "Paracrina", "Dependiente de contacto"], correct: 1, explanation: "Es una forma de auto-regulación común en células cancerosas y durante el desarrollo." },
+    { topic: "Tipos de Señalización", question: "¿Qué tipo de señalización requiere que la molécula señalizadora permanezca unida a la membrana de la célula emisora?", options: ["Endocrina", "Dependiente de contacto (Yuxtacrina)", "Paracrina", "Sináptica"], correct: 1, explanation: "Implica una interacción física directa entre la molécula señalizadora de membrana y el receptor de la célula vecina." },
+    { topic: "Moléculas Señal", question: "¿Qué tipo de moléculas señalizadoras pueden atravesar la membrana plasmática y unirse a receptores intracelulares?", options: ["Moléculas grandes e hidrofílicas.", "Proteínas grandes.", "Moléculas pequeñas o hidrofóbicas (ej. hormonas esteroides).", "Iones cargados."], correct: 2, explanation: "Al ser hidrofóbicas, difunden a través de la bicapa lipídica y actúan dentro de la célula (receptores nucleares)." },
+    { topic: "Moléculas Señal", question: "¿ónde se encuentran los receptores para moléculas grandes o hidrofílicas?", options: ["En el núcleo.", "En el citosol.", "En la superficie celular (membrana plasmática).", "En la mitocondria."], correct: 2, explanation: "Estas moléculas no pueden cruzar la membrana, por lo que requieren receptores de superficie para transmitir el mensaje." },
+    { topic: "Interruptores Moleculares", question: "¿Cuáles son los dos mecanismos principales por los que las proteínas actúan como interruptores moleculares?", options: ["Hidrólisis y Condensación.", "Fosforilación y Unión a GTP.", "Transcripción y Traducción.", "Mitosis y Meiosis."], correct: 1, explanation: "Se activan/inactivan añadiendo fosfato (quinasas/fosfatasas) o uniendo GTP (proteínas de unión a GTP)." },
+    { topic: "Interruptores Moleculares", question: "¿Qué enzima añade un grupo fosfato a una proteína (activándola generalmente)?", options: ["Fosfatasa", "Quinasa", "GTPasa", "Proteasa"], correct: 1, explanation: "Las proteína-quinasas transfieren un grupo fosfato del ATP a la proteína diana." },
+    { topic: "Interruptores Moleculares", question: "¿Qué enzima elimina el grupo fosfato de una proteína (apagando la señal)?", options: ["Quinasa", "Ligasa", "Fosfatasa", "Polimerasa"], correct: 2, explanation: "Las fosfatasas eliminan el fosfato, revirtiendo el efecto de la quinasa." },
+    { topic: "Interruptores Moleculares", question: "¿Cuándo está activa una proteína de unión a GTP?", options: ["Cuando tiene unido GDP.", "Cuando tiene unido GTP.", "Cuando no tiene nucleótido.", "Cuando está fosforilada."], correct: 1, explanation: "La forma unida a GTP es la activa; la hidrólisis a GDP la apaga." },
+    { topic: "Receptores de Superficie", question: "¿Qué receptor convierte una señal química directamente en una señal eléctrica?", options: ["Receptor acoplado a Proteína G (GPCR).", "Receptor Tirosina Quinasa (RTK).", "Receptor acoplado a canales iónicos.", "Receptor nuclear."], correct: 2, explanation: "Al abrirse por ligando, permite el flujo de iones, cambiando el potencial de membrana." },
+    { topic: "GPCRs", question: "¿Qué activa un Receptor Acoplado a Proteína G (GPCR) al unir su ligando?", options: ["Una enzima quinasa intrínseca.", "Una proteína G trimérica intracelular.", "Un canal iónico directamente.", "La transcripción de genes."], correct: 1, explanation: "El receptor activa a la proteína G, que luego se disocia para activar enzimas o canales." },
+    { topic: "GPCRs", question: "¿Qué enzima es activada por la proteína G en la vía del AMPc?", options: ["Fosfolipasa C", "Adenilato ciclasa", "Proteína Quinasa C (PKC)", "MAP quinasa"], correct: 1, explanation: "La Adenilato ciclasa sintetiza AMP cíclico (segundo mensajero) a partir de ATP." },
+    { topic: "GPCRs", question: "¿Qué segundos mensajeros genera la Fosfolipasa C al ser activada por una proteína G?", options: ["AMPc y GMPc.", "IP3 (Inositol trifosfato) y DAG (Diacilglicerol).", "Ca2+ y Na+.", "ATP y ADP."], correct: 1, explanation: "El IP3 libera calcio del RE y el DAG activa la PKC en la membrana." },
+    { topic: "GPCRs", question: "¿Qué efecto tiene el IP3 en la célula?", options: ["Activa la adenilato ciclasa.", "Abre canales de Ca2+ en el Retículo Endoplásmico, liberando calcio al citosol.", "Se une al ADN.", "Degrada proteínas."], correct: 1, explanation: "El IP3 es el ligando que abre los canales de calcio del almacén intracelular (RE)." },
+    { topic: "RTKs", question: "¿Qué caracteriza a los Receptores Tirosina Quinasa (RTKs)?", options: ["Tienen actividad enzimática intrínseca (quinasa) o se asocian a enzimas.", "Abren canales de sodio.", "Usan proteínas G triméricas.", "Están en el núcleo."], correct: 0, explanation: "Al activarse, se fosforilan a sí mismos (autofosforilación) en residuos de tirosina." },
+    { topic: "RTKs", question: "¿Qué pequeña GTPasa es activada frecuentemente por los RTKs?", options: ["Ran", "Ras", "Rab", "Rho"], correct: 1, explanation: "Ras es una proteína interruptor clave que inicia la cascada de las MAP-quinasas." },
+    { topic: "RTKs", question: "¿Qué cascada de señalización es activada por Ras y es crucial para la proliferación celular?", options: ["Cascada de caspasas.", "Cascada de MAP-quinasas.", "Cascada de coagulación.", "Vía Wnt."], correct: 1, explanation: "La vía MAP-quinasa (Mitogen-Activated Protein Kinase) transmite señales desde la membrana al núcleo para estimular la división." },
+    { topic: "RTKs", question: "¿Qué quinasa es clave en la vía de señalización que promueve el crecimiento celular y la supervivencia (vía PI3K)?", options: ["Akt (o PKB).", "PKA.", "PKC.", "CaMK."], correct: 0, explanation: "Akt fosforila dianas que inhiben la apoptosis y promueven el crecimiento." },
+    { topic: "Integración", question: "¿Cómo decide una célula su destino (dividirse, diferenciarse, morir)?", options: ["Siguiendo una sola señal.", "Mediante la integración simultánea de múltiples señales.", "Al azar.", "Dependiendo solo de sus nutrientes."], correct: 1, explanation: "La célula procesa e integra una combinación compleja de señales para tomar decisiones ('cross-talk')." },
+    { topic: "Sinapsis", question: "¿Qué tipo de sinapsis permite el flujo directo de iones entre células (bidireccional)?", options: ["Sinapsis química.", "Sinapsis eléctrica (uniones gap).", "Sinapsis hormonal.", "Sinapsis lenta."], correct: 1, explanation: "Las uniones gap conectan los citoplasmas, permitiendo una transmisión eléctrica instantánea." },
+    { topic: "Sinapsis", question: "¿Qué molécula media la señalización en una sinapsis química?", options: ["Una hormona.", "Un neurotransmisor.", "Un lípido.", "Un anticuerpo."], correct: 1, explanation: "El neurotransmisor se libera a la hendidura sináptica y se une a receptores postsinápticos." },
+    { topic: "Señalización", question: "¿Qué gas actúa como molécula señalizadora paracrina atravesando membranas?", options: ["Oxígeno (O2).", "Óxido Nítrico (NO).", "Dióxido de carbono (CO2).", "Helio."], correct: 1, explanation: "El NO relaja el músculo liso de los vasos sanguíneos (vasodilatación) actuando intracelularmente." },
 
     // --- 7.2 & 7.3 DIFERENCIACIÓN Y FENOTIPO (26-40) ---
-    {
-        topic: "Diferenciación",
-        question: "¿Qué mecanismo permite generar diversos tipos celulares con el mismo genoma?",
-        options: ["Mutación selectiva.", "Pérdida de genes.", "Expresión génica diferencial.", "Duplicación del genoma."],
-        correct: 2,
-        explanation: "Diferentes tipos celulares transcriben y traducen distintos subconjuntos de genes."
-    },
-    {
-        topic: "Estabilidad",
-        question: "¿Qué factor NO contribuye a la estabilidad de los tejidos?",
-        options: ["Comunicación celular (factores de supervivencia).", "Adhesión celular selectiva.", "Memoria celular.", "Mutación constante."],
-        correct: 3,
-        explanation: "La mutación constante desestabilizaría el tejido (ej. cáncer); los otros tres mantienen la organización e identidad."
-    },
-    {
-        topic: "Expresión",
-        question: "¿Qué técnica analiza el conjunto completo de ARN (transcritos) de una célula?",
-        options: ["Proteómica.", "Transcriptómica.", "Genómica.", "Microscopía."],
-        correct: 1,
-        explanation: "El transcriptoma refleja el perfil de expresión génica en un momento dado."
-    },
-    {
-        topic: "Memoria Celular",
-        question: "¿Qué es la memoria celular?",
-        options: ["La capacidad de las neuronas de recordar.", "La transmisión de patrones de expresión génica a las células hijas.", "El almacenamiento de glucosa.", "La reparación del ADN."],
-        correct: 1,
-        explanation: "Permite que una célula diferenciada (ej. hepática) genere células hijas con la misma identidad."
-    },
-    {
-        topic: "Memoria Celular",
-        question: "¿Qué mecanismo de memoria celular implica que una proteína activadora estimule su propia transcripción?",
-        options: ["Metilación del ADN.", "Retroalimentación positiva (bucle positivo).", "Modificación de histonas.", "Splicing alternativo."],
-        correct: 1,
-        explanation: "Una vez encendido, el gen se mantiene activo indefinidamente en el linaje celular gracias a su propio producto."
-    },
-    {
-        topic: "Memoria Celular",
-        question: "¿Qué modificación química del ADN se usa para la herencia epigenética de patrones de silenciamiento?",
-        options: ["Fosforilación.", "Metilación de citosinas.", "Acetilación.", "Ubiquitinación."],
-        correct: 1,
-        explanation: "La metilación del ADN (en islas CpG) se copia fielmente durante la replicación y suele reprimir genes."
-    },
-    {
-        topic: "Memoria Celular",
-        question: "¿Qué otro mecanismo epigenético contribuye a la memoria celular además de la metilación del ADN?",
-        options: ["Modificaciones de histonas heredables.", "Mutaciones somáticas.", "Cambio de ARNt.", "Transporte de membrana."],
-        correct: 0,
-        explanation: "Las células hijas heredan los patrones de histonas modificadas (código de histonas) de la célula madre."
-    },
-    {
-        topic: "Reguladores Maestros",
-        question: "¿Qué demuestra el gen Ey en Drosophila, capaz de inducir un ojo en la pata?",
-        options: ["Que las moscas mutan fácil.", "El poder de un solo regulador maestro para desencadenar la formación de un órgano completo.", "Que el ojo no necesita genes.", "Que el ADN se pierde."],
-        correct: 1,
-        explanation: "Un solo factor de transcripción puede activar toda una cascada de genes necesarios para formar un órgano."
-    },
-    {
-        topic: "Plasticidad",
-        question: "¿Es el estado diferenciado irreversible?",
-        options: ["Sí, absolutamente.", "No, las células pueden reprogramarse experimentalmente.", "Solo en bacterias.", "Solo en plantas."],
-        correct: 1,
-        explanation: "La reprogramación celular (ej. iPS) demuestra que la diferenciación es reversible bajo condiciones específicas."
-    },
-    {
-        topic: "Reprogramación",
-        question: "¿Qué se logra mediante la introducción de factores de transcripción específicos en células adultas?",
-        options: ["Matar a la célula.", "Convertirla en un virus.", "Reprogramación celular (ej. fibroblastos a neuronas o iPS).", "Nada."],
-        correct: 2,
-        explanation: "Se puede cambiar la identidad celular (transdiferenciación) o devolverla a un estado pluripotente."
-    },
-    {
-        topic: "Adhesión",
-        question: "¿Cómo contribuye la adhesión selectiva a la organización tisular?",
-        options: ["Impide que las células se muevan.", "Permite que células del mismo tipo se reconozcan y agrupen (ej. vía cadherinas).", "Destruye la matriz.", "Genera señales de muerte."],
-        correct: 1,
-        explanation: "La expresión diferencial de moléculas de adhesión segrega y organiza los distintos tipos celulares en el embrión."
-    },
-    {
-        topic: "Comunicación",
-        question: "¿Qué ocurre con la mayoría de células animales si se les priva de señales de supervivencia?",
-        options: ["Entran en mitosis.", "Se diferencian.", "Activan la apoptosis (muerte celular programada).", "Se vuelven inmortales."],
-        correct: 2,
-        explanation: "Las células requieren señales constantes de su entorno para sobrevivir; su ausencia es letal por defecto."
-    },
-    {
-        topic: "Proteoma",
-        question: "¿Cuál es la diferencia entre transcriptoma y proteoma?",
-        options: ["Son lo mismo.", "Transcriptoma = ARN (intención); Proteoma = Proteínas (acción/función).", "Transcriptoma = Proteínas; Proteoma = ARN.", "El proteoma es el ADN."],
-        correct: 1,
-        explanation: "El proteoma es la ejecución funcional final de la información contenida en el transcriptoma."
-    },
-    {
-        topic: "Control",
-        question: "¿Qué principio permite una regulación compleja con pocos factores de transcripción?",
-        options: ["Control combinatorio.", "Control único.", "Control aleatorio.", "Control negativo."],
-        correct: 0,
-        explanation: "La combinación de diferentes factores genera respuestas específicas, ahorrando número de reguladores."
-    },
-    {
-        topic: "Epigenética",
-        question: "¿Los mecanismos de memoria celular alteran la secuencia de ADN?",
-        options: ["Sí, causan mutaciones.", "No, son cambios epigenéticos (sobre el ADN) no genéticos.", "A veces.", "Solo en virus."],
-        correct: 1,
-        explanation: "La epigenética implica cambios heredables en la expresión sin cambios en la secuencia de nucleótidos."
-    },
+    { topic: "Diferenciación", question: "¿Qué mecanismo permite generar diversos tipos celulares con el mismo genoma?", options: ["Mutación selectiva.", "Pérdida de genes.", "Expresión génica diferencial.", "Duplicación del genoma."], correct: 2, explanation: "Diferentes tipos celulares transcriben y traducen distintos subconjuntos de genes." },
+    { topic: "Estabilidad", question: "¿Qué factor NO contribuye a la estabilidad de los tejidos?", options: ["Comunicación celular (factores de supervivencia).", "Adhesión celular selectiva.", "Memoria celular.", "Mutación constante."], correct: 3, explanation: "La mutación constante desestabilizaría el tejido (ej. cáncer); los otros tres mantienen la organización e identidad." },
+    { topic: "Expresión", question: "¿Qué técnica analiza el conjunto completo de ARN (transcritos) de una célula?", options: ["Proteómica.", "Transcriptómica.", "Genómica.", "Microscopía."], correct: 1, explanation: "El transcriptoma refleja el perfil de expresión génica en un momento dado." },
+    { topic: "Memoria Celular", question: "¿Qué es la memoria celular?", options: ["La capacidad de las neuronas de recordar.", "La transmisión de patrones de expresión génica a las células hijas.", "El almacenamiento de glucosa.", "La reparación del ADN."], correct: 1, explanation: "Permite que una célula diferenciada (ej. hepática) genere células hijas con la misma identidad." },
+    { topic: "Memoria Celular", question: "¿Qué mecanismo de memoria celular implica que una proteína activadora estimule su propia transcripción?", options: ["Metilación del ADN.", "Retroalimentación positiva (bucle positivo).", "Modificación de histonas.", "Splicing alternativo."], correct: 1, explanation: "Una vez encendido, el gen se mantiene activo indefinidamente en el linaje celular gracias a su propio producto." },
+    { topic: "Memoria Celular", question: "¿Qué modificación química del ADN se usa para la herencia epigenética de patrones de silenciamiento?", options: ["Fosforilación.", "Metilación de citosinas.", "Acetilación.", "Ubiquitinación."], correct: 1, explanation: "La metilación del ADN (en islas CpG) se copia fielmente durante la replicación y suele reprimir genes." },
+    { topic: "Memoria Celular", question: "¿Qué otro mecanismo epigenético contribuye a la memoria celular además de la metilación del ADN?", options: ["Modificaciones de histonas heredables.", "Mutaciones somáticas.", "Cambio de ARNt.", "Transporte de membrana."], correct: 0, explanation: "Las células hijas heredan los patrones de histonas modificadas (código de histonas) de la célula madre." },
+    { topic: "Reguladores Maestros", question: "¿Qué demuestra el gen Ey en Drosophila, capaz de inducir un ojo en la pata?", options: ["Que las moscas mutan fácil.", "El poder de un solo regulador maestro para desencadenar la formación de un órgano completo.", "Que el ojo no necesita genes.", "Que el ADN se pierde."], correct: 1, explanation: "Un solo factor de transcripción puede activar toda una cascada de genes necesarios para formar un órgano." },
+    { topic: "Plasticidad", question: "¿Es el estado diferenciado irreversible?", options: ["Sí, absolutamente.", "No, las células pueden reprogramarse experimentalmente.", "Solo en bacterias.", "Solo en plantas."], correct: 1, explanation: "La reprogramación celular (ej. iPS) demuestra que la diferenciación es reversible bajo condiciones específicas." },
+    { topic: "Reprogramación", question: "¿Qué se logra mediante la introducción de factores de transcripción específicos en células adultas?", options: ["Matar a la célula.", "Convertirla en un virus.", "Reprogramación celular (ej. fibroblastos a neuronas o iPS).", "Nada."], correct: 2, explanation: "Se puede cambiar la identidad celular (transdiferenciación) o devolverla a un estado pluripotente." },
+    { topic: "Adhesión", question: "¿Cómo contribuye la adhesión selectiva a la organización tisular?", options: ["Impide que las células se muevan.", "Permite que células del mismo tipo se reconozcan y agrupen (ej. vía cadherinas).", "Destruye la matriz.", "Genera señales de muerte."], correct: 1, explanation: "La expresión diferencial de moléculas de adhesión segrega y organiza los distintos tipos celulares en el embrión." },
+    { topic: "Comunicación", question: "¿Qué ocurre con la mayoría de células animales si se les priva de señales de supervivencia?", options: ["Entran en mitosis.", "Se diferencian.", "Activan la apoptosis (muerte celular programada).", "Se vuelven inmortales."], correct: 2, explanation: "Las células requieren señales constantes de su entorno para sobrevivir; su ausencia es letal por defecto." },
+    { topic: "Proteoma", question: "¿Cuál es la diferencia entre transcriptoma y proteoma?", options: ["Son lo mismo.", "Transcriptoma = ARN (intención); Proteoma = Proteínas (acción/función).", "Transcriptoma = Proteínas; Proteoma = ARN.", "El proteoma es el ADN."], correct: 1, explanation: "El proteoma es la ejecución funcional final de la información contenida en el transcriptoma." },
+    { topic: "Control", question: "¿Qué principio permite una regulación compleja con pocos factores de transcripción?", options: ["Control combinatorio.", "Control único.", "Control aleatorio.", "Control negativo."], correct: 0, explanation: "La combinación de diferentes factores genera respuestas específicas, ahorrando número de reguladores." },
+    { topic: "Epigenética", question: "¿Los mecanismos de memoria celular alteran la secuencia de ADN?", options: ["Sí, causan mutaciones.", "No, son cambios epigenéticos (sobre el ADN) no genéticos.", "A veces.", "Solo en virus."], correct: 1, explanation: "La epigenética implica cambios heredables en la expresión sin cambios en la secuencia de nucleótidos." },
 
     // --- 7.4 CÉLULAS MADRE (41-60) ---
-    {
-        topic: "Definición",
-        question: "¿Qué dos propiedades definen a una célula madre?",
-        options: ["Diferenciación terminal y muerte.", "Autorrenovación y capacidad de diferenciación.", "Mitosis rápida y gran tamaño.", "Fagocitosis y movimiento."],
-        correct: 1,
-        explanation: "Deben poder dividirse para mantenerse a sí mismas (autorrenovación) y generar progenie especializada."
-    },
-    {
-        topic: "Jerarquía",
-        question: "¿Qué son las células precursoras proliferativas (células de tránsito)?",
-        options: ["Células madre quiescentes.", "Descendientes de células madre que se dividen rápidamente para amplificar el tejido antes de diferenciarse.", "Células muertas.", "Células diferenciadas terminales."],
-        correct: 1,
-        explanation: "Amplifican el número de células antes de la diferenciación final, pero tienen vida limitada."
-    },
-    {
-        topic: "Tipos de Potencia",
-        question: "¿Qué es una célula Totipotente?",
-        options: ["Puede formar cualquier célula del cuerpo y tejidos extraembrionarios (cigoto).", "Solo forma sangre.", "Puede formar las 3 capas germinales pero no placenta.", "No se divide."],
-        correct: 0,
-        explanation: "Es el estado de máxima potencia, capaz de generar un organismo completo."
-    },
-    {
-        topic: "Tipos de Potencia",
-        question: "¿Qué define a una célula Pluripotente (ej. Células Madre Embrionarias - ESC)?",
-        options: ["Genera placenta.", "Puede diferenciarse en células de las tres capas germinales (endo, meso, ectodermo).", "Solo genera un tipo celular.", "Es una célula adulta."],
-        correct: 1,
-        explanation: "Pueden formar cualquier tejido del cuerpo adulto, pero no un organismo completo (falta placenta)."
-    },
-    {
-        topic: "Tipos de Potencia",
-        question: "¿Qué es una célula Multipotente?",
-        options: ["Célula madre adulta restringida a un linaje o tejido específico (ej. hematopoyética).", "Igual que totipotente.", "Puede formar neuronas y piel a la vez.", "Es una iPS."],
-        correct: 0,
-        explanation: "Su potencial está limitado a los tipos celulares del tejido en el que residen."
-    },
-    {
-        topic: "Tipos de Potencia",
-        question: "¿Qué es una célula Unipotente?",
-        options: ["Solo genera un tipo celular (ej. célula satélite muscular).", "Genera todo.", "Es una célula muerta.", "Es una célula cancerosa."],
-        correct: 0,
-        explanation: "Tiene capacidad de autorrenovación pero solo produce un tipo de célula diferenciada."
-    },
-    {
-        topic: "Nicho",
-        question: "¿Qué es el nicho de células madre?",
-        options: ["Una cueva en el hueso.", "Un microambiente especializado que mantiene a las células madre en estado indiferenciado y regula su proliferación.", "Un tipo de célula madre.", "Un tumor."],
-        correct: 1,
-        explanation: "El nicho provee las señales de soporte y control necesarias para la función de la célula madre."
-    },
-    {
-        topic: "Nicho Intestinal",
-        question: "¿Qué células del nicho intestinal secretan señales Wnt para mantener a las células madre?",
-        options: ["Enterocitos.", "Células caliciformes.", "Células de Paneth.", "Células M."],
-        correct: 2,
-        explanation: "Las células de Paneth, situadas en el fondo de la cripta junto a las células madre, secretan Wnt."
-    },
-    {
-        topic: "Señalización Wnt",
-        question: "¿Qué ocurre si la vía Wnt se activa constitutivamente (sin control) en el intestino?",
-        options: ["El tejido muere.", "Se genera cáncer colorrectal (pólipos).", "No pasa nada.", "Se detiene la división."],
-        correct: 1,
-        explanation: "La sobreactivación de Wnt provoca proliferación excesiva de células precursoras, conduciendo a tumores."
-    },
-    {
-        topic: "Renovación",
-        question: "¿Qué células se consideran terminalmente diferenciadas?",
-        options: ["Las células madre.", "Las células precursoras.", "Las células que han cesado de dividirse y ejecutan la función del tejido (ej. eritrocito).", "El cigoto."],
-        correct: 2,
-        explanation: "Están al final de la línea de desarrollo, realizan la función y finalmente mueren sin dividirse más."
-    },
-    {
-        topic: "iPS",
-        question: "¿Qué son las Células Madre Pluripotentes Inducidas (CMPi o iPS)?",
-        options: ["Células embrionarias.", "Células adultas reprogramadas a un estado pluripotente similar al embrionario mediante factores de transcripción.", "Células clonadas.", "Células de la sangre."],
-        correct: 1,
-        explanation: "Descubiertas por Yamanaka, permiten obtener células pluripotentes éticamente y paciente-específicas."
-    },
-    {
-        topic: "Aplicaciones",
-        question: "¿Qué son los Organoides?",
-        options: ["Órganos reales.", "Estructuras 3D cultivadas in vitro a partir de células madre que imitan la arquitectura y función de un órgano.", "Piezas de robot.", "Tumores."],
-        correct: 1,
-        explanation: "Son modelos 'mini-órganos' útiles para estudiar desarrollo, enfermedades y fármacos."
-    },
-    {
-        topic: "Clonación",
-        question: "¿Qué demostró la clonación de la oveja Dolly?",
-        options: ["Que el núcleo de una célula adulta diferenciada conserva todo el genoma y puede ser reprogramado para generar un organismo.", "Que la clonación es imposible.", "Que las células madre no existen.", "Que el ADN se pierde."],
-        correct: 0,
-        explanation: "Fue la prueba de la equivalencia genómica y la reversibilidad del estado diferenciado (nuclear)."
-    },
-    {
-        topic: "Terapia",
-        question: "¿Cuál es una ventaja clave de las iPS frente a las ES (embrionarias) en medicina?",
-        options: ["Son más fáciles de obtener.", "Permiten trasplantes autólogos (del propio paciente), evitando el rechazo inmune.", "Son totipotentes.", "Crecen más rápido."],
-        correct: 1,
-        explanation: "Al provenir del propio paciente, son genéticamente idénticas y el sistema inmune no las ataca."
-    },
-    {
-        topic: "Hematopoyesis",
-        question: "¿Qué tipo de célula madre se utiliza en los trasplantes de médula ósea?",
-        options: ["Células madre embrionarias.", "Células madre hematopoyéticas (multipotentes).", "Células madre neuronales.", "Fibroblastos."],
-        correct: 1,
-        explanation: "Son capaces de reconstituir todo el sistema sanguíneo e inmune del receptor."
-    },
-    {
-        topic: "Nicho",
-        question: "¿Qué ocurre cuando una célula madre hija sale del nicho?",
-        options: ["Muere inmediatamente.", "Se diferencia al dejar de recibir las señales de mantenimiento (ej. Wnt).", "Se convierte en otra célula madre.", "Vuelve al nicho."],
-        correct: 1,
-        explanation: "La distancia física del nicho determina el inicio de la diferenciación."
-    },
-    {
-        topic: "Piel",
-        question: "¿Dónde residen las células madre de la epidermis?",
-        options: ["En la superficie (estrato córneo).", "En la capa basal.", "En la dermis.", "En el pelo."],
-        correct: 1,
-        explanation: "Están en la capa más profunda, ancladas a la lámina basal, desde donde generan células que ascienden."
-    },
-    {
-        topic: "Recambio",
-        question: "¿Todos los tejidos se renuevan a la misma velocidad?",
-        options: ["Sí.", "No, varía enormemente (ej. intestino rápido vs neuronas muy lento/nulo).", "Depende de la temperatura.", "Solo en niños."],
-        correct: 1,
-        explanation: "El epitelio intestinal se renueva en días, mientras que el hueso tarda años y el nervioso apenas lo hace."
-    },
-    {
-        topic: "Potencia",
-        question: "¿El cigoto es una célula madre?",
-        options: ["No, es una célula diferenciada.", "Sí, es la célula madre totipotente definitiva.", "Es una célula iPS.", "Es multipotente."],
-        correct: 1,
-        explanation: "Es el origen de todas las células, con potencial absoluto."
-    },
-    {
-        topic: "Investigación",
-        question: "¿Para qué sirve un organoide de cerebro?",
-        options: ["Para pensar.", "Para estudiar el desarrollo neuronal y enfermedades como la microcefalia in vitro.", "Para trasplantar cerebros.", "No sirve."],
-        correct: 1,
-        explanation: "Permite modelar procesos complejos humanos que no se pueden estudiar en animales."
-    },
+    { topic: "Definición", question: "¿Qué dos propiedades definen a una célula madre?", options: ["Diferenciación terminal y muerte.", "Autorrenovación y capacidad de diferenciación.", "Mitosis rápida y gran tamaño.", "Fagocitosis y movimiento."], correct: 1, explanation: "Deben poder dividirse para mantenerse a sí mismas (autorrenovación) y generar progenie especializada." },
+    { topic: "Jerarquía", question: "¿Qué son las células precursoras proliferativas (células de tránsito)?", options: ["Células madre quiescentes.", "Descendientes de células madre que se dividen rápidamente para amplificar el tejido antes de diferenciarse.", "Células muertas.", "Células diferenciadas terminales."], correct: 1, explanation: "Amplifican el número de células antes de la diferenciación final, pero tienen vida limitada." },
+    { topic: "Tipos de Potencia", question: "¿Qué es una célula Totipotente?", options: ["Puede formar cualquier célula del cuerpo y tejidos extraembrionarios (cigoto).", "Solo forma sangre.", "Puede formar las 3 capas germinales pero no placenta.", "No se divide."], correct: 0, explanation: "Es el estado de máxima potencia, capaz de generar un organismo completo." },
+    { topic: "Tipos de Potencia", question: "¿Qué define a una célula Pluripotente (ej. Células Madre Embrionarias - ESC)?", options: ["Genera placenta.", "Puede diferenciarse en células de las tres capas germinales (endo, meso, ectodermo).", "Solo genera un tipo celular.", "Es una célula adulta."], correct: 1, explanation: "Pueden formar cualquier tejido del cuerpo adulto, pero no un organismo completo (falta placenta)." },
+    { topic: "Tipos de Potencia", question: "¿Qué es una célula Multipotente?", options: ["Célula madre adulta restringida a un linaje o tejido específico (ej. hematopoyética).", "Igual que totipotente.", "Puede formar neuronas y piel a la vez.", "Es una iPS."], correct: 0, explanation: "Su potencial está limitado a los tipos celulares del tejido en el que residen." },
+    { topic: "Tipos de Potencia", question: "¿Qué es una célula Unipotente?", options: ["Solo genera un tipo celular (ej. célula satélite muscular).", "Genera todo.", "Es una célula muerta.", "Es una célula cancerosa."], correct: 0, explanation: "Tiene capacidad de autorrenovación pero solo produce un tipo de célula diferenciada." },
+    { topic: "Nicho", question: "¿Qué es el nicho de células madre?", options: ["Una cueva en el hueso.", "Un microambiente especializado que mantiene a las células madre en estado indiferenciado y regula su proliferación.", "Un tipo de célula madre.", "Un tumor."], correct: 1, explanation: "El nicho provee las señales de soporte y control necesarias para la función de la célula madre." },
+    { topic: "Nicho Intestinal", question: "¿Qué células del nicho intestinal secretan señales Wnt para mantener a las células madre?", options: ["Enterocitos.", "Células caliciformes.", "Células de Paneth.", "Células M."], correct: 2, explanation: "Las células de Paneth, situadas en el fondo de la cripta junto a las células madre, secretan Wnt." },
+    { topic: "Señalización Wnt", question: "¿Qué ocurre si la vía Wnt se activa constitutivamente (sin control) en el intestino?", options: ["El tejido muere.", "Se genera cáncer colorrectal (pólipos).", "No pasa nada.", "Se detiene la división."], correct: 1, explanation: "La sobreactivación de Wnt provoca proliferación excesiva de células precursoras, conduciendo a tumores." },
+    { topic: "Renovación", question: "¿Qué células se consideran terminalmente diferenciadas?", options: ["Las células madre.", "Las células precursoras.", "Las células que han cesado de dividirse y ejecutan la función del tejido (ej. eritrocito).", "El cigoto."], correct: 2, explanation: "Están al final de la línea de desarrollo, realizan la función y finalmente mueren sin dividirse más." },
+    { topic: "iPS", question: "¿Qué son las Células Madre Pluripotentes Inducidas (CMPi o iPS)?", options: ["Células embrionarias.", "Células adultas reprogramadas a un estado pluripotente similar al embrionario mediante factores de transcripción.", "Células clonadas.", "Células de la sangre."], correct: 1, explanation: "Descubiertas por Yamanaka, permiten obtener células pluripotentes éticamente y paciente-específicas." },
+    { topic: "Aplicaciones", question: "¿Qué son los Organoides?", options: ["Órganos reales.", "Estructuras 3D cultivadas in vitro a partir de células madre que imitan la arquitectura y función de un órgano.", "Piezas de robot.", "Tumores."], correct: 1, explanation: "Son modelos 'mini-órganos' útiles para estudiar desarrollo, enfermedades y fármacos." },
+    { topic: "Clonación", question: "¿Qué demostró la clonación de la oveja Dolly?", options: ["Que el núcleo de una célula adulta diferenciada conserva todo el genoma y puede ser reprogramado para generar un organismo.", "Que la clonación es imposible.", "Que las células madre no existen.", "Que el ADN se pierde."], correct: 0, explanation: "Fue la prueba de la equivalencia genómica y la reversibilidad del estado diferenciado (nuclear)." },
+    { topic: "Terapia", question: "¿Cuál es una ventaja clave de las iPS frente a las ES (embrionarias) en medicina?", options: ["Son más fáciles de obtener.", "Permiten trasplantes autólogos (del propio paciente), evitando el rechazo inmune.", "Son totipotentes.", "Crecen más rápido."], correct: 1, explanation: "Al provenir del propio paciente, son genéticamente idénticas y el sistema inmune no las ataca." },
+    { topic: "Hematopoyesis", question: "¿Qué tipo de célula madre se utiliza en los trasplantes de médula ósea?", options: ["Células madre embrionarias.", "Células madre hematopoyéticas (multipotentes).", "Células madre neuronales.", "Fibroblastos."], correct: 1, explanation: "Son capaces de reconstituir todo el sistema sanguíneo e inmune del receptor." },
+    { topic: "Nicho", question: "¿Qué ocurre cuando una célula madre hija sale del nicho?", options: ["Muere inmediatamente.", "Se diferencia al dejar de recibir las señales de mantenimiento (ej. Wnt).", "Se convierte en otra célula madre.", "Vuelve al nicho."], correct: 1, explanation: "La distancia física del nicho determina el inicio de la diferenciación." },
+    { topic: "Piel", question: "¿Dónde residen las células madre de la epidermis?", options: ["En la superficie (estrato córneo).", "En la capa basal.", "En la dermis.", "En el pelo."], correct: 1, explanation: "Están en la capa más profunda, ancladas a la lámina basal, desde donde generan células que ascienden." },
+    { topic: "Recambio", question: "¿Todos los tejidos se renuevan a la misma velocidad?", options: ["Sí.", "No, varía enormemente (ej. intestino rápido vs neuronas muy lento/nulo).", "Depende de la temperatura.", "Solo en niños."], correct: 1, explanation: "El epitelio intestinal se renueva en días, mientras que el hueso tarda años y el nervioso apenas lo hace." },
+    { topic: "Potencia", question: "¿El cigoto es una célula madre?", options: ["No, es una célula diferenciada.", "Sí, es la célula madre totipotente definitiva.", "Es una célula iPS.", "Es multipotente."], correct: 1, explanation: "Es el origen de todas las células, con potencial absoluto." },
+    { topic: "Investigación", question: "¿Para qué sirve un organoide de cerebro?", options: ["Para pensar.", "Para estudiar el desarrollo neuronal y enfermedades como la microcefalia in vitro.", "Para trasplantar cerebros.", "No sirve."], correct: 1, explanation: "Permite modelar procesos complejos humanos que no se pueden estudiar en animales." },
 
     // --- 7.5 MUERTE CELULAR (61-75) ---
-    {
-        topic: "Tipos de Muerte",
-        question: "¿Qué es la Apoptosis?",
-        options: ["Muerte por lesión aguda.", "Muerte celular programada, un proceso limpio y ordenado.", "Muerte por falta de oxígeno.", "Infección viral."],
-        correct: 1,
-        explanation: "Es un suicidio celular fisiológico y controlado, esencial para la homeostasis."
-    },
-    {
-        topic: "Tipos de Muerte",
-        question: "¿Qué es la Necrosis?",
-        options: ["Igual que apoptosis.", "Muerte celular accidental o patológica, 'sucia', que provoca inflamación.", "División celular.", "Diferenciación."],
-        correct: 1,
-        explanation: "La célula se hincha y estalla, liberando contenido tóxico y dañando el tejido vecino."
-    },
-    {
-        topic: "Mecanismo",
-        question: "¿Qué familia de proteasas ejecuta la apoptosis?",
-        options: ["Quinasas.", "Caspasas.", "Polimerasas.", "Lipasas."],
-        correct: 1,
-        explanation: "Las caspasas cortan proteínas clave del citoesqueleto y núcleo, desmantelando la célula."
-    },
-    {
-        topic: "Mecanismo",
-        question: "¿Cómo se activan las caspasas?",
-        options: ["Por fosforilación.", "Por corte proteolítico (cascada de activación).", "Por unión a ADN.", "Por oxidación."],
-        correct: 1,
-        explanation: "Se sintetizan como procaspasas inactivas; una activa corta y activa a la siguiente (amplificación)."
-    },
-    {
-        topic: "Regulación",
-        question: "¿Qué familia de proteínas regula la vía intrínseca (mitocondrial) de la apoptosis?",
-        options: ["Familia Bcl2.", "Familia Ras.", "Familia Rho.", "Integrinas."],
-        correct: 0,
-        explanation: "Bcl2 controla la liberación de citocromo c desde la mitocondria."
-    },
-    {
-        topic: "Vía Intrínseca",
-        question: "¿Qué liberan las mitocondrias al citosol para iniciar la apoptosis?",
-        options: ["ATP.", "Citocromo c.", "Glucosa.", "ADN."],
-        correct: 1,
-        explanation: "El citocromo c en el citosol activa el ensamblaje del apoptosoma y la cascada de caspasas."
-    },
-    {
-        topic: "Reguladores Bcl2",
-        question: "¿Qué función tienen Bax y Bak?",
-        options: ["Son anti-apoptóticos.", "Son pro-apoptóticos: forman poros en la mitocondria para liberar citocromo c.", "Son factores de crecimiento.", "Son receptores."],
-        correct: 1,
-        explanation: "Promueven la muerte permeabilizando la membrana mitocondrial externa."
-    },
-    {
-        topic: "Reguladores Bcl2",
-        question: "¿Qué función tiene la proteína Bcl2?",
-        options: ["Es pro-apoptótica.", "Es anti-apoptótica: bloquea a Bax/Bak y previene la liberación de citocromo c.", "Es una caspasa.", "Es un mitógeno."],
-        correct: 1,
-        explanation: "Bcl2 favorece la supervivencia celular inhibiendo la muerte."
-    },
-    {
-        topic: "Vía Extrínseca",
-        question: "¿Qué activa la vía extrínseca de la apoptosis?",
-        options: ["Daño en el ADN.", "Receptores de muerte en la superficie celular (ej. receptor Fas).", "Falta de nutrientes.", "Estrés del RE."],
-        correct: 1,
-        explanation: "Es activada desde fuera, por ejemplo, por linfocitos T citotóxicos que unen el ligando Fas."
-    },
-    {
-        topic: "Señales",
-        question: "¿Qué hacen los Factores de Supervivencia?",
-        options: ["Inducen muerte.", "Suprimen la apoptosis (ej. aumentando Bcl2).", "Estimulan división.", "Estimulan crecimiento."],
-        correct: 1,
-        explanation: "Mantienen la célula viva; sin ellos, la célula activa su programa de suicidio por defecto."
-    },
-    {
-        topic: "Señales",
-        question: "¿Qué son los Mitógenos?",
-        options: ["Señales que estimulan la división celular (mitosis).", "Señales de muerte.", "Células madre.", "Orgánulos."],
-        correct: 0,
-        explanation: "Promueven la entrada en el ciclo celular (superando el punto de control G1)."
-    },
-    {
-        topic: "Señales",
-        question: "¿Qué son los Factores de Crecimiento?",
-        options: ["Señales que estimulan el aumento de tamaño y masa celular (síntesis de macromoléculas).", "Señales de división.", "Nutrientes.", "Vitaminas."],
-        correct: 0,
-        explanation: "Promueven el anabolismo para que la célula crezca."
-    },
-    {
-        topic: "Fisiología",
-        question: "¿Por qué es importante la apoptosis en el desarrollo embrionario?",
-        options: ["Para nada.", "Para esculpir estructuras (ej. eliminar tejido entre los dedos) y ajustar el número de células (ej. neuronas).", "Para crear tumores.", "Para nutrir."],
-        correct: 1,
-        explanation: "La muerte programada elimina células innecesarias o sobrantes para dar forma y proporción al organismo."
-    },
-    {
-        topic: "Patología",
-        question: "¿Qué ocurre si hay demasiada apoptosis?",
-        options: ["Cáncer.", "Enfermedades neurodegenerativas o daño tisular (ej. infarto).", "Gigantismo.", "Nada."],
-        correct: 1,
-        explanation: "La pérdida excesiva de células conduce a atrofia y fallo funcional."
-    },
-    {
-        topic: "Patología",
-        question: "¿Qué ocurre si hay muy poca apoptosis?",
-        options: ["Cáncer o enfermedades autoinmunes.", "Sida.", "Fallo cardíaco.", "Muerte del organismo."],
-        correct: 0,
-        explanation: "La supervivencia de células dañadas o autorreactivas es la base de tumores y autoinmunidad."
-    }
+    { topic: "Tipos de Muerte", question: "¿Qué es la Apoptosis?", options: ["Muerte por lesión aguda.", "Muerte celular programada, un proceso limpio y ordenado.", "Muerte por falta de oxígeno.", "Infección viral."], correct: 1, explanation: "Es un suicidio celular fisiológico y controlado, esencial para la homeostasis." },
+    { topic: "Tipos de Muerte", question: "¿Qué es la Necrosis?", options: ["Igual que apoptosis.", "Muerte celular accidental o patológica, 'sucia', que provoca inflamación.", "División celular.", "Diferenciación."], correct: 1, explanation: "La célula se hincha y estalla, liberando contenido tóxico y dañando el tejido vecino." },
+    { topic: "Mecanismo", question: "¿Qué familia de proteasas ejecuta la apoptosis?", options: ["Quinasas.", "Caspasas.", "Polimerasas.", "Lipasas."], correct: 1, explanation: "Las caspasas cortan proteínas clave del citoesqueleto y núcleo, desmantelando la célula." },
+    { topic: "Mecanismo", question: "¿Cómo se activan las caspasas?", options: ["Por fosforilación.", "Por corte proteolítico (cascada de activación).", "Por unión a ADN.", "Por oxidación."], correct: 1, explanation: "Se sintetizan como procaspasas inactivas; una activa corta y activa a la siguiente (amplificación)." },
+    { topic: "Regulación", question: "¿Qué familia de proteínas regula la vía intrínseca (mitocondrial) de la apoptosis?", options: ["Familia Bcl2.", "Familia Ras.", "Familia Rho.", "Integrinas."], correct: 0, explanation: "Bcl2 controla la liberación de citocromo c desde la mitocondria." },
+    { topic: "Vía Intrínseca", question: "¿Qué liberan las mitocondrias al citosol para iniciar la apoptosis?", options: ["ATP.", "Citocromo c.", "Glucosa.", "ADN."], correct: 1, explanation: "El citocromo c en el citosol activa el ensamblaje del apoptosoma y la cascada de caspasas." },
+    { topic: "Reguladores Bcl2", question: "¿Qué función tienen Bax y Bak?", options: ["Son anti-apoptóticos.", "Son pro-apoptóticos: forman poros en la mitocondria para liberar citocromo c.", "Son factores de crecimiento.", "Son receptores."], correct: 1, explanation: "Promueven la muerte permeabilizando la membrana mitocondrial externa." },
+    { topic: "Reguladores Bcl2", question: "¿Qué función tiene la proteína Bcl2?", options: ["Es pro-apoptótica.", "Es anti-apoptótica: bloquea a Bax/Bak y previene la liberación de citocromo c.", "Es una caspasa.", "Es un mitógeno."], correct: 1, explanation: "Bcl2 favorece la supervivencia celular inhibiendo la muerte." },
+    { topic: "Vía Extrínseca", question: "¿Qué activa la vía extrínseca de la apoptosis?", options: ["Daño en el ADN.", "Receptores de muerte en la superficie celular (ej. receptor Fas).", "Falta de nutrientes.", "Estrés del RE."], correct: 1, explanation: "Es activada desde fuera, por ejemplo, por linfocitos T citotóxicos que unen el ligando Fas." },
+    { topic: "Señales", question: "¿Qué hacen los Factores de Supervivencia?", options: ["Inducen muerte.", "Suprimen la apoptosis (ej. aumentando Bcl2).", "Estimulan división.", "Estimulan crecimiento."], correct: 1, explanation: "Mantienen la célula viva; sin ellos, la célula activa su programa de suicidio por defecto." },
+    { topic: "Señales", question: "¿Qué son los Mitógenos?", options: ["Señales que estimulan la división celular (mitosis).", "Señales de muerte.", "Células madre.", "Orgánulos."], correct: 0, explanation: "Promueven la entrada en el ciclo celular (superando el punto de control G1)." },
+    { topic: "Señales", question: "¿Qué son los Factores de Crecimiento?", options: ["Señales que estimulan el aumento de tamaño y masa celular (síntesis de macromoléculas).", "Señales de división.", "Nutrientes.", "Vitaminas."], correct: 0, explanation: "Promueven el anabolismo para que la célula crezca." },
+    { topic: "Fisiología", question: "¿Por qué es importante la apoptosis en el desarrollo embrionario?", options: ["Para nada.", "Para esculpir estructuras (ej. eliminar tejido entre los dedos) y ajustar el número de células (ej. neuronas).", "Para crear tumores.", "Para nutrir."], correct: 1, explanation: "La muerte programada elimina células innecesarias o sobrantes para dar forma y proporción al organismo." },
+    { topic: "Patología", question: "¿Qué ocurre si hay demasiada apoptosis?", options: ["Cáncer.", "Enfermedades neurodegenerativas o daño tisular (ej. infarto).", "Gigantismo.", "Nada."], correct: 1, explanation: "La pérdida excesiva de células conduce a atrofia y fallo funcional." },
+    { topic: "Patología", question: "¿Qué ocurre si hay muy poca apoptosis?", options: ["Cáncer o enfermedades autoinmunes.", "Sida.", "Fallo cardíaco.", "Muerte del organismo."], correct: 0, explanation: "La supervivencia de células dañadas o autorreactivas es la base de tumores y autoinmunidad." }
 ];
 
-let currentQuestion = 0;
-let score = 0;
+// Inicialización de propiedades
+quizData.forEach(q => {
+    q.isMarked = false;
+    q.userCorrect = null; // null, true, or false
+});
+
+let activeIndices = []; 
+let currentPlaylistIndex = 0;
+let sessionScore = 0;
 let answered = false;
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadQuestion();
+    startQuiz('all');
 });
 
+function startQuiz(mode) {
+    activeIndices = [];
+
+    // Lógica de filtrado de "playlist"
+    if (mode === 'all') {
+        quizData.forEach(q => q.userCorrect = null); // Resetear respuestas
+        // Opcional: resetear marcas con: quizData.forEach(q => q.isMarked = false);
+        activeIndices = quizData.map((_, i) => i);
+    } 
+    else if (mode === 'failed') {
+        activeIndices = quizData.map((q, i) => q.userCorrect === false ? i : -1).filter(i => i !== -1);
+    } 
+    else if (mode === 'marked') {
+        activeIndices = quizData.map((q, i) => q.isMarked ? i : -1).filter(i => i !== -1);
+    } 
+    else if (mode === 'mixed') {
+        activeIndices = quizData.map((q, i) => (q.userCorrect === false || q.isMarked) ? i : -1).filter(i => i !== -1);
+    }
+
+    if (activeIndices.length === 0) {
+        alert("No hay preguntas disponibles para este modo.");
+        return;
+    }
+
+    currentPlaylistIndex = 0;
+    sessionScore = 0;
+    
+    // UI Updates
+    document.getElementById('results-screen').style.display = 'none';
+    document.getElementById('quiz-container').style.display = 'block';
+    document.getElementById('statusBar').style.display = 'flex';
+    document.querySelector('.progress-ring').style.display = 'block';
+    
+    loadQuestion();
+}
+
 function loadQuestion() {
-    const container = document.getElementById('quiz-container');
-    const q = quizData[currentQuestion];
+    answered = false;
+    const realIndex = activeIndices[currentPlaylistIndex];
+    const q = quizData[realIndex];
     
-    // Update UI info
-    document.getElementById('q-progress').innerText = `Pregunta ${currentQuestion + 1} de ${quizData.length}`;
-    document.getElementById('score-display').innerText = `Aciertos: ${score}`;
+    document.getElementById('q-progress').innerText = `Pregunta ${currentPlaylistIndex + 1} de ${activeIndices.length}`;
+    document.getElementById('score-display').innerText = `Aciertos: ${sessionScore}`;
     
-    // Update progress bar
-    const progressPercent = ((currentQuestion) / quizData.length) * 100;
+    // Barra de progreso
+    const progressPercent = ((currentPlaylistIndex) / activeIndices.length) * 100;
     document.getElementById('progressBar').style.width = `${progressPercent}%`;
+
+    const container = document.getElementById('quiz-container');
+    const checkedAttr = q.isMarked ? 'checked' : '';
 
     let html = `
         <div class="question-card active">
+            <label class="bookmark-panel">
+                <input type="checkbox" onchange="toggleMark(${realIndex}, this)" ${checkedAttr}>
+                <span>Marcar</span>
+            </label>
+
             <div class="question-header">${q.topic}</div>
             <div class="question-text">${q.question}</div>
             <div class="options-list">
                 ${q.options.map((opt, i) => `
-                    <button class="option-btn" onclick="checkAnswer(${i}, ${q.correct}, this)">
+                    <button class="option-btn" onclick="checkAnswer(${i}, ${q.correct}, this, ${realIndex})">
                         ${String.fromCharCode(65+i)}. ${opt}
                     </button>
                 `).join('')}
@@ -763,10 +432,13 @@ function loadQuestion() {
     `;
     
     container.innerHTML = html;
-    answered = false;
 }
 
-function checkAnswer(selected, correct, btn) {
+function toggleMark(realIndex, checkbox) {
+    quizData[realIndex].isMarked = checkbox.checked;
+}
+
+function checkAnswer(selected, correct, btn, realIndex) {
     if(answered) return;
     answered = true;
 
@@ -777,24 +449,25 @@ function checkAnswer(selected, correct, btn) {
     allBtns.forEach(b => b.disabled = true);
 
     if(selected === correct) {
-        score++;
+        sessionScore++;
+        quizData[realIndex].userCorrect = true; // Guardar acierto
         btn.classList.add('correct');
-        feedback.innerHTML = `<strong style="color:var(--success)">¡Correcto!</strong> <div class="rationale">${quizData[currentQuestion].explanation}</div>`;
+        feedback.innerHTML = `<strong style="color:var(--success)">¡Correcto!</strong> <div class="rationale">${quizData[realIndex].explanation}</div>`;
     } else {
+        quizData[realIndex].userCorrect = false; // Guardar fallo
         btn.classList.add('incorrect');
         allBtns[correct].classList.add('correct');
-        feedback.innerHTML = `<strong style="color:var(--danger)">Incorrecto.</strong> <div class="rationale">${quizData[currentQuestion].explanation}</div>`;
+        feedback.innerHTML = `<strong style="color:var(--danger)">Incorrecto.</strong> <div class="rationale">${quizData[realIndex].explanation}</div>`;
     }
 
     feedback.classList.add('show');
     nextBtn.style.display = 'block';
-    
-    document.getElementById('score-display').innerText = `Aciertos: ${score}`;
+    document.getElementById('score-display').innerText = `Aciertos: ${sessionScore}`;
 }
 
 function nextQuestion() {
-    if(currentQuestion < quizData.length - 1) {
-        currentQuestion++;
+    if(currentPlaylistIndex < activeIndices.length - 1) {
+        currentPlaylistIndex++;
         loadQuestion();
     } else {
         showResults();
@@ -807,16 +480,33 @@ function showResults() {
     document.querySelector('.progress-ring').style.display = 'none';
     document.getElementById('results-screen').style.display = 'block';
     
-    document.getElementById('final-number').innerText = `${score} / ${quizData.length}`;
+    document.getElementById('final-number').innerText = `${sessionScore} / ${activeIndices.length}`;
     
-    const percent = (score / quizData.length) * 100;
+    const percent = Math.round((sessionScore / activeIndices.length) * 100);
     let msg = "";
-    if(percent >= 90) msg = "¡Excelente! Dominas la biología celular avanzada.";
-    else if(percent >= 70) msg = "¡Muy bien! Estás preparado.";
-    else if(percent >= 50) msg = "Aprobado. Repasa las vías de señalización.";
-    else msg = "Necesitas estudiar más este bloque crucial.";
+    if(percent >= 90) msg = "¡Excelente!";
+    else if(percent >= 70) msg = "¡Muy bien!";
+    else if(percent >= 50) msg = "Aprobado.";
+    else msg = "Necesitas repasar.";
     
-    document.getElementById('final-text').innerText = msg;
+    document.getElementById('final-text').innerText = `${percent}% - ${msg}`;
+
+    // Calcular estadísticas para habilitar botones
+    const totalFailed = quizData.filter(q => q.userCorrect === false).length;
+    const totalMarked = quizData.filter(q => q.isMarked === true).length;
+    const totalMixed = quizData.filter(q => q.userCorrect === false || q.isMarked).length;
+
+    document.getElementById('stats-box').innerHTML = `
+        <strong>Resumen Global:</strong><br>
+        Marcadas: ${totalMarked} | Falladas: ${totalFailed}
+    `;
+
+    document.getElementById('btn-failed').disabled = (totalFailed === 0);
+    document.getElementById('btn-marked').disabled = (totalMarked === 0);
+    document.getElementById('btn-mixed').disabled = (totalMixed === 0);
+    
+    document.getElementById('btn-failed').innerText = `❌ Repetir Falladas (${totalFailed})`;
+    document.getElementById('btn-marked').innerText = `⚠️ Repetir Marcadas (${totalMarked})`;
 }
 </script>
 
