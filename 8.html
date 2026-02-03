@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Biología Celular - Capítulo 8</title>
+    <style>
+        :root { --primary: #16a085; --secondary: #2c3e50; --bg: #fdfefe; --card: #ffffff; --success: #27ae60; --error: #c0392b; --accent: #1abc9c; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--secondary); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .container { width: 100%; max-width: 900px; background: var(--card); border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.06); padding: 35px; position: relative; border-top: 5px solid var(--primary); }
+        
+        header { border-bottom: 2px solid #eaeded; padding-bottom: 25px; margin-bottom: 25px; text-align: center; }
+        h1 { margin: 0; color: var(--primary); font-size: 2rem; letter-spacing: -0.5px; }
+        .status-bar { display: flex; justify-content: space-between; margin-top: 15px; font-size: 0.95rem; color: #7f8c8d; font-weight: 600; background: #f8f9fa; padding: 12px 20px; border-radius: 10px; }
+        
+        .nav-panel { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 8px; margin-bottom: 35px; max-height: 160px; overflow-y: auto; padding: 15px; background: #e8f8f5; border-radius: 10px; border: 1px solid #d1f2eb; }
+        .nav-btn { background: white; border: 1px solid #a3e4d7; color: #148f77; padding: 10px 0; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-weight: bold; font-size: 0.9rem; }
+        .nav-btn:hover { background: var(--primary); color: white; transform: translateY(-2px); box-shadow: 0 2px 5px rgba(22, 160, 133, 0.3); }
+        .nav-btn.active { background: var(--primary); color: white; border-color: var(--primary); transform: scale(1.05); }
+        .nav-btn.correct { background: var(--success); color: white; border-color: var(--success); }
+        .nav-btn.incorrect { background: var(--error); color: white; border-color: var(--error); }
+        .nav-btn.marked { border: 2px solid #f1c40f; position: relative; }
+        .nav-btn.marked::after { content: '★'; position: absolute; top: -6px; right: -6px; color: #f1c40f; font-size: 12px; background: white; border-radius: 50%; width: 16px; height: 16px; line-height: 16px; text-align: center; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+
+        .question-card { animation: fadeIn 0.4s ease-out; }
+        .q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .q-badge { background: var(--secondary); color: white; padding: 6px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; letter-spacing: 0.5px; }
+        .mark-btn { background: transparent; border: 2px solid #f1c40f; color: #f39c12; padding: 6px 18px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s; display: flex; align-items: center; gap: 6px; font-size: 0.9rem; }
+        .mark-btn:hover { background: #fffcf0; transform: scale(1.05); }
+        .mark-btn.active { background: #f1c40f; color: white; }
+
+        .question-text { font-size: 1.25rem; line-height: 1.6; margin-bottom: 30px; color: #2c3e50; font-weight: 500; }
+
+        .options-grid { display: flex; flex-direction: column; gap: 14px; }
+        .option { background: white; border: 2px solid #eaeded; padding: 18px 22px; border-radius: 12px; cursor: pointer; transition: all 0.2s; position: relative; font-size: 1.05rem; display: flex; align-items: center; }
+        .option:hover:not(.disabled) { border-color: var(--accent); background: #e8f8f5; transform: translateX(5px); }
+        .option.selected { border-color: var(--primary); background: #d1f2eb; }
+        .option.correct { border-color: var(--success); background: #eafaf1; color: #145a32; }
+        .option.incorrect { border-color: var(--error); background: #fdedec; color: #7b241c; }
+        .option.disabled { cursor: default; pointer-events: none; opacity: 0.9; }
+
+        .feedback { margin-top: 30px; padding: 25px; border-radius: 12px; display: none; animation: slideUp 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .feedback.success { background: #eafaf1; border-left: 6px solid var(--success); }
+        .feedback.error { background: #fdedec; border-left: 6px solid var(--error); }
+        .feedback h3 { margin: 0 0 10px 0; font-size: 1.2rem; }
+        .feedback p { margin: 0; line-height: 1.5; opacity: 0.9; }
+
+        .controls { margin-top: 40px; display: flex; justify-content: space-between; gap: 20px; padding-top: 20px; border-top: 1px solid #f2f3f4; }
+        .btn { padding: 14px 28px; border: none; border-radius: 10px; cursor: pointer; font-size: 1rem; font-weight: 700; transition: 0.2s; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn-prev { background: #95a5a6; color: white; }
+        .btn-next { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(22, 160, 133, 0.3); }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        #results-modal { position: fixed; inset: 0; background: rgba(44, 62, 80, 0.9); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(8px); }
+        .modal-content { background: white; padding: 50px; border-radius: 25px; width: 90%; max-width: 550px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3); animation: zoomIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
+        .score-circle { width: 160px; height: 160px; border-radius: 50%; background: conic-gradient(var(--success) 0%, #ecf0f1 0%); margin: 0 auto 30px; display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: 800; color: var(--secondary); position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .score-circle::before { content: ''; position: absolute; width: 130px; height: 130px; background: white; border-radius: 50%; }
+        .score-text { position: relative; z-index: 1; }
+        .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 35px; }
+        .action-btn { padding: 15px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; transition: 0.2s; color: white; text-transform: uppercase; font-size: 0.9rem; }
+        .btn-all { background: var(--secondary); grid-column: span 2; }
+        .btn-failed { background: var(--error); }
+        .btn-marked { background: #f39c12; }
+        .action-btn:hover { filter: brightness(1.1); transform: translateY(-2px); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+            .nav-panel { max-height: 120px; }
+            .question-text { font-size: 1.1rem; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🧬 Cap. 8: Expresión Génica</h1>
+        <div class="status-bar">
+            <span id="progress-indicator">Pregunta 1 / 49</span>
+            <span>Aciertos: <strong id="score-val" style="color: var(--success)">0</strong></span>
+        </div>
+    </header>
+
+    <div class="nav-panel" id="nav-container"></div>
+
+    <div id="quiz-area">
+        <div class="question-card" id="q-card">
+            <div class="q-header">
+                <span class="q-badge" id="q-number">Q1</span>
+                <button class="mark-btn" onclick="toggleMark()">
+                    <span id="mark-icon">☆</span> Marcar
+                </button>
+            </div>
+            <div class="question-text" id="q-text">Cargando...</div>
+            <div class="options-grid" id="options-area"></div>
+            
+            <div class="feedback" id="feedback-area">
+                <h3 id="feedback-title"></h3>
+                <p id="feedback-msg"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn btn-prev" id="prev-btn" onclick="navigate(-1)">⬅ Anterior</button>
+        <button class="btn btn-next" id="next-btn" onclick="navigate(1)">Siguiente ➡</button>
+    </div>
+</div>
+
+<div id="results-modal">
+    <div class="modal-content">
+        <h2>Resultados Finales</h2>
+        <div class="score-circle" id="final-circle">
+            <span class="score-text" id="final-score">0%</span>
+        </div>
+        <p id="final-msg" style="font-size: 1.1rem; color: #7f8c8d;">¡Has completado el cuestionario!</p>
+        <div class="modal-actions">
+            <button class="action-btn btn-all" onclick="restart('all')">🔄 Repetir Todo</button>
+            <button class="action-btn btn-failed" onclick="restart('failed')">❌ Solo Falladas</button>
+            <button class="action-btn btn-marked" onclick="restart('marked')">⭐ Solo Marcadas</button>
+        </div>
+        <button onclick="closeModal()" style="margin-top:20px; background:none; border:none; text-decoration:underline; cursor:pointer; color:#95a5a6; font-size:0.9rem;">Cerrar y revisar respuestas</button>
+    </div>
+</div>
+
+<script>
+const db = [
+  {
+    "id": 1,
+    "q": "Las células de un organismo multicelular, como una célula nerviosa y una célula hepática, son diferentes porque:",
+    "options": [
+      "Contienen ADN diferente.",
+      "Expresan diferentes genes.",
+      "Tienen cromosomas diferentes.",
+      "Tienen ribosomas diferentes."
+    ],
+    "correct": 1,
+    "exp": "Todas las células somáticas tienen el mismo genoma (ADN), pero la diferenciación se debe a la expresión diferencial de genes."
+  },
+  {
+    "id": 2,
+    "q": "¿Qué técnica permite a los científicos determinar qué genes se están expresando en una célula en un momento dado?",
+    "options": [
+      "Secuenciación de ARN (RNA-seq).",
+      "Microscopía electrónica.",
+      "Centrifugación.",
+      "Cristalografía de rayos X."
+    ],
+    "correct": 0,
+    "exp": "RNA-seq analiza el transcriptoma, revelando qué ARNs y en qué cantidad están presentes."
+  },
+  {
+    "id": 3,
+    "q": "La regulación de la expresión génica puede ocurrir en múltiples pasos. ¿Cuál es el punto de control más importante para la mayoría de los genes?",
+    "options": [
+      "Inicio de la transcripción.",
+      "Procesamiento del ARN.",
+      "Exportación del ARN.",
+      "Traducción."
+    ],
+    "correct": 0,
+    "exp": "Controlar el inicio ahorra energía al no producir intermediarios innecesarios."
+  },
+  {
+    "id": 4,
+    "q": "Las proteínas reguladoras de la transcripción se unen a secuencias específicas de ADN llamadas:",
+    "options": [
+      "Secuencias reguladoras de ADN.",
+      "Intrones.",
+      "Codones.",
+      "Histonas."
+    ],
+    "correct": 0,
+    "exp": "Estas secuencias (como enhancers o silencers) sirven de 'interruptores' moleculares."
+  },
+  {
+    "id": 5,
+    "q": "Una proteína represora se une al ADN para:",
+    "options": [
+      "Activar la transcripción.",
+      "Bloquear o inhibir la transcripción.",
+      "Sintetizar ARN.",
+      "Degradar el ADN."
+    ],
+    "correct": 1,
+    "exp": "El represor suele interferir físicamente con la unión de la ARN polimerasa al promotor."
+  },
+  {
+    "id": 6,
+    "q": "En bacterias, un grupo de genes que se transcriben juntos como una sola molécula de ARNm se llama:",
+    "options": [
+      "Operón.",
+      "Intrón.",
+      "Exón.",
+      "Cromosoma."
+    ],
+    "correct": 0,
+    "exp": "El operón permite la regulación coordinada de genes con funciones relacionadas (ej. Operón Lac)."
+  },
+  {
+    "id": 7,
+    "q": "El operón Lac en E. coli se activa solo cuando:",
+    "options": [
+      "Hay lactosa y no hay glucosa.",
+      "Hay glucosa y no hay lactosa.",
+      "Hay ambas.",
+      "No hay ninguna."
+    ],
+    "correct": 0,
+    "exp": "La bacteria prefiere glucosa. Solo si falta glucosa (aumento de AMPc) y hay lactosa (elimina represor) se expresa."
+  },
+  {
+    "id": 8,
+    "q": "En eucariotas, las secuencias reguladoras de ADN (enhancers) pueden estar:",
+    "options": [
+      "A miles de pares de bases del promotor.",
+      "Solo justo al lado del promotor.",
+      "Dentro del ribosoma.",
+      "Siempre en otro cromosoma."
+    ],
+    "correct": 0,
+    "exp": "El ADN se pliega en bucles para que los activadores unidos a enhancers lejanos contacten con la maquinaria en el promotor."
+  },
+  {
+    "id": 9,
+    "q": "¿Qué complejo proteico actúa como puente entre los reguladores transcripcionales y la ARN polimerasa II en eucariotas?",
+    "options": [
+      "El Mediador.",
+      "La histona H1.",
+      "La ligasa.",
+      "El ribosoma."
+    ],
+    "correct": 0,
+    "exp": "El complejo Mediador integra señales de múltiples activadores y represores."
+  },
+  {
+    "id": 10,
+    "q": "La modificación de histonas (ej. acetilación) afecta la expresión génica al:",
+    "options": [
+      "Alterar la estructura de la cromatina, haciéndola más accesible o compacta.",
+      "Mutar la secuencia de ADN.",
+      "Eliminar intrones.",
+      "Bloquear la traducción."
+    ],
+    "correct": 0,
+    "exp": "Las acetiltransferasas de histonas (HATs) suelen abrir la cromatina para activar genes."
+  },
+  {
+    "id": 11,
+    "q": "La memoria celular, o la capacidad de una célula hija de mantener el patrón de expresión génica de la madre, se logra mediante:",
+    "options": [
+      "Bucles de retroalimentación positiva y modificaciones epigenéticas.",
+      "Mutaciones constantes.",
+      "Cambios en la secuencia de ADN.",
+      "Degradación de proteínas."
+    ],
+    "correct": 0,
+    "exp": "Una proteína reguladora maestra puede activar su propio gen, perpetuando su presencia en las siguientes generaciones."
+  },
+  {
+    "id": 12,
+    "q": "La metilación del ADN en vertebrados ocurre típicamente en:",
+    "options": [
+      "Citosinas seguidas de Guaninas (islas CpG).",
+      "Adeninas.",
+      "Cualquier base.",
+      "Timinas."
+    ],
+    "correct": 0,
+    "exp": "La metilación de CpG suele asociarse con el silenciamiento génico a largo plazo."
+  },
+  {
+    "id": 13,
+    "q": "¿Qué es un microARN (miARN)?",
+    "options": [
+      "Una pequeña molécula de ARN que regula la expresión génica degradando ARNm o bloqueando su traducción.",
+      "Un ARN que codifica una proteína muy pequeña.",
+      "Un ARN de transferencia.",
+      "Un virus."
+    ],
+    "correct": 0,
+    "exp": "Los miARN se unen a secuencias complementarias en el ARNm diana y reclutan el complejo RISC para silenciarlo."
+  },
+  {
+    "id": 14,
+    "q": "La interferencia de ARN (ARNi) es un mecanismo de defensa que:",
+    "options": [
+      "Destruye ARN de doble cadena extraño (ej. virus).",
+      "Aumenta la traducción viral.",
+      "Repara el ADN.",
+      "Produce energía."
+    ],
+    "correct": 0,
+    "exp": "Detecta dsRNA (ARN doble cadena), lo corta en siARN y lo usa para destruir el ARN invasor homólogo."
+  },
+  {
+    "id": 15,
+    "q": "Los lncARN (ARN largos no codificantes) pueden:",
+    "options": [
+      "Actuar como andamios para proteínas reguladoras o silenciar cromosomas (ej. Xist).",
+      "Codificar proteínas largas.",
+      "No tienen función conocida.",
+      "Son basura celular."
+    ],
+    "correct": 0,
+    "exp": "Xist es un lncARN famoso que recubre e inactiva uno de los cromosomas X en hembras."
+  },
+  {
+    "id": 16,
+    "q": "Un gen 'constitutivo' (housekeeping gene) es aquel que:",
+    "options": [
+      "Se expresa en todas las células porque es esencial para funciones básicas.",
+      "Se expresa solo en el hígado.",
+      "Nunca se expresa.",
+      "Se expresa solo en respuesta al estrés."
+    ],
+    "correct": 0,
+    "exp": "Ejemplos incluyen genes para la ARN polimerasa, ribosomas, citoesqueleto, etc."
+  },
+  {
+    "id": 17,
+    "q": "Los motivos estructurales comunes en las proteínas de unión al ADN incluyen:",
+    "options": [
+      "Hélice-giro-hélice, Dedo de zinc, Cremallera de leucina.",
+      "Lámina beta, Colágeno.",
+      "Doble hélice.",
+      "Anillo de porfirina."
+    ],
+    "correct": 0,
+    "exp": "Estos motivos encajan en el surco mayor del ADN para leer la secuencia de bases."
+  },
+  {
+    "id": 18,
+    "q": "La diferenciación celular es el proceso por el cual:",
+    "options": [
+      "Una célula no especializada se convierte en un tipo celular específico.",
+      "Una célula se divide.",
+      "Una célula muere.",
+      "Una célula muta."
+    ],
+    "correct": 0,
+    "exp": "Implica cambios masivos y estables en la expresión génica."
+  },
+  {
+    "id": 19,
+    "q": "Las células madre pluripotentes inducidas (iPS) se crean:",
+    "options": [
+      "Reprogramando células adultas (ej. fibroblastos) mediante la expresión de factores de transcripción específicos.",
+      "Extrayéndolas de embriones.",
+      "Clonando ovejas.",
+      "Fusionando células."
+    ],
+    "correct": 0,
+    "exp": "Yamanaka demostró que 4 factores (Oct4, Sox2, Klf4, Myc) pueden revertir una célula diferenciada a un estado tipo embrionario."
+  },
+  {
+    "id": 20,
+    "q": "¿Qué afirmación sobre los riboswitches es correcta?",
+    "options": [
+      "Son secuencias de ARNm que cambian de forma al unirse a un metabolito, regulando su propia transcripción o traducción.",
+      "Son proteínas que apagan ribosomas.",
+      "Son interruptores de luz celular.",
+      "Son genes virales."
+    ],
+    "correct": 0,
+    "exp": "Comunes en bacterias, permiten una regulación rápida y económica sin necesidad de proteínas reguladoras."
+  },
+  {
+    "id": 21,
+    "q": "La degradación controlada de proteínas es realizada por el:",
+    "options": [
+      "Proteasoma (vía ubiquitina).",
+      "Lisosoma (autofagia).",
+      "Ribosoma.",
+      "Núcleo."
+    ],
+    "correct": 0,
+    "exp": "El proteasoma es la principal maquinaria de destrucción de proteínas marcadas en el citosol y núcleo."
+  },
+  {
+    "id": 22,
+    "q": "Un activador transcripcional puede funcionar:",
+    "options": [
+      "Reclutando HATs (Histona Acetiltransferasas) para abrir la cromatina.",
+      "Reclutando HDACs (Histona Desacetilasas).",
+      "Metilando el ADN.",
+      "Compactando nucleosomas."
+    ],
+    "correct": 0,
+    "exp": "Al acetilar histonas, se relaja la estructura del ADN, facilitando el acceso de la polimerasa."
+  },
+  {
+    "id": 23,
+    "q": "El operón Triptófano (Trp) es un ejemplo de operón reprimible. Esto significa que:",
+    "options": [
+      "Se apaga cuando hay triptófano disponible.",
+      "Se enciende cuando hay triptófano.",
+      "Siempre está apagado.",
+      "Nunca se reprime."
+    ],
+    "correct": 0,
+    "exp": "El triptófano actúa como correpresor, activando al represor para que se una al operador y detenga la síntesis."
+  },
+  {
+    "id": 24,
+    "q": "La combinación de unos pocos reguladores transcripcionales puede generar muchos tipos celulares diferentes. Esto se conoce como:",
+    "options": [
+      "Control combinatorio.",
+      "Control singular.",
+      "Mutación aleatoria.",
+      "Clonación."
+    ],
+    "correct": 0,
+    "exp": "Como un código, diferentes combinaciones de las mismas proteínas activan programas génicos distintos."
+  },
+  {
+    "id": 25,
+    "q": "¿Qué efecto tiene la metilación de histonas?",
+    "options": [
+      "Puede activar o reprimir la transcripción, dependiendo de qué aminoácido se metile.",
+      "Siempre activa.",
+      "Siempre reprime.",
+      "No hace nada."
+    ],
+    "correct": 0,
+    "exp": "El código de histonas es complejo; metilación en H3K4 suele activar, mientras que en H3K9 suele reprimir."
+  },
+  {
+    "id": 26,
+    "q": "Las secuencias aisladoras (insulators) funcionan:",
+    "options": [
+      "Evitando que un enhancer active el gen equivocado.",
+      "Aumentando la transcripción.",
+      "Eliminando genes.",
+      "Uniendo cromosomas."
+    ],
+    "correct": 0,
+    "exp": "Forman barreras de dominio de cromatina (TADs)."
+  },
+  {
+    "id": 27,
+    "q": "El silenciamiento génico post-transcripcional puede ser mediado por:",
+    "options": [
+      "siARN y miARN.",
+      "Factores de transcripción.",
+      "Promotores.",
+      "Enhancers."
+    ],
+    "correct": 0,
+    "exp": "Actúan sobre el ARNm una vez que ya ha sido transcrito."
+  },
+  {
+    "id": 28,
+    "q": "¿Qué es un gen reportero?",
+    "options": [
+      "Un gen (como GFP) que se usa para visualizar o medir la expresión de otro gen.",
+      "Un gen que causa cáncer.",
+      "Un gen de periodista.",
+      "Un gen invisible."
+    ],
+    "correct": 0,
+    "exp": "La Proteína Verde Fluorescente (GFP) es el reportero más famoso."
+  },
+  {
+    "id": 29,
+    "q": "La herencia epigenética implica:",
+    "options": [
+      "Transmisión de información sin cambios en la secuencia de nucleótidos del ADN.",
+      "Cambios en la secuencia de bases.",
+      "Herencia de mitocondrias.",
+      "Herencia mendeliana clásica."
+    ],
+    "correct": 0,
+    "exp": "Incluye metilación del ADN y modificaciones de histonas."
+  },
+  {
+    "id": 30,
+    "q": "En el desarrollo de Drosophila, el gen Eve (even-skipped) es regulado por:",
+    "options": [
+      "Múltiples enhancers que responden a diferentes combinaciones de proteínas reguladoras posicionales.",
+      "Un solo promotor simple.",
+      "La temperatura.",
+      "La luz."
+    ],
+    "correct": 0,
+    "exp": "Es un ejemplo clásico de cómo la integración de señales espaciales define patrones corporales."
+  },
+  {
+    "id": 31,
+    "q": "La vida media de un ARNm afecta:",
+    "options": [
+      "Cuánta proteína se puede producir a partir de él.",
+      "Su secuencia.",
+      "El código genético.",
+      "El tamaño del ribosoma."
+    ],
+    "correct": 0,
+    "exp": "ARNm más estables permiten más rondas de traducción."
+  },
+  {
+    "id": 32,
+    "q": "El sitio de unión al ribosoma (Shine-Dalgarno) es característico de:",
+    "options": [
+      "ARNm bacterianos.",
+      "ARNm eucariotas.",
+      "ARNt.",
+      "ADN."
+    ],
+    "correct": 0,
+    "exp": "Permite al ribosoma bacteriano posicionarse correctamente en el codón de inicio."
+  },
+  {
+    "id": 33,
+    "q": "Un represor puede impedir la traducción al:",
+    "options": [
+      "Unirse a la región 5' UTR del ARNm y bloquear el acceso del ribosoma.",
+      "Destruir el ribosoma.",
+      "Cambiar el código genético.",
+      "Hacer el ARNm invisible."
+    ],
+    "correct": 0,
+    "exp": "Mecanismo común de control traduccional (ej. ferritina)."
+  },
+  {
+    "id": 34,
+    "q": "¿Qué molécula es considerada una 'máquina del tiempo' molecular que permite revertir la diferenciación?",
+    "options": [
+      "Factores de transcripción de pluripotencia (Yamanaka factors).",
+      "ADN polimerasa.",
+      "ATP.",
+      "Glucosa."
+    ],
+    "correct": 0,
+    "exp": "Permiten borrar la memoria epigenética y volver al estado iPS."
+  },
+  {
+    "id": 35,
+    "q": "La heterocromatina facultativa:",
+    "options": [
+      "Puede cambiar a eucromatina y expresarse según las necesidades de la célula.",
+      "Siempre está condensada e inactiva (como en centrómeros).",
+      "No contiene ADN.",
+      "Es exclusiva de virus."
+    ],
+    "correct": 0,
+    "exp": "Ejemplo: El cromosoma X inactivo."
+  },
+  {
+    "id": 36,
+    "q": "El complejo RISC (RNA-induced silencing complex) utiliza ______ como guía.",
+    "options": [
+      "Una hebra simple de miARN o siARN.",
+      "Una proteína.",
+      "ADN doble cadena.",
+      "Un lípido."
+    ],
+    "correct": 0,
+    "exp": "La hebra guía dirige al complejo hacia el ARNm complementario."
+  },
+  {
+    "id": 37,
+    "q": "La termita controla la expresión génica mediante:",
+    "options": [
+      "Esto es un insecto, no un mecanismo molecular (Pregunta trampa/error de contexto).",
+      "Riboswitches sensibles a temperatura (termosensor de ARN).",
+      "Proteínas de choque térmico.",
+      "Cambio de color."
+    ],
+    "correct": 1,
+    "exp": "En bacterias (ej. Listeria), estructuras de ARN en el 5' UTR se funden a 37°C permitiendo la traducción (RNA thermosensor)."
+  },
+  {
+    "id": 38,
+    "q": "¿Qué afirmación es FALSA sobre la regulación génica?",
+    "options": [
+      "Es un proceso estático que no cambia una vez la célula se diferencia.",
+      "Permite a la célula responder al ambiente.",
+      "Determina la identidad celular.",
+      "Ahorra energía."
+    ],
+    "correct": 0,
+    "exp": "Es altamente dinámico; las células ajustan su expresión constantemente."
+  },
+  {
+    "id": 39,
+    "q": "Las proteínas de 'dedo de zinc' (zinc finger) son:",
+    "options": [
+      "Factores de transcripción que usan un átomo de zinc para estabilizar su estructura de unión al ADN.",
+      "Enzimas que degradan zinc.",
+      "Proteínas estructurales de la piel.",
+      "Canales iónicos."
+    ],
+    "correct": 0,
+    "exp": "Motivo estructural clásico."
+  },
+  {
+    "id": 40,
+    "q": "La competencia celular por recursos limitados puede llevar a la evolución de:",
+    "options": [
+      "Mecanismos de regulación génica más eficientes.",
+      "Células más grandes.",
+      "Menos genes.",
+      "Más mutaciones."
+    ],
+    "correct": 0,
+    "exp": "La regulación precisa (ej. operones) da ventaja adaptativa."
+  },
+  {
+    "id": 41,
+    "q": "¿Qué es la 'Caja TATA'?",
+    "options": [
+      "Una secuencia conservada en el promotor de muchos genes eucariotas.",
+      "Una proteína.",
+      "Un tipo de caja para guardar ADN.",
+      "Un virus."
+    ],
+    "correct": 0,
+    "exp": "Es reconocida por TBP (TATA-binding protein), iniciando el ensamblaje del complejo de transcripción."
+  },
+  {
+    "id": 42,
+    "q": "Un enhancer puede funcionar incluso si se invierte su orientación (flip) en el ADN:",
+    "options": [
+      "Verdadero.",
+      "Falso."
+    ],
+    "correct": 0,
+    "exp": "Son independientes de la orientación y la distancia."
+  },
+  {
+    "id": 43,
+    "q": "El control de la expresión génica es fundamental para:",
+    "options": [
+      "El desarrollo embrionario.",
+      "La respuesta inmune.",
+      "La adaptación metabólica.",
+      "Todas las anteriores."
+    ],
+    "correct": 3,
+    "exp": "Sin regulación, la vida compleja no sería posible."
+  },
+  {
+    "id": 44,
+    "q": "¿Qué ocurre si se muta el operador del operón Lac de forma que el represor ya no pueda unirse?",
+    "options": [
+      "Los genes se expresarán constitutivamente (todo el tiempo).",
+      "Nunca se expresarán.",
+      "Solo se expresarán con glucosa.",
+      "La bacteria morirá."
+    ],
+    "correct": 0,
+    "exp": "Se pierde el control negativo."
+  },
+  {
+    "id": 45,
+    "q": "La poliadenilación alternativa puede generar:",
+    "options": [
+      "ARNm con diferentes extremos 3', lo que puede afectar su estabilidad o localización.",
+      "Proteínas con diferentes extremos N-terminales.",
+      "ADN mutado.",
+      "Más intrones."
+    ],
+    "correct": 0,
+    "exp": "Otro mecanismo de diversidad transcriptómica."
+  },
+  {
+    "id": 46,
+    "q": "Las proteínas chaperonas NO:",
+    "options": [
+      "Determinan la secuencia de aminoácidos de la proteína.",
+      "Ayudan al plegamiento.",
+      "Previenen la agregación.",
+      "Gastan ATP."
+    ],
+    "correct": 0,
+    "exp": "La secuencia viene del gen; la chaperona solo ayuda a adoptar la forma dictada por esa secuencia."
+  },
+  {
+    "id": 47,
+    "q": "El complejo proteico que degrada ARN mensajeros defectuosos o marcados se llama:",
+    "options": [
+      "Exosoma.",
+      "Ribosoma.",
+      "Lisosoma.",
+      "Nucléolo."
+    ],
+    "correct": 0,
+    "exp": "El exosoma de ARN procesa y degrada ARNs."
+  },
+  {
+    "id": 48,
+    "q": "La regulación al nivel de la traducción es:",
+    "options": [
+      "Más rápida que la regulación transcripcional.",
+      "Más lenta.",
+      "Igual de rápida.",
+      "No existe."
+    ],
+    "correct": 0,
+    "exp": "Permite una respuesta inmediata a estímulos (ej. fosforilación de eIF2) sin esperar a sintetizar nuevo ARNm."
+  },
+  {
+    "id": 49,
+    "q": "¿Qué define mejor a un 'Factor de Transcripción General'?",
+    "options": [
+      "Proteínas requeridas para el inicio de la transcripción en casi todos los promotores eucariotas.",
+      "Proteínas que regulan genes específicos de tejido.",
+      "Enzimas que cortan ADN.",
+      "Lípidos de membrana."
+    ],
+    "correct": 0,
+    "exp": "Se diferencian de los activadores específicos que regulan genes concretos."
+  }
+];
+
+let currentIdx = 0;
+let userAnswers = new Array(db.length).fill(null); 
+let markedQuestions = new Set();
+let activeIndices = db.map((_, i) => i);
+
+const navContainer = document.getElementById('nav-container');
+const qNumber = document.getElementById('q-number');
+const qText = document.getElementById('q-text');
+const optionsArea = document.getElementById('options-area');
+const markBtn = document.querySelector('.mark-btn');
+const feedbackArea = document.getElementById('feedback-area');
+const feedbackTitle = document.getElementById('feedback-title');
+const feedbackMsg = document.getElementById('feedback-msg');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const scoreVal = document.getElementById('score-val');
+const progressInd = document.getElementById('progress-indicator');
+const resultsModal = document.getElementById('results-modal');
+
+function init() {
+    renderNav();
+    loadQuestion(0);
+}
+
+function renderNav() {
+    navContainer.innerHTML = '';
+    activeIndices.forEach((realIdx, visualIdx) => {
+        const btn = document.createElement('button');
+        const state = userAnswers[realIdx];
+        let className = 'nav-btn';
+        if (visualIdx === currentIdx) className += ' active';
+        if (state) className += state.isCorrect ? ' correct' : ' incorrect';
+        if (markedQuestions.has(realIdx)) className += ' marked';
+        
+        btn.className = className;
+        btn.innerText = visualIdx + 1;
+        btn.onclick = () => loadQuestion(visualIdx);
+        navContainer.appendChild(btn);
+    });
+    
+    // Stats Update
+    const correctCount = userAnswers.filter(a => a && a.isCorrect).length;
+    scoreVal.innerText = correctCount;
+    progressInd.innerText = `Pregunta ${currentIdx + 1} / ${activeIndices.length}`;
+}
+
+function loadQuestion(index) {
+    currentIdx = index;
+    const realIdx = activeIndices[index];
+    const data = db[realIdx];
+    const state = userAnswers[realIdx];
+
+    qNumber.innerText = `Q${index + 1}`;
+    qText.innerText = data.q;
+    
+    // Mark Button
+    if (markedQuestions.has(realIdx)) {
+        markBtn.classList.add('active');
+        markBtn.querySelector('span').innerText = '★';
+    } else {
+        markBtn.classList.remove('active');
+        markBtn.querySelector('span').innerText = '☆';
+    }
+
+    // Options
+    optionsArea.innerHTML = '';
+    data.options.forEach((opt, i) => {
+        const div = document.createElement('div');
+        div.className = 'option';
+        div.innerText = opt;
+        
+        if (state) {
+            div.classList.add('disabled');
+            if (i === data.correct) div.classList.add('correct');
+            else if (i === state.selected) div.classList.add('incorrect');
+        } else {
+            div.onclick = () => handleAnswer(realIdx, i);
+        }
+        optionsArea.appendChild(div);
+    });
+
+    // Feedback
+    if (state) {
+        feedbackArea.style.display = 'block';
+        feedbackArea.className = `feedback ${state.isCorrect ? 'success' : 'error'}`;
+        feedbackTitle.innerText = state.isCorrect ? '¡Correcto!' : 'Incorrecto';
+        feedbackMsg.innerText = data.exp;
+    } else {
+        feedbackArea.style.display = 'none';
+    }
+
+    // Navigation
+    prevBtn.disabled = index === 0;
+    nextBtn.innerText = index === activeIndices.length - 1 ? 'Resultados' : 'Siguiente ➡';
+    
+    renderNav();
+}
+
+function handleAnswer(realIdx, selectedOpt) {
+    const data = db[realIdx];
+    const isCorrect = selectedOpt === data.correct;
+    userAnswers[realIdx] = { selected: selectedOpt, isCorrect };
+    loadQuestion(currentIdx);
+}
+
+function toggleMark() {
+    const realIdx = activeIndices[currentIdx];
+    if (markedQuestions.has(realIdx)) markedQuestions.delete(realIdx);
+    else markedQuestions.add(realIdx);
+    loadQuestion(currentIdx);
+}
+
+function navigate(dir) {
+    const newIdx = currentIdx + dir;
+    if (newIdx >= 0 && newIdx < activeIndices.length) {
+        loadQuestion(newIdx);
+    } else if (newIdx >= activeIndices.length) {
+        showResults();
+    }
+}
+
+function showResults() {
+    let correctInSet = 0;
+    activeIndices.forEach(realIdx => {
+        if (userAnswers[realIdx]?.isCorrect) correctInSet++;
+    });
+    
+    const total = activeIndices.length;
+    const percent = total === 0 ? 0 : Math.round((correctInSet / total) * 100);
+    
+    const circle = document.getElementById('final-circle');
+    circle.style.background = `conic-gradient(var(--success) ${percent}%, #ecf0f1 0%)`;
+    document.getElementById('final-score').innerText = percent + '%';
+    document.getElementById('final-msg').innerText = `Aciertos: ${correctInSet}/${total}`;
+    
+    resultsModal.style.display = 'flex';
+}
+
+function closeModal() {
+    resultsModal.style.display = 'none';
+}
+
+function restart(mode) {
+    closeModal();
+    if (mode === 'all') {
+        activeIndices = db.map((_, i) => i);
+        userAnswers.fill(null);
+    } else if (mode === 'failed') {
+        const failed = [];
+        db.forEach((_, i) => { if (userAnswers[i] && !userAnswers[i].isCorrect) failed.push(i); });
+        if (failed.length === 0) return alert("¡Sin fallos!");
+        activeIndices = failed;
+        activeIndices.forEach(i => userAnswers[i] = null);
+    } else if (mode === 'marked') {
+        const m = Array.from(markedQuestions).sort((a,b)=>a-b);
+        if (m.length === 0) return alert("¡Sin marcas!");
+        activeIndices = m;
+        activeIndices.forEach(i => userAnswers[i] = null);
+    }
+    currentIdx = 0;
+    loadQuestion(0);
+}
+
+init();
+</script>
+</body>
+</html>

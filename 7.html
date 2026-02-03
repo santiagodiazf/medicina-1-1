@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Biología Celular - Capítulo 7</title>
+    <style>
+        :root { --primary: #e67e22; --secondary: #2c3e50; --bg: #fdfefe; --card: #ffffff; --success: #27ae60; --error: #c0392b; --accent: #d35400; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--secondary); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .container { width: 100%; max-width: 900px; background: var(--card); border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); padding: 35px; position: relative; border-top: 5px solid var(--primary); }
+        
+        header { border-bottom: 2px solid #f2f3f4; padding-bottom: 25px; margin-bottom: 25px; text-align: center; }
+        h1 { margin: 0; color: var(--primary); font-size: 2rem; letter-spacing: -0.5px; }
+        .status-bar { display: flex; justify-content: space-between; margin-top: 15px; font-size: 0.95rem; color: #7f8c8d; font-weight: 600; background: #f8f9fa; padding: 12px 20px; border-radius: 10px; }
+        
+        .nav-panel { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 8px; margin-bottom: 35px; max-height: 160px; overflow-y: auto; padding: 15px; background: #fdf2e9; border-radius: 10px; border: 1px solid #fae5d3; }
+        .nav-btn { background: white; border: 1px solid #edbb99; color: #a04000; padding: 10px 0; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-weight: bold; font-size: 0.9rem; text-align: center; }
+        .nav-btn:hover { background: var(--primary); color: white; transform: translateY(-2px); box-shadow: 0 2px 5px rgba(230, 126, 34, 0.3); }
+        .nav-btn.active { background: var(--primary); color: white; border-color: var(--primary); transform: scale(1.05); }
+        .nav-btn.correct { background: var(--success); color: white; border-color: var(--success); }
+        .nav-btn.incorrect { background: var(--error); color: white; border-color: var(--error); }
+        .nav-btn.marked { border: 2px solid #f1c40f; position: relative; }
+        .nav-btn.marked::after { content: '★'; position: absolute; top: -6px; right: -6px; color: #f1c40f; font-size: 12px; background: white; border-radius: 50%; width: 16px; height: 16px; line-height: 16px; text-align: center; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+
+        .question-card { animation: fadeIn 0.4s ease-out; }
+        .q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .q-badge { background: var(--secondary); color: white; padding: 6px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; letter-spacing: 0.5px; }
+        .mark-btn { background: transparent; border: 2px solid #f1c40f; color: #f39c12; padding: 6px 18px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s; display: flex; align-items: center; gap: 6px; font-size: 0.9rem; }
+        .mark-btn:hover { background: #fffcf0; transform: scale(1.05); }
+        .mark-btn.active { background: #f1c40f; color: white; }
+
+        .question-text { font-size: 1.25rem; line-height: 1.6; margin-bottom: 30px; color: #2c3e50; font-weight: 500; }
+
+        .options-grid { display: flex; flex-direction: column; gap: 14px; }
+        .option { background: white; border: 2px solid #eaeded; padding: 18px 22px; border-radius: 12px; cursor: pointer; transition: all 0.2s; position: relative; font-size: 1.05rem; display: flex; align-items: center; }
+        .option:hover:not(.disabled) { border-color: var(--accent); background: #fef5e7; transform: translateX(5px); }
+        .option.selected { border-color: var(--primary); background: #fdf2e9; }
+        .option.correct { border-color: var(--success); background: #eafaf1; color: #145a32; }
+        .option.incorrect { border-color: var(--error); background: #fdedec; color: #7b241c; }
+        .option.disabled { cursor: default; pointer-events: none; opacity: 0.9; }
+
+        .feedback { margin-top: 30px; padding: 25px; border-radius: 12px; display: none; animation: slideUp 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .feedback.success { background: #eafaf1; border-left: 6px solid var(--success); }
+        .feedback.error { background: #fdedec; border-left: 6px solid var(--error); }
+        .feedback h3 { margin: 0 0 10px 0; font-size: 1.2rem; }
+        .feedback p { margin: 0; line-height: 1.5; opacity: 0.9; }
+
+        .controls { margin-top: 40px; display: flex; justify-content: space-between; gap: 20px; padding-top: 20px; border-top: 1px solid #f2f3f4; }
+        .btn { padding: 14px 28px; border: none; border-radius: 10px; cursor: pointer; font-size: 1rem; font-weight: 700; transition: 0.2s; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn-prev { background: #95a5a6; color: white; }
+        .btn-next { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3); }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        #results-modal { position: fixed; inset: 0; background: rgba(44, 62, 80, 0.9); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(8px); }
+        .modal-content { background: white; padding: 50px; border-radius: 25px; width: 90%; max-width: 550px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3); animation: zoomIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
+        .score-circle { width: 160px; height: 160px; border-radius: 50%; background: conic-gradient(var(--success) 0%, #ecf0f1 0%); margin: 0 auto 30px; display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: 800; color: var(--secondary); position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .score-circle::before { content: ''; position: absolute; width: 130px; height: 130px; background: white; border-radius: 50%; }
+        .score-text { position: relative; z-index: 1; }
+        .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 35px; }
+        .action-btn { padding: 15px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; transition: 0.2s; color: white; text-transform: uppercase; font-size: 0.9rem; }
+        .btn-all { background: var(--secondary); grid-column: span 2; }
+        .btn-failed { background: var(--error); }
+        .btn-marked { background: #f39c12; }
+        .action-btn:hover { filter: brightness(1.1); transform: translateY(-2px); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+            .nav-panel { max-height: 120px; }
+            .question-text { font-size: 1.1rem; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🧬 Cap. 7: Del ADN a la Proteína</h1>
+        <div class="status-bar">
+            <span id="progress-indicator">Pregunta 1 / 49</span>
+            <span>Aciertos: <strong id="score-val" style="color: var(--success)">0</strong></span>
+        </div>
+    </header>
+
+    <div class="nav-panel" id="nav-container"></div>
+
+    <div id="quiz-area">
+        <div class="question-card" id="q-card">
+            <div class="q-header">
+                <span class="q-badge" id="q-number">Q1</span>
+                <button class="mark-btn" onclick="toggleMark()">
+                    <span id="mark-icon">☆</span> Marcar
+                </button>
+            </div>
+            <div class="question-text" id="q-text">Cargando...</div>
+            <div class="options-grid" id="options-area"></div>
+            
+            <div class="feedback" id="feedback-area">
+                <h3 id="feedback-title"></h3>
+                <p id="feedback-msg"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn btn-prev" id="prev-btn" onclick="navigate(-1)">⬅ Anterior</button>
+        <button class="btn btn-next" id="next-btn" onclick="navigate(1)">Siguiente ➡</button>
+    </div>
+</div>
+
+<div id="results-modal">
+    <div class="modal-content">
+        <h2>Resultados Finales</h2>
+        <div class="score-circle" id="final-circle">
+            <span class="score-text" id="final-score">0%</span>
+        </div>
+        <p id="final-msg" style="font-size: 1.1rem; color: #7f8c8d;">¡Has completado el cuestionario!</p>
+        <div class="modal-actions">
+            <button class="action-btn btn-all" onclick="restart('all')">🔄 Repetir Todo</button>
+            <button class="action-btn btn-failed" onclick="restart('failed')">❌ Solo Falladas</button>
+            <button class="action-btn btn-marked" onclick="restart('marked')">⭐ Solo Marcadas</button>
+        </div>
+        <button onclick="closeModal()" style="margin-top:20px; background:none; border:none; text-decoration:underline; cursor:pointer; color:#95a5a6; font-size:0.9rem;">Cerrar y revisar respuestas</button>
+    </div>
+</div>
+
+<script>
+const db = [
+  {
+    "id": 1,
+    "q": "El flujo de información genética en las células sigue generalmente el dogma central, que es:",
+    "options": [
+      "ADN -> Proteína -> ARN",
+      "ARN -> ADN -> Proteína",
+      "ADN -> ARN -> Proteína",
+      "Proteína -> ARN -> ADN"
+    ],
+    "correct": 2,
+    "exp": "El dogma central describe el flujo de información desde el ADN al ARN (transcripción) y del ARN a la proteína (traducción)."
+  },
+  {
+    "id": 2,
+    "q": "El ARN se diferencia del ADN en que:",
+    "options": [
+      "Contiene desoxirribosa en lugar de ribosa.",
+      "Contiene la base Uracilo (U) en lugar de Timina (T).",
+      "Es siempre bicatenario.",
+      "Es mucho más estable químicamente."
+    ],
+    "correct": 1,
+    "exp": "El ARN usa ribosa y uracilo, y suele ser monocatenario y menos estable que el ADN."
+  },
+  {
+    "id": 3,
+    "q": "La transcripción es llevada a cabo por la enzima:",
+    "options": [
+      "ADN polimerasa",
+      "ARN polimerasa",
+      "Ribosoma",
+      "Transcriptasa inversa"
+    ],
+    "correct": 1,
+    "exp": "La ARN polimerasa sintetiza una cadena de ARN complementaria a partir de un molde de ADN."
+  },
+  {
+    "id": 4,
+    "q": "La ARN polimerasa sintetiza ARN en la dirección:",
+    "options": [
+      "5' a 3'",
+      "3' a 5'",
+      "Ambas direcciones",
+      "N terminal a C terminal"
+    ],
+    "correct": 0,
+    "exp": "Al igual que la ADN polimerasa, la ARN polimerasa añade nucleótidos al extremo 3'-OH libre, creciendo 5'->3'."
+  },
+  {
+    "id": 5,
+    "q": "¿Qué afirmación es CIERTA sobre la ARN polimerasa a diferencia de la ADN polimerasa?",
+    "options": [
+      "Requiere un cebador (primer) para iniciar.",
+      "Tiene una actividad de corrección de pruebas muy alta, igual que la ADN polimerasa.",
+      "Puede desenrollar la hélice de ADN por sí misma y no necesita cebador.",
+      "Solo funciona en el citoplasma."
+    ],
+    "correct": 2,
+    "exp": "La ARN polimerasa puede iniciar la síntesis 'de novo' sin cebador y tiene actividad helicasa intrínseca, pero comete más errores."
+  },
+  {
+    "id": 6,
+    "q": "En bacterias, el factor Sigma (σ) es necesario para:",
+    "options": [
+      "La terminación de la transcripción.",
+      "El reconocimiento del promotor y el inicio de la transcripción.",
+      "La elongación de la cadena de ARN.",
+      "El splicing del ARN."
+    ],
+    "correct": 1,
+    "exp": "El factor Sigma guía a la ARN polimerasa bacteriana hacia las secuencias promotoras específicas (-35 y -10)."
+  },
+  {
+    "id": 7,
+    "q": "En eucariotas, ¿qué ARN polimerasa transcribe la mayoría de los genes codificantes de proteínas (ARNm)?",
+    "options": [
+      "ARN Polimerasa I",
+      "ARN Polimerasa II",
+      "ARN Polimerasa III",
+      "Primasa"
+    ],
+    "correct": 1,
+    "exp": "La Pol II transcribe todos los ARNm codificantes de proteínas, así como miARN y lncARN."
+  },
+  {
+    "id": 8,
+    "q": "El ARNm eucariota maduro posee las siguientes modificaciones EXCEPTO:",
+    "options": [
+      "Un capuchón (cap) de 7-metilguanosina en el extremo 5'.",
+      "Una cola de poli-A en el extremo 3'.",
+      "La eliminación de intrones (splicing).",
+      "La unión covalente de aminoácidos."
+    ],
+    "correct": 3,
+    "exp": "Los aminoácidos se unen a los ARNt, no covalentemente al ARNm. Las otras son pasos clave del procesamiento del ARNm."
+  },
+  {
+    "id": 9,
+    "q": "Los intrones son:",
+    "options": [
+      "Secuencias codificantes que se traducen a proteína.",
+      "Secuencias no codificantes que se eliminan del pre-ARNm (splicing).",
+      "Proteínas que regulan la transcripción.",
+      "Errores de replicación."
+    ],
+    "correct": 1,
+    "exp": "Los intrones son secuencias intercaladas que se transcriben pero se eliminan antes de que el ARNm salga del núcleo."
+  },
+  {
+    "id": 10,
+    "q": "El splicing alternativo permite:",
+    "options": [
+      "Corregir errores en el ADN.",
+      "Producir múltiples proteínas diferentes a partir de un solo gen.",
+      "Aumentar la velocidad de transcripción.",
+      "Eliminar los exones."
+    ],
+    "correct": 1,
+    "exp": "Al combinar exones de diferentes maneras, un gen puede codificar varias isoformas proteicas."
+  },
+  {
+    "id": 11,
+    "q": "La traducción ocurre en:",
+    "options": [
+      "El núcleo",
+      "El ribosoma (en el citoplasma o RER)",
+      "El aparato de Golgi",
+      "El lisosoma"
+    ],
+    "correct": 1,
+    "exp": "Los ribosomas son las máquinas moleculares que leen el ARNm y sintetizan polipéptidos."
+  },
+  {
+    "id": 12,
+    "q": "El código genético es 'degenerado' o redundante, lo que significa que:",
+    "options": [
+      "Es ambiguo: un codón puede codificar varios aminoácidos.",
+      "Varios codones diferentes pueden codificar el mismo aminoácido.",
+      "El código varía entre especies.",
+      "Se degrada con el tiempo."
+    ],
+    "correct": 1,
+    "exp": "Hay 64 codones para 20 aminoácidos; por ejemplo, leucina tiene 6 codones distintos. Esto amortigua el efecto de las mutaciones."
+  },
+  {
+    "id": 13,
+    "q": "¿Qué molécula actúa como adaptador, transportando el aminoácido específico al ribosoma?",
+    "options": [
+      "ARNm",
+      "ARNt (transferencia)",
+      "ARNr (ribosómico)",
+      "ADN"
+    ],
+    "correct": 1,
+    "exp": "El ARNt tiene un anticodón que se aparea con el codón del ARNm y lleva el aminoácido correspondiente en su extremo 3'."
+  },
+  {
+    "id": 14,
+    "q": "La enzima aminoacil-ARNt sintetasa:",
+    "options": [
+      "Sintetiza el ARNt.",
+      "Une covalentemente el aminoácido correcto a su ARNt correspondiente.",
+      "Polimeriza la cadena peptídica.",
+      "Degrada proteínas mal plegadas."
+    ],
+    "correct": 1,
+    "exp": "Es crucial para la fidelidad de la traducción; 'carga' el ARNt con su aminoácido gastando ATP."
+  },
+  {
+    "id": 15,
+    "q": "El ribosoma está compuesto por:",
+    "options": [
+      "Solo proteínas.",
+      "Solo ARN.",
+      "Proteínas y ARN ribosómico (ARNr).",
+      "ADN y lípidos."
+    ],
+    "correct": 2,
+    "exp": "Es un complejo ribonucleoproteico con una subunidad grande y una pequeña."
+  },
+  {
+    "id": 16,
+    "q": "¿Qué sitio del ribosoma recibe al ARNt cargado entrante?",
+    "options": [
+      "Sitio A (Aminoacil)",
+      "Sitio P (Peptidil)",
+      "Sitio E (Exit/Salida)",
+      "Sitio de unión al ARNm"
+    ],
+    "correct": 0,
+    "exp": "El nuevo ARNt entra al sitio A, la cadena crece en el sitio P, y el ARNt vacío sale por el sitio E."
+  },
+  {
+    "id": 17,
+    "q": "El codón de inicio para la traducción en eucariotas suele ser:",
+    "options": [
+      "AUG (Metionina)",
+      "UAA",
+      "UAG",
+      "GGG"
+    ],
+    "correct": 0,
+    "exp": "AUG codifica para Metionina y marca el inicio del marco de lectura."
+  },
+  {
+    "id": 18,
+    "q": "La terminación de la traducción ocurre cuando:",
+    "options": [
+      "El ribosoma llega al final del ARNm.",
+      "El ribosoma encuentra un codón de parada (UAA, UAG, UGA).",
+      "Se agotan los aminoácidos.",
+      "La ARN polimerasa se detiene."
+    ],
+    "correct": 1,
+    "exp": "Los codones de parada no reclutan ARNt, sino factores de liberación que disocian el complejo ribosomal."
+  },
+  {
+    "id": 19,
+    "q": "Los proteasomas son complejos encargados de:",
+    "options": [
+      "Sintetizar proteínas.",
+      "Degradar proteínas marcadas con ubiquitina.",
+      "Plegar proteínas (chaperonas).",
+      "Transportar proteínas."
+    ],
+    "correct": 1,
+    "exp": "El proteasoma recicla proteínas dañadas o innecesarias que han sido etiquetadas con cadenas de ubiquitina."
+  },
+  {
+    "id": 20,
+    "q": "Las ribozimas son:",
+    "options": [
+      "Enzimas hechas de proteína.",
+      "Moléculas de ARN con actividad catalítica.",
+      "Ribosomas inactivos.",
+      "Azúcares ribosa."
+    ],
+    "correct": 1,
+    "exp": "El ARN puede plegarse y catalizar reacciones; el ejemplo más importante es la actividad peptidil transferasa del propio ribosoma."
+  },
+  {
+    "id": 21,
+    "q": "¿Qué se requiere para exportar un ARNm del núcleo al citoplasma?",
+    "options": [
+      "Que esté completamente procesado (cap 5', cola poli-A, splicing).",
+      "Que esté unido a un ribosoma.",
+      "Que sea ADN de doble cadena.",
+      "No se requiere nada especial, difunde libremente."
+    ],
+    "correct": 0,
+    "exp": "Solo los ARNm maduros y correctamente procesados son reconocidos por el complejo del poro nuclear para su exportación."
+  },
+  {
+    "id": 22,
+    "q": "El 'Mundo del ARN' es una hipótesis que sugiere que:",
+    "options": [
+      "El ARN fue el material genético y catalítico original antes que el ADN y las proteínas.",
+      "El ARN es más importante que el ADN hoy en día.",
+      "Las células están hechas solo de ARN.",
+      "El ARN no sirve para nada."
+    ],
+    "correct": 0,
+    "exp": "Se basa en la capacidad del ARN para almacenar información y catalizar reacciones (ribozimas)."
+  },
+  {
+    "id": 23,
+    "q": "¿Cuántos marcos de lectura posibles tiene una secuencia de ARN de cadena simple?",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "6"
+    ],
+    "correct": 2,
+    "exp": "Al leerse en tripletes, se puede empezar en el nucleótido 1, 2 o 3, dando 3 marcos posibles. (El ADN de doble cadena tendría 6, 3 por hebra)."
+  },
+  {
+    "id": 24,
+    "q": "La región promotora de un gen contiene típicamente:",
+    "options": [
+      "Secuencias consenso como la caja TATA donde se une la maquinaria de transcripción.",
+      "El codón de parada.",
+      "Intrones.",
+      "La cola poli-A."
+    ],
+    "correct": 0,
+    "exp": "El promotor se encuentra 'aguas arriba' (upstream) del sitio de inicio y regula la unión de la polimerasa."
+  },
+  {
+    "id": 25,
+    "q": "Un polirribosoma (o polisoma) es:",
+    "options": [
+      "Un ribosoma con muchas subunidades.",
+      "Múltiples ribosomas traduciendo un mismo ARNm simultáneamente.",
+      "Un ribosoma unido a muchos ARNm.",
+      "Un tipo de cáncer."
+    ],
+    "correct": 1,
+    "exp": "Permite sintetizar muchas copias de proteína rápidamente a partir de un solo mensaje."
+  },
+  {
+    "id": 26,
+    "q": "¿Qué antibióticos funcionan inhibiendo la síntesis de proteínas bacterianas?",
+    "options": [
+      "Tetraciclina, Estreptomicina, Cloranfenicol.",
+      "Penicilina (pared celular).",
+      "Aspirina.",
+      "Insulina."
+    ],
+    "correct": 0,
+    "exp": "Muchos antibióticos explotan las diferencias sutiles entre ribosomas procariotas (70S) y eucariotas (80S)."
+  },
+  {
+    "id": 28,
+    "q": "Las chaperonas moleculares:",
+    "options": [
+      "Ayudan a las proteínas a plegarse correctamente.",
+      "Degradan proteínas.",
+      "Transportan ARNm.",
+      "Replican ADN."
+    ],
+    "correct": 0,
+    "exp": "Previenen la agregación de proteínas desplegadas y asisten en alcanzar la conformación nativa."
+  },
+  {
+    "id": 29,
+    "q": "La ubiquitinación de una proteína suele marcarla para:",
+    "options": [
+      "Ser secretada.",
+      "Ser degradada por el proteasoma.",
+      "Ir al núcleo.",
+      "Aumentar su actividad."
+    ],
+    "correct": 1,
+    "exp": "Una cadena de poli-ubiquitina es la 'marca de la muerte' para proteínas citosólicas."
+  },
+  {
+    "id": 30,
+    "q": "En el código genético, 'Wobble' (bamboleo) se refiere a:",
+    "options": [
+      "La flexibilidad en el emparejamiento de bases en la tercera posición del codón.",
+      "Un error de lectura.",
+      "La inestabilidad del ribosoma.",
+      "El movimiento del ARNm."
+    ],
+    "correct": 0,
+    "exp": "Permite que un mismo ARNt reconozca varios codones sinónimos que difieren en la 3ª base."
+  },
+  {
+    "id": 31,
+    "q": "¿Qué es un snRNP (ribonucleoproteína nuclear pequeña)?",
+    "options": [
+      "Parte del espliceosoma (spliceosome) que realiza el splicing.",
+      "Un ribosoma pequeño.",
+      "Un fragmento de ADN.",
+      "Una proteína de membrana."
+    ],
+    "correct": 0,
+    "exp": "Los snRNPs (U1, U2, etc.) reconocen los sitios de corte en los intrones."
+  },
+  {
+    "id": 32,
+    "q": "La diferencia principal entre la transcripción en procariotas y eucariotas es:",
+    "options": [
+      "En procariotas, transcripción y traducción son simultáneas (acopladas); en eucariotas están separadas por la envoltura nuclear.",
+      "Los procariotas tienen intrones.",
+      "Los eucariotas usan factor Sigma.",
+      "No hay diferencia."
+    ],
+    "correct": 0,
+    "exp": "La compartimentación eucariota permite un procesamiento complejo (splicing) antes de la traducción."
+  },
+  {
+    "id": 33,
+    "q": "La secuencia de aminoácidos de una proteína está determinada directamente por:",
+    "options": [
+      "La secuencia de nucleótidos del ARNm.",
+      "La forma del ribosoma.",
+      "La cantidad de ATP.",
+      "Las histonas."
+    ],
+    "correct": 0,
+    "exp": "Es la traducción literal de la secuencia de codones del ARNm."
+  },
+  {
+    "id": 34,
+    "q": "¿Qué tipo de enlace une los aminoácidos en una proteína?",
+    "options": [
+      "Enlace peptídico",
+      "Enlace fosfodiéster",
+      "Enlace de hidrógeno",
+      "Enlace iónico"
+    ],
+    "correct": 0,
+    "exp": "Es un enlace covalente amida entre el grupo carboxilo de uno y el amino del siguiente."
+  },
+  {
+    "id": 35,
+    "q": "Si el anticodón de un ARNt es 5'-GCA-3', ¿qué codón de ARNm reconoce?",
+    "options": [
+      "5'-UGC-3'",
+      "5'-CGU-3'",
+      "3'-CGU-5' (que se lee 5'-UGC-3')",
+      "3'-CGU-5' -> Complementario es 5'-UGC-3'."
+    ],
+    "correct": 0,
+    "exp": "Antiparalelo y complementario: 5'-GCA-3' se aparea con 3'-CGU-5', que es 5'-UGC-3' (Cisteína)."
+  },
+  {
+    "id": 36,
+    "q": "La concentración de una proteína en la célula depende de:",
+    "options": [
+      "El equilibrio entre su tasa de síntesis y su tasa de degradación.",
+      "Solo de la transcripción.",
+      "Solo de la traducción.",
+      "El tamaño del genoma."
+    ],
+    "correct": 0,
+    "exp": "Es un proceso dinámico regulado a múltiples niveles (transcripción, estabilidad ARNm, traducción, degradación proteína)."
+  },
+  {
+    "id": 37,
+    "q": "¿Qué es un gen?",
+    "options": [
+      "Un segmento de ADN que contiene las instrucciones para hacer una proteína o una molécula de ARN funcional.",
+      "Cualquier segmento de ADN.",
+      "Un cromosoma entero.",
+      "Una proteína."
+    ],
+    "correct": 0,
+    "exp": "Definición molecular moderna."
+  },
+  {
+    "id": 38,
+    "q": "La ARN polimerasa II requiere ______ para iniciar la transcripción.",
+    "options": [
+      "Factores de transcripción generales (como TFIID, TFIIH).",
+      "Solo ATP.",
+      "Factor Sigma.",
+      "Primasa."
+    ],
+    "correct": 0,
+    "exp": "Forman el complejo de pre-iniciación en el promotor."
+  },
+  {
+    "id": 39,
+    "q": "La cola de poli-A del ARNm:",
+    "options": [
+      "Aumenta la estabilidad y ayuda en la exportación y traducción.",
+      "Marca el ARNm para degradación inmediata.",
+      "Es codificada por el genoma (hay muchas Ts en el ADN).",
+      "Es un error."
+    ],
+    "correct": 0,
+    "exp": "Es añadida post-transcripcionalmente por la poli-A polimerasa."
+  },
+  {
+    "id": 40,
+    "q": "¿Qué estructura ribosomal cataliza la formación del enlace peptídico?",
+    "options": [
+      "El ARNr 23S (en bacterias) o 28S (eucariotas) de la subunidad grande.",
+      "Las proteínas ribosomales.",
+      "El ARNm.",
+      "El factor de elongación."
+    ],
+    "correct": 0,
+    "exp": "El ribosoma es una ribozima; el ARN es el catalizador."
+  },
+  {
+    "id": 41,
+    "q": "El codón de parada (Stop codon):",
+    "options": [
+      "No codifica ningún aminoácido.",
+      "Codifica metionina.",
+      "Codifica triptófano.",
+      "Se une a un ARNt vacío."
+    ],
+    "correct": 0,
+    "exp": "Es reconocido por factores de liberación proteicos."
+  },
+  {
+    "id": 42,
+    "q": "Un ARNm policistrónico:",
+    "options": [
+      "Codifica varias proteínas diferentes (común en bacterias).",
+      "Tiene muchas colas poli-A.",
+      "Es exclusivo de humanos.",
+      "Está mutado."
+    ],
+    "correct": 0,
+    "exp": "Los operones bacterianos producen un solo ARNm largo con múltiples marcos de lectura."
+  },
+  {
+    "id": 43,
+    "q": "¿Qué ocurre en el sitio P del ribosoma?",
+    "options": [
+      "Sostiene el ARNt unido a la cadena polipeptídica en crecimiento.",
+      "Entra el nuevo aminoácido.",
+      "Sale el ARNt.",
+      "Se une el capuchón."
+    ],
+    "correct": 0,
+    "exp": "P de Peptidil-ARNt."
+  },
+  {
+    "id": 44,
+    "q": "La energía para la traducción (unión de ARNt, translocación) proviene principalmente de:",
+    "options": [
+      "GTP",
+      "ATP",
+      "NADH",
+      "Glucosa"
+    ],
+    "correct": 0,
+    "exp": "Los factores de elongación y de inicio son GTPasas."
+  },
+  {
+    "id": 45,
+    "q": "El splicing es realizado por un complejo llamado:",
+    "options": [
+      "Espliceosoma (Spliceosome)",
+      "Ribosoma",
+      "Nucleosoma",
+      "Proteasoma"
+    ],
+    "correct": 0,
+    "exp": "Complejo de snRNPs y proteínas."
+  },
+  {
+    "id": 46,
+    "q": "¿Cuál es la función del capuchón 5' (5' Cap)?",
+    "options": [
+      "Proteger el ARNm de la degradación y ayudar al ribosoma a encontrar el inicio.",
+      "Terminar la transcripción.",
+      "Codificar el primer aminoácido.",
+      "Unir intrones."
+    ],
+    "correct": 0,
+    "exp": "El ribosoma eucariota se une al Cap y escanea buscando el AUG."
+  },
+  {
+    "id": 47,
+    "q": "Las tetraciclinas actúan:",
+    "options": [
+      "Bloqueando la unión del aminoacil-ARNt al sitio A del ribosoma bacteriano.",
+      "Inhibiendo la ARN polimerasa.",
+      "Rompiendo el ADN.",
+      "Impidiendo el splicing."
+    ],
+    "correct": 0,
+    "exp": "Es un mecanismo bacteriostático clásico."
+  },
+  {
+    "id": 48,
+    "q": "La hipótesis de 'un gen, una enzima' (ahora 'un gen, un polipéptido') fue propuesta por:",
+    "options": [
+      "Beadle y Tatum",
+      "Watson y Crick",
+      "Darwin",
+      "Mendel"
+    ],
+    "correct": 0,
+    "exp": "Aunque hay excepciones (splicing alternativo, ARNs no codificantes), es el concepto fundacional."
+  },
+  {
+    "id": 49,
+    "q": "¿Qué molécula contiene el anticodón?",
+    "options": [
+      "ARNt",
+      "ARNm",
+      "ARNr",
+      "ADN"
+    ],
+    "correct": 0,
+    "exp": "El anticodón del ARNt es complementario al codón del ARNm."
+  }
+];
+
+// Lógica
+let current = 0;
+let userState = new Array(db.length).fill(null);
+let marked = new Set();
+let activeIndices = db.map((_, i) => i);
+
+function init() {
+    renderNav();
+    loadQuestion(0);
+}
+
+function renderNav() {
+    // CORRECCIÓN: El ID correcto en HTML es 'nav-container', no 'nav-grid'
+    const grid = document.getElementById('nav-container');
+    
+    if (!grid) return; // Seguridad extra
+    
+    grid.innerHTML = '';
+    activeIndices.forEach((realIdx, viewIdx) => {
+        const btn = document.createElement('div');
+        const s = userState[realIdx];
+        let cls = 'nav-btn';
+        if (viewIdx === current) cls += ' active';
+        if (s) cls += s.ok ? ' correct' : ' incorrect';
+        if (marked.has(realIdx)) cls += ' marked';
+        
+        btn.className = cls;
+        btn.innerText = viewIdx + 1;
+        btn.onclick = () => loadQuestion(viewIdx);
+        grid.appendChild(btn);
+    });
+    
+    // Stats
+    const ok = userState.filter(x => x && x.ok).length;
+    document.getElementById('score-val').innerText = ok;
+    document.getElementById('progress-indicator').innerText = `Pregunta ${current + 1} / ${activeIndices.length}`;
+}
+
+function loadQuestion(idx) {
+    current = idx;
+    const realIdx = activeIndices[idx];
+    const data = db[realIdx];
+    const s = userState[realIdx];
+
+    document.getElementById('q-number').innerText = `Q${idx + 1}`;
+    document.getElementById('q-text').innerText = data.q;
+    
+    // Mark Btn
+    const mb = document.querySelector('.mark-btn');
+    mb.className = marked.has(realIdx) ? 'mark-btn active' : 'mark-btn';
+    mb.innerHTML = marked.has(realIdx) ? 'Marcada ★' : 'Marcar ☆';
+
+    // Options
+    const area = document.getElementById('options-area');
+    area.innerHTML = '';
+    data.options.forEach((opt, i) => {
+        const div = document.createElement('div');
+        div.className = 'option';
+        div.innerText = opt;
+        
+        if (s) {
+            div.classList.add('disabled');
+            if (i === data.correct) div.classList.add('correct');
+            else if (i === s.sel) div.classList.add('incorrect');
+        } else {
+            div.onclick = () => answer(realIdx, i);
+        }
+        area.appendChild(div);
+    });
+
+    // Feedback
+    const fb = document.getElementById('feedback-area');
+    if (s) {
+        fb.style.display = 'block';
+        fb.className = `feedback ${s.ok ? 'success' : 'error'}`;
+        document.getElementById('feedback-title').innerText = s.ok ? '¡Correcto!' : 'Incorrecto';
+        document.getElementById('feedback-msg').innerText = data.exp;
+    } else {
+        fb.style.display = 'none';
+    }
+
+    // Buttons
+    document.getElementById('prev-btn').disabled = idx === 0;
+    document.getElementById('next-btn').innerText = idx === activeIndices.length - 1 ? 'Resultados' : 'Siguiente ➡';
+    renderNav();
+}
+
+function answer(realIdx, sel) {
+    const data = db[realIdx];
+    const ok = sel === data.correct;
+    userState[realIdx] = { sel, ok };
+    loadQuestion(current);
+}
+
+function toggleMark() {
+    const realIdx = activeIndices[current];
+    if (marked.has(realIdx)) marked.delete(realIdx);
+    else marked.add(realIdx);
+    loadQuestion(current);
+}
+
+function navigate(dir) {
+    const next = current + dir;
+    if (next >= 0 && next < activeIndices.length) loadQuestion(next);
+    else if (next >= activeIndices.length) showResults();
+}
+
+function showResults() {
+    let ok = 0;
+    activeIndices.forEach(i => { if (userState[i] && userState[i].ok) ok++; });
+    const pct = Math.round((ok / activeIndices.length) * 100) || 0;
+    
+    const circle = document.getElementById('final-circle');
+    circle.style.background = `conic-gradient(var(--success) ${pct}%, #ecf0f1 0%)`;
+    document.getElementById('final-score').innerText = pct + '%';
+    document.getElementById('final-msg').innerText = `Acertaste ${ok} de ${activeIndices.length}.`;
+    document.getElementById('results-modal').style.display = 'flex';
+}
+
+function restart(mode) {
+    document.getElementById('results-modal').style.display = 'none';
+    if (mode === 'all') {
+        activeIndices = db.map((_, i) => i);
+        userState.fill(null);
+    } else if (mode === 'failed') {
+        const fail = [];
+        db.forEach((_, i) => { if (userState[i] && !userState[i].ok) fail.push(i); });
+        if (!fail.length) return alert("¡Sin fallos!");
+        activeIndices = fail;
+        activeIndices.forEach(i => userState[i] = null);
+    } else if (mode === 'marked') {
+        const m = Array.from(marked).sort((a,b)=>a-b);
+        if (!m.length) return alert("¡Sin marcas!");
+        activeIndices = m;
+        activeIndices.forEach(i => userState[i] = null);
+    }
+    loadQuestion(0);
+}
+
+// CORRECCIÓN: Función que faltaba para cerrar el modal
+function closeModal() {
+    document.getElementById('results-modal').style.display = 'none';
+}
+
+init();
+</script>
+</body>
+</html>
