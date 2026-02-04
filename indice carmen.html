@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Índice General - Quiz Anatomía</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --accent: #3498db;
+            --bg: #f4f7f6;
+            --white: #ffffff;
+            --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --hover-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--primary);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            border-bottom: 5px solid var(--accent);
+        }
+
+        h1 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 2rem;
+        }
+
+        p.subtitle {
+            color: var(--secondary);
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+
+        .grid-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .menu-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            text-decoration: none;
+            color: var(--primary);
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            border-left: 5px solid transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+            border-left: 5px solid var(--accent);
+        }
+
+        .card-number {
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .card-icon {
+            align-self: flex-end;
+            margin-top: 15px;
+            color: #bdc3c7;
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .grid-menu {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Quiz Anatomía</h1>
+            <p class="subtitle">Selecciona un tema para comenzar a practicar</p>
+        </header>
+
+        <div class="grid-menu">
+            <a href="carmen 1.html" class="menu-card">
+                <div>
+                    <div class="card-number">Tema 1</div>
+                    <div class="card-title">Generalidades</div>
+                </div>
+                <div class="card-icon">➜</div>
+            </a>
+
+            <a href="carmen 2.html" class="menu-card">
+                <div>
+                    <div class="card-number">Tema 2</div>
+                    <div class="card-title">Vértebras</div>
+                </div>
+                <div class="card-icon">➜</div>
+            </a>
+
+            <a href="carmen 3.html" class="menu-card">
+                <div>
+                    <div class="card-number">Tema 3</div>
+                    <div class="card-title">Artrología</div>
+                </div>
+                <div class="card-icon">➜</div>
+            </a>
+
+            <a href="carmen 4.html" class="menu-card">
+                <div>
+                    <div class="card-number">Tema 4</div>
+                    <div class="card-title">Musculatura Autóctona</div>
+                </div>
+                <div class="card-icon">➜</div>
+            </a>
+
+            <a href="carmen 5.html" class="menu-card">
+                <div>
+                    <div class="card-number">Tema 5</div>
+                    <div class="card-title">Tórax</div>
+                </div>
+                <div class="card-icon">➜</div>
+            </a>
+
+            <a href="carmen 6.html" class="menu-card">
+                <div>
+                    <div class="card-number">Tema 6</div>
+                    <div class="card-title">Diafragma y Abdomen</div>
+                </div>
+                <div class="card-icon">➜</div>
+            </a>
+
+            <a href="carmen 7.html" class="menu-card">
+                <div>
+                    <div class="card-number">Tema 7</div>
+                    <div class="card-title">Pared Abdominal</div>
+                </div>
+                <div class="card-icon">➜</div>
+            </a>
+
+            <a href="carmen 8.html" class="menu-card">
+                <div>
+                    <div class="card-number">Tema 8</div>
+                    <div class="card-title">Suelo de la Pelvis</div>
+                </div>
+                <div class="card-icon">➜</div>
+            </a>
+
+            <a href="carmen 9.html" class="menu-card">
+                <div>
+                    <div class="card-number">Tema 9</div>
+                    <div class="card-title">Cuello</div>
+                </div>
+                <div class="card-icon">➜</div>
+            </a>
+
+            <a href="carmen 10.html" class="menu-card">
+                <div>
+                    <div class="card-number">Tema 10</div>
+                    <div class="card-title">Laringe</div>
+                </div>
+                <div class="card-icon">➜</div>
+            </a>
+
+            <a href="carmen 11.html" class="menu-card">
+                <div>
+                    <div class="card-number">Tema 11</div>
+                    <div class="card-title">Faringe</div>
+                </div>
+                <div class="card-icon">➜</div>
+            </a>
+
+            <a href="carmen 12.html" class="menu-card">
+                <div>
+                    <div class="card-number">Tema 12</div>
+                    <div class="card-title">Tiroides y Paratiroides</div>
+                </div>
+                <div class="card-icon">➜</div>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
