@@ -8,8 +8,9 @@
         :root {
             --bg-color: #f0f2f5;
             --text-color: #2c3e50;
-            --carmen-color: #c0392b; /* Rojo para Carmen */
-            --prada-color: #2980b9; /* Azul para Prada */
+            --carmen-color: #c0392b; /* Rojo */
+            --prada-color: #2980b9;  /* Azul */
+            --quiz-color: #27ae60;   /* Verde para Cuestionarios */
             --white: #ffffff;
         }
 
@@ -38,9 +39,9 @@
         .container {
             display: flex;
             flex-wrap: wrap;
-            gap: 40px;
+            gap: 30px;
             justify-content: center;
-            max-width: 1000px;
+            max-width: 1200px;
             width: 100%;
         }
 
@@ -48,8 +49,8 @@
         .card {
             background: var(--white);
             border-radius: 20px;
-            width: 350px;
-            padding: 40px 30px;
+            width: 320px;
+            padding: 40px 20px;
             text-align: center;
             text-decoration: none;
             color: inherit;
@@ -67,27 +68,19 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
 
-        /* Tarjeta Carmen */
-        .card-carmen {
-            border-top-color: var(--carmen-color);
-        }
-        .card-carmen:hover .icon {
-            background-color: var(--carmen-color);
-            color: white;
-        }
+        /* Colores por tarjeta */
+        .card-carmen { border-top-color: var(--carmen-color); }
         .card-carmen h2 { color: var(--carmen-color); }
+        .card-carmen:hover .icon { background-color: var(--carmen-color); color: white; }
 
-        /* Tarjeta Prada */
-        .card-prada {
-            border-top-color: var(--prada-color);
-        }
-        .card-prada:hover .icon {
-            background-color: var(--prada-color);
-            color: white;
-        }
+        .card-prada { border-top-color: var(--prada-color); }
         .card-prada h2 { color: var(--prada-color); }
+        .card-prada:hover .icon { background-color: var(--prada-color); color: white; }
 
-        /* Iconos y Textos */
+        .card-quiz { border-top-color: var(--quiz-color); }
+        .card-quiz h2 { color: var(--quiz-color); }
+        .card-quiz:hover .icon { background-color: var(--quiz-color); color: white; }
+
         .icon {
             width: 80px;
             height: 80px;
@@ -104,13 +97,14 @@
 
         h2 {
             margin: 0 0 10px 0;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
         }
 
         p {
             color: #7f8c8d;
-            font-size: 1rem;
+            font-size: 0.95rem;
             margin: 0;
+            line-height: 1.4;
         }
 
         .btn-text {
@@ -120,7 +114,7 @@
             border-radius: 25px;
             background-color: #ecf0f1;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             transition: background 0.3s;
         }
 
@@ -131,36 +125,44 @@
         footer {
             margin-top: 50px;
             color: #95a5a6;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             text-align: center;
+            max-width: 600px;
         }
-
     </style>
 </head>
 <body>
 
-    <h1>Banco de Preguntas</h1>
+    <h1>Banco de Preguntas - Anatomía I</h1>
 
     <div class="container">
         
         <a href="indice carmen.html" class="card card-carmen">
             <div class="icon">C</div>
             <h2>Carmen</h2>
-            <p>Acceder a los Temas 1 - 12</p>
-            <div class="btn-text">Entrar al Índice ➜</div>
+            <p>Contenidos teóricos y temas del 1 al 12.</p>
+            <div class="btn-text">Entrar ➜</div>
         </a>
 
-        <a href="indice plataforma anatomia2.html" class="card card-prada">
+        <a href="indice prada.html" class="card card-prada">
             <div class="icon">P</div>
             <h2>Prada</h2>
-            <p>Acceder a los Temas de Prada (Finales y Parciales)</p>
-            <div class="btn-text">Entrar al Índice ➜</div>
+            <p>Contenidos teóricos y temas del 13 al 34.</p>
+            <div class="btn-text">Entrar ➜</div>
+        </a>
+
+        <a href="indice plataforma anatomia2.html" class="card card-quiz">
+            <div class="icon">Q</div>
+            <h2>Cuestionarios Plataforma</h2>
+            <p>Acceso a todos los Quizz de autoevaluación (Parciales y Finales).</p>
+            <div class="btn-text">Ir a los Tests ➜</div>
         </a>
 
     </div>
 
     <footer>
-        U Cádiz - Anatomía | Asegúrate de que los archivos <b>indice carmen.html</b> e <b>indice plataforma anatomia2.html</b> están en la misma carpeta.
+        U Cádiz - Facultad de Medicina.<br>
+        Asegúrate de tener <b>indice carmen.html</b>, <b>indice prada.html</b> e <b>indice plataforma anatomia2.html</b> en la misma carpeta.
     </footer>
 
 </body>
