@@ -3,233 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Índice Anatomía II</title>
+    <title>Menú Principal - Anatomía</title>
     <style>
         :root {
-            /* Paleta de colores consistente con los Quiz */
-            --primary: #2c3e50;
-            --secondary: #34495e;
-            --accent: #3498db;
-            --bg: #f4f7f6;
+            --bg-color: #f0f2f5;
+            --text-color: #2c3e50;
+            --carmen-color: #c0392b; /* Rojo para Carmen */
+            --prada-color: #2980b9; /* Azul para Prada */
             --white: #ffffff;
-            --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            --hover-shadow: 0 8px 15px rgba(0,0,0,0.1);
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--primary);
+            background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
-            padding: 20px;
             display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
             min-height: 100vh;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 900px; /* Un poco más ancho para futuras ampliaciones */
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 30px;
-            background: var(--white);
-            border-radius: 15px;
-            box-shadow: var(--card-shadow);
-            border-bottom: 5px solid var(--accent);
+            padding: 20px;
         }
 
         h1 {
-            margin: 0;
-            color: var(--primary);
-            font-size: 2.2rem;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: #34495e;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            text-align: center;
         }
 
-        p.subtitle {
-            color: var(--secondary);
-            margin-top: 10px;
-            font-size: 1.1rem;
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: center;
+            max-width: 1000px;
+            width: 100%;
         }
 
-        /* Rejilla responsive */
-        .grid-menu {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
-        }
-
-        /* Tarjeta de enlace */
-        .menu-card {
+        /* Estilos de las Tarjetas */
+        .card {
             background: var(--white);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 20px;
+            width: 350px;
+            padding: 40px 30px;
+            text-align: center;
             text-decoration: none;
-            color: var(--primary);
-            box-shadow: var(--card-shadow);
-            transition: all 0.3s ease;
-            border-left: 5px solid transparent;
+            color: inherit;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-top: 10px solid transparent;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            height: 100px; /* Altura fija para uniformidad */
+            justify-content: center;
+            align-items: center;
         }
 
-        .menu-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--hover-shadow);
-            border-left: 5px solid var(--accent);
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
 
-        .card-header {
+        /* Tarjeta Carmen */
+        .card-carmen {
+            border-top-color: var(--carmen-color);
+        }
+        .card-carmen:hover .icon {
+            background-color: var(--carmen-color);
+            color: white;
+        }
+        .card-carmen h2 { color: var(--carmen-color); }
+
+        /* Tarjeta Prada */
+        .card-prada {
+            border-top-color: var(--prada-color);
+        }
+        .card-prada:hover .icon {
+            background-color: var(--prada-color);
+            color: white;
+        }
+        .card-prada h2 { color: var(--prada-color); }
+
+        /* Iconos y Textos */
+        .icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #f0f2f5;
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            transition: background-color 0.3s, color 0.3s;
+            font-weight: bold;
         }
 
-        .card-number {
-            font-size: 0.85rem;
-            color: var(--accent);
-            font-weight: 700;
-            text-transform: uppercase;
-            background: rgba(52, 152, 219, 0.1);
-            padding: 4px 8px;
-            border-radius: 4px;
+        h2 {
+            margin: 0 0 10px 0;
+            font-size: 1.8rem;
         }
 
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-top: 10px;
-            line-height: 1.3;
+        p {
+            color: #7f8c8d;
+            font-size: 1rem;
+            margin: 0;
         }
 
-        .card-icon {
-            align-self: flex-end;
-            color: #bdc3c7;
-            font-size: 1.2rem;
+        .btn-text {
+            margin-top: 25px;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background-color: #ecf0f1;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: background 0.3s;
         }
 
-        /* Para móviles */
-        @media (max-width: 600px) {
-            .grid-menu {
-                grid-template-columns: 1fr;
-            }
-            h1 { font-size: 1.8rem; }
+        .card:hover .btn-text {
+            background-color: #bdc3c7;
         }
+
+        footer {
+            margin-top: 50px;
+            color: #95a5a6;
+            font-size: 0.9rem;
+        }
+
     </style>
 </head>
 <body>
 
+    <h1>Banco de Preguntas</h1>
+
     <div class="container">
-        <header>
-            <h1>Anatomía II</h1>
-            <p class="subtitle">Repositorio de Test y Recursos</p>
-        </header>
+        
+        <a href="indice carmen.html" class="card card-carmen">
+            <div class="icon">C</div>
+            <h2>Carmen</h2>
+            <p>Acceder a los Temas 1 - 12</p>
+            <div class="btn-text">Entrar al Índice ➜</div>
+        </a>
 
-        <div class="grid-menu">
-            
-            <a href="carmen 1.html" class="menu-card">
-                <div>
-                    <span class="card-number">Tema 1</span>
-                    <div class="card-title">Generalidades</div>
-                </div>
-                <div class="card-icon">➜</div>
-            </a>
-            <a href="carmen 2.html" class="menu-card">
-                <div>
-                    <span class="card-number">Tema 2</span>
-                    <div class="card-title">Vértebras</div>
-                </div>
-                <div class="card-icon">➜</div>
-            </a>
+        <a href="indice prada.html" class="card card-prada">
+            <div class="icon">P</div>
+            <h2>Prada</h2>
+            <p>Acceder a los Temas 13 - 34</p>
+            <div class="btn-text">Entrar al Índice ➜</div>
+        </a>
 
-            <a href="carmen 3.html" class="menu-card">
-                <div>
-                    <span class="card-number">Tema 3</span>
-                    <div class="card-title">Artrología</div>
-                </div>
-                <div class="card-icon">➜</div>
-            </a>
-
-            <a href="carmen 4.html" class="menu-card">
-                <div>
-                    <span class="card-number">Tema 4</span>
-                    <div class="card-title">Musculatura Autóctona</div>
-                </div>
-                <div class="card-icon">➜</div>
-            </a>
-
-            <a href="carmen 5.html" class="menu-card">
-                <div>
-                    <span class="card-number">Tema 5</span>
-                    <div class="card-title">Tórax</div>
-                </div>
-                <div class="card-icon">➜</div>
-            </a>
-
-            <a href="carmen 6.html" class="menu-card">
-                <div>
-                    <span class="card-number">Tema 6</span>
-                    <div class="card-title">Diafragma y Abdomen</div>
-                </div>
-                <div class="card-icon">➜</div>
-            </a>
-
-            <a href="carmen 7.html" class="menu-card">
-                <div>
-                    <span class="card-number">Tema 7</span>
-                    <div class="card-title">Pared Abdominal</div>
-                </div>
-                <div class="card-icon">➜</div>
-            </a>
-
-            <a href="carmen 8.html" class="menu-card">
-                <div>
-                    <span class="card-number">Tema 8</span>
-                    <div class="card-title">Suelo de la Pelvis</div>
-                </div>
-                <div class="card-icon">➜</div>
-            </a>
-
-            <a href="carmen 9.html" class="menu-card">
-                <div>
-                    <span class="card-number">Tema 9</span>
-                    <div class="card-title">Cuello</div>
-                </div>
-                <div class="card-icon">➜</div>
-            </a>
-
-            <a href="carmen 10.html" class="menu-card">
-                <div>
-                    <span class="card-number">Tema 10</span>
-                    <div class="card-title">Laringe</div>
-                </div>
-                <div class="card-icon">➜</div>
-            </a>
-
-            <a href="carmen 11.html" class="menu-card">
-                <div>
-                    <span class="card-number">Tema 11</span>
-                    <div class="card-title">Faringe</div>
-                </div>
-                <div class="card-icon">➜</div>
-            </a>
-
-            <a href="carmen 12.html" class="menu-card">
-                <div>
-                    <span class="card-number">Tema 12</span>
-                    <div class="card-title">Tiroides y Paratiroides</div>
-                </div>
-                <div class="card-icon">➜</div>
-            </a>
-
-            </div>
     </div>
+
+    <footer>
+        Asegúrate de que los archivos <b>indice carmen.html</b> e <b>indice prada.html</b> están en la misma carpeta.
+    </footer>
 
 </body>
 </html>
