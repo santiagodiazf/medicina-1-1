@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Completo: Tronco y Cuello - Prada</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #8e44ad;
+            --success: #27ae60;
+            --error: #e74c3c;
+            --bg: #f5f0f6;
+            --sidebar-w: 130px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+        }
+
+        /* Índice lateral en 3 columnas */
+        #sidebar {
+            width: var(--sidebar-w);
+            background: var(--primary);
+            height: 100vh;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .nav-header {
+            color: white;
+            text-align: center;
+            padding: 10px 5px;
+            font-size: 0.75em;
+            font-weight: bold;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .nav-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            padding: 10px;
+            align-content: start;
+        }
+
+        .nav-dot {
+            aspect-ratio: 1;
+            background: #34495e;
+            color: white;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.75em;
+            transition: 0.2s;
+        }
+
+        .nav-dot:hover { background: var(--accent); }
+        .nav-dot.answered { background: var(--success); }
+        .nav-dot.marked { border: 2px solid #f1c40f; color: #f1c40f; }
+
+        .restart-tab {
+            padding: 15px 0;
+            background: #1a252f;
+            color: #f1c40f;
+            text-align: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            border-top: 1px solid #34495e;
+        }
+
+        #main-content {
+            margin-left: calc(var(--sidebar-w) + 20px);
+            padding: 30px;
+            width: 100%;
+            max-width: 850px;
+        }
+
+        .question-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: relative;
+            border-left: 5px solid var(--accent);
+        }
+
+        .mark-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 20px;
+            color: #ccc;
+        }
+        .mark-btn.active { color: #f1c40f; }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .option {
+            padding: 12px;
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            background: #fff;
+        }
+
+        .option:hover:not(.disabled) { border-color: var(--accent); background: #fdfaff; }
+        .option.correct { background: #d4edda; border-color: var(--success); color: #155724; }
+        .option.incorrect { background: #f8d7da; border-color: var(--error); color: #721c24; }
+        .option.disabled { cursor: not-allowed; }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            font-size: 0.95em;
+            background: #f8f9fa;
+            border-left: 4px solid var(--accent);
+        }
+
+        #results-area {
+            display: none;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: var(--accent);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-finish { background: var(--primary); margin-bottom: 30px; width: 100%; }
+    </style>
+</head>
+<body>
+
+<div id="sidebar">
+    <div class="nav-header">PREGUNTAS</div>
+    <div class="nav-container" id="nav-dots"></div>
+    <div class="restart-tab" onclick="showResults()" title="Finalizar y Reiniciar">🔄</div>
+</div>
+
+<div id="main-content">
+    <h1>Tronco y Cuello - Examen Final Completo</h1>
+    <button class="btn-finish" onclick="showResults()">Finalizar Cuestionario</button>
+    
+    <div id="results-area">
+        <h2>Resultados</h2>
+        <p id="score-text" style="font-size: 1.4rem;"></p>
+        <div class="btn-group">
+            <button onclick="restartQuiz('all')">Repetir Todo</button>
+            <button onclick="restartQuiz('failed')">Repetir Falladas</button>
+            <button onclick="restartQuiz('marked')">Repetir Marcadas</button>
+            <button onclick="restartQuiz('failed-marked')">Falladas + Marcadas</button>
+        </div>
+    </div>
+
+    <div id="quiz-container"></div>
+</div>
+
+<script>
+    const rawQuestions = [
+        { id: 1, q: "Es cierto que:", options: ["en la rotación del tronco participan los músculos oblicuos del abdomen y autóctonos del dorso", "todos los músculos anchos del abdomen son rotadores", "en la rotación del tronco intervienen principalmente el oblicuo mayor y transverso", "todos los músculos de la pared anterolateral del abdomen son rotadores"], correct: 0, r: "La rotación implica la musculatura oblicua abdominal y los sistemas profundos del dorso." },
+        { id: 2, q: "Respecto a los músculos del dorso es cierto que:", options: ["el músculo dorsal ancho es un músculo emigrado", "el músculo serrato posterior es un músculo autóctono", "el músculo esplenio es un músculo emigrado", "el músculo erector de la columna es un músculo emigrado"], correct: 0, r: "El dorsal ancho es un músculo emigrado inervado por el plexo braquial." },
+        { id: 3, q: "Sobre los músculos de la pared anterolateral del abdomen es falso que:", options: ["el músculo oblicuo menor se inserta en las 4 últimas costillas", "el músculo transverso del abdomen termina en una aponeurosis que forma la línea alba", "las fibras del músculo oblicuo mayor tienen una dirección caudal y ventral", "el músculo recto del abdomen se inserta en el cuerpo del pubis"], correct: 0, r: "El oblicuo menor se inserta normalmente en las 3 últimas costillas." },
+        { id: 4, q: "Indique la respuesta falsa sobre los músculos autóctonos del dorso:", options: ["los músculos interespinosos e intertransversos forman parte del sistema transversoespinoso", "los músculos del sistema transversoespinoso se sitúan profundos al erector de la columna", "el músculo dorsal largo e iliocostal forman parte del músculo erector de la columna", "los músculos autóctonos están inervados por ramos posteriores de los nervios espinales"], correct: 0, r: "Los interespinosos e intertransversos son sistemas cortos independientes del transversoespinoso." },
+        { id: 5, q: "Cuál de los siguientes músculos de la nuca no delimita el triángulo de Tillaux (suboccipital):", options: ["músculo oblicuo menor de la cabeza", "músculo oblicuo mayor de la cabeza", "músculo recto posterior mayor de la cabeza", "músculo recto posterior menor de la cabeza"], correct: 3, r: "El recto posterior menor no forma parte de los límites del triángulo." },
+        { id: 6, q: "El plano muscular más profundo de la región de la nuca está formado por:", options: ["rectos posteriores y oblicuos de la cabeza", "músculo semiespinoso de la cabeza", "músculo esplenio", "músculo trapecio"], correct: 0, r: "Los rectos y oblicuos forman el plano profundo suboccipital." },
+        { id: 7, q: "Qué músculo de la nuca se inserta en la apófisis transversa del atlas:", options: ["músculo oblicuo mayor de la cabeza", "músculo recto posterior mayor de la cabeza", "músculo esplenio de la cabeza", "músculo recto posterior menor de la cabeza"], correct: 0, r: "El oblicuo mayor va de la espinosa del axis a la transversa del atlas." },
+        { id: 8, q: "La inervación de la pared anterolateral del abdomen procede de:", options: ["nervios intercostales (7-12) y nervios iliohipogástrico e ilioinguinal", "nervios intercostales (1-6)", "nervio frénico", "plexo sacro"], correct: 0, r: "La inervación segmentaria depende de los últimos intercostales y ramas del plexo lumbar." },
+        { id: 9, q: "El conducto inguinal:", options: ["contiene el ligamento redondo en la mujer", "se sitúa por encima del ligamento ancho", "su pared posterior está formada por la aponeurosis del oblicuo mayor", "el orificio inguinal profundo es una hendidura de la aponeurosis del oblicuo mayor"], correct: 0, r: "El ligamento redondo es el contenido homólogo al cordón espermático en la mujer." },
+        { id: 10, q: "Sobre la fascia de los músculos del dorso:", options: ["la fascia toracolumbar consta de tres láminas en la región lumbar", "la lámina posterior envuelve al músculo dorsal ancho", "la lámina media se sitúa por delante del músculo cuadrado lumbar", "todas son falsas"], correct: 0, r: "En la región lumbar, la fascia toracolumbar se divide en láminas posterior, media y anterior." },
+        { id: 11, q: "El músculo cuadrado lumbar:", options: ["se inserta en la 12ª costilla y apófisis transversas lumbares", "es inervado por el nervio frénico", "está situado superficial a la fascia toracolumbar", "es un músculo del grupo anterior del abdomen"], correct: 0, r: "Se inserta en la cresta ilíaca, 12ª costilla y transversas lumbares." },
+        { id: 12, q: "La línea blanca (alba):", options: ["se extiende desde el apéndice xifoides hasta la sínfisis del pubis", "es un músculo largo del abdomen", "está formada solo por la aponeurosis del oblicuo mayor", "se sitúa lateral al músculo recto del abdomen"], correct: 0, r: "Es el rafe tendinoso medio de la pared abdominal anterior." },
+        { id: 13, q: "El ligamento inguinal:", options: ["se extiende desde la espina ilíaca anterosuperior hasta la espina del pubis", "es parte de la aponeurosis del músculo transverso", "forma la pared posterior del conducto inguinal", "se sitúa medial a la línea alba"], correct: 0, r: "Representa el borde inferior engrosado de la aponeurosis del oblicuo mayor." },
+        { id: 14, q: "Cuál de estos músculos es un músculo suprahioideo:", options: ["geniohioideo", "esternotiroideo", "omohioideo", "tirohioideo"], correct: 0, r: "El geniohioideo se sitúa por encima del hueso hioides." },
+        { id: 15, q: "El músculo esternocleidomastoideo:", options: ["está inervado por el nervio accesorio (XI)", "pertenece al grupo de músculos prevertebrales", "es flexor de la columna si actúa unilateralmente", "se inserta en el hueso hioides"], correct: 0, r: "Recibe inervación motora del XI par craneal." },
+        { id: 16, q: "Los músculos escalenos:", options: ["se insertan en las dos primeras costillas", "son flexores puros de la cabeza", "están situados en la región anterior del cuello", "son inervados por el nervio hipogloso"], correct: 0, r: "Se originan en transversas cervicales y terminan en 1ª (anterior/medio) y 2ª (posterior) costilla." },
+        { id: 17, q: "Qué estructura atraviesa el espacio hiatal entre los escalenos anterior y medio:", options: ["arteria subclavia y plexo braquial", "vena subclavia", "nervio frénico", "arteria carótida común"], correct: 0, r: "El triángulo de los escalenos contiene la arteria subclavia y troncos del plexo braquial." },
+        { id: 18, q: "La fascia cervical pretraqueal envuelve a:", options: ["los músculos infrahioideos", "la glándula tiroides únicamente", "el músculo platisma", "los músculos de la nuca"], correct: 0, r: "La lámina pretraqueal envuelve a los infrahioideos y vísceras cervicales." },
+        { id: 19, q: "El nervio recurrente (laríngeo inferior):", options: ["es rama del nervio vago (X)", "inerva al músculo cricotiroideo", "es puramente sensitivo", "pasa por delante del arco aórtico en el lado izquierdo"], correct: 0, r: "Es rama del vago; inerva la mayoría de los músculos intrínsecos de la laringe." },
+        { id: 20, q: "La arteria carótida interna:", options: ["no da ramas en el cuello", "se bifurca a nivel de C6", "da la arteria tiroidea superior", "pasa por el agujero transverso"], correct: 0, r: "A diferencia de la externa, la interna asciende sin ramificarse hasta el cráneo." },
+        { id: 21, q: "El cartílago cricoides se sitúa a nivel de:", options: ["C6", "C3", "C4", "T2"], correct: 0, r: "Marca el límite entre laringe/faringe y tráquea/esófago a nivel de C6." },
+        { id: 22, q: "El músculo platisma:", options: ["está inervado por el nervio facial (VII)", "es un músculo profundo del cuello", "se inserta en la base del cráneo", "ayuda a la deglución"], correct: 0, r: "Es un músculo mímico del cuello inervado por la rama cervical del facial." },
+        { id: 23, q: "La vena yugular interna se une a la vena subclavia para formar:", options: ["vena braquiocefálica", "vena cava superior", "vena yugular externa", "vena ácigos"], correct: 0, r: "La unión forma el ángulo venoso de Pirogoff." },
+        { id: 24, q: "El plexo cervical procede de los ramos anteriores de:", options: ["C1-C4", "C5-T1", "C1-C8", "C3-C5"], correct: 0, r: "Inerva piel y músculos del cuello y da el nervio frénico." },
+        { id: 25, q: "El músculo trapecio está inervado por:", options: ["nervio accesorio (XI) y plexo cervical", "nervio vago", "nervios intercostales", "nervio frénico"], correct: 0, r: "Inervación dual: motora por el XI y propioceptiva por C3-C4." },
+        { id: 26, q: "La glándula tiroides se relaciona anteriormente con:", options: ["músculos infrahioideos", "esófago", "columna vertebral", "nervio recurrente"], correct: 0, r: "Los infrahioideos (esternohioideo y esternotiroideo) la cubren." },
+        { id: 27, q: "El itsmo de la glándula tiroides suele cruzar los cartílagos traqueales:", options: ["2º a 4º", "1º", "5º a 6º", "7º"], correct: 0, r: "Es su posición anatómica habitual." },
+        { id: 28, q: "El músculo largo del cuello pertenece al grupo:", options: ["prevertebral", "infrahioideo", "escaleno", "de la nuca"], correct: 0, r: "Se sitúa inmediatamente por delante de los cuerpos vertebrales cervicales." },
+        { id: 29, q: "La vaina carotídea contiene:", options: ["carótida común, yugular interna y nervio vago", "carótida común y arteria vertebral", "yugular externa y nervio frénico", "esófago y tráquea"], correct: 0, r: "Es un estuche de la fascia cervical profunda para el paquete vasculonervioso." },
+        { id: 30, q: "Qué músculo forma el límite anterior del triángulo posterior del cuello:", options: ["esternocleidomastoideo", "trapecio", "escaleno medio", "omohioideo"], correct: 0, r: "El borde posterior del ECM es el límite anterior." },
+        { id: 31, q: "Cuál de estos no es un contenido del triángulo carotídeo:", options: ["glándula submandibular", "bifurcación carotídea", "nervio hipogloso", "vena yugular interna"], correct: 0, r: "La glándula submandibular se sitúa en el triángulo digástrico." },
+        { id: 32, q: "La arteria tiroidea inferior es rama de:", options: ["tronco tirocervical", "arteria carótida externa", "arteria subclavia directamente", "arco aórtico"], correct: 0, r: "El tronco tirocervical nace de la subclavia." },
+        { id: 33, q: "El nervio hipogloso (XII) inerva a:", options: ["músculos de la lengua", "músculo platisma", "músculos escalenos", "músculo trapecio"], correct: 0, r: "Es el nervio motor de la lengua." },
+        { id: 34, q: "El drenaje linfático de la lengua termina principalmente en:", options: ["ganglios cervicales profundos", "ganglios axilares", "ganglios parotídeos", "ganglios submentales únicamente"], correct: 0, r: "Siguen la cadena yugular interna." },
+        { id: 35, q: "La membrana tirohioidea es atravesada por:", options: ["nervio laríngeo interno y arteria laríngea superior", "nervio recurrente", "nervio laríngeo externo", "arteria tiroidea inferior"], correct: 0, r: "Permite la entrada de la sensibilidad a la laringe." },
+        { id: 36, q: "El espacio retrofaríngeo se sitúa entre:", options: ["fascia bucofaríngea y fascia prevertebral", "esófago y tráquea", "ECM y escalenos", "laringe y faringe"], correct: 0, r: "Espacio virtual de gran importancia clínica para la propagación de infecciones." },
+        { id: 37, q: "Cuál de los siguientes no es un cartílago laríngeo:", options: ["hioides", "epiglotis", "tiroides", "cricoides"], correct: 0, r: "El hioides es un hueso, no un cartílago de la laringe." },
+        { id: 38, q: "El músculo cricoaritenoideo posterior es el único:", options: ["dilatador de la glotis", "constrictor de la glotis", "tensor de las cuerdas vocales", "elevador de la laringe"], correct: 0, r: "Abre la hendidura glótica (abductor)." },
+        { id: 39, q: "La tráquea se bifurca a nivel de:", options: ["T4-T5 (ángulo de Louis)", "C6", "T1", "T12"], correct: 0, r: "Localización del espolón traqueal o carina." },
+        { id: 40, q: "El esófago cervical se sitúa:", options: ["posterior a la tráquea", "anterior a la tráquea", "lateral a la carótida", "anterior a la glándula tiroides"], correct: 0, r: "Sigue la cara posterior traqueal." },
+        { id: 41, q: "La inervación motora del diafragma depende de:", options: ["nervio frénico", "nervios intercostales", "nervio vago", "nervio simpático"], correct: 0, r: "Procede de C3-C5." },
+        { id: 42, q: "El hiato aórtico del diafragma se sitúa a nivel de:", options: ["T12", "T8", "T10", "L2"], correct: 0, r: "Es el más posterior e inferior de los grandes orificios." },
+        { id: 43, q: "Qué estructura atraviesa el hiato esofágico del diafragma además del esófago:", options: ["troncos vagales", "vena cava inferior", "arteria aorta", "conducto torácico"], correct: 0, r: "Los nervios vagos acompañan al esófago." },
+        { id: 44, q: "El músculo serrato anterior está inervado por:", options: ["nervio torácico largo", "nervio accesorio", "nervios intercostales", "nervio frénico"], correct: 0, r: "También llamado nervio de Charles Bell." },
+        { id: 45, q: "La mama drena linfáticamente mayoritariamente a:", options: ["nodos axilares", "nodos paraesternales", "nodos supraclaviculares", "nodos inguinales"], correct: 0, r: "Aproximadamente el 75% del drenaje." },
+        { id: 46, q: "Los músculos intercostales externos:", options: ["son inspiratorios", "son espiratorios", "están inervados por el nervio frénico", "se sitúan profundos a los intercostales internos"], correct: 0, r: "Elevan las costillas durante la inspiración." },
+        { id: 47, q: "La arteria mamaria interna (torácica interna) es rama de:", options: ["arteria subclavia", "arco aórtico", "arteria axilar", "arteria carótida"], correct: 0, r: "Nace de la primera porción de la subclavia." },
+        { id: 48, q: "Respecto a la vaina de los rectos es cierto que:", options: ["la aponeurosis del transverso en sus dos tercios superiores se incorpora a la hoja posterior de la vaina", "la aponeurosis del oblicuo menor forma parte de la hoja anterior en toda su extensión", "la aponeurosis del oblicuo mayor se desdobla en 2 hojas para envolver al musculo recto", "en el tercio inferior todas las aponeurosis pasan por detrás"], correct: 0, r: "Cambio estructural clave a nivel de la línea arqueada." },
+        { id: 49, q: "Es cierto que:", options: ["el nervio laringeo externo lleva fibras motoras para el músculo cricotiroideo", "la inervación sensitiva supraglótica depende de los nervios laringeos recurrentes", "la inervación sensitiva de la región infraglótica procede del nervio laringeo interno", "la inervación motora de los músculos laringeos depende del nervio laringeo interno"], correct: 0, r: "Diferenciación funcional de las ramas del vago en la laringe." },
+        { id: 50, q: "De las siguientes afirmaciones de la región inguinal es cierto que:", options: ["el nervio femoral es lateral respecto a la arteria femoral", "los vasos femorales son laterales respecto a la cintilla iliopectinea", "la vena femoral es lateral respecto al psoas", "la arteria femoral es medial respecto a la vena homónima"], correct: 0, r: "Disposición en la laguna vascular y muscular." }
+    ];
+
+    let userAnswers = {};
+    let markedQuestions = new Set();
+    let currentPool = [];
+
+    function preparePool(questions) {
+        return questions.map(q => {
+            const options = q.options.map((text, i) => ({ text, isCorrect: i === q.correct }));
+            return { ...q, options };
+        });
+    }
+
+    const fullPool = preparePool(rawQuestions);
+
+    function initQuiz(questions) {
+        const container = document.getElementById('quiz-container');
+        const nav = document.getElementById('nav-dots');
+        container.innerHTML = '';
+        nav.innerHTML = '';
+
+        questions.forEach((q, index) => {
+            const dot = document.createElement('div');
+            dot.className = `nav-dot ${markedQuestions.has(q.id) ? 'marked' : ''}`;
+            dot.id = `dot-${q.id}`;
+            dot.innerHTML = index + 1;
+            dot.onclick = () => document.getElementById(`q-card-${q.id}`).scrollIntoView({behavior: 'smooth'});
+            nav.appendChild(dot);
+
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = `q-card-${q.id}`;
+            
+            const markBtn = document.createElement('span');
+            markBtn.className = `mark-btn ${markedQuestions.has(q.id) ? 'active' : ''}`;
+            markBtn.innerHTML = '★';
+            markBtn.onclick = () => toggleMark(q.id, markBtn);
+            
+            const qText = document.createElement('h3');
+            qText.innerHTML = `${index + 1}. ${q.q}`;
+            
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options-container';
+            const shuffled = [...q.options].sort(() => Math.random() - 0.5);
+            
+            shuffled.forEach(opt => {
+                const optDiv = document.createElement('div');
+                optDiv.className = 'option';
+                optDiv.innerHTML = opt.text;
+                optDiv.onclick = () => handleAnswer(q.id, opt, optDiv, card);
+                optionsDiv.appendChild(optDiv);
+            });
+
+            const feedback = document.createElement('div');
+            feedback.className = 'feedback';
+            card.appendChild(markBtn);
+            card.appendChild(qText);
+            card.appendChild(optionsDiv);
+            card.appendChild(feedback);
+            container.appendChild(card);
+        });
+    }
+
+    function toggleMark(id, btn) {
+        if (markedQuestions.has(id)) {
+            markedQuestions.delete(id);
+            btn.classList.remove('active');
+            document.getElementById(`dot-${id}`).classList.remove('marked');
+        } else {
+            markedQuestions.add(id);
+            btn.classList.add('active');
+            document.getElementById(`dot-${id}`).classList.add('marked');
+        }
+    }
+
+    function handleAnswer(qId, option, el, card) {
+        if (userAnswers[qId]) return;
+        userAnswers[qId] = { correct: option.isCorrect, id: qId };
+        const allOpts = card.querySelectorAll('.option');
+        allOpts.forEach(o => o.classList.add('disabled'));
+        const fb = card.querySelector('.feedback');
+        fb.style.display = 'block';
+        const qData = fullPool.find(f => f.id === qId);
+        fb.innerHTML = `<strong>${option.isCorrect ? 'Correcto' : 'Incorrecto'}</strong>: ${qData.r}`;
+        el.classList.add(option.isCorrect ? 'correct' : 'incorrect');
+        if (!option.isCorrect) {
+            const correctText = qData.options.find(o => o.isCorrect).text;
+            allOpts.forEach(o => { if (o.innerHTML === correctText) o.classList.add('correct'); });
+        }
+        document.getElementById(`dot-${qId}`).classList.add('answered');
+    }
+
+    function showResults() {
+        const total = currentPool.length;
+        const correctas = Object.values(userAnswers).filter(a => a.correct).length;
+        document.getElementById('quiz-container').style.display = 'none';
+        document.querySelector('.btn-finish').style.display = 'none';
+        document.getElementById('results-area').style.display = 'block';
+        document.getElementById('score-text').innerHTML = `Has acertado <strong>${correctas}</strong> de <strong>${total}</strong> preguntas.`;
+        window.scrollTo(0,0);
+    }
+
+    function restartQuiz(mode) {
+        let next = [];
+        if (mode === 'all') next = [...fullPool];
+        else if (mode === 'failed') next = fullPool.filter(q => userAnswers[q.id] && !userAnswers[q.id].correct);
+        else if (mode === 'marked') next = fullPool.filter(q => markedQuestions.has(q.id));
+        else if (mode === 'failed-marked') next = fullPool.filter(q => (userAnswers[q.id] && !userAnswers[q.id].correct) || markedQuestions.has(q.id));
+
+        if (next.length === 0) { alert("No hay preguntas en esta selección."); return; }
+        userAnswers = {};
+        currentPool = next;
+        document.getElementById('quiz-container').style.display = 'block';
+        document.querySelector('.btn-finish').style.display = 'block';
+        document.getElementById('results-area').style.display = 'none';
+        initQuiz(next);
+        window.scrollTo(0,0);
+    }
+
+    currentPool = [...fullPool];
+    initQuiz(currentPool);
+</script>
+</body>
+</html>
