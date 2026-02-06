@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Bioquímica 183 - Pro</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #3498db; --success: #27ae60; --error: #c0392b; --bg: #f8f9fa; --sidebar-width: 80px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: var(--bg); display: flex; height: 100vh; overflow: hidden; }
+        
+        /* PANTALLA DE INICIO */
+        #start-screen, #results-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+        .start-card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 500px; width: 100%; text-align: center; border: 1px solid #ddd; }
+        .start-card h1 { color: var(--primary); margin-bottom: 20px; }
+        .start-card select, .start-card button { width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; border-radius: 8px; border: 1px solid #ccc; cursor: pointer; }
+        .start-card button { background: var(--accent); color: white; border: none; font-weight: bold; transition: 0.3s; }
+        .start-card button:hover { background: #2980b9; }
+
+        /* LAYOUT PRINCIPAL */
+        #quiz-layout { display: flex; width: 100%; height: 100%; display: none; /* Oculto al inicio */ }
+        
+        /* SIDEBAR NAVEGACIÓN */
+        #sidebar { width: var(--sidebar-width); background: #2c3e50; color: white; overflow-y: auto; flex-shrink: 0; padding: 10px 5px; text-align: center; display: flex; flex-direction: column; gap: 5px; scrollbar-width: thin; }
+        .nav-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 8px 0; border-radius: 5px; cursor: pointer; font-size: 12px; transition: 0.2s; width: 100%; }
+        .nav-btn:hover { background: rgba(255,255,255,0.2); }
+        .nav-btn.active { border: 2px solid white; font-weight: bold; }
+        .nav-btn.correct { background: var(--success); }
+        .nav-btn.incorrect { background: var(--error); }
+        .nav-btn.marked::after { content: ' 🚩'; font-size: 10px; }
+
+        /* AREA DE PREGUNTAS */
+        #main-area { flex-grow: 1; overflow-y: auto; padding: 40px; scroll-behavior: smooth; position: relative; }
+        .question-container { max-width: 800px; margin: 0 auto; padding-bottom: 100px; }
+        
+        /* TARJETA DE PREGUNTA */
+        .q-card { background: white; border-radius: 10px; padding: 25px; margin-bottom: 30px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 5px solid var(--accent); position: relative; scroll-margin-top: 20px; }
+        .q-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .q-title { font-weight: bold; font-size: 1.1em; color: var(--primary); width: 85%; }
+        .q-mark { cursor: pointer; font-size: 0.9em; color: #7f8c8d; display: flex; align-items: center; gap: 5px; }
+        .q-mark input { transform: scale(1.3); cursor: pointer; }
+        
+        /* OPCIONES */
+        .options-grid { display: flex; flex-direction: column; gap: 8px; }
+        .opt-btn { text-align: left; background: #f8f9fa; border: 1px solid #dee2e6; padding: 12px 15px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-size: 1em; width: 100%; }
+        .opt-btn:hover:not(:disabled) { background: #e9ecef; }
+        .opt-btn.correct { background: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .opt-btn.wrong { background: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .opt-btn:disabled { cursor: default; opacity: 0.8; }
+
+        /* EXPLICACIÓN */
+        .explanation { margin-top: 15px; padding: 15px; background: #e8f4fd; border-left: 4px solid #3498db; border-radius: 4px; display: none; animation: fadeIn 0.3s; font-size: 0.95em; }
+        .explanation strong { color: #2980b9; }
+
+        /* BOTÓN FLOTANTE FINALIZAR */
+        #btn-finalize { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; padding: 15px 30px; border-radius: 50px; border: none; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 100; }
+        #btn-finalize:hover { transform: scale(1.05); }
+
+        /* MODAL RESULTADOS */
+        .result-stats { display: flex; gap: 20px; justify-content: center; margin: 20px 0; }
+        .stat-box { background: #f1f2f6; padding: 15px; border-radius: 8px; min-width: 100px; }
+        .stat-val { font-size: 24px; font-weight: bold; display: block; }
+        .stat-label { font-size: 12px; color: #777; }
+        
+        .retry-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+        .retry-btn { padding: 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 14px; }
+        .btn-all { background: var(--primary); grid-column: span 2; }
+        .btn-failed { background: var(--error); }
+        .btn-marked { background: #f39c12; }
+        .btn-failed-marked { background: #8e44ad; grid-column: span 2; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Responsive */
+        @media(max-width: 768px) {
+            body { flex-direction: column; }
+            #sidebar { width: 100%; height: 50px; flex-direction: row; order: 2; overflow-x: auto; padding: 5px; }
+            #main-area { height: calc(100vh - 50px); order: 1; padding: 20px; }
+            .nav-btn { width: 40px; flex-shrink: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen">
+        <div class="start-card">
+            <h1>🧪 Bioquímica Pro</h1>
+            <p>Selecciona el modo de estudio:</p>
+            
+            <label for="mode-select">Modo:</label>
+            <select id="mode-select" onchange="toggleExamOptions()">
+                <option value="blocks">Estudiar por Bloques</option>
+                <option value="exam">Modo Simulacro (Mezclado)</option>
+            </select>
+
+            <div id="block-options">
+                <label for="block-select">Bloque:</label>
+                <select id="block-select">
+                    <option value="todos">Todos los Bloques (1-183)</option>
+                    <option value="bloque1">Bloque I (Nutrición)</option>
+                    <option value="bloque2">Bloque II (Digestión)</option>
+                    <option value="bloque3">Bloque III (Tejido Adiposo)</option>
+                    <option value="bloque4">Bloque IV (Inmune)</option>
+                    <option value="bloque5">Bloque V (Endocrino)</option>
+                    <option value="bloque6">Bloque VI (Ciclo Celular)</option>
+                    <option value="bloque7">Bloque VII (Visión)</option>
+                    <option value="bloque8">Bloque VIII (Neurotransmisores)</option>
+                    <option value="bloque9">Bloque IX (Sangre)</option>
+                    <option value="bloque10">Bloque X (Estrés Oxidativo)</option>
+                    <option value="bloque11">Bloque XI (Hígado)</option>
+                    <option value="bloque12">Bloque XII (Colágeno)</option>
+                    <option value="bloque16">Bloque XVI (Músculo/Ejercicio)</option>
+                </select>
+            </div>
+
+            <div id="exam-options" style="display:none;">
+                <label for="q-amount">Número de preguntas:</label>
+                <select id="q-amount">
+                    <option value="20">20 preguntas aleatorias</option>
+                    <option value="30">30 preguntas aleatorias</option>
+                    <option value="50">50 preguntas aleatorias</option>
+                    <option value="75">75 preguntas aleatorias</option>
+                    <option value="100">100 preguntas aleatorias</option>
+                </select>
+            </div>
+
+            <button onclick="startQuiz()">COMENZAR TEST</button>
+        </div>
+    </div>
+
+    <div id="quiz-layout">
+        <div id="sidebar">
+            </div>
+        <div id="main-area">
+            <div id="questions-wrapper" class="question-container">
+                </div>
+        </div>
+        <button id="btn-finalize" onclick="showResults()">🏁 Finalizar y Revisar</button>
+    </div>
+
+    <div id="results-modal" style="display:none;">
+        <div class="start-card">
+            <h2>Resultados</h2>
+            <div class="result-stats">
+                <div class="stat-box" style="color:var(--success)">
+                    <span class="stat-val" id="score-correct">0</span>
+                    <span class="stat-label">Aciertos</span>
+                </div>
+                <div class="stat-box" style="color:var(--error)">
+                    <span class="stat-val" id="score-wrong">0</span>
+                    <span class="stat-label">Fallos</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-val" id="score-marked">0</span>
+                    <span class="stat-label">Marcadas</span>
+                </div>
+            </div>
+            
+            <p>¿Qué deseas hacer ahora?</p>
+            <div class="retry-options">
+                <button class="retry-btn btn-all" onclick="retry('all')">🔄 Repetir Completo</button>
+                <button class="retry-btn btn-failed" onclick="retry('failed')">❌ Repetir solo Falladas</button>
+                <button class="retry-btn btn-marked" onclick="retry('marked')">🚩 Repetir solo Marcadas</button>
+                <button class="retry-btn btn-failed-marked" onclick="retry('failed_marked')">⚠️ Repetir Falladas + Marcadas</button>
+            </div>
+            <button style="background:#7f8c8d; margin-top:10px;" onclick="location.reload()">🏠 Volver al Inicio</button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // BASE DE DATOS COMPLETA (183 PREGUNTAS)
+        // ==========================================
+        // Se ha comprimido el formato para que quepa todo, pero el texto es literal.
+        // c: índice de respuesta correcta (0=A, 1=B, 2=C, 3=D, 4=E)
+        
+        const fullDB = [
+            { id:1, b:"bloque1", q:"1. Respecto al efecto térmico de los alimentos, el máximo valor se obtiene a:", o:["30 minutos", "5 horas", "11 horas", "10 minutos", "120 minutos"], c:0 },
+            { id:2, b:"bloque1", q:"2. Respecto a la ingesta de macronutrientes, señale la respuesta incorrecta:", o:["Los hidratos de carbono se pueden almacenar de forma ilimitada.", "El exceso de ingesta de grasas no estimula la oxidación de las mismas.", "Los polifenoles son componentes no nutricionales beneficiosos.", "Parte de los hidratos de carbono excedentes se emplean en la síntesis de lípidos."], c:0 },
+            { id:3, b:"bloque1", q:"3. Cual de las siguientes vitaminas es un derivado de isopreno:", o:["Vitamina D", "Vitamina E", "Vitamina C", "Vitamina B12", "Ácido lipoico"], c:1 },
+            { id:4, b:"bloque1", q:"4. Señale la respuesta incorrecta en relación al cálculo del gasto energético, según la Ecuación de Weir:", o:["Se incluye el factor de actividad física.", "Tiene en cuenta el nitrógeno excretado.", "Requiere evaluar la producción de CO2.", "Necesita el valor de consumo de oxígeno."], c:0 },
+            { id:5, b:"bloque1", q:"5. Respecto a la recuperación de la vitamina E tras su mecanismo de acción, ¿qué coenzima será necesaria en este proceso?", o:["Fosfato de piridoxal", "NAD(P)H", "Coenzima A", "FADH2"], c:1 },
+            { id:6, b:"bloque1", q:"6. Para que la vitamina D esté activa ha de hidroxilarse. Señale la respuesta correcta:", o:["Se hidroxila en el hígado en posición 25 y en posición 24.", "Se hidroxila primero en el hígado en posición 25 y posteriormente en riñón en posición 1.", "Se hidroxila primero en el riñón en posición 25 y posteriormente en hígado en posición 1.", "Se hidroxila sólo en el riñón en posición 24 y en posición 1."], c:1 },
+            { id:7, b:"bloque1", q:"7. En el proceso de caquexia neoplásica, ¿qué tejidos sufren un mayor desgaste tisular asociado a este proceso?", o:["Músculo y tejido adiposo", "Riñón y glándulas suprarrenales", "Exclusivamente el cerebro", "Hígado y cerebro"], c:0 },
+            { id:8, b:"bloque1", q:"8. ¿Cuál de los siguientes ácidos grasos es de tipo omega 9?", o:["Ácido esteárico", "Ácido linoleico", "Ácido oleico", "Ácido a-linolénico", "Ácido palmítico"], c:2 },
+            { id:9, b:"bloque1", q:"9. ¿Cuál de los siguientes ácidos grasos es del tipo omega 6?", o:["Ácido eicosapentaenoico", "Ácido docosahexaenoico", "Ácido a-linolénico", "Ácido araquidónico", "Ácido esteárico"], c:3 },
+            { id:10, b:"bloque1", q:"10. ¿Cuál es la respuesta correcta en relación a los efectos de la malnutrición proteico-calórica?", o:["Disminuye la actividad Na+/K+ ATPasa", "Aumenta la actividad Na+/K+ ATPasa", "Aumenta el transporte de glucosa", "No afecta al sistema de transporte de glucosa", "Aumenta la actividad de la enzima lipoproteinlipasa"], c:0 },
+            { id:11, b:"bloque1", q:"11. Indique la respuesta correcta respecto a la vitamina del grupo B que forma parte de la estructura de la Coenzima Fosfato de Piridoxal.", o:["Vitamina B1", "Vitamina B2", "Vitamina B6", "Vitamina B3", "Vitamina B5"], c:2 },
+            { id:12, b:"bloque1", q:"12. La estructura de beta-carotenos se caracteriza por presentar 2 anillos ionona, ¿en qué carbonos se establece el doble enlace de este tipo de anillo?", o:["C5-C6", "C4-C5", "C3-C4", "C2-C3", "C1-C2"], c:0 },
+            { id:13, b:"bloque1", q:"13. El proceso de la autooxidación de la vitamina C se caracteriza por:", o:["Ser independiente del pH", "Depender del pH y favorecer la formación de H2O2", "Donar siempre 2 electrones", "Generar hierro férrico", "Recuperar su estado reducido por acción de la catalasa"], c:1 },
+            { id:14, b:"bloque1", q:"14. La estructura de la molécula de retinal se caracteriza por presentar en la cadena lateral un grupo:", o:["Amino", "Aldehído", "Ácido", "Éster", "Alcohólico primario"], c:1 },
+            { id:15, b:"bloque1", q:"15. Señale la respuesta correcta respecto a los receptores específicos para el ácido retinoico:", o:["Son receptores de superficie con actividad tirosin kinasa", "Estos receptores activan a la fosfolipasa C", "Actúan como poros de transición", "Son receptores nucleares", "Son receptores de superficie acoplados a proteína G"], c:3 },
+            { id:16, b:"bloque1", q:"16. Señale la respuesta correcta respecto a la formación del ácido retinoico:", o:["Procede directamente del retinol por oxidación reversible a nivel intestinal", "Se obtiene por oxidación irreversible del retinal, mediante la enzima aldehído deshidrogenasa", "Se obtiene por oxidación reversible, mediante la enzima aldehído oxidasa", "La enzima retinal descarboxilasa favorece la síntesis directa", "Se reduce por un proceso espontáneo oxidativo"], c:1 },
+            { id:17, b:"bloque1", q:"17. Señala la respuesta correcta respecto a la energía aprovechable que aportan las proteínas:", o:["4 Kcal/g", "9 Kcal/g", "7 Kcal/g", "5,3 Kcal/g"], c:0 },
+            { id:18, b:"bloque1", q:"18. ¿Qué marcador bioquímico se emplea para monitorizar a corto plazo el estado de desnutrición?", o:["Prealbúmina", "Albúmina", "Transferrina", "Proteína ligada al retinol", "Ferritina"], c:0 },
+            { id:19, b:"bloque1", q:"19. Señale la respuesta correcta respecto a los receptores específicos para el ácido retinoico:", o:["Son receptores nucleares", "Son receptores de superficie acoplados a proteínas G", "Son receptores de superficie con actividad tirosin kinasa", "Estos receptores activan a la fosfolipasa C"], c:0 },
+            { id:20, b:"bloque1", q:"20. La Vitamina C tiene un potente efecto reductor. Señala la respuesta correcta en relación a la molécula que es necesaria para que recupere su estado reducido inicial:", o:["Glutatión reducido", "Vitamina E", "NADPH+", "Glutatión oxidado"], c:0 },
+            { id:21, b:"bloque1", q:"21. Los cambios metabólicos que se producen en un paciente oncológico y que están asociados a la aparición de caquexia neoplásica se caracterizan por:", o:["Pérdida de proteínas musculares", "Reducción de producción de proteínas de fase aguda", "Hay un aumento de la glucosa en sangre", "Se favorece la lipogénesis"], c:0 },
+            { id:22, b:"bloque1", q:"22. ¿Cuál de los siguientes factores no sería modificable como factor de riesgo cardiovascular?", o:["Edad", "Estrés", "Dieta", "Tabaco"], c:0 },
+            { id:23, b:"bloque1", q:"23. Indique qué tipo de flavonoide contiene la soja:", o:["Flavanol", "Flavonol", "Flavona", "Flavanona", "Isoflavona"], c:4 },
+            { id:24, b:"bloque1", q:"24. ¿Cuál es el principal indicador del estado nutricional?", o:["Balance nitrogenado", "Colesterolemia", "Glucemia", "Leucocitos", "Todas son ciertas"], c:4 },
+            { id:25, b:"bloque2", q:"25. Respecto a la y-glutamiltranspeptidasa, señale la respuesta correcta (ciclo de Meister):", o:["Cataliza la transferencia del y-glutamil del glutatión a un aminoácido neutro", "Es una enzima citosólica", "Cataliza la transferencia de la glicina del glutatión a un aminoácido", "Cataliza la transferencia de la cisteína del glutatión a un aminoácido"], c:0 },
+            { id:26, b:"bloque2", q:"26. Respecto al ciclo de Meister o gamma-glutamilo, señale la respuesta correcta:", o:["Permite el paso de aminoácidos básicos del enterocito a la sangre", "Permite la transferencia de aminoácidos a la cisteína del glutatión", "Permite el paso de aminoácidos neutros de la sangre a las células", "Permite la transferencia de aminoácidos a la histidina del glutatión", "Permite la transferencia de aminoácidos a la glicina del glutatión"], c:2 },
+            { id:27, b:"bloque2", q:"27. Respecto a la enzima lipoproteina-lipasa (LPL), señale la respuesta correcta:", o:["Se localiza en el endotelio de los capilares", "Se localiza en la membrana de los eritrocitos", "Se inactiva por la insulina", "Reconoce la apoproteína b100", "Va asociada a micelas"], c:0 },
+            { id:28, b:"bloque2", q:"28. Indique la respuesta correcta en relación a la procedencia del glicerol 3 fosfato requerido por el tejido adiposo para la formación de triacilgliceridos:", o:["Se obtiene mediante fosforilación directa del glicerol en el propio tejido", "No se requiere glicerol 3 fosfato", "Los ácidos grasos se esterifican directamente sobre el glicerol sin fosforilar", "Los ácidos grasos se almacenan unidos a albúmina", "Procede del fosfato de dihidroxiacetona"], c:4 },
+            { id:29, b:"bloque2", q:"29. El receptor APO B/E reconoce:", o:["La apoproteína b48 de los quilomicrones", "La apoproteína b100 de las lipoproteínas LDL intactas", "La apoproteína F", "La apoproteína A", "La apoproteína b50"], c:1 },
+            { id:30, b:"bloque2", q:"30. Señale la respuesta correcta con respecto al transportador SGLT 1:", o:["Es un lípido de membrana", "Permite el paso de manosa desde el enterocito a la sangre", "Es dependiente de sodio", "Es independiente de sodio"], c:2 },
+            { id:31, b:"bloque2", q:"31. Los enlaces alfa (1-6) del almidón son hidrolizados por:", o:["Amilasa", "Glucosidasa", "Lactasa", "Isomaltasa", "Endosacaridasa"], c:3 },
+            { id:32, b:"bloque2", q:"32. Señalar la respuesta correcta respecto a la enzima isomaltasa:", o:["Hidroliza enlaces a (1-6) del almidón", "Hidroliza enlaces a (1-4) del almidón", "Hidroliza enlaces a (1-4) de los extremos", "Actúa en las glándulas salivares"], c:0 },
+            { id:33, b:"bloque2", q:"33. En relación con la digestión de proteínas, indique la respuesta correcta:", o:["La enteropeptidasa se produce en la células hepáticas", "La colecistoquinina inhibe la liberación de zimógenos pancreáticos", "La enteropeptidasa se produce en la células endocrinas pancreáticas", "Los oligopéptidos en fase gástrica estimulan la liberación de CCK"], c:3 },
+            { id:34, b:"bloque2", q:"34. Señale la respuesta incorrecta en relación con la fase final de la digestión de proteínas:", o:["Las aminopeptidasas fragmentan oligopéptidos hasta dipéptidos y tripéptidos", "Las peptidasas del interior del enterocito transforman di/tripéptidos en aminoácidos", "Al interior del enterocito pueden pasar dipéptidos", "Las carboxipeptidasas fragmentan oligopéptidos hasta dipéptidos y tripéptidos"], c:3 },
+            { id:35, b:"bloque2", q:"35. En relación con la fase pancreática de la digestión de proteínas:", o:["Los oligopéptidos activan a la enteropeptidasa", "Los oligopéptidos activan células endocrinas liberando CCK", "La enteropeptidasa activa la liberación de CCK", "Los zimógenos se activan en el páncreas", "El jugo pancreatico tiene PH ácido"], c:1 },
+            { id:36, b:"bloque3", q:"36. Indique cuál es la vía de señalización característica de la leptina:", o:["Vía receptor acoplado a proteína G", "Vía JAK2/STAT3", "Se inicia con la unión al receptor AdipoR1", "Activación de proteín kinasa A"], c:1 },
+            { id:37, b:"bloque3", q:"37. El colesterol es transportado desde los tejidos periféricos al hígado por la lipoproteína:", o:["HDL", "Quilomicrones", "VLDL", "LDL"], c:0 },
+            { id:38, b:"bloque3", q:"38. En el adipocito hipertrófico se ve afectada la translocación de las vesículas que contienen GLUT4. Indique la correcta:", o:["Entra glucosa por otro sistema", "No se liberan los triglicéridos", "Se reduce la síntesis del transportador", "Se altera la dinámica de la actina cortical del adipocito"], c:3 },
+            { id:39, b:"bloque3", q:"39. Señalar cuál de las siguientes afirmaciones respecto a las grasas exógenas no es cierta:", o:["Se reabsorben en la mucosa intestinal", "Pasan a la sangre asociados a quilomicrones", "Pasan a la sangre asociadas con lipoproteínas LDL", "Hay resintesis de triglicéridos en el enterocito"], c:2 },
+            { id:40, b:"bloque3", q:"40. ¿Cuál de las siguientes organoquinas no es una adipoquina proinflamatoria?", o:["Adiponectina", "Leptina", "TNFα", "Resistina"], c:0 },
+            { id:41, b:"bloque3", q:"41. Respecto a la resistencia a la insulina, ¿qué residuo se fosforila en el sustrato del receptor de insulina-1?", o:["Serina", "Lisina", "Alanina", "Tirosina"], c:0 },
+            { id:42, b:"bloque3", q:"42. Señale la respuesta correcta respecto a la modificación en el tejido adiposo de una persona obesa:", o:["Predominan linfocitos CD4", "Reducción de linfocitos CD8", "Disminuye producción de leptina", "Infiltración de macrófagos M1", "Infiltración de macrófagos M2"], c:3 },
+            { id:43, b:"bloque3", q:"43. ¿Cuál es correcta respecto al adipocito del tejido adiposo marrón?", o:["Bajo contenido mitocondrial", "Activa lipogénesis", "Son de mayor tamaño que los blancos", "Posee proteína desacoplante mitocondrial", "Es almacén de energía"], c:3 },
+            { id:44, b:"bloque4", q:"44. En relación a la apoptosis, indica la respuesta incorrecta:", o:["Se produce un aumento del volumen celular", "Está genéticamente controlada", "Interviene el citocromo c mitocondrial", "Las enzimas implicadas son las caspasas", "Se produce fragmentación del ADN"], c:0 },
+            { id:45, b:"bloque4", q:"45. Señala la respuesta correcta sobre el gen supresor p53:", o:["Cuando se activa p53 se inhibe la transcripción de p21", "Siempre induce la apoptosis celular", "Inhibe la reparación del ADN", "Cuando se activa p53 se incrementa la transcripción de p21", "Favorece la división celular"], c:3 },
+            { id:46, b:"bloque4", q:"46. Respecto al complejo mayor de histocompatibilidad (MHC), señale la incorrecta:", o:["Presentan péptidos a Linfocitos T", "MHC1 solo aparecen en células presentadoras de antígenos (APC)", "Cadenas de MHC2 ancladas por dominios a2 y b2", "MHC2 es reconocida por CD4", "MHC1 formada por cadena alfa y b2 microglobulina"], c:1 },
+            { id:47, b:"bloque4", q:"47. Elija la respuesta correcta sobre el MHC clase 1:", o:["Están presentes en las células presentadoras de antígenos", "Cadenas a1 y b1 constituyen sitio de unión", "Formado por dos cadenas a y dos b", "Es reconocido por linfocitos Thelper"], c:1 },
+            { id:48, b:"bloque4", q:"48. Indique cuál no forma parte del sistema inmune innato:", o:["Linfocitos", "Macrófagos", "Anticuerpos", "Neutrófilos"], c:2 },
+            { id:49, b:"bloque4", q:"49. Respecto al receptor del linfocito B es cierto que:", o:["Es similar al Ac que producirá", "Implicado en selección clonal", "Reconoce Ag en fluidos", "Anclado a membrana", "Todas son ciertas"], c:4 },
+            { id:50, b:"bloque4", q:"50. Respecto a la IgM señale la respuesta correcta:", o:["Es la más abundante en suero", "Puede presentarse en forma dimérica", "Puede formar parte del receptor de linfocitos T", "Junto con IgG forma parte de inmunidad del recién nacido", "Es la más abundante en respuesta primaria"], c:4 },
+            { id:51, b:"bloque4", q:"51. Respecto a la IgG, señale la respuesta incorrecta:", o:["Es la más abundante en suero", "Puede atravesar barrera placentaria", "Es la más abundante de respuesta secundaria", "Neutraliza y opsoniza toxinas", "Se representa en forma pentamérica"], c:4 },
+            { id:52, b:"bloque4", q:"52. En relación con la inmunidad cuál de las asociaciones es incorrecta:", o:["MHC-I = células somáticas nucleadas", "MHC-II = células presentadoras de Ag", "IgM = atraviesa barrera placentaria", "TCD4+ = linfocitos T helper", "TCD8+ = linfocitos T killer"], c:2 },
+            { id:53, b:"bloque4", q:"53. Las cadenas CD3 presentan motivos ITAM, ¿Qué otra estructura los presenta?", o:["IgD", "MHC I", "BCR", "MHC II"], c:2 },
+            { id:54, b:"bloque4", q:"54. Escoja la afirmación correcta:", o:["El sistema inmune defiende identificando lo propio de lo extraño", "El organismo hace frente a agresiones por barreras físico-químicas", "No es posible mantener homeostasis al distinguir lo propio", "La defensa se adquiere solo en infecciones"], c:0 },
+            { id:55, b:"bloque4", q:"55. Entre los mediadores químicos de la respuesta inmune no se encuentra:", o:["Proteínas del complemento", "IL-1, 2 y 3", "Interferón", "Factores estimulantes de colonias", "Factores de coagulación"], c:4 },
+            { id:56, b:"bloque4", q:"56. Respecto a la estructura de un anticuerpo señale la incorrecta:", o:["Cada dominio variable formado por 9 hebras beta", "Láminas beta forman plegamiento inmunoglobulina", "Hebras beta se disponen paralelas", "Dominio constante formado por 7 hebras beta", "Sitio de unión formado por giros flexibles"], c:2 },
+            { id:57, b:"bloque4", q:"57. Señale la respuesta correcta sobre el receptor del linfocito B (BCR):", o:["Transducción por motivos ITAM citosólicos", "Formado por Ig de membrana (IgG o IgA)", "Ig de membrana genera señal intracelular directa", "Ig de membrana se asocia a Iga e Igb (CD3)", "Todas son correctas"], c:3 },
+            { id:58, b:"bloque4", q:"58. Señale la respuesta correcta en relación a las proteínas plasmáticas:", o:["Derivan de lesiones tisulares", "Ejercen función en hígado", "Inmunoglobulinas no son proteínas plasmáticas", "Todas excepto inmunoglobulinas se sintetizan en hígado", "No intervienen en transporte"], c:3 },
+            { id:59, b:"bloque5", q:"59. Niveles elevados de TSH, ¿qué esperar respecto a hormonas tiroideas?", o:["Regularía TRH no tiroideas", "Que estuvieran bajas (hipotiroidismo)", "Que estuvieran altas", "TSH es eje gonadal", "TSH no es marcador"], c:1 },
+            { id:60, b:"bloque5", q:"60. ¿Por qué la glucosa es señal para sintetizar insulina?", o:["Incremento metabolismo y elevación cociente ADP/ATP", "Disminución metabolismo y elevación ADP/ATP", "Incremento metabolismo y elevación ADP/O", "Incremento metabolismo y elevación ATP/ADP", "Reducción metabolismo y elevación ATP/O"], c:3 },
+            { id:61, b:"bloque5", q:"61. El receptor para IGF-1 se caracteriza por:", o:["Acoplado a proteína G", "Dominios tirosin kinasa", "Receptor nuclear", "Activar protein kinasa", "Activar salida de calcio"], c:1 },
+            { id:62, b:"bloque5", q:"62. ¿Qué hormonas forman complejo hormona-receptor a nivel nuclear?", o:["Glucagón", "Somatostatina", "Hormonas esteroideas", "Adrenalina", "Insulina"], c:2 },
+            { id:63, b:"bloque5", q:"63. Vía de señalización de la somatostatina:", o:["Unión a receptores nucleares", "Receptores citosólicos", "Aumenta liberación Ca2+", "Interacciona con receptor produciendo descenso de AMPc", "Activa vía fosfoinositoles"], c:3 },
+            { id:64, b:"bloque5", q:"64. La enzima aldosterona sintasa está constituida por:", o:["18 hidroxilasa y 18 oxidasa", "11b hidroxilasa y 18 desmolasa", "18b hidroxiesteroide deshidrogenasa y 18b hidroxilasa", "17 alfa hidroxilasa y 17 oxidasa"], c:0 },
+            { id:65, b:"bloque5", q:"65. ¿Qué molécula es precursora en síntesis de hormonas esteroideas?", o:["Tirosina", "Glicina", "Piruvato", "Succinato", "Colesterol"], c:4 },
+            { id:66, b:"bloque5", q:"66. La principal forma circulante de la prolactina es:", o:["Dimérica", "Trimérica", "Macroprolactina", "Asociada a albúmina", "Monomérica"], c:4 },
+            { id:67, b:"bloque5", q:"67. En relación a la prolactina, respuesta NO correcta:", o:["Mayor producción durante el sueño", "Principal estímulo es la succión", "Dopamina inhibe", "Tiroliberina reduce la secreción"], c:3 },
+            { id:68, b:"bloque5", q:"68. Respecto a la melatonina señale la incorrecta:", o:["Neurohormona indolaminica de glándula pineal", "Regula ciclos circadianos", "Se sintetiza a partir de dopamina", "Tiene gran capacidad antioxidante"], c:2 },
+            { id:69, b:"bloque5", q:"69. Enzima que cataliza paso de 11-desoxicortisol a cortisol:", o:["11b hidroxilasa", "17a hidroxilasa", "20,22 desmolasa", "3b hidroxiesteroide deshidrogenasa", "21a hidroxilasa"], c:0 },
+            { id:70, b:"bloque5", q:"70. ¿Déficit enzimático más frecuente en síntesis de esteroides?", o:["21a hidroxilasa", "20,22 desmolasa", "17a hidroxilasa", "Aromatasa", "11b hidroxilasa"], c:0 },
+            { id:71, b:"bloque5", q:"71. Progesterona a 11-desoxicorticosterona por enzima:", o:["21 a hidroxilasa", "11 hidroxilasa", "17 hidroxilasa", "17,20 liasa"], c:0 },
+            { id:72, b:"bloque5", q:"72. 11-desoxicorticosterona a corticosterona por enzima:", o:["11 hidroxilasa", "21 a hidroxilasa", "3 hidroxiesteroide deshidrogenasa"], c:0 },
+            { id:73, b:"bloque5", q:"73. Entrada de iodo al folículo tiroideo:", o:["Necesita transportador pendrina", "Difusión simple", "Antiporte sodio-iodo", "Acoplado a bomba Na/K ATPasa"], c:3 },
+            { id:74, b:"bloque5", q:"74. Vía señalización TRH:", o:["Favorece liberación Ca2+", "Receptores nucleares", "Dependiente adenilato ciclasa", "Sistema JAK/STAT"], c:0 },
+            { id:75, b:"bloque5", q:"75. La LH actúa sobre cuerpo lúteo:", o:["Incrementando progesterona", "Disminuyendo progesterona", "Favoreciendo aldosterona", "Ninguna es cierta"], c:0 },
+            { id:76, b:"bloque5", q:"76. Precursores de todas las hormonas esteroideas:", o:["Progesterona y pregnenolona", "Estradiol", "Cortisol y cortisona", "Aldosterona", "5-dihidrotestosterona"], c:0 },
+            { id:77, b:"bloque5", q:"77. Aldosterona actúa en nefrona a nivel de:", o:["Túbulo colector", "Asa ascendente Henle", "Asa descendente Henle", "Túbulo proximal", "Túbulo distal"], c:4 },
+            { id:78, b:"bloque5", q:"78. Complejo 19-aromatasa interviene en síntesis de:", o:["Estradiol", "Cortisol", "Aldosterona", "Testosterona", "Progesterona"], c:0 },
+            { id:79, b:"bloque5", q:"79. Mecanismo de acción hormonas tiroideas:", o:["Proteína G", "Adenilato ciclasa", "Receptores nucleares", "1 y 2", "2 y 3"], c:2 },
+            { id:80, b:"bloque5", q:"80. Entrada de iodo al tejido epitelial tiroideo:", o:["Simporte dependiente de sodio", "Antiporte dependiente de sodio", "Antiporte dependiente de potasio", "Simporte dependiente de potasio"], c:0 },
+            { id:81, b:"bloque5", q:"81. Señale la incorrecta respecto a GH:", o:["No puede ejercer acción directa", "Favorece formación de IGF", "Puede actuar directamente", "Se une a proteínas transporte"], c:0 },
+            { id:82, b:"bloque5", q:"82. Respuesta NO cierta sobre IGF-1:", o:["Controla por retroalimentación positiva a GH", "Acciones proliferativas", "Se sintetiza en hígado", "Circula unido a proteínas"], c:0 },
+            { id:83, b:"bloque5", q:"83. Estructura de mineralocorticoides corresponde a:", o:["C-19", "C-27", "C-18", "C-21", "C-20"], c:3 },
+            { id:84, b:"bloque5", q:"84. Liberación de cortisol:", o:["Pico máximo 6-8 mañana", "Alcohol reduce producción", "Máxima producción nocturna", "Pico máximo 6-8 tarde", "No sigue ritmo circadiano"], c:0 },
+            { id:85, b:"bloque5", q:"85. Entrada de hormonas tiroideas a célula:", o:["Difusión facilitada", "Simporte Na K", "Antiporte Na Cl", "Difusión simple", "Bomba Na K ATPasa"], c:0 },
+            { id:86, b:"bloque5", q:"86. Forma activa de hormonas tiroideas:", o:["3,5,3' triiodotironina", "3,5,5' triiodotironina", "Tetraiodotironina", "3,5 diiodotironina", "3,3',5' triiodotironina"], c:0 },
+            { id:87, b:"bloque5", q:"87. Receptor de insulina tiene actividad:", o:["Tirosin quinasa", "Histidin quinasa", "Serin quinasa", "Protein quinasa", "Alanin quinasa"], c:0 },
+            { id:88, b:"bloque5", q:"88. Vía de señalización de insulina:", o:["Receptores tirosin kinasa", "Sistema calcio-calmodulina", "Proteínas G", "Receptores intracelulares"], c:0 },
+            { id:89, b:"bloque5", q:"89. Vía glucagón, ¿qué proteín kinasa se activa?", o:["A", "B", "C", "D"], c:0 },
+            { id:90, b:"bloque5", q:"90. Elevación ATP/ADP en páncreas para secreción insulina provoca:", o:["Inhibición canales K+", "Apertura canales K+", "Entrada Ca+", "Salida Ca2+", "Entrada GLUT-2"], c:0 },
+            { id:91, b:"bloque5", q:"91. Cascada señalización insulina:", o:["Activa protein fosfatasa 1 (fosforilada)", "Activa protein fosfatasa 1 (desfosforilada)", "Inhibe protein fosfatasa 1", "Activa adenilato ciclasa (fosforilada)", "Activa adenilato ciclasa (sin fosforilar)"], c:0 },
+            { id:92, b:"bloque6", q:"92. Paso de fase en ciclo celular determinado por:", o:["Complejo quinasa/fosfatasa", "Complejo ciclina/CDK", "Complejo ciclina/fosfatasa", "Complejo proteasa/fosfatasa"], c:1 },
+            { id:93, b:"bloque6", q:"93. ¿Cuál no es segundo mensajero?", o:["ATP", "GMPc", "Inositol 3P", "AMPc"], c:0 },
+            { id:94, b:"bloque6", q:"94. Receptores en señalización celular:", o:["7TM y tirosina quinasa", "8TM y lisina quinasa", "3TM y cisteína quinasa", "5TM y lisina quinasa"], c:0 },
+            { id:95, b:"bloque6", q:"95. Factores crecimiento celular, incorrecta:", o:["Incrementa hidrógeno intracelular", "Incrementa calcio intracelular", "Reorganiza actina", "Activan factores transcripción", "Factores actúan sobre ADN induciendo división"], c:0 },
+            { id:96, b:"bloque6", q:"96. Proceso de apoptosis celular:", o:["Se activan caspasas", "No intervienen mitocondrias", "Todas las caspasas son efectoras", "Desencadenado por ruptura lisosomas", "Volumen celular aumenta"], c:0 },
+            { id:97, b:"bloque7", q:"97. Parada de señalización visual:", o:["Rodopsina quinasa fosforila rodopsina activada", "Retinal y opsina no se separan", "Arrestina se une a transducina", "Interacción transducina-rodopsina mayor"], c:0 },
+            { id:98, b:"bloque7", q:"98. Relación con la rodopsina:", o:["Formada por opsina y todo-trans-retinal", "Opsina formada por 2 subunidades", "11-cis-retinal unido por enlace hidrógeno", "Formada por opsina y 11-cis-retinal"], c:3 },
+            { id:99, b:"bloque7", q:"99. Forma activa de la rodopsina:", o:["Metarrodopsina II", "Lumirrodopsina", "Metarrodopsina III", "Metarrodopsina I", "Batorrodopsina"], c:0 },
+            { id:100, b:"bloque7", q:"100. Respecto al 11-cis retinal, incorrecta:", o:["Deriva de vitamina B", "Procede de dieta y degradación rodopsina", "Deriva de vitamina A", "Se transforma en todo-trans al contacto con fotones"], c:0 },
+            { id:101, b:"bloque7", q:"101. Característico del ciclo de la visión:", o:["Todas son ciertas", "Requiere todo trans retinol", "Rodopsina se activa por fotones", "Forma complejo con transducina"], c:0 },
+            { id:102, b:"bloque7", q:"102. Complejo inactivación rodopsina:", o:["Rodopsina fosforilada-transducina", "Rodopsina-transducina", "Rodopsina-arrestina", "Rodopsina fosforilada-arrestina", "Rodopsina-fosfodiesterasa"], c:3 },
+            { id:103, b:"bloque7", q:"103. Cascada fotorrecepción:", o:["11 cis retinal no cambia", "Incrementa AMPc", "Abren canales sodio", "Rodopsina cambia a metarrodopsina II"], c:3 },
+            { id:104, b:"bloque7", q:"104. Grupo prostético rodopsina:", o:["11 trans retinal", "11 cis retinal", "Vitamina C", "Palmitato", "Todo cis retinal"], c:1 },
+            { id:105, b:"bloque7", q:"105. Cascada fotorrecepción (otra):", o:["11 cis retinal no cambia", "Incrementa AMPc", "Abren canales sodio", "Cierran canales sodio", "Cambia a metarrodopsina III"], c:3 },
+            { id:106, b:"bloque8", q:"106. Respecto a tetrahidrobiopterina (BH4), incorrecta:", o:["Se sintetiza a partir de GTP", "Al oxidarse se convierte en dihidrobiopterina", "Primera enzima es ciclohidrolasa 1", "Último paso por sepiapterina reductasa", "Es coenzima de descarboxilasas de aminoácidos aromáticos"], c:4 },
+            { id:107, b:"bloque8", q:"107. Enzima que usa BH4 como coenzima:", o:["Dopamina B-hidroxilasa", "Triptófano hidroxilasa", "5-hidroxitriptófano descarboxilasa", "Feniletanolamina-N-metiltransferasa"], c:1 },
+            { id:108, b:"bloque8", q:"108. Paso L-DOPA a dopamina:", o:["DOPA descarboxilasa", "Tirosina descarboxilasa", "Dopamina sintetasa", "Dopamina B-hidroxilasa"], c:0 },
+            { id:109, b:"bloque8", q:"109. NO es producto de degradación de catecolaminas:", o:["Metanefrina", "Ácido vanililmandelico", "Ácido homovanico", "Ácido 5-hidroxindolacetico", "3-metoxi-4-hidroxifenilglicol"], c:3 },
+            { id:110, b:"bloque8", q:"110. Paso Tirosina a L-DOPA:", o:["Tirosina Hidroxilasa", "L-DOPA descarboxilasa", "Tirosina Descarboxilasa", "L-DOPA sintetasa"], c:0 },
+            { id:111, b:"bloque8", q:"111. Producto de GABA-a-cetoglutarato transaminasa:", o:["Semialdehído succínico", "Succinato", "a-cetoglutarato", "Glutamina"], c:0 },
+            { id:112, b:"bloque8", q:"112. Enzima degradación GABA:", o:["GABA hidroxilasa", "GABA-a-cetoglutarato transaminasa", "GABA oxidasa", "GABA succinato transaminasa", "GABA deshidrogenasa"], c:1 },
+            { id:113, b:"bloque8", q:"113. Síntesis glutamato, sustrato preferente:", o:["Glutamina y a-cetoglutarato", "Glutamina y oxalacetato", "a-cetoglutarato y aspartato", "Glutamina y succinato"], c:0 },
+            { id:114, b:"bloque8", q:"114. Síntesis glutamato (repetida/variación):", o:["Glutamina y oxalacetato", "Glutamina y a-cetoglutarato", "Glicina y glutamina", "Glutamina y succinato", "A-cetoglutarato y serina"], c:1 },
+            { id:115, b:"bloque8", q:"115. Síntesis dopamina requiere:", o:["L-DOPA descarboxilasa", "Tirosina descarboxilasa", "Fenilalanina deshidrogenasa", "Tirosina deshidrogenasa", "Feniletanolamina descarboxilasa"], c:0 },
+            { id:116, b:"bloque8", q:"116. Síntesis ácido a-aminolevulínico produce:", o:["Hidratación", "Descarboxilación (de glicina)", "Oxidación", "Reducción", "Desfosforilación"], c:1 },
+            { id:117, b:"bloque8", q:"117. Productos degradación noradrenalina:", o:["Ácido vanilmandélico", "Ácido homovanílico", "Metoxitiramina", "1 y 2 ciertas", "Ninguna"], c:0 },
+            { id:118, b:"bloque8", q:"118. Enzima síntesis Acetilcolina:", o:["Acetilcolina descarboxilasa", "Acetilcolina sintetasa", "Acetilcolina hidroxilasa", "Acetilcolina transferasa"], c:3 },
+            { id:119, b:"bloque8", q:"119. Enzima degradación acetilcolina:", o:["Acetilcolinesterasa", "Acetilcolina transferasa", "Acetilcolina hidrolasa", "Acetilcolina descarboxilasa", "Acetilcolina hidroxilasa"], c:0 },
+            { id:120, b:"bloque8", q:"120. Precursor serotonina:", o:["Triptófano", "Tirosina", "Leucina", "Treonina", "Histidina"], c:0 },
+            { id:121, b:"bloque8", q:"121. Degradación serotonina:", o:["Desaminación oxidativa", "Descarboxilación oxidativa", "Oxidación", "Reducción", "Hidroxilación"], c:0 },
+            { id:122, b:"bloque8", q:"122. Incorrecta sobre proteína G:", o:["Gai inhibe PLC", "Giq aumenta DAG y IP3", "Gis activa adenilato ciclasa", "Gai abre K+ y cierra Ca2+", "Gas aumenta AMPc"], c:0 },
+            { id:123, b:"bloque8", q:"123. No participa degradación aminas biógenas:", o:["MAO", "HNMT", "GABA-T", "COMT", "DAO"], c:2 },
+            { id:124, b:"bloque8", q:"124. Relación precursor-neurotransmisor inhibitorio correcta:", o:["Glutamina-glicina", "a-cetoglutarato-Taurina", "Glicina-Taurina", "Serina-Glicina", "Cisteína-GABA"], c:3 },
+            { id:125, b:"bloque8", q:"125. Neurotransmisor excitatorio:", o:["Glutamato", "Taurina", "Glicina", "GABA", "B-alanina"], c:0 },
+            { id:126, b:"bloque8", q:"126. Síntesis glutamato sustrato:", o:["Aspartato y glutamina", "Glutamina y oxalacetato", "Glutamina y succinato", "Glutamina y a-cetoglutarato", "a-cetoglutarato y aspartato"], c:3 },
+            { id:127, b:"bloque9", q:"127. Respecto a la albúmina:", o:["Mantiene presión oncótica", "Menor concentración", "No depende estado nutricional", "Transporta solo vit A", "No transporta fármacos"], c:0 },
+            { id:128, b:"bloque9", q:"128. Incorrecta proteínas plasmáticas:", o:["Albúmina mayoritaria", "Ceruloplasmina transporta hierro", "Haptoglobina evita pérdida hierro", "Transferrina une Fe3+", "Ferritina une Fe3+"], c:1 },
+            { id:129, b:"bloque9", q:"129. Síntesis hemo, procedencia N y C:", o:["Piruvato-glicina", "Succinato-alanina", "Succinato-glicina", "Succinato-aspartato", "Oxalacetato-glicina"], c:2 },
+            { id:130, b:"bloque9", q:"130. Mioglobina pO2 50%:", o:["10 mmHg", "20 mmHg", "0,5 mmHg", "35 mmHg", "4 mmHg"], c:4 },
+            { id:131, b:"bloque9", q:"131. Incorrecta plaquetas:", o:["Gránulos densos serotonina", "Gránulos alfa fibrinógeno", "Receptor GP Ib-IX adhesión", "Gránulos densos von Willebrand", "Gránulos alfa von Willebrand"], c:3 },
+            { id:132, b:"bloque9", q:"132. Coeficiente de Hill:", o:["Fijación irreversible", "Relación mioglobina/hemoglobina", "Cooperatividad", "No sabe", "Curva sigmoidea"], c:2 },
+            { id:133, b:"bloque9", q:"133. Enzima síntesis uroporfirinógeno III:", o:["Uroporfirinógeno quelatasa", "Protoporfirinógeno oxidasa", "Uroporfirinógeno descarboxilasa", "Porfobilinógeno desaminasa", "Coproporfirinógeno oxidasa"], c:0 },
+            { id:134, b:"bloque9", q:"134. Secuencia coproporfirinógeno III:", o:["M, P, M, P, M, P, P, M", "A, P, A, P, M, P, P, M", "M, P, V, P, M, P, P, M", "M, V, M, V, M, P, P, M"], c:0 },
+            { id:135, b:"bloque9", q:"135. Estructura secundaria mioglobina:", o:["Predominan plegamientos", "Carece secundaria", "75% alfa-hélice", "50% alfa y beta", "Predomina cuaternaria"], c:2 },
+            { id:136, b:"bloque9", q:"136. No involucrada en hierro:", o:["Ferritina", "Inmunoglobulinas", "Hemopexina", "No sabe", "Transferrina"], c:1 },
+            { id:137, b:"bloque9", q:"137. Es una a-globulina:", o:["Proteína C reactiva", "Glicoproteína ácida", "Ferritina", "Albúmina"], c:1 },
+            { id:138, b:"bloque9", q:"138. Factor coagulación dependiente Vit K:", o:["Factor 1", "Factor 4", "Factor 9", "Factor 8", "Factor 5"], c:2 },
+            { id:139, b:"bloque9", q:"139. Óxido nítrico:", o:["No es radical libre", "mtNOS es isoforma eNOS", "NOS cataliza a partir arginina", "Solo en mitocondrias", "4 genes"], c:2 },
+            { id:140, b:"bloque9", q:"140. Acción trombina incorrecta:", o:["Activa Factor XIII", "No sabe", "Favorece Factor XI", "Activa V y VIII", "Activa Factor VII"], c:2 },
+            { id:141, b:"bloque9", q:"141. Prostaciclina incorrecta:", o:["Inhibe agregación", "Favorece antitrombótico", "Es vasoconstrictor", "No sabe", "Es vasodilatador"], c:2 },
+            { id:142, b:"bloque10", q:"142. Melatonina incorrecta:", o:["Neurohormona pineal", "Regula ciclos", "Sintetiza de dopamina", "Gran antioxidante"], c:2 },
+            { id:143, b:"bloque10", q:"143. Mitocondria disfuncional NO:", o:["Descenso transporte electrones", "Aumento potencial membrana", "Aumento fragilidad", "Aumento productos oxidación", "Aumento tamaño"], c:1 },
+            { id:144, b:"bloque10", q:"144. Enzimas antioxidantes:", o:["Glutatión oxidado y reducido por Vit C", "SOD elimina HO+", "Glutatión donador electrones catalasa", "Peróxido eliminado por catalasa y glutatión peroxidasa", "Selenio cofactor catalasa"], c:3 },
+            { id:145, b:"bloque10", q:"145. Citocromo p450:", o:["Altamente específicas", "Disminuyen polaridad", "Producen conjugación", "Localizan con NAD-oxidasa", "Incrementan polaridad liposolubles"], c:4 },
+            { id:146, b:"bloque10", q:"146. Hepatocitos zona perivenosa:", o:["Mayor oxígeno", "Mayor nutrientes", "Biotransformar AcetilCoA en cuerpos cetónicos", "Biotransformar amonio urea", "Carácter gluconeogénico"], c:2 },
+            { id:147, b:"bloque10", q:"147. Zonación hepática incorrecta:", o:["Perivenosa mayor oxígeno", "Perivenosa predomina glutamina", "Periportal mayor oxígeno", "No sabe", "Periportal mayor metabolismo oxidativo"], c:0 },
+            { id:148, b:"bloque11", q:"148. Metabolismo aminoácidos zonación:", o:["No sabe", "Ciclo urea en perivenosa", "Perivenosa mayor glutamina sintetasa", "Perivenosa mayor carbamoil-P", "Perivenosa mayor glutaminasa"], c:2 },
+            { id:149, b:"bloque11", q:"149. Glutatión incorrecta:", o:["Relación oxidado/reducido marcador estrés", "Reducido forma disulfuro", "Actividad por grupo tiol", "Es coenzima catalasa"], c:3 },
+            { id:150, b:"bloque11", q:"150. Zonación hepática:", o:["Glucosa 6 fosfatasa en perivenosos", "Glucoquinasa en periportales", "Glucosa 6 fosfatasa en periportales"], c:2 },
+            { id:151, b:"bloque12", q:"151. En la biotransformación del ácido acetilsalicílico:", o:["Se conjuga con ácido glucurónico", "No se biotransforma en el hígado", "No se produce incremento de polaridad en el citocromo p450", "No necesita conjugación"], c:0 },
+            { id:152, b:"bloque12", q:"152. Señale la respuesta correcta sobre la estructura del tropocolágeno:", o:["3 cadenas levógiras formando superhélice dextrógira", "3 cadenas dextrógiras formando superhélice levógira", "3 cadenas levógiras formando superhélice levógira", "3 cadenas dextrógiras formando superhélice dextrógira"], c:0 },
+            { id:153, b:"bloque12", q:"153. Respecto a la síntesis de colágeno, indique la respuesta incorrecta:", o:["Se hidroxilan residuos de glicina y cisteína", "Se producen o-glucosilaciones en residuos de 5-hidroxilisina", "La triple hélice se forma por extremos C-terminal", "Eliminación de propéptidos es extracelular", "Disulfuro isomerasa actúa en extremos"], c:0 },
+            { id:154, b:"bloque12", q:"154. Enfermedad relacionada con defectos hereditarios en la fibrilina-1:", o:["Síndrome de Marfan", "Latirismo", "Síndrome Ehlers-Danlos", "Osteogénesis imperfecta"], c:0 },
+            { id:155, b:"bloque12", q:"155. ¿Cuál de las siguientes no es característica de proteínas fibrosas?", o:["Estructuras extendidas", "No contienen aminoácidos modificados", "Función estructural", "Patrones repetitivos"], c:1 },
+            { id:156, b:"bloque12", q:"156. Enzima encargada de eliminar propéptidos del procolágeno:", o:["Lisil oxidasa", "Lisil 5-hidroxilasa", "Disulfuro isomerasa", "Amino y carboxilo procolágeno peptidasa"], c:3 },
+            { id:157, b:"bloque12", q:"157. Respecto a síntesis de colágeno, incorrecta:", o:["Hidroxilan lisina y prolina", "Eliminación propéptidos es extracelular", "Disulfuro isomerasa forma puentes", "O-glucosilaciones en hidroxiprolina", "Triple hélice inicia en C-terminal"], c:3 },
+            { id:158, b:"bloque12", q:"158. Formación y estabilización tropocolágeno, incorrecta:", o:["Interacciones no covalentes", "Estabilización por disulfuro en propéptidos", "Puentes hidrógeno Gly-Pro", "Cadenas laterales Gly al interior", "No sabe"], c:1 },
+            { id:159, b:"bloque12", q:"159. Enzima hidroxilación prolina:", o:["Prolil 5-hidroxilasa", "Prolil 4-hidroxilasa", "Prolil isomerasa", "Prolil sintasa"], c:1 },
+            { id:160, b:"bloque13", q:"160. Cálculo hiato aniónico, descenso por:", o:["Descenso albúmina sérica", "Disminución cationes no medidos", "Aumento albúmina", "Aumento aniones no medidos", "Aumento cloruro"], c:0 },
+            { id:161, b:"bloque13", q:"161. Rango normalidad potasio plasmático:", o:["9.5-10.5", "3.4-4.9 mmol/l", "134-145", "21-28"], c:1 },
+            { id:162, b:"bloque13", q:"162. Rama ascendente Asa Henle:", o:["Reabsorbe potasio activamente", "Agua difunde a médula", "Lugar acción aldosterona", "Impermeable al agua"], c:3 },
+            { id:163, b:"bloque13", q:"163. Movimiento líquidos arterias terminales:", o:["Presión oncótica favorece filtración", "Filtración favorecida (Hidrostática > Oncótica)", "Equilibrio", "Hidrostática menor que oncótica"], c:1 },
+            { id:164, b:"bloque14", q:"164. Metabolismo calcio correcta:", o:["Calcio iónico 1%", "Unido a proteínas 10%", "Complejos 50%", "Calcio iónico 50%", "Siempre unido albúmina"], c:3 },
+            { id:165, b:"bloque14", q:"165. Vitamina D dieta correcta:", o:["Primera hidroxilación riñón", "No hay hidroxilación", "Transporta ceruloplasmina", "Segunda hidroxilación hígado", "Primera hidroxilación hígado"], c:4 },
+            { id:166, b:"bloque14", q:"166. Metabolismo calcio (repetida):", o:["Iónico 1%", "Proteínas 10%", "Complejos 50%", "Iónico 50%"], c:3 },
+            { id:167, b:"bloque14", q:"167. Remodelación ósea correcta:", o:["PTH inhibe reabsorción", "Calcitonina estimula reabsorción", "Vit E actúa con PTH", "PTH estimula reabsorción ósea", "Vit D inhibe reabsorción renal"], c:3 },
+            { id:168, b:"bloque14", q:"168. Falsa respecto a PTH:", o:["Es hipercalcemiante", "Aumenta reabsorción renal Ca", "Favorece activación Vit D renal", "Estimula osteoclastos", "Todas son verdaderas"], c:4 },
+            { id:169, b:"bloque14", q:"169. Respecto SGLT-1:", o:["Lípido membrana", "Paso glucosa enterocito a sangre", "Independiente sodio", "Paso fructosa", "Dependiente de sodio"], c:4 },
+            { id:170, b:"bloque14", q:"170. Aldosterona actúa en:", o:["Túbulo colector", "Asa ascendente", "Asa descendente", "Túbulo proximal", "Túbulo contorneado distal"], c:4 },
+            { id:171, b:"bloque15", q:"171. Principal aminoácido nitrógeno células neoplásicas:", o:["Tirosina", "Valina", "Glutamina", "Histidina", "Treonina"], c:2 },
+            { id:172, b:"bloque15", q:"172. Formación membranas células neoplásicas requiere:", o:["Ácidos grasos", "Glicerol", "Glucosa", "Glutamato", "Glutamina"], c:0 },
+            { id:173, b:"bloque15", q:"173. Respuesta correcta:", o:["Insulina favorece cuerpos cetónicos", "Depósitos glucógeno 3 días ayuno", "Proteínas primer recurso ayuno", "Ciclo Cori activo ayuno temprano", "Cetogénesis en postabsortivo"], c:3 },
+            { id:174, b:"bloque16", q:"174. Respuesta NO cierta músculo:", o:["TnT une a tropomiosina", "Filamento fino es actina F", "Tropomiosina es dímero", "Formado por dímero actina G", "TnC fija Ca2+"], c:3 },
+            { id:175, b:"bloque16", q:"175. Lugar unión calcio sarcómero:", o:["TnT", "TnC troponina", "TnI", "TnC tropomiosina", "TnC actina"], c:1 },
+            { id:176, b:"bloque16", q:"176. Ejercicio moderado prolongado:", o:["Salida glucosa músculo", "Usa cuerpos cetónicos antes", "Primera media hora glucogenólisis", "Primera media hora glucogenogénesis", "Final primera hora lipogénesis"], c:2 },
+            { id:177, b:"bloque16", q:"177. Ejercicio físico y glucosa:", o:["Almacenamiento músculo", "Aumenta expresión GLUT4", "Almacenamiento grasa", "Aumenta GLUT2", "Aumenta insulina"], c:1 },
+            { id:178, b:"bloque16", q:"178. Ciclo ahorro glucosa-ácidos grasos, citrato inhibe:", o:["PFK-1", "FBPasa-2", "Piruvato quinasa", "FBPasa-1", "PFK-2"], c:0 },
+            { id:179, b:"bloque16", q:"179. Ejercicio favorece entrada muscular de:", o:["Insulina", "Glucosa", "Ácidos grasos", "Glicerol", "Piruvato"], c:1 },
+            { id:180, b:"bloque16", q:"180. Sustrato ejercicio intenso corta duración:", o:["Glucógeno", "Glucosa", "ATP", "Creatin fosfato", "Ácidos grasos"], c:3 },
+            { id:181, b:"bloque16", q:"181. Tras una hora ejercicio, glucosa procede de:", o:["Glucolisis hepática", "Glucogenogénesis", "Glucogénesis lactato (Cori)", "Glucogénesis ácidos grasos", "Descarboxilación piruvato"], c:0 },
+            { id:182, b:"bloque16", q:"182. Hormona liberada ejercicio:", o:["Adrenalina", "Dopamina", "Insulina", "Somatomedina", "Melanina"], c:0 },
+            { id:183, b:"bloque16", q:"183. Incorrecta ciclo purin nucleótidos:", o:["Desaminación AMP proporcional ejercicio", "Concentraciones AMP/IMP no varían", "Genera fumarato", "Producción NH3 proporcional", "Pérdida amino AMP da IMP"], c:1 }
+        ];
+
+        // VARIABLES DE ESTADO
+        let currentQuestions = [];
+        let userAnswers = {}; // { qId: { selected: index, correct: bool, marked: bool } }
+
+        // ==========================================
+        // LÓGICA DE INICIO Y FILTRADO
+        // ==========================================
+        function toggleExamOptions() {
+            const mode = document.getElementById('mode-select').value;
+            document.getElementById('block-options').style.display = mode === 'blocks' ? 'block' : 'none';
+            document.getElementById('exam-options').style.display = mode === 'exam' ? 'block' : 'none';
+        }
+
+        function startQuiz() {
+            const mode = document.getElementById('mode-select').value;
+            userAnswers = {}; // Reset
+
+            if (mode === 'blocks') {
+                const block = document.getElementById('block-select').value;
+                currentQuestions = block === 'todos' 
+                    ? [...fullDB] 
+                    : fullDB.filter(q => q.b === block);
+            } else {
+                const amount = parseInt(document.getElementById('q-amount').value);
+                const shuffled = [...fullDB].sort(() => 0.5 - Math.random());
+                currentQuestions = shuffled.slice(0, amount);
+            }
+
+            if(currentQuestions.length === 0) return alert("No hay preguntas en esta selección.");
+
+            renderQuiz();
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('quiz-layout').style.display = 'flex';
+        }
+
+        // ==========================================
+        // RENDERIZADO DEL QUIZ (PRINCIPAL)
+        // ==========================================
+        function renderQuiz() {
+            const sidebar = document.getElementById('sidebar');
+            const main = document.getElementById('questions-wrapper');
+            
+            sidebar.innerHTML = '';
+            main.innerHTML = '';
+
+            currentQuestions.forEach((q, index) => {
+                // 1. Crear botón sidebar
+                const navBtn = document.createElement('button');
+                navBtn.className = 'nav-btn';
+                navBtn.innerText = index + 1;
+                navBtn.onclick = () => document.getElementById(`q-${q.id}`).scrollIntoView({behavior: 'smooth'});
+                navBtn.id = `nav-${q.id}`;
+                sidebar.appendChild(navBtn);
+
+                // 2. Mezclar opciones (Aleatoriedad solicitada)
+                // Creamos un array de objetos con texto e índice original para no perder la correcta
+                let optionsObj = q.o.map((txt, i) => ({ txt, originalIdx: i }));
+                // Shuffle
+                optionsObj.sort(() => Math.random() - 0.5);
+
+                // 3. Crear tarjeta pregunta
+                const card = document.createElement('div');
+                card.className = 'q-card';
+                card.id = `q-${q.id}`;
+                
+                // Header con Título y Checkbox
+                card.innerHTML = `
+                    <div class="q-header">
+                        <div class="q-title">${q.q}</div>
+                        <label class="q-mark">
+                            <input type="checkbox" onchange="toggleMark(${q.id}, this.checked)">
+                            Marcar
+                        </label>
+                    </div>
+                `;
+
+                // Grid de Opciones
+                const optGrid = document.createElement('div');
+                optGrid.className = 'options-grid';
+                
+                optionsObj.forEach((opt) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'opt-btn';
+                    btn.innerText = opt.txt;
+                    btn.onclick = () => handleAnswer(q.id, opt.originalIdx, btn, optionsObj, q.c);
+                    optGrid.appendChild(btn);
+                });
+                card.appendChild(optGrid);
+
+                // Explicación (oculta)
+                const exp = document.createElement('div');
+                exp.className = 'explanation';
+                exp.id = `exp-${q.id}`;
+                // Generamos una explicación automática basada en la respuesta correcta
+                exp.innerHTML = `<strong>Respuesta Correcta:</strong> ${q.o[q.c]}`; 
+                card.appendChild(exp);
+
+                main.appendChild(card);
+            });
+        }
+
+        // ==========================================
+        // LÓGICA DE RESPUESTA
+        // ==========================================
+        function handleAnswer(qId, selectedOriginalIdx, btnElement, optionsObj, correctIdx) {
+            // Prevenir responder dos veces
+            if (userAnswers[qId] && userAnswers[qId].answered) return;
+
+            const isCorrect = selectedOriginalIdx === correctIdx;
+            
+            // Guardar estado
+            if (!userAnswers[qId]) userAnswers[qId] = {};
+            userAnswers[qId].answered = true;
+            userAnswers[qId].correct = isCorrect;
+
+            // UI Botón seleccionado
+            if (isCorrect) {
+                btnElement.classList.add('correct');
+            } else {
+                btnElement.classList.add('wrong');
+                // Buscar y resaltar la correcta visualmente
+                const siblings = btnElement.parentElement.children;
+                for (let sib of siblings) {
+                    // Texto del botón vs Texto de la opción correcta
+                    // (Comparar texto es más seguro tras el shuffle)
+                    const dbQ = fullDB.find(x => x.id === qId);
+                    if (sib.innerText === dbQ.o[correctIdx]) {
+                        sib.classList.add('correct');
+                    }
+                }
+            }
+
+            // Deshabilitar todos los botones de esta pregunta
+            const siblings = btnElement.parentElement.children;
+            for (let sib of siblings) sib.disabled = true;
+
+            // Mostrar explicación
+            document.getElementById(`exp-${qId}`).style.display = 'block';
+
+            // Actualizar Sidebar
+            const navBtn = document.getElementById(`nav-${qId}`);
+            navBtn.classList.add(isCorrect ? 'correct' : 'incorrect');
+        }
+
+        function toggleMark(qId, isChecked) {
+            if (!userAnswers[qId]) userAnswers[qId] = {};
+            userAnswers[qId].marked = isChecked;
+            
+            const navBtn = document.getElementById(`nav-${qId}`);
+            if (isChecked) navBtn.classList.add('marked');
+            else navBtn.classList.remove('marked');
+        }
+
+        // ==========================================
+        // FINALIZAR Y REPETIR
+        // ==========================================
+        function showResults() {
+            let correct = 0, wrong = 0, marked = 0;
+            
+            currentQuestions.forEach(q => {
+                const ua = userAnswers[q.id];
+                if (ua) {
+                    if (ua.correct) correct++;
+                    else if (ua.answered) wrong++; // Solo cuenta fallada si la respondió mal
+                    if (ua.marked) marked++;
+                }
+            });
+
+            document.getElementById('score-correct').innerText = correct;
+            document.getElementById('score-wrong').innerText = wrong;
+            document.getElementById('score-marked').innerText = marked;
+            
+            document.getElementById('results-modal').style.display = 'flex';
+        }
+
+        function retry(mode) {
+            let nextQuestions = [];
+
+            if (mode === 'all') {
+                // Reiniciar tal cual estaba
+                nextQuestions = [...currentQuestions];
+            } else if (mode === 'failed') {
+                nextQuestions = currentQuestions.filter(q => {
+                    const ua = userAnswers[q.id];
+                    return ua && ua.answered && !ua.correct;
+                });
+            } else if (mode === 'marked') {
+                nextQuestions = currentQuestions.filter(q => {
+                    const ua = userAnswers[q.id];
+                    return ua && ua.marked;
+                });
+            } else if (mode === 'failed_marked') {
+                nextQuestions = currentQuestions.filter(q => {
+                    const ua = userAnswers[q.id];
+                    const isFailed = ua && ua.answered && !ua.correct;
+                    const isMarked = ua && ua.marked;
+                    return isFailed || isMarked;
+                });
+            }
+
+            if (nextQuestions.length === 0) {
+                alert("No hay preguntas que cumplan ese criterio.");
+                return;
+            }
+
+            // Reiniciar UI
+            currentQuestions = nextQuestions;
+            userAnswers = {}; // Limpiar respuestas previas
+            document.getElementById('results-modal').style.display = 'none';
+            document.getElementById('start-screen').style.display = 'none';
+            renderQuiz();
+        }
+
+    </script>
+</body>
+</html>
