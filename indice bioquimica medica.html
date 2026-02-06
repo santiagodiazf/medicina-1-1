@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Índice - Bioquímica Médica</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --hover-color: #2980b9;
+            --bg-color: #f4f6f7;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            margin-top: 30px;
+            border-left: 5px solid var(--primary-color);
+            padding-left: 10px;
+        }
+
+        .grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        a.file-link {
+            display: block;
+            background-color: var(--card-bg);
+            padding: 15px 20px;
+            text-decoration: none;
+            color: var(--primary-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        a.file-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        a.file-link::after {
+            content: '➜';
+            opacity: 0.5;
+        }
+        
+        a.file-link:hover::after {
+            opacity: 1;
+            color: white;
+        }
+
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Bioquímica Médica</h1>
+            <p>Índice de recursos y materiales de estudio</p>
+        </header>
+
+        <h2>Exámenes Oficiales</h2>
+        <div class="grid">
+            <a href="examen bioquimicamedica sep 2023.html" class="file-link">Examen Bioquímica Médica - Septiembre 2023</a>
+            <a href="examen bioquimicamedica jun 2023.html" class="file-link">Examen Bioquímica Médica - Junio 2023</a>
+            <a href="examen bioquimicamedica 2020.html" class="file-link">Examen Bioquímica Médica - 2020</a>
+            <a href="examen bioquimicamedica 2019.html" class="file-link">Examen Bioquímica Médica - 2019</a>
+            <a href="examen bioquimicamedica 2018.html" class="file-link">Examen Bioquímica Médica - 2018</a>
+        </div>
+
+        <h2>TIVs (Trabajo Individual)</h2>
+        <div class="grid">
+            <a href="tivs1.html" class="file-link">TIV 1</a>
+            <a href="tivs2.html" class="file-link">TIV 2</a>
+            <a href="tivs3.html" class="file-link">TIV 3</a>
+            <a href="tivs4.html" class="file-link">TIV 4</a>
+            <a href="tivs5.html" class="file-link">TIV 5</a>
+            <a href="tivs6.html" class="file-link">TIV 6</a>
+        </div>
+
+        <h2>Baterías y Seminarios</h2>
+        <div class="grid">
+            <a href="bateria bloques 137.html" class="file-link">Batería Bloques 137</a>
+            <a href="bateria bloques 106.html" class="file-link">Batería Bloques 106</a>
+            <a href="seminarios y laboratorio.html" class="file-link">Seminarios y Laboratorio</a>
+        </div>
+
+        <footer>
+            <p>Repositorio local de Bioquímica Médica</p>
+        </footer>
+    </div>
+
+</body>
+</html>
