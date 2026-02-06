@@ -13,6 +13,7 @@
             --text: #2c3e50;
             --card-bg: #ffffff;
             --sidebar-width: 250px;
+            --warning: #f39c12;
         }
 
         * { box-sizing: border-box; }
@@ -226,6 +227,7 @@
         .btn-primary { background-color: var(--primary); color: white; }
         .btn-secondary { background-color: var(--secondary); color: white; }
         .btn-danger { background-color: #c0392b; color: white; }
+        .btn-warning { background-color: var(--warning); color: white; }
         .btn-ghost { background: transparent; color: var(--text); border: 2px solid #ddd; }
 
         /* PANTALLAS MODALES */
@@ -320,6 +322,7 @@
         <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
             <button class="btn btn-primary" onclick="resetQuiz('same')">Repetir Mismo Test</button>
             <button class="btn btn-danger" onclick="resetQuiz('failed')">Repetir Falladas</button>
+            <button class="btn btn-warning" onclick="resetQuiz('marked')">Repetir Marcadas</button>
             <button class="btn btn-ghost" onclick="location.reload()">Volver al Inicio</button>
         </div>
     </div>
@@ -485,7 +488,7 @@
     ];
 
     let currentQuestions = [];
-    let currentMode = 'all'; // Para saber qué repetir
+    let currentMode = { start: 1, end: 150, shuffle: false };
     let markedQuestions = new Set();
     let failedQuestions = new Set();
 
@@ -502,12 +505,13 @@
             currentQuestions.sort(() => Math.random() - 0.5);
         }
 
-        // Guardar configuración para reinicio
+        // Guardar configuración para reinicio (mismo test)
         currentMode = { start, end, shuffle };
 
         // Resetear estados
-        markedQuestions.clear();
+        // markedQuestions.clear(); // Opcional: ¿Quieres limpiar las marcadas al iniciar nuevo test? Generalmente sí.
         failedQuestions.clear();
+        
         document.getElementById('total-questions').innerText = currentQuestions.length;
         
         // UI Transition
@@ -558,7 +562,7 @@
             q.o.forEach((opt, i) => {
                 const btn = document.createElement('div');
                 btn.className = 'option-item';
-                btn.innerHTML = `<span>${opt}</span>`; // Opción completa (letra incluida en texto)
+                btn.innerHTML = `<span>${opt}</span>`;
                 btn.onclick = () => checkAnswer(q, i, btn, card);
                 optionsDiv.appendChild(btn);
             });
@@ -626,16 +630,22 @@
 
     function resetQuiz(mode) {
         if (mode === 'same') {
-            // Mismo rango, posiblemente re-mezclado si el toggle sigue activo
-            // Ojo: si quieres exactamente el mismo orden, habría que guardar el array mezclado
-            // Aquí reiniciamos con la configuración guardada:
             startQuiz(currentMode.start, currentMode.end);
         } else if (mode === 'failed') {
             if (failedQuestions.size === 0) return alert("No hay fallos");
             currentQuestions = Array.from(failedQuestions);
             if (currentMode.shuffle) currentQuestions.sort(() => Math.random() - 0.5);
             
-            // UI Reset
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('total-questions').innerText = currentQuestions.length;
+            renderSidebar();
+            renderQuiz();
+        } else if (mode === 'marked') {
+            if (markedQuestions.size === 0) return alert("No hay preguntas marcadas");
+            // Filtramos la DB completa por las IDs marcadas
+            currentQuestions = questionsDB.filter(q => markedQuestions.has(q.id));
+            if (currentMode.shuffle) currentQuestions.sort(() => Math.random() - 0.5);
+
             document.getElementById('result-screen').classList.add('hidden');
             document.getElementById('total-questions').innerText = currentQuestions.length;
             renderSidebar();
