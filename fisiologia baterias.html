@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega Quiz Fisiología - 4 Baterías</title>
+    <title>Quiz Fisiología Optimizado</title>
     <style>
         :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
+            --primary: #27ae60;
+            --secondary: #2ecc71;
             --success: #27ae60;
-            --danger: #c0392b;
-            --warning: #f39c12;
+            --danger: #e74c3c;
+            --warning: #f1c40f;
+            --dark: #2c3e50;
             --light: #ecf0f1;
-            --dark: #34495e;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -23,10 +23,9 @@
             background-color: #f4f6f7;
         }
         
-        /* --- Sidebar --- */
         #sidebar {
-            width: 380px; /* Un poco más ancho para tantas preguntas */
-            background-color: var(--primary);
+            width: 350px;
+            background-color: var(--dark);
             color: white;
             display: flex;
             flex-direction: column;
@@ -41,12 +40,13 @@
             font-size: 1.1rem;
             border-bottom: 1px solid rgba(255,255,255,0.1);
             padding-bottom: 10px;
+            margin-bottom: 10px;
         }
 
         #nav-grid {
             display: grid;
-            grid-template-columns: repeat(7, 1fr); /* 7 columnas para más densidad */
-            gap: 3px;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
             overflow-y: auto;
             padding-right: 5px;
             flex-grow: 1;
@@ -59,21 +59,21 @@
         .nav-btn {
             width: 100%;
             aspect-ratio: 1;
-            border-radius: 3px;
+            border-radius: 4px;
             border: none;
             background-color: rgba(255,255,255,0.1);
             color: #ecf0f1;
             cursor: pointer;
             font-weight: 600;
-            font-size: 9px; /* Texto más pequeño */
+            font-size: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: all 0.2s;
+            transition: all 0.1s;
         }
 
-        .nav-btn:hover { background-color: var(--secondary); transform: scale(1.2); z-index: 2; }
-        .nav-btn.active { background-color: var(--secondary); border: 1px solid white; }
+        .nav-btn:hover { background-color: var(--secondary); transform: scale(1.1); z-index: 2; }
+        .nav-btn.active { background-color: var(--secondary); border: 2px solid white; }
         .nav-btn.correct { background-color: var(--success); color: white; }
         .nav-btn.incorrect { background-color: var(--danger); color: white; }
         .nav-btn.marked { box-shadow: inset 0 0 0 2px var(--warning); }
@@ -89,7 +89,6 @@
         }
         .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
 
-        /* Main Content */
         #main {
             flex-grow: 1;
             padding: 20px;
@@ -97,10 +96,9 @@
             position: relative;
         }
 
-        .screen { display: none; max-width: 950px; margin: 0 auto; }
+        .screen { display: none; max-width: 900px; margin: 0 auto; }
         .screen.active { display: block; }
 
-        /* Cards & UI */
         .card {
             background: white;
             padding: 30px;
@@ -118,8 +116,8 @@
         
         .battery-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
             margin-bottom: 15px;
         }
 
@@ -128,7 +126,7 @@
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             transition: transform 0.1s, box-shadow 0.2s;
             width: 100%;
@@ -136,14 +134,13 @@
         .btn:active { transform: scale(0.98); }
         .btn:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
 
-        .btn-blue { background-color: var(--secondary); color: white; }
+        .btn-blue { background-color: #3498db; color: white; }
         .btn-green { background-color: var(--success); color: white; }
         .btn-red { background-color: var(--danger); color: white; }
         .btn-dark { background-color: var(--dark); color: white; }
         .btn-yellow { background-color: var(--warning); color: #2c3e50; }
         .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
 
-        /* Question Container */
         .question-container {
             background: white;
             padding: 25px;
@@ -231,27 +228,23 @@
     <div id="main">
         <div id="start-screen" class="screen active">
             <div class="card">
-                <h1 style="color:var(--primary); margin-bottom: 5px;">Gran Quiz Fisiología</h1>
-                <p style="color:#7f8c8d; margin-top:0;">Base de Datos Completa: 4 Baterías (380 Preguntas)</p>
+                <h1 style="color:var(--primary); margin-bottom: 5px;">Fisiología Celular Optimizado</h1>
+                <p style="color:#7f8c8d; margin-top:0;">Base de Datos Mejorada (4 Opciones)</p>
                 
                 <hr style="margin: 25px 0; opacity: 0.2">
                 
-                <h3 style="margin-bottom: 10px;">1. Elige Batería individual:</h3>
+                <h3 style="margin-bottom: 10px;">Selecciona Modo:</h3>
+                
                 <div class="battery-grid">
-                    <button class="btn btn-blue" onclick="selectBattery('b1')">Bat 1 <br><small>(95)</small></button>
-                    <button class="btn btn-blue" onclick="selectBattery('b2')">Bat 2 <br><small>(42)</small></button>
-                    <button class="btn btn-blue" onclick="selectBattery('b3')">Bat 3 <br><small>(95)</small></button>
-                    <button class="btn btn-blue" onclick="selectBattery('b4')">Bat 4 <br><small>(148)</small></button>
-                </div>
+                    <button class="btn btn-blue" onclick="selectBattery('b3_opt')">Batería 3 <br><small>OPTIMIZADA (+100 Pregs)</small></button>
+                    </div>
 
-                <h3 style="margin-bottom: 10px;">O modos globales:</h3>
                 <div class="mode-grid">
-                    <button class="btn btn-dark" onclick="selectBattery('all')">TODO EL TEMARIO <br><small>(380 Preguntas)</small></button>
-                    <button class="btn btn-red" onclick="selectBattery('exam')">Simulacro Examen <br><small>(100 Aleatorias)</small></button>
+                    <button class="btn btn-red" onclick="selectBattery('exam')">EXAMEN RÁPIDO <br><small>(20 Aleatorias)</small></button>
                 </div>
 
                 <div id="order-options" style="display:none; margin-top:20px; background:#f8f9fa; padding:15px; border-radius:8px;">
-                    <h3 style="margin-top:0;">2. Selecciona el orden:</h3>
+                    <h3 style="margin-top:0;">Orden de preguntas:</h3>
                     <div class="mode-grid" style="max-width: 400px; margin: 0 auto;">
                         <button class="btn btn-outline" onclick="startQuiz('ordered')">Orden Numérico</button>
                         <button class="btn btn-outline" onclick="startQuiz('random')">Aleatorio</button>
@@ -291,538 +284,417 @@
 
 <script>
     // ==========================================
-    // BASE DE DATOS
+    // BATERÍA 3 OPTIMIZADA (4 Opciones + Desdobles)
     // ==========================================
-    
-    const battery1 = [
-        { id: 'b1_1', text: "La velocidad de propagación de los potenciales de acción se incrementa:", options: ["Al aumentar el diámetro del axón", "Al aumentar la capacitancia de membrana (Cm)", "Al reducir la resistencia de membrana (Rm)", "Al aumentar la resistencia interna o axial (ri)", "Al mielinizar el axón"], correct: 4, explanation: "La mielinización permite la conducción saltatoria." },
-        { id: 'b1_2', text: "Respecto a la sinapsis química:", options: ["Están formadas por conexones", "Las SNARE, SNAP y NSF son proteínas presinápticas necesarias para la fusión", "Transmiten información más rápidamente que las eléctricas", "El aumento de calcio presináptico induce liberación de NT", "Facilitan el acoplamiento eléctrico"], correct: 3 },
-        { id: 'b1_3', text: "Si comparamos los receptores colinérgicos nicotínicos y muscarínicos (marque la incorrecta):", options: ["La acción de los nicotínicos es más rápida", "Ambos se localizan en la membrana de fibras musculares esqueléticas", "Nicotínicos son ionotrópicos, muscarínicos metabotrópicos", "En ambos la unión de ACh puede abrir canal iónico", "Solo los muscarínicos usan proteínas G"], correct: 1 },
-        { id: 'b1_4', text: "Respecto a la noradrenalina (marque la incorrecta):", options: ["Es un derivado del triptófano", "Se sintetiza a partir de dopamina", "Activa receptores beta-adrenérgicos", "Su acción termina por recaptación", "Se libera en neuronas posganglionares simpáticas"], correct: 0 },
-        { id: 'b1_5', text: "Receptores de glutamato NMDA (marque la incorrecta):", options: ["Son canales iónicos activados por ligando", "Son canales catiónicos poco selectivos", "Se abren solo cuando la célula está despolarizada", "Su activación induce un potencial inhibidor (IPSP)", "Se inactivan por glicina"], correct: 3 },
-        { id: 'b1_6', text: "Los neuropéptidos en las sinapsis:", options: ["Actúan más lejos del sitio de liberación", "Se unen con baja afinidad", "Se eliminan por recaptación", "Liberación no depende de calcio", "Pueden coexistir con otros neurotransmisores"], correct: 4 },
-        { id: 'b1_7', text: "En sistemas sensoriales, la inhibición lateral:", options: ["Reduce el umbral de activación", "Aumenta el umbral perceptivo", "Reduce la adaptación", "Aumenta la capacidad de discriminación espacial", "Reduce la amplitud del potencial"], correct: 3 },
-        { id: 'b1_8', text: "El aprendizaje y consolidación de memorias se relacionan con:", options: ["Cambios en propiedades pasivas", "Muerte neuronal", "Modificaciones persistentes en eficacia sináptica", "Aumento velocidad conducción", "Nada es cierto"], correct: 2 },
-        { id: 'b1_9', text: "Los sistemas de transporte pasivo:", options: ["Mueven iones contra gradiente", "Mueven iones a favor de gradiente", "Mueven moléculas no iónicas a favor de gradiente", "Mueven moléculas contra gradiente", "Mueven iones y moléculas a favor o en contra"], correct: 2 },
-        { id: 'b1_10', text: "Transporte con proteínas a favor de gradiente:", options: ["Difusión simple", "Difusión facilitada", "Difusión pasiva", "Velocidad constante a niveles altos", "Velocidad independiente de concentración"], correct: 1 },
-        { id: 'b1_11', text: "Canales iónicos (señalar la incorrecta):", options: ["Mueven iones y solutos pequeños a favor de gradiente", "Mueven iones a favor de gradiente electroquímico", "Formados por subunidades proteicas", "Solamente mueven iones de carga positiva", "Contribuyen al potencial de membrana"], correct: 3 },
-        { id: 'b1_12', text: "Citoquinas sinérgicas cuando:", options: ["Producidas por célula diferente", "Efecto combinado mayor que suma de partes", "Efectos contrarios", "Actúan sobre dianas diferentes", "Inducen respuesta idéntica"], correct: 1 },
-        { id: 'b1_13', text: "Si Eq K+ = -58mV y Vm = +58mV, el flujo neto de K+:", options: ["Del interior al exterior", "Del exterior al interior", "No habrá flujo", "Mayor que si no hay diferencia", "No afectado"], correct: 0 },
-        { id: 'b1_14', text: "Estímulo subumbral positivo (10ms) en neurona en reposo:", options: ["Potencial proporcional a corriente siempre", "Potencial no proporcional al inicio", "Potencial no varía", "Membrana se despolariza", "Membrana se hiperpolariza"], correct: 3 },
-        { id: 'b1_15', text: "Potencial de acción (Incorrecta):", options: ["Tiene siempre la misma duración", "Se propaga en todas direcciones", "Despolarización por apertura de Na+", "Se invierte por entrada de K+", "Existe periodo refractario"], correct: 3 },
-        { id: 'b1_16', text: "Sinapsis química, llegada de PA (Incorrecta):", options: ["Permite liberar NT", "Despolariza membrana presináptica", "Abre canales de Ca++ voltaje-dependientes", "Libera calcio al exterior celular", "Facilita potenciales locales postsinápticos"], correct: 3 },
-        { id: 'b1_17', text: "Difusión pasiva:", options: ["Cinética lineal hasta saturación", "A través de canales hidrofóbicos", "Implica proteínas transmembrana", "Proceso no selectivo depende de propiedades del soluto", "Selectivo por filtro"], correct: 3 },
-        { id: 'b1_18', text: "Receptores NT incorrecto:", options: ["NMDA activados por ligando y voltaje", "Serotonina tiene autorreceptores", "Glicinérgicos son metabotrópicos", "ACh se une a muscarínicos y nicotínicos", "Glutamato pueden ser iono o metabotrópicos"], correct: 2 },
-        { id: 'b1_19', text: "Síntesis NT correcto:", options: ["AChe es precursora de ACh", "Noradrenalina precursora de dopamina", "Histidina transferasa precursora...", "GABA precursor de glutamato", "L-DOPA precursora de dopamina"], correct: 4 },
-        { id: 'b1_20', text: "Eicosanoides:", options: ["Derivados del ác. araquidónico", "Señalización paracrina", "Proteínas de membrana", "Median uniones homofílicas", "Son neurotrofinas"], correct: 0 },
-        { id: 'b1_21', text: "Hematopoyesis:", options: ["Cada célula madre genera gran progenie", "Hemangioblasto solo mieloide", "Hígado principal en adulto", "Células madre escasa regeneración", "Células madre gran capacidad proliferativa"], correct: 0 },
-        { id: 'b1_22', text: "Incorrecta coagulación:", options: ["Plaquetas imprescindibles para coagulación", "tPA necesario fibrinolisis", "Trombomodulina necesaria coagulación", "Factor tisular activa extrínseca", "Endotelio sano limita coágulo"], correct: 0 },
-        { id: 'b1_23', text: "Cadherinas:", options: ["Células inmunes", "Señalización supervivencia", "Señalización por contacto", "Actúan sobre presinápticas", "Respuesta inflamatoria"], correct: 2 },
-        { id: 'b1_24', text: "S-nitrosilación incorrecta:", options: ["Activa guanilato ciclasa", "Modifica grupos sulfidrilos (tioles)", "Modifica grupos hemo", "Es reversible", "Regula enzimas"], correct: 2 },
-        { id: 'b1_25', text: "Plaquetas no actúan en:", options: ["Hemostasia", "Activación plaquetaria", "Vía de coagulación", "Vasodilatación", "Retracción coágulo"], correct: 3 },
-        { id: 'b1_26', text: "Potencial reposo:", options: ["Requiere canales ligando", "Eflujo continuo K+ e influjo Na+", "Solo células excitables", "Eq es cero si concentraciones iguales", "Si permeable solo a Na+ sería -80mV"], correct: 1 },
-        { id: 'b1_27', text: "Propiedades pasivas:", options: ["No afecta velocidad PA", "Determinan amplitud y propagación espacial", "Determinan atenuación espacial", "Determinantes integración", "Dependen de canales voltaje"], correct: 2 },
-        { id: 'b1_28', text: "Grupos sanguíneos incorrecto:", options: ["AB+ tiene enzimas A, B y H", "IgM sistema ABO", "Anticuerpos contra A/B no contra D", "Paciente AB- puede recibir O+", "Dos padres Rh+ pueden tener hijo Rh-"], correct: 3 },
-        { id: 'b1_29', text: "Limitar neurotransmisión correcto:", options: ["Glutamato por transportador indolaminas", "Neuropéptidos degradados fosfatasas", "Aminas por COMT/MAO", "ACh por colinacetiltransferasa", "Noradrenalina recaptada presináptica"], correct: 4 },
-        { id: 'b1_30', text: "Transmisión sináptica:", options: ["Neuropéptidos más rápidos", "Toxinas estimuladoras", "Activan receptores conexinas", "Potencial de reversión flujo neto", "Si abre Cl-, reversión coincide con Eq Cl-"], correct: 4 },
-        { id: 'b1_31', text: "Contracción muscular:", options: ["Química contrae liso sin cambiar Vm", "Esquelético marcapasos", "Relajación acoplada a recaptación Ca++", "Esquelético excitador e inhibidor", "Hormonas relajan esquelético"], correct: 2 },
-        { id: 'b1_32', text: "NT molécula pequeña incorrecto:", options: ["Dopamina, serotonina, histidina son catecolaminas", "ACh transporte activo vesícula", "Glutamato excitatorio", "ACh, dopamina... pequeña", "GABA inhibitorio"], correct: 0 },
-        { id: 'b1_33', text: "Nutrición correcto:", options: ["Vitaminas esenciales", "Proteínas 300g/día", "Carbohidratos <20%", "Oleico esencial", "Recién nacido bajo requerimiento"], correct: 0 },
-        { id: 'b1_34', text: "Eritrocitos:", options: ["HIF-1 mediador", "HbF menor afinidad", "Sin EPO apoptosis", "Ejercicio curva izquierda", "Hipoxia EPO hígado"], correct: 2 },
-        { id: 'b1_35', text: "Integración sináptica:", options: ["IPSP no siempre hiperpolarizante", "Axodendrítica más relevante", "EPSP no siempre despolarizante", "Mayor constante tiempo menor sumación", "Si reversión bajo umbral es inhibidora"], correct: 0 },
-        { id: 'b1_36', text: "Fuerza muscular:", options: ["Rápidas antes que lentas", "Regulación por reclutamiento y tasa disparo", "Isotónica longitud constante", "Mayor longitud sarcómero mayor tensión", "Isométrica precede"], correct: 1 },
-        { id: 'b1_37', text: "Endocitosis:", options: ["Hierro degradado", "Mediada receptor inespecífica", "Constitutiva requiere señal", "Transcitosis misma región", "Pinocitosis inespecífica"], correct: 4 },
-        { id: 'b1_38', text: "Receptores sensoriales:", options: ["Codificación intensidad...", "Tónico adaptación lenta", "Inhibición lateral aumenta discriminación", "Transducción convierte...", "Propioceptores externos"], correct: 1 },
-        { id: 'b1_39', text: "Eficacia sináptica incorrecto:", options: ["Habituación decremento", "LTP tardía estructural", "LTD fosfatasas", "LTP temprana solo eficacia", "LTP respuesta a baja frecuencia"], correct: 4 },
-        { id: 'b1_40', text: "Isoosmolar e Hipotónica:", options: ["75 NaCl + 150 KCl", "150 NaCl + 150 Urea", "75 NaCl + 75 KCl", "75 NaCl + 150 Benceno", "75 NaCl + 75 Benceno"], correct: 1 },
-        { id: 'b1_41', text: "Segundo mensajero vía Gq:", options: ["Proteína G", "Diacilglicerol (DAG)", "Ligando", "PLC", "PKC"], correct: 1 },
-        { id: 'b1_42', text: "Causa edema:", options: ["Hipoalbuminemia", "Aumento presión oncótica", "Disminución presión oncótica por proteína alta", "Disminución permeabilidad", "Aumento presión oncótica plasma"], correct: 0 },
-        { id: 'b1_43', text: "Transporte membrana:", options: ["Na/K 3K dentro", "Receptor recicla", "Simporte contra gradiente ambos", "Insulina exocitosis glucosa", "Permeasas comunicación directa"], correct: 1 },
-        { id: 'b1_44', text: "Velocidad PA:", options: ["Diámetro más relevante", "Menor diámetro mayor vel", "Mayor Rm mayor vel", "Mielina aumenta por bajar Cm y subir Rm", "Desmielinización disminuye"], correct: 3 },
-        { id: 'b1_45', text: "Leucocitos incorrecto:", options: ["Basófilos histamina", "Plasmáticas anticuerpos", "Neutrófilos fagocitos", "Monocitos diapédesis", "Solo respuesta adquirida"], correct: 4 },
-        { id: 'b1_46', text: "Cadherinas:", options: ["Unen células mismo tipo", "Uniones heterofílicas", "Funciones tróficas", "Facilitan movilidad", "Pérdida metástasis"], correct: 4 },
-        { id: 'b1_47', text: "Sinergia citoquinas:", options: ["Mismo efecto 2 células", "Mismo efecto 1 célula", "Efectos suman", "Respuesta menor", "Respuesta mayor que suma"], correct: 4 },
-        { id: 'b1_48', text: "Potencial reposo:", options: ["Salida Na+", "Permeabilidad relativa", "Independiente transporte activo", "Próximo a K+", "Depende Ca++"], correct: 3 },
-        { id: 'b1_49', text: "Despolarización reposo:", options: ["Aumento permeabilidad Cl-", "Reducción permeabilidad Na+", "Aumento permeabilidad Ca++", "Reducción permeabilidad K+", "Nada"], correct: 2 },
-        { id: 'b1_50', text: "Potencial electrotónico distancia:", options: ["Resistencia longitudinal", "Constante espacio (lambda)", "Resistencia membrana", "Capacitancia", "Densidad canales"], correct: 1 },
-        { id: 'b1_51', text: "Sumación múltiples axones:", options: ["LTP", "Temporal", "Sensibilización", "Espacial", "Tétanos"], correct: 3 },
-        { id: 'b1_52', text: "Gráfica PA Incorrecta:", options: ["Punto a gradiente Na", "Punto b salida K excede entrada Na", "Punto c K alejado eq", "Punto d canales K inactivos", "Punto e refractario"], correct: 1 },
-        { id: 'b1_53', text: "Transporte hidroliza ATP:", options: ["Solo a favor", "Contra y a favor", "Canales ligando", "Proteínas membrana", "Pasivo"], correct: 3 },
-        { id: 'b1_54', text: "Difusión facilitada:", options: ["Permeasas", "Canales", "A favor", "Velocidad lineal", "Solo iones"], correct: 2 },
-        { id: 'b1_55', text: "Colesterol LDL incorrecta:", options: ["Endocitosis receptor", "Clatrina", "Unión a receptor", "Vesículas degradan en RE", "Receptores reciclan"], correct: 3 },
-        { id: 'b1_56', text: "Receptores celulares:", options: ["Todos proteínas", "Solo algunos proteínas", "Todos actividad enzimática", "Solo algunos enzimática", "Todos membrana"], correct: 0 },
-        { id: 'b1_57', text: "Señalización peptídica:", options: ["Mismo receptor todas", "Efectos distintos", "Más de una vía", "Solo tras atravesar", "Factor transcripción"], correct: 1 },
-        { id: 'b1_58', text: "Receptores hormonales:", options: ["Menor afinidad", "Células vecinas", "Menos específicos", "Más rápida", "Activan simultáneamente distintos órganos"], correct: 4 },
-        { id: 'b1_59', text: "Unión Miosina-Actina:", options: ["Baja Ca", "Fija ATP", "Hidroliza ATP", "Ca a troponina", "Tropomiosina libera sitio"], correct: 4 },
-        { id: 'b1_60', text: "Músculo liso diferencia:", options: ["Ausencia sarcómeras", "Mayor velocidad", "Mayor consumo", "Menos resistente fatiga", "Mayor tubos T"], correct: 0 },
-        { id: 'b1_61', text: "Contracción isométrica:", options: ["No consumo", "No acortamiento sarcómera", "Distienden elementos elásticos", "No acortamiento músculo", "No tensión"], correct: 3 },
-        { id: 'b1_62', text: "Gradiente electroquímico:", options: ["Favorece activo", "Favorece iones canales", "Favorece permeasas", "Sumatorio", "Movimiento glucosa"], correct: 3 },
-        { id: 'b1_63', text: "Transporte glucosa intestinal:", options: ["Primario", "Secundario simporte Na", "Secundario antiporte", "A favor", "Contra"], correct: 1 },
-        { id: 'b1_64', text: "Fagocitosis:", options: ["Iones", "Glucosa", "Recicla", "Regula", "Destruir bacterias"], correct: 4 },
-        { id: 'b1_65', text: "Receptores NT incorrecta:", options: ["Canales", "Proteína G", "Membrana plasmática", "Membrana nuclear", "Vesículas"], correct: 3 },
-        { id: 'b1_66', text: "Integrinas:", options: ["NT", "Neurotrofinas", "Citoquinas", "Hormonas", "Adhesión"], correct: 4 },
-        { id: 'b1_67', text: "Conexinas incorrecta:", options: ["Poros regulables", "Paso proteínas", "Acoplamiento eléctrico", "Solo neuronas", "Respuestas coordinadas"], correct: 3 },
-        { id: 'b1_68', text: "Potencial equilibrio incorrecta:", options: ["Depende gradiente concentración", "Depende diferencia potencial", "Depende carga", "Varía si varían concentraciones", "Cero si iguales"], correct: 1 },
-        { id: 'b1_69', text: "Vm más positivo que reposo:", options: ["Despolarizada", "Hiperpolarizada", "Acerca umbral", "Abre ACh", "Abre Na"], correct: 0 },
-        { id: 'b1_70', text: "Potenciales locales incorrecta:", options: ["Cambios Vm", "Solo excitables", "Suman", "Son PA", "Respuesta corriente"], correct: 3 },
-        { id: 'b1_71', text: "Canales K voltaje:", options: ["Respuesta NA", "Inactivan", "Fase hiperpolarizante", "Todos tipos", "Salida K"], correct: 2 },
-        { id: 'b1_72', text: "Velocidad PA incorrecta:", options: ["Resistencia media", "Resistencia membrana", "Capacitancia", "Intensidad estímulo", "Aislamiento"], correct: 3 },
-        { id: 'b1_73', text: "Na/K ATPasa:", options: ["Osmolaridad", "Isoosmótico", "Genera PA", "Electrotónicos", "Mueve cargas crea diferencia"], correct: 4 },
-        { id: 'b1_74', text: "Cinética facilitada:", options: ["Lineal", "Lineal bajas", "Máxima saturantes", "Mayor conc menor vel", "Independiente"], correct: 2 },
-        { id: 'b1_75', text: "Endocitosis receptor incorrecta:", options: ["Iones individualmente", "Macromoléculas", "Recicla", "Regula", "Hierro"], correct: 0 },
-        { id: 'b1_76', text: "ACh incorrecta:", options: ["Sintetiza L-Dopa", "Vesículas", "Terminal", "Rotura enzimática", "Libera calcio"], correct: 0 },
-        { id: 'b1_77', text: "Glutamato incorrecta:", options: ["Iono y Metabo", "Bloqueo Calcio", "Despolarizada aumenta", "AMPA/NMDA iono", "Entrada Glu"], correct: 1 },
-        { id: 'b1_78', text: "Excitotoxicidad:", options: ["ACh", "Serotonina", "Glutamato", "GABA", "NA"], correct: 2 },
-        { id: 'b1_79', text: "Hiperpolarización SNC:", options: ["GABA A", "Glicina", "AMPA", "Nicotínico", "Adrenérgico"], correct: 0 },
-        { id: 'b1_80', text: "Inhibición MAO:", options: ["Aumento ACh", "Caída glicina", "Incremento catecolaminas", "Descenso endorfinas", "Despolarización"], correct: 2 },
-        { id: 'b1_81', text: "Difusión simple:", options: ["Na", "CO2", "Galactosa", "Ca", "Glucosa"], correct: 1 },
-        { id: 'b1_82', text: "Activo incorrecto:", options: ["Contra gradiente", "Desequilibrio", "Secundario hidrólisis propia", "Primario ATP directo", "Na/K 2K 3Na"], correct: 2 },
-        { id: 'b1_83', text: "Facilitada:", options: ["Continuidad", "Satura", "Proteínas", "Lineal", "Energía"], correct: 1 },
-        { id: 'b1_84', text: "Tonicidad:", options: ["No depende", "Concentración solutos", "Hipertónica hincha", "Hipotónica hincha", "Ideal hipotónica"], correct: 3 },
-        { id: 'b1_85', text: "Proteínas transporte:", options: ["Canales", "Endocitosis", "Activo", "Permeasas", "Simple"], correct: 1 },
-        { id: 'b1_86', text: "Permeabilidad reposo incorrecta:", options: ["Solo sodio", "Potasio y sodio", "Fuga Na menos K", "Influyen", "Bomba contribuye"], correct: 0 },
-        { id: 'b1_87', text: "Conexinas:", options: ["Adhesión", "Canales intercelulares", "NT", "Hormonas", "Ligandos"], correct: 1 },
-        { id: 'b1_88', text: "Sinapsis incorrecta:", options: ["Libera NT Ca", "Libera hormonas simpático", "NT receptores intracelulares", "Postsináptica G", "Postsináptica Ligando"], correct: 2 },
-        { id: 'b1_89', text: "Excitadores:", options: ["ACh", "Glutamato", "Glicina", "GABA", "Ninguno"], correct: 1 },
-        { id: 'b1_90', text: "Hematopoyesis incorrecta:", options: ["Todas dividen mitosis", "Hígado/Hueso", "EPO", "Megacariocito", "TPO"], correct: 0 },
-        { id: 'b1_91', text: "Eritrocitos:", options: ["Multinucleadas", "Reservas", "Distribuyen O2", "Vida pocas horas", "Poco abundantes"], correct: 2 },
-        { id: 'b1_92', text: "Transfusión AB:", options: ["A+", "O+", "AB+", "A-", "B-"], correct: 2 },
-        { id: 'b1_93', text: "Plaquetas incorrecta:", options: ["Fragmentos", "Defensa extravasan", "Tapón", "Gránulos", "Uniones Gap"], correct: 1 },
-        { id: 'b1_94', text: "Circulatorio:", options: ["Presión elevada arterias", "Favor presión", "Sistólica 60", "Diastólica 120", "Diámetro no afecta"], correct: 0 },
-        { id: 'b1_95', text: "Capilares:", options: ["Fenestrados", "Endotelio SNC", "Sinusoides médula", "Starling", "Transcitosis"], correct: 3 }
+    const battery3_optimized = [
+        // Q1 Desdoblada (A)
+        { id: 'b3_1a', text: "La velocidad de propagación de los potenciales de acción se incrementa:", options: ["Al aumentar el diámetro del axón", "Al aumentar la capacitancia de membrana (Cm)", "Al reducir la resistencia de membrana (Rm)", "Al aumentar la resistencia interna (ri)"], correct: 0, explanation: "A mayor diámetro, menor resistencia interna, mayor velocidad." },
+        // Q1 Desdoblada (B)
+        { id: 'b3_1b', text: "La velocidad de propagación de los potenciales de acción aumenta drásticamente:", options: ["Al aumentar la capacitancia", "Al reducir la resistencia de membrana", "Al aumentar la resistencia interna", "Al mielinizar el axón"], correct: 3, explanation: "La mielinización permite la conducción saltatoria." },
+        // Q1 Derivada (C - Concepto Resistencia Interna)
+        { id: 'b3_1c', text: "¿Qué factor disminuiría la velocidad de propagación del potencial de acción?", options: ["Aumentar el diámetro", "Mielinizar el axón", "Aumentar la resistencia interna (ri)", "Aumentar la resistencia de membrana (Rm)"], correct: 2, explanation: "Una mayor resistencia interna dificulta el flujo de corriente y reduce la velocidad." },
+
+        // Q2 Desdoblada (A)
+        { id: 'b3_2a', text: "Característica estructural de la sinapsis química:", options: ["Están formadas por conexones", "Las proteínas SNARE son necesarias para la fusión vesicular", "Hay continuidad citoplasmática", "La transmisión es bidireccional"], correct: 1, explanation: "Las SNARE median la exocitosis." },
+        // Q2 Desdoblada (B)
+        { id: 'b3_2b', text: "Mecanismo de liberación en la sinapsis química:", options: ["El aumento de calcio presináptico induce la liberación", "El sodio induce la fusión vesicular", "Es más rápida que la eléctrica", "Facilita el acoplamiento metabólico"], correct: 0, explanation: "El calcio es el ion clave para la liberación del NT." },
+
+        // Q3 (Reducida)
+        { id: 'b3_3', text: "Sobre los receptores colinérgicos (señale la incorrecta):", options: ["La acción de los nicotínicos es más rápida", "Los muscarínicos están en la placa motora esquelética", "Nicotínicos son ionotrópicos", "Muscarínicos usan proteína G"], correct: 1, explanation: "INCORRECTA: En el músculo esquelético solo hay nicotínicos." },
+
+        // Q4 (Reducida)
+        { id: 'b3_4', text: "Respecto a la noradrenalina (señale la incorrecta):", options: ["Es un derivado del triptófano", "Se sintetiza a partir de dopamina", "Activa receptores beta-adrenérgicos", "Su acción termina por recaptación"], correct: 0, explanation: "INCORRECTA: Deriva de la tirosina." },
+
+        // Q5 (Reducida)
+        { id: 'b3_5', text: "Receptores NMDA (señale la incorrecta):", options: ["Son canales activados por ligando", "Son catiónicos", "Su activación induce un potencial inhibidor (IPSP)", "Se inactivan por glicina"], correct: 2, explanation: "INCORRECTA: El glutamato es excitador (EPSP)." },
+
+        // Q6 Desdoblada (A - Distancia)
+        { id: 'b3_6a', text: "Característica de la acción de los neuropéptidos:", options: ["Actúan exclusivamente en el sitio de liberación", "Pueden ejercer su acción lejos del sitio de liberación", "Tienen muy baja afinidad por receptores", "Su liberación es independiente de calcio"], correct: 1, explanation: "Suelen actuar de forma paracrina o a distancia." },
+        // Q6 Desdoblada (B - Coexistencia)
+        { id: 'b3_6b', text: "Sobre la liberación de neuropéptidos:", options: ["Nunca coexisten con otros neurotransmisores", "Pueden coexistir en la neurona con otros NT", "Se eliminan por recaptación rápida", "No requieren calcio"], correct: 1, explanation: "La cotransmisión es frecuente." },
+
+        // Q7 (Reducida)
+        { id: 'b3_7', text: "La inhibición lateral en sistemas sensoriales:", options: ["Reduce el umbral de activación", "Aumenta el umbral perceptivo", "Reduce la adaptación", "Aumenta la capacidad de discriminación espacial"], correct: 3, explanation: "Mejora el contraste." },
+
+        // Q8 (Reducida)
+        { id: 'b3_8', text: "El aprendizaje y la memoria se relacionan con:", options: ["Cambios en propiedades pasivas", "Muerte de neuronas", "Modificaciones en la eficacia sináptica", "Aumento velocidad conducción"], correct: 2, explanation: "Plasticidad sináptica." },
+
+        // Q9 Desdoblada (A - Iones)
+        { id: 'b3_9a', text: "El transporte pasivo de iones se caracteriza por:", options: ["Mover iones en contra de gradiente", "Mover iones a favor de gradiente", "Requerir ATP directo", "Utilizar bombas"], correct: 1 },
+        // Q9 Desdoblada (B - Moléculas)
+        { id: 'b3_9b', text: "El transporte pasivo de moléculas no iónicas:", options: ["Ocurre a favor de gradiente", "Ocurre en contra de gradiente", "Requiere hidrólisis de ATP", "Es independiente de la concentración"], correct: 0 },
+
+        // Q10 (Reducida)
+        { id: 'b3_10', text: "Transporte mediado por proteínas a favor de gradiente:", options: ["Difusión simple", "Difusión facilitada", "Difusión pasiva pura", "Transporte activo"], correct: 1, explanation: "Usa transportadores y satura." },
+
+        // Q11 (Reducida)
+        { id: 'b3_11', text: "Canales iónicos (señale la incorrecta):", options: ["A favor de gradiente electroquímico", "Formados por subunidades proteicas", "Solamente mueven iones de carga positiva", "Contribuyen al potencial de membrana"], correct: 2, explanation: "INCORRECTA: Existen canales aniónicos (ej. Cloro)." },
+
+        // Q12 (Reducida)
+        { id: 'b3_12', text: "Dos citoquinas actúan de forma sinérgica cuando:", options: ["Son producidas por células diferentes", "El efecto combinado es mayor que la suma individual", "Tienen efectos contrarios", "Actúan sobre dianas diferentes"], correct: 1 },
+
+        // Q13 (Reducida)
+        { id: 'b3_13', text: "Si Eq K+ = -58mV y Vm = +58mV, el flujo neto de K+:", options: ["Irá del interior al exterior", "Irá del exterior al interior", "No habrá flujo neto", "Será nulo"], correct: 0, explanation: "Fuerte fuerza electromotriz de salida." },
+
+        // Q14 (Reducida)
+        { id: 'b3_14', text: "Un estímulo positivo subumbral en una neurona:", options: ["Genera un potencial de acción", "No varía el potencial", "Despolariza la membrana (potencial local)", "Hiperpolariza la membrana"], correct: 2 },
+
+        // Q15 (Reducida)
+        { id: 'b3_15', text: "Respecto al potencial de acción (señale la incorrecta):", options: ["Tiene siempre la misma duración", "Se propaga en todas direcciones", "Despolarización por entrada de Na+", "Se invierte/repolariza por entrada de K+"], correct: 3, explanation: "INCORRECTA: Se repolariza por SALIDA de K+." },
+
+        // Q16 (Reducida)
+        { id: 'b3_16', text: "Llegada del PA a la sinapsis (señale la incorrecta):", options: ["Permite liberar neurotransmisores", "Despolariza la membrana presináptica", "Abre canales de calcio", "Libera calcio al exterior celular"], correct: 3, explanation: "INCORRECTA: El calcio ENTRA a la célula." },
+
+        // Q17 (Reducida)
+        { id: 'b3_17', text: "La difusión pasiva simple:", options: ["Sigue cinética de saturación", "Es un proceso selectivo por canales", "Es un proceso no selectivo que depende del soluto", "Requiere proteínas transportadoras"], correct: 2 },
+
+        // Q18 (Reducida)
+        { id: 'b3_18', text: "Receptores de neurotransmisores (incorrecto):", options: ["NMDA activados por ligando y voltaje", "Serotonina tiene autorreceptores", "Receptores de glicina son metabotrópicos", "Glutamato tiene ionotrópicos y metabotrópicos"], correct: 2, explanation: "INCORRECTA: Glicina es ionotrópico (Cl-)." },
+
+        // Q19 (Reducida)
+        { id: 'b3_19', text: "Síntesis de neurotransmisores correcta:", options: ["AChE es precursora de ACh", "Noradrenalina es precursora de dopamina", "GABA es precursor de glutamato", "DOPA es precursora de dopamina"], correct: 3 },
+
+        // Q20 (Reducida)
+        { id: 'b3_20', text: "Los eicosanoides:", options: ["Son derivados del ácido araquidónico", "Son proteínas de membrana", "Median uniones celulares", "Son neurotrofinas"], correct: 0 },
+
+        // Q21 (Reducida)
+        { id: 'b3_21', text: "Células madre hematopoyéticas:", options: ["Generan una gran progenie", "Solo dan línea mieloide", "Tienen escasa capacidad regenerativa", "Residen en el hígado adulto"], correct: 0 },
+
+        // Q22 (Reducida)
+        { id: 'b3_22', text: "Coagulación (señale la incorrecta):", options: ["Plaquetas son imprescindibles para iniciar cualquier coagulación", "tPA es necesario para la fibrinólisis", "Trombomodulina es necesaria", "Endotelio sano limita el coágulo"], correct: 0, explanation: "INCORRECTA: La vía extrínseca puede iniciar por factor tisular sin plaquetas (aunque son necesarias para la hemostasia eficaz)." },
+
+        // Q23 (Reducida)
+        { id: 'b3_23', text: "Las cadherinas:", options: ["Son moléculas de señalización paracrina", "Son moléculas de señalización por contacto", "Actúan sobre neuronas presinápticas", "Median la inflamación"], correct: 1 },
+
+        // Q24 (Reducida)
+        { id: 'b3_24', text: "S-nitrosilación (señale la incorrecta):", options: ["Activa la guanilato ciclasa", "Modifica grupos sulfhidrilos (tioles)", "Modifica grupos hemo", "Es reversible"], correct: 2, explanation: "INCORRECTA: Es en Cisteína, no grupo Hemo." },
+
+        // Q25 (Reducida)
+        { id: 'b3_25', text: "¿En qué proceso NO actúan directamente las plaquetas?", options: ["Hemostasia primaria", "Activación plaquetaria", "Vasodilatación", "Retracción del coágulo"], correct: 2, explanation: "Suelen liberar vasoconstrictores." },
+
+        // Q26 (Reducida)
+        { id: 'b3_26', text: "Potencial de reposo:", options: ["Requiere canales por ligando", "Existe eflujo de K+ e influjo de Na+", "Solo en células excitables", "Equilibrio es cero si concentraciones iguales"], correct: 1 },
+
+        // Q27 (Reducida)
+        { id: 'b3_27', text: "Propiedades pasivas de membrana:", options: ["No afectan velocidad PA", "Determinan atenuación espacial", "Son determinantes en integración sináptica", "Dependen de canales voltaje"], correct: 2, explanation: "Lambda determina la atenuación." },
+
+        // Q28 (Reducida)
+        { id: 'b3_28', text: "Grupos sanguíneos incorrecto:", options: ["AB+ tiene antígenos A, B y H", "Anticuerpos anti-A y B son naturales", "Paciente AB- puede recibir O+", "Dos padres Rh+ pueden tener hijo Rh-"], correct: 2, explanation: "INCORRECTA: Rh- no puede recibir Rh+." },
+
+        // Q29 (Reducida)
+        { id: 'b3_29', text: "Recaptación correcta:", options: ["Glutamato por transportador de indolaminas", "Neuropéptidos por fosfatasas", "ACh por transportador", "Noradrenalina por transportador presináptico"], correct: 3 },
+
+        // Q30 (Reducida)
+        { id: 'b3_30', text: "Transmisión sináptica:", options: ["Neuropéptidos son más rápidos", "Toxinas estimulan liberación", "En el potencial de reversión hay flujo neto", "Si solo abre Cl-, reversión coincide con ECl"], correct: 3 },
+
+        // Q31 (Reducida)
+        { id: 'b3_31', text: "Contracción muscular:", options: ["Química contrae liso sin cambiar Vm", "Esquelético tiene marcapasos", "Relajación por salida de Ca al exterior", "Hormonas relajan esquelético"], correct: 0 },
+
+        // Q32 (Reducida)
+        { id: 'b3_32', text: "Neurotransmisores incorrecto:", options: ["Serotonina es una catecolamina", "Glutamato es excitatorio", "ACh es molécula pequeña", "GABA es inhibitorio"], correct: 0, explanation: "INCORRECTA: Serotonina es indolamina." },
+
+        // Q33 (Reducida)
+        { id: 'b3_33', text: "Nutrición correcto:", options: ["Vitaminas y minerales son esenciales", "Proteínas 300g/día", "Carbohidratos <20%", "Recién nacido bajos requerimientos"], correct: 0 },
+
+        // Q34 (Reducida)
+        { id: 'b3_34', text: "Eritrocitos:", options: ["HIF-1 media respuesta hipoxia", "HbF tiene menor afinidad", "Sin EPO hay apoptosis", "Ejercicio desplaza curva a izquierda"], correct: 2 },
+
+        // Q35 (Reducida)
+        { id: 'b3_35', text: "Integración sináptica:", options: ["IPSP siempre hiperpolariza (falso)", "Axodendrítica más potente que axosomática", "EPSP siempre despolariza", "Si reversión < umbral es inhibidora"], correct: 3 },
+
+        // Q36 (Reducida)
+        { id: 'b3_36', text: "Fuerza muscular:", options: ["Fibras rápidas se reclutan antes", "Fuerza regulada por reclutamiento", "Isotónica mantiene longitud", "Isométrica precede isotónica"], correct: 1 },
+
+        // Q37 (Reducida)
+        { id: 'b3_37', text: "Endocitosis:", options: ["Hierro degradado", "Mediada por receptor es inespecífica", "Pinocitosis es inespecífica", "Transcitosis en misma región"], correct: 2 },
+
+        // Q38 (Reducida)
+        { id: 'b3_38', text: "Receptores sensoriales:", options: ["Codificación por intensidad", "Tónico es adaptación lenta", "Inhibición lateral disminuye discriminación", "Propioceptores externos"], correct: 1 },
+
+        // Q39 (Reducida)
+        { id: 'b3_39', text: "Eficacia sináptica incorrecto:", options: ["Habituación decremento", "LTP tardía estructural", "LTP temprana solo eficacia", "LTP ocurre a baja frecuencia"], correct: 3, explanation: "INCORRECTA: Baja frecuencia causa LTD." },
+
+        // Q40 (Reducida)
+        { id: 'b3_40', text: "Solución Isoosmolar e Hipotónica:", options: ["150 NaCl + 150 Urea", "75 NaCl + 75 KCl", "75 NaCl + 150 Benceno", "75 NaCl + 75 Benceno"], correct: 2, explanation: "300 mOsm total (Isoosmolar), pero Benceno penetra -> 150 mOsm efectivos (Hipotónica)." },
+
+        // Q41 (Reducida)
+        { id: 'b3_41', text: "Segundo mensajero vía Gq:", options: ["Proteína G", "Diacilglicerol (DAG)", "Ligando", "Fosfolipasa C"], correct: 1 },
+
+        // Q42 (Reducida)
+        { id: 'b3_42', text: "Causa de edema:", options: ["Hipoalbuminemia", "Aumento presión oncótica", "Disminución permeabilidad", "Aumento presión oncótica plasma"], correct: 0 },
+
+        // Q43 (Reducida)
+        { id: 'b3_43', text: "Transporte membrana:", options: ["Na/K introduce 3K", "Receptor endocitosis se recicla", "Simporte mueve ambos en contra", "Permeasas son canales"], correct: 1 },
+
+        // Q44 (Reducida)
+        { id: 'b3_44', text: "Velocidad PA:", options: ["Diámetro > Mielina", "Menor diámetro mayor velocidad", "Mielina baja capacitancia y sube resistencia", "Desmielinización no afecta"], correct: 2 },
+
+        // Q45 (Reducida)
+        { id: 'b3_45', text: "Leucocitos incorrecto:", options: ["Basófilos liberan histamina", "Neutrófilos fagocitan", "Monocitos diapédesis", "Sólo participan en inmunidad adquirida"], correct: 3, explanation: "INCORRECTA: Participan en innata." },
+
+        // Q46 (Reducida)
+        { id: 'b3_46', text: "Cadherinas:", options: ["Uniones heterofílicas", "Funciones tróficas", "Movilidad tisular", "Su pérdida se asocia a metástasis"], correct: 3 },
+
+        // Q47 (Reducida)
+        { id: 'b3_47', text: "Sinergia:", options: ["Efecto idéntico", "Bloqueo", "Respuesta mayor que la suma", "Respuesta menor"], correct: 2 },
+
+        // Q48 (Reducida)
+        { id: 'b3_48', text: "Potencial reposo:", options: ["Determinado por Na", "Independiente transporte activo", "Próximo al potencial de equilibrio del K+", "Depende de Ca++"], correct: 2 },
+
+        // Q49 (Reducida)
+        { id: 'b3_49', text: "Despolarización por:", options: ["Aumento permeabilidad Cl-", "Reducción permeabilidad Na+", "Aumento permeabilidad Ca++", "Reducción permeabilidad K+"], correct: 2 },
+
+        // Q50 (Reducida)
+        { id: 'b3_50', text: "Potencial electrotónico viaja más si:", options: ["Mayor resistencia interna", "Mayor constante de espacio (lambda)", "Menor resistencia membrana", "Mayor capacitancia"], correct: 1 },
+
+        // Q51 (Reducida)
+        { id: 'b3_51', text: "Sumación de múltiples axones:", options: ["LTP", "Sumación temporal", "Sumación espacial", "Sensibilización"], correct: 2 },
+
+        // Q52 (Reducida)
+        { id: 'b3_52', text: "Gráfica PA (Incorrecta):", options: ["Punto A gradiente Na", "Punto B salida K excede entrada Na", "Punto C K alejado eq", "Punto E refractario"], correct: 1, explanation: "INCORRECTA: En despolarización (B), entrada Na supera salida K." },
+
+        // Q53 (Reducida)
+        { id: 'b3_53', text: "Transportadores que hidrolizan ATP:", options: ["Solo a favor", "Canales iónicos", "Proteínas de membrana (Bombas)", "Pasivo"], correct: 2 },
+
+        // Q54 (Reducida)
+        { id: 'b3_54', text: "Difusión facilitada:", options: ["Permeasas", "Canales", "Transporta a favor", "Velocidad lineal ilimitada"], correct: 2 },
+
+        // Q55 (Reducida)
+        { id: 'b3_55', text: "Transporte LDL (incorrecta):", options: ["Endocitosis receptor", "Clatrina", "Vesículas degradan en RE", "Receptores reciclan"], correct: 2, explanation: "INCORRECTA: Van a lisosomas." },
+
+        // Q56 (Reducida)
+        { id: 'b3_56', text: "Receptores celulares:", options: ["Todos proteínas", "Todos enzimas", "Todos en núcleo", "Todos en membrana"], correct: 0 },
+
+        // Q57 (Reducida)
+        { id: 'b3_57', text: "Señalización peptídica:", options: ["Mismo receptor siempre", "Puede tener efectos distintos", "Solo atraviesa membrana", "Factor transcripción"], correct: 1 },
+
+        // Q58 (Reducida)
+        { id: 'b3_58', text: "Receptores hormonales:", options: ["Menor afinidad", "Células vecinas", "Menos específicos", "Activan órganos simultáneamente"], correct: 3 },
+
+        // Q59 (Reducida)
+        { id: 'b3_59', text: "Unión Miosina-Actina:", options: ["Baja Ca", "Fija ATP", "Tropomiosina libera sitio", "Ca une a miosina"], correct: 2 },
+
+        // Q60 (Reducida)
+        { id: 'b3_60', text: "Músculo liso diferencia:", options: ["Ausencia sarcómeras", "Mayor velocidad", "Mayor consumo", "Fatiga rápida"], correct: 0 },
+
+        // Q61 (Reducida)
+        { id: 'b3_61', text: "Contracción isométrica:", options: ["No consumo", "No acortamiento músculo", "No tensión", "No acortamiento sarcómeras"], correct: 1 },
+
+        // Q62 (Reducida)
+        { id: 'b3_62', text: "Gradiente electroquímico:", options: ["Favorece activo", "Favorece iones por canales", "Favorece permeasas", "Suma químico + eléctrico"], correct: 3 },
+
+        // Q63 (Reducida)
+        { id: 'b3_63', text: "Glucosa intestinal:", options: ["Primario", "Simporte Na+", "Antiporte", "A favor gradiente"], correct: 1 },
+
+        // Q64 (Reducida)
+        { id: 'b3_64', text: "Fagocitosis:", options: ["Iones", "Glucosa", "Recicla", "Destruye bacterias"], correct: 3 },
+
+        // Q65 (Reducida)
+        { id: 'b3_65', text: "Receptores NT incorrecta:", options: ["Canales", "Proteína G", "Membrana nuclear", "Membrana plasmática"], correct: 2 },
+
+        // Q66 (Reducida)
+        { id: 'b3_66', text: "Integrinas:", options: ["NT", "Neurotrofinas", "Citoquinas", "Moléculas de adhesión"], correct: 3 },
+
+        // Q67 (Reducida)
+        { id: 'b3_67', text: "Conexinas incorrecta:", options: ["Poros", "Paso proteínas", "Acoplamiento", "Solo neuronas"], correct: 3 },
+
+        // Q68 (Reducida)
+        { id: 'b3_68', text: "Potencial equilibrio incorrecta:", options: ["Depende gradiente", "Depende carga", "Varía si varían concentraciones", "Depende de diferencia de potencial actual"], correct: 3 },
+
+        // Q69 (Reducida)
+        { id: 'b3_69', text: "Vm positivo que reposo:", options: ["Despolarizada", "Hiperpolarizada", "Aleja umbral", "Abre Cl-"], correct: 0 },
+
+        // Q70 (Reducida)
+        { id: 'b3_70', text: "Potenciales locales incorrecta:", options: ["Cambios Vm", "Suman", "Son PA", "Respuesta corriente"], correct: 2 },
+
+        // Q71 (Reducida)
+        { id: 'b3_71', text: "Canales K+ voltaje:", options: ["Abren por NA", "Inactivan", "Fase hiperpolarizante", "Salida K"], correct: 2 },
+
+        // Q72 (Reducida)
+        { id: 'b3_72', text: "Velocidad PA incorrecta:", options: ["Resistencia axial", "Resistencia membrana", "Capacitancia", "Intensidad estímulo"], correct: 3 },
+
+        // Q73 (Reducida)
+        { id: 'b3_73', text: "Na/K ATPasa:", options: ["Osmolaridad", "Isoosmótico", "Genera PA", "Mueve cargas (electrogénica)"], correct: 3 },
+
+        // Q74 (Reducida)
+        { id: 'b3_74', text: "Facilitada:", options: ["Lineal", "Velocidad máxima saturación", "Más soluto menor vel", "Independiente"], correct: 1 },
+
+        // Q75 (Reducida)
+        { id: 'b3_75', text: "Endocitosis incorrecta:", options: ["Transporta iones libres", "Macromoléculas", "Recicla", "Regula"], correct: 0 },
+
+        // Q76 (Reducida)
+        { id: 'b3_76', text: "ACh incorrecta:", options: ["Sintetiza L-Dopa", "Vesículas", "Terminal", "Rotura enzimática"], correct: 0 },
+
+        // Q77 (Reducida)
+        { id: 'b3_77', text: "Glutamato incorrecta:", options: ["Tipos", "Bloqueo Ca++", "Despolarizada", "Iono"], correct: 1, explanation: "INCORRECTA: Bloqueo por Mg++." },
+
+        // Q78 (Reducida)
+        { id: 'b3_78', text: "Excitotoxicidad:", options: ["ACh", "Serotonina", "Glutamato", "GABA"], correct: 2 },
+
+        // Q79 (Reducida)
+        { id: 'b3_79', text: "Hiperpolarización:", options: ["GABA-A", "AMPA", "Nicotínico", "Adrenérgico"], correct: 0 },
+
+        // Q80 (Reducida)
+        { id: 'b3_80', text: "Inhibición MAO:", options: ["Aumento ACh", "Caída glicina", "Incremento catecolaminas", "Descenso endorfinas"], correct: 2 },
+
+        // Q81 (Reducida)
+        { id: 'b3_81', text: "Difusión simple:", options: ["Na", "CO2", "Galactosa", "Glucosa"], correct: 1 },
+
+        // Q82 (Reducida)
+        { id: 'b3_82', text: "Activo incorrecto:", options: ["Contra gradiente", "Desequilibrio", "Secundario hidroliza ATP", "Primario usa ATP"], correct: 2 },
+
+        // Q83 (Reducida)
+        { id: 'b3_83', text: "Facilitada:", options: ["Continuidad", "Se satura", "Lineal", "Energía"], correct: 1 },
+
+        // Q84 (Reducida)
+        { id: 'b3_84', text: "Tonicidad:", options: ["No depende", "Hipertónica hincha", "Hipotónica hincha", "Ideal hipotónica"], correct: 2 },
+
+        // Q85 (Reducida)
+        { id: 'b3_85', text: "Proteínas transporte:", options: ["Canales", "Endocitosis", "Activo", "Simple"], correct: 1 },
+
+        // Q86 (Reducida)
+        { id: 'b3_86', text: "Permeabilidad reposo incorrecta:", options: ["Solo Na", "K y Na", "Fuga", "Influyen"], correct: 0 },
+
+        // Q87 (Reducida)
+        { id: 'b3_87', text: "Conexinas:", options: ["Adhesión", "Canales intercelulares", "NT", "Hormonas"], correct: 1 },
+
+        // Q88 (Reducida)
+        { id: 'b3_88', text: "Sinapsis incorrecta:", options: ["Ca libera", "Hormonas", "NT intracelulares", "G postsináptico"], correct: 2 },
+
+        // Q89 (Reducida)
+        { id: 'b3_89', text: "Excitador:", options: ["ACh", "Glutamato", "Glicina", "GABA"], correct: 1 },
+
+        // Q90 (Reducida)
+        { id: 'b3_90', text: "Hematopoyesis incorrecta:", options: ["Todas se dividen", "Hígado", "EPO", "Megacariocito"], correct: 0 },
+
+        // Q91 (Reducida)
+        { id: 'b3_91', text: "Eritrocitos:", options: ["Multi", "Reservas", "Distribuyen O2", "Horas"], correct: 2 },
+
+        // Q92 (Reducida)
+        { id: 'b3_92', text: "AB puede recibir:", options: ["A+", "O+", "AB+", "B-"], correct: 2, explanation: "AB+ es receptor universal." },
+
+        // Q93 (Reducida)
+        { id: 'b3_93', text: "Plaquetas incorrecta:", options: ["Fragmentos", "Defensa extravasan", "Tapón", "Gránulos"], correct: 1 },
+
+        // Q94 (Reducida)
+        { id: 'b3_94', text: "Circulatorio:", options: ["Mayor presión arterias", "Flujo gradiente", "Sistólica 60", "Diámetro no afecta"], correct: 0 },
+
+        // Q95 (Reducida)
+        { id: 'b3_95', text: "Capilares:", options: ["Fenestrados", "SNC todo", "Starling regulan", "Transcitosis"], correct: 2 }
     ];
 
-    const battery2 = [
-        { id: 'b2_1', text: "Los sistemas de transporte pasivo:", options: ["Mueven iones en contra de gradiente", "Mueven iones a favor de gradiente", "Mueven moléculas no iónicas a favor de gradiente", "Mueven moléculas no iónicas en contra", "Mueven iones y otras moléculas tanto a favor como en contra"], correct: 2 },
-        { id: 'b2_2', text: "Sistema de transporte con proteínas a favor de gradiente:", options: ["Difusión simple", "Difusión facilitada", "Difusión pasiva", "Velocidad constante", "Velocidad independiente"], correct: 1 },
-        { id: 'b2_3', text: "Canales iónicos (señalar la incorrecta):", options: ["Mueven iones y solutos pequeños", "A favor de gradiente", "Formados por subunidades", "Solamente mueven iones de carga positiva", "Contribuyen al potencial"], correct: 3 },
-        { id: 'b2_4', text: "Dos citoquinas actúan de forma sinérgica cuando:", options: ["Producida por célula diferente", "Efecto combinado mayor que suma individual", "Efectos contrarios", "Dianas diferentes", "Respuesta idéntica"], correct: 1 },
-        { id: 'b2_5', text: "Si Eq K+ = -58mV y Vm = +58mV, el flujo neto de K+:", options: ["Interior hacia exterior", "Exterior hacia interior", "No flujo", "Mayor", "No afectado"], correct: 0 },
-        { id: 'b2_6', text: "Estímulo subumbral positivo (10ms):", options: ["Proporcional siempre", "No proporcional inicio", "No varía", "Se despolariza", "Se hiperpolariza"], correct: 3 },
-        { id: 'b2_7', text: "Potencial de acción (Incorrectas):", options: ["Misma duración", "Propaga todas direcciones", "Despolarización por Na+", "Invierte por entrada de K+", "Periodo refractario"], correct: 3 },
-        { id: 'b2_8', text: "Sinapsis químicas llegada PA (Incorrectas):", options: ["Libera NT", "Despolariza presináptica", "Abre canales Ca++", "Libera calcio al exterior", "Facilita locales"], correct: 3 },
-        { id: 'b2_9', text: "Comparación Nicotínicos/Muscarínicos (Incorrectas):", options: ["Nicotínicos más rápidos", "Ambos en placa motora", "Nico-Iono / Musc-Metabo", "Apertura canal", "Musc proteína G"], correct: 1 },
-        { id: 'b2_10', text: "Noradrenalina (Incorrectas):", options: ["Derivado triptófano", "Sintetiza de dopamina", "Activa adrenérgicos", "Recaptación", "Neuronas posganglionares"], correct: 0 },
-        { id: 'b2_11', text: "Receptores NMDA (Incorrectas):", options: ["Canales ligando", "Catiónicos", "Solo si despolarizada", "Induce potencial inhibitorio", "Inhiben glicina"], correct: 3 },
-        { id: 'b2_12', text: "Neuropéptidos:", options: ["Lejos sitio liberación", "Baja afinidad", "Eliminan recaptación", "No dependiente Ca", "Coexistir con otros NT"], correct: 4 },
-        { id: 'b2_13', text: "Difusión pasiva:", options: ["Cinética lineal", "Canales hidrofóbicos", "Proteínas transmembrana", "No selectivo (propiedades soluto)", "Filtro selectividad"], correct: 3 },
-        { id: 'b2_14', text: "Receptores NT incorrecto:", options: ["NMDA voltaje/ligando", "Serotonina autorreceptores", "Glicinérgicos metabotrópicos", "ACh musc/nico", "Glutamato iono/metabo"], correct: 2 },
-        { id: 'b2_15', text: "Síntesis NT correcto:", options: ["AChe precursora", "Noradrenalina precursora dopa", "Histidina precursora", "GABA precursor Glu", "DOPA precursora dopamina"], correct: 4 },
-        { id: 'b2_16', text: "Eicosanoides:", options: ["Derivados ác araquidónico", "Paracrina", "Proteínas", "Uniones directas", "Neurotrofinas"], correct: 0 },
-        { id: 'b2_17', text: "Hematopoyesis:", options: ["Gran progenie", "Solo mieloide", "Hígado adulto", "Escasa regeneración", "Gran capacidad proliferativa"], correct: 4 },
-        { id: 'b2_18', text: "Incorrecta coagulación:", options: ["Plaquetas imprescindibles", "tPA necesario", "Trombomodulina necesaria", "Factor tisular activa", "Endotelio limita"], correct: 0 },
-        { id: 'b2_19', text: "Cadherinas:", options: ["Células inmunes", "Señalización supervivencia", "Señalización contacto", "Presinápticas", "Inflamatoria"], correct: 2 },
-        { id: 'b2_20', text: "S-nitrosilación incorrecta:", options: ["Activa GC", "Modifica tioles", "Modifica grupos hemo", "Reversible", "Regula enzimas"], correct: 2 },
-        { id: 'b2_21', text: "Plaquetas no actúan:", options: ["Hemostasia", "Activación", "Coagulación", "Vasodilatación", "Retracción"], correct: 3 },
-        { id: 'b2_22', text: "Potencial reposo:", options: ["Canales ligando", "Eflujo continuo K influjo Na", "Solo excitables", "Eq cero", "Solo Na sería -80"], correct: 1 },
-        { id: 'b2_23', text: "Propiedades pasivas:", options: ["No afecta vel", "Amplitud/propagación espacial", "Atenuación", "Integración", "Canales voltaje"], correct: 2 },
-        { id: 'b2_24', text: "Grupos sanguíneos incorrecto:", options: ["AB+", "IgM", "Anti A/B naturales", "AB- recibe O+", "Padres Rh+ hijo Rh-"], correct: 3 },
-        { id: 'b2_25', text: "Limitar transmisión correcto:", options: ["Glu indoles", "Peptidos fosfatasas", "Aminas COMT", "ACh colinacetil", "Noradrenalina transportador"], correct: 4 },
-        { id: 'b2_26', text: "Transmisión sináptica:", options: ["Peptidos rápidos", "Toxinas estimulan", "Conexinas", "Reversión flujo neto", "Si Cl-, reversión = Eq Cl-"], correct: 4 },
-        { id: 'b2_27', text: "Contracción muscular:", options: ["Química liso", "Marcapasos esq", "Relajación recaptación Ca", "Esq inhibidor", "Hormonas relajan esq"], correct: 2 },
-        { id: 'b2_28', text: "NT pequeña incorrecto:", options: ["Serotonina catecolamina", "ACh activo", "Glu excitador", "ACh pequeña", "GABA inhibidor"], correct: 0 },
-        { id: 'b2_29', text: "Nutrición correcto:", options: ["Vitaminas esenciales", "Prot 300g", "Carb 20%", "Oleico esencial", "Bebé bajo"], correct: 0 },
-        { id: 'b2_30', text: "Eritrocitos:", options: ["HIF-1", "HbF", "Apoptosis sin EPO", "Curva izq ejercicio", "EPO hígado"], correct: 2 },
-        { id: 'b2_31', text: "Integración sináptica:", options: ["IPSP hiperpolarizante", "Axodendrítica", "EPSP despolarizante", "Constante tiempo sumación", "Reversión bajo umbral inhibidora"], correct: 4 },
-        { id: 'b2_32', text: "Fuerza muscular:", options: ["Rápidas antes", "Reclutamiento", "Isotónica longitud cte", "Longitud/Tensión", "Isométrica precede"], correct: 1 },
-        { id: 'b2_33', text: "Endocitosis:", options: ["Hierro", "Receptor inespecífico", "Constitutiva", "Transcitosis", "Pinocitosis inespecífica"], correct: 4 },
-        { id: 'b2_34', text: "Estímulos sensoriales:", options: ["Codificación", "Tónico lenta", "Inhibición lat", "Transducción", "Propioceptores"], correct: 1 },
-        { id: 'b2_35', text: "Eficacia sináptica incorrecto:", options: ["Habituación", "LTP tardía", "LTD", "LTP temprana", "LTP baja frecuencia"], correct: 4 },
-        { id: 'b2_36', text: "Isoosmolar e Hipotónica:", options: ["NaCl+KCl", "NaCl+Urea", "NaCl+KCl", "75NaCl + 150 Benceno", "NaCl+Benceno"], correct: 3 },
-        { id: 'b2_37', text: "Segundo mensajero vía Gq:", options: ["G", "DAG", "Ligando", "PLC", "PKC"], correct: 1 },
-        { id: 'b2_38', text: "Edema:", options: ["Hipoalbuminemia", "Aumento oncótica", "Disminución oncótica prot", "Disminución perm", "Aumento oncótica"], correct: 0 },
-        { id: 'b2_39', text: "Transporte:", options: ["Na/K", "Recicla", "Simporte", "Insulina", "Permeasas"], correct: 1 },
-        { id: 'b2_40', text: "Velocidad PA:", options: ["Diámetro", "Menor diám", "Mayor Rm", "Mielina (baja Cm sube Rm)", "Desmielinización"], correct: 3 },
-        { id: 'b2_41', text: "Sinergia:", options: ["Idéntico", "Bloquea", "Diferente", "Mayor que separado", "Distintas células"], correct: 3 },
-        { id: 'b2_42', text: "Leucocitos incorrecto:", options: ["Basófilos", "Plasmáticas", "Neutrófilos", "Monocitos", "Solo adquirida"], correct: 4 }
-    ];
-
-    const battery3 = [
-        { id: 'b3_1', text: "La velocidad de propagación de los potenciales de acción se incrementa:", options: ["Al aumentar el diámetro del axón", "Al aumentar la capacitancia de membrana (Cm)", "Al reducir la resistencia de membrana (Rm)", "Al aumentar la resistencia interna o axial (ri)", "Al mielinizar el axón"], correct: 4 },
-        { id: 'b3_2', text: "Respecto a la sinapsis química:", options: ["Están formadas por conexones", "Las SNARE, SNAP y NSF son proteínas del elemento presináptico", "Transmiten información más rápidamente que las eléctricas", "El aumento de calcio induce la liberación de NT", "Facilitan el acoplamiento eléctrico"], correct: 3 },
-        { id: 'b3_3', text: "Receptores colinérgicos (incorrecta):", options: ["Nicotínicos más rápida", "Ambos en fibras musculares esqueléticas", "Nicotínicos ionotrópicos", "ACh abre canal", "Muscarínicos proteína G"], correct: 1 },
-        { id: 'b3_4', text: "Noradrenalina (incorrecta):", options: ["Derivado triptófano", "Sintetiza de dopamina", "Activa beta-adrenérgicos", "Recaptación", "Neuronas posganglionares"], correct: 0 },
-        { id: 'b3_5', text: "Receptores NMDA (incorrecta):", options: ["Canales ligando", "Catiónicos", "Solo despolarizada", "Induce potencial inhibidor", "Inactivan por glicina"], correct: 3 },
-        { id: 'b3_6', text: "Neuropéptidos:", options: ["Lejos sitio liberación", "Baja afinidad", "Recaptación", "No dependiente Ca", "Coexistir con otros NT"], correct: 4 },
-        { id: 'b3_7', text: "Inhibición lateral:", options: ["Reduce umbral", "Aumenta umbral", "Reduce adaptación", "Aumenta discriminación espacial", "Reduce amplitud"], correct: 3 },
-        { id: 'b3_8', text: "Aprendizaje y memoria:", options: ["Propiedades pasivas", "Muerte neuronal", "Modificaciones eficacia sináptica", "Velocidad conducción", "Nada"], correct: 2 },
-        { id: 'b3_9', text: "Transporte pasivo:", options: ["Contra gradiente", "A favor gradiente", "No iónicas a favor", "No iónicas contra", "Iones a favor o contra"], correct: 1 },
-        { id: 'b3_10', text: "Transporte proteínas a favor:", options: ["Simple", "Facilitada", "Pasiva", "Velocidad constante", "Independiente"], correct: 1 },
-        { id: 'b3_11', text: "Canales iónicos (incorrecta):", options: ["Pequeño tamaño", "A favor", "Subunidades", "Solo carga positiva", "Contribuyen potencial"], correct: 3 },
-        { id: 'b3_12', text: "Sinergia citoquinas:", options: ["Célula diferente", "Efecto mayor que suma", "Contrarios", "Dianas diferentes", "Respuesta idéntica"], correct: 1 },
-        { id: 'b3_13', text: "Eq K+ -58mV y Vm +58mV:", options: ["Interior a exterior", "Exterior a interior", "No flujo", "Mayor", "No afectado"], correct: 0 },
-        { id: 'b3_14', text: "Estímulo positivo subumbral:", options: ["Proporcional", "No proporcional", "No varía", "Despolariza", "Hiperpolariza"], correct: 3 },
-        { id: 'b3_15', text: "Potencial acción (incorrecta):", options: ["Misma duración", "Todas direcciones", "Despolarización Na", "Invierte entrada K", "Refractario"], correct: 3 },
-        { id: 'b3_16', text: "Sinapsis química (incorrecta):", options: ["Libera NT", "Despolariza", "Abre Ca", "Libera Ca exterior", "Potenciales locales"], correct: 3 },
-        { id: 'b3_17', text: "Difusión pasiva:", options: ["Lineal", "Canales", "Proteínas", "No selectivo", "Selectivo"], correct: 3 },
-        { id: 'b3_18', text: "Receptores NT (incorrecta):", options: ["NMDA voltaje", "Serotonina auto", "Glicinérgicos metabo", "ACh musc/nico", "Glu iono/metabo"], correct: 2 },
-        { id: 'b3_19', text: "Síntesis NT:", options: ["AChe precursora", "Noradrenalina de dopamina", "Histidina trans", "GABA de Glu", "DOPA de dopamina"], correct: 4 },
-        { id: 'b3_20', text: "Eicosanoides:", options: ["Derivados araquidónico", "Paracrina", "Proteínas", "Uniones directas", "Neurotrofinas"], correct: 0 },
-        { id: 'b3_21', text: "Hematopoyesis:", options: ["Gran progenie", "Solo mieloide", "Hígado adulto", "Escasa regeneración", "Gran capacidad"], correct: 0 },
-        { id: 'b3_22', text: "Coagulación (incorrecta):", options: ["Plaquetas imprescindibles", "tPA", "Trombomodulina", "Factor tisular", "Endotelio"], correct: 0 },
-        { id: 'b3_23', text: "Cadherinas:", options: ["Inmune", "Supervivencia", "Contacto", "Presinápticas", "Inflamatoria"], correct: 2 },
-        { id: 'b3_24', text: "S-nitrosilación (incorrecta):", options: ["Activa GC", "Tioles", "Hemo", "Reversible", "Regula enzimas"], correct: 2 },
-        { id: 'b3_25', text: "Plaquetas no actúan:", options: ["Hemostasia", "Activación", "Coagulación", "Vasodilatación", "Retracción"], correct: 3 },
-        { id: 'b3_26', text: "Potencial reposo:", options: ["Canales ligando", "Eflujo K influjo Na", "Solo excitables", "Eq cero", "Solo Na -80"], correct: 1 },
-        { id: 'b3_27', text: "Propiedades pasivas:", options: ["No afecta vel", "Amplitud/propagación", "Atenuación", "Integración", "Canales voltaje"], correct: 2 },
-        { id: 'b3_28', text: "Grupos sanguíneos (incorrecta):", options: ["AB+", "IgM", "Anti A/B", "AB- recibe O+", "Padres Rh+ hijo Rh-"], correct: 3 },
-        { id: 'b3_29', text: "Limitar NT:", options: ["Glu indoles", "Peptidos fosfatasas", "Aminas COMT", "ACh colinacetil", "Noradrenalina transportador"], correct: 4 },
-        { id: 'b3_30', text: "Transmisión sináptica:", options: ["Peptidos rápidos", "Toxinas estimulan", "Conexinas", "Reversión flujo neto", "Si Cl reversión Eq"], correct: 4 },
-        { id: 'b3_31', text: "Contracción muscular:", options: ["Química liso", "Marcapasos", "Relajación recaptación", "Esq inhibidor", "Hormonas relajan"], correct: 2 },
-        { id: 'b3_32', text: "NT pequeña (incorrecta):", options: ["Serotonina catecolamina", "ACh activo", "Glu excitador", "ACh pequeña", "GABA inhibidor"], correct: 0 },
-        { id: 'b3_33', text: "Nutrición:", options: ["Vitaminas", "Prot 300g", "Carb 20%", "Oleico", "Bebé bajo"], correct: 0 },
-        { id: 'b3_34', text: "Eritrocitos:", options: ["HIF-1", "HbF", "Apoptosis sin EPO", "Curva izq", "EPO hígado"], correct: 2 },
-        { id: 'b3_35', text: "Integración sináptica:", options: ["IPSP hiperpolarizante", "Axodendrítica", "EPSP despolarizante", "Constante tiempo", "Reversión bajo umbral inhibidora"], correct: 0 },
-        { id: 'b3_36', text: "Fuerza muscular:", options: ["Rápidas antes", "Reclutamiento", "Isotónica cte", "Longitud", "Isométrica precede"], correct: 1 },
-        { id: 'b3_37', text: "Endocitosis:", options: ["Hierro", "Inespecífico", "Constitutiva", "Transcitosis", "Pinocitosis inespecífica"], correct: 4 },
-        { id: 'b3_38', text: "Estímulos:", options: ["Codificación", "Tónico lenta", "Inhibición lat", "Transducción", "Propioceptores"], correct: 1 },
-        { id: 'b3_39', text: "Eficacia sináptica (incorrecta):", options: ["Habituación", "LTP tardía", "LTD", "LTP temprana", "LTP baja frecuencia"], correct: 4 },
-        { id: 'b3_40', text: "Isoosmolar e Hipotónica:", options: ["NaCl+KCl", "NaCl+Urea", "NaCl+KCl", "NaCl+Benceno", "NaCl+Benceno"], correct: 1 },
-        { id: 'b3_41', text: "Segundo mensajero Gq:", options: ["G", "DAG", "Ligando", "PLC", "PKC"], correct: 1 },
-        { id: 'b3_42', text: "Edema:", options: ["Hipoalbuminemia", "Aumento oncótica", "Disminución oncótica prot", "Disminución perm", "Aumento oncótica"], correct: 0 },
-        { id: 'b3_43', text: "Transporte:", options: ["Na/K", "Recicla", "Simporte", "Insulina", "Permeasas"], correct: 1 },
-        { id: 'b3_44', text: "Velocidad PA:", options: ["Diámetro", "Menor diám", "Mayor Rm", "Mielina", "Desmielinización"], correct: 3 },
-        { id: 'b3_45', text: "Leucocitos (incorrecta):", options: ["Basófilos", "Plasmáticas", "Neutrófilos", "Monocitos", "Solo adquirida"], correct: 4 },
-        { id: 'b3_46', text: "Cadherinas:", options: ["Mismo tipo", "Heterofílicas", "Tróficas", "Movilidad", "Metástasis"], correct: 4 },
-        { id: 'b3_47', text: "Sinergia:", options: ["Mismo efecto", "Mismo tipo", "Suman", "Menor", "Mayor que suma"], correct: 4 },
-        { id: 'b3_48', text: "Potencial reposo:", options: ["Salida Na", "Permeabilidad", "Independiente", "Próximo K", "Gradientes"], correct: 3 },
-        { id: 'b3_49', text: "Despolarización:", options: ["Aumento Cl", "Reducción Na", "Aumento Ca", "Reducción K", "Nada"], correct: 2 },
-        { id: 'b3_50', text: "Electrotónico:", options: ["Longitudinal", "Lambda", "Rm", "Cm", "Densidad"], correct: 1 },
-        { id: 'b3_51', text: "Sumación múltiples:", options: ["LTP", "Temporal", "Sensibilización", "Espacial", "Tétanos"], correct: 3 },
-        { id: 'b3_52', text: "Gráfica PA (incorrecta):", options: ["Punto a", "Punto b salida K excede", "Punto c", "Punto d", "Punto e"], correct: 1 },
-        { id: 'b3_53', text: "Hidroliza ATP:", options: ["Solo favor", "Contra/Favor", "Canales", "Proteínas", "Pasivo"], correct: 3 },
-        { id: 'b3_54', text: "Facilitada:", options: ["Permeasas", "Canales", "Favor", "Lineal", "Iones"], correct: 2 },
-        { id: 'b3_55', text: "Colesterol (incorrecta):", options: ["Endocitosis", "Clatrina", "Unión", "Degradan RE", "Reciclan"], correct: 3 },
-        { id: 'b3_56', text: "Receptores:", options: ["Todos proteínas", "Algunos", "Todos enzima", "Algunos enzima", "Todos membrana"], correct: 0 },
-        { id: 'b3_57', text: "Peptídica:", options: ["Mismo receptor", "Efectos distintos", "Más de una", "Atravesar", "Transcripción"], correct: 1 },
-        { id: 'b3_58', text: "Hormonales:", options: ["Menor afinidad", "Vecinas", "Menos específicos", "Rápida", "Simultáneamente"], correct: 4 },
-        { id: 'b3_59', text: "Miosina-Actina:", options: ["Baja Ca", "Fija ATP", "Hidroliza ATP", "Ca Troponina", "Tropomiosina libera"], correct: 4 },
-        { id: 'b3_60', text: "Liso:", options: ["Ausencia sarcómeras", "Velocidad", "Consumo", "Fatiga", "Tubos T"], correct: 0 },
-        { id: 'b3_61', text: "Isométrica:", options: ["No consumo", "No acortamiento sarcómera", "Distienden elásticos", "No acortamiento músculo", "No tensión"], correct: 3 },
-        { id: 'b3_62', text: "Gradiente electroquímico:", options: ["Activo", "Iones canales", "Permeasas", "Sumatorio", "Glucosa"], correct: 3 },
-        { id: 'b3_63', text: "Glucosa intestinal:", options: ["Primario", "Simporte Na", "Antiporte", "Favor", "Contra"], correct: 1 },
-        { id: 'b3_64', text: "Fagocitosis:", options: ["Iones", "Glucosa", "Recicla", "Regula", "Bacterias"], correct: 4 },
-        { id: 'b3_65', text: "Receptores NT (incorrecta):", options: ["Canales", "G", "Membrana", "Nuclear", "Vesículas"], correct: 3 },
-        { id: 'b3_66', text: "Integrinas:", options: ["NT", "Neurotrofinas", "Citoquinas", "Hormonas", "Adhesión"], correct: 4 },
-        { id: 'b3_67', text: "Conexinas (incorrecta):", options: ["Poros", "Proteínas", "Acoplamiento", "Solo neuronas", "Coordinadas"], correct: 3 },
-        { id: 'b3_68', text: "Potencial equilibrio (incorrecta):", options: ["Conc", "Diferencia potencial", "Carga", "Varía conc", "Cero iguales"], correct: 1 },
-        { id: 'b3_69', text: "Vm positivo:", options: ["Despolarizada", "Hiperpolarizada", "Umbral", "ACh", "Na"], correct: 0 },
-        { id: 'b3_70', text: "Locales (incorrecta):", options: ["Cambios", "Excitables", "Suman", "Son PA", "Corriente"], correct: 3 },
-        { id: 'b3_71', text: "Canales K:", options: ["NA", "Inactivan", "Hiperpolarizante", "Todos", "Salida K"], correct: 2 },
-        { id: 'b3_72', text: "Velocidad PA (incorrecta):", options: ["Axial", "Rm", "Cm", "Intensidad", "Aislamiento"], correct: 3 },
-        { id: 'b3_73', text: "Na/K ATPasa:", options: ["Osmolaridad", "Isoosmótico", "PA", "Electrotónicos", "Cargas"], correct: 4 },
-        { id: 'b3_74', text: "Facilitada:", options: ["Lineal", "Bajas", "Saturantes", "Mayor menor", "Independiente"], correct: 2 },
-        { id: 'b3_75', text: "Endocitosis (incorrecta):", options: ["Iones", "Macro", "Recicla", "Regula", "Hierro"], correct: 0 },
-        { id: 'b3_76', text: "ACh (incorrecta):", options: ["L-Dopa", "Vesículas", "Terminal", "Rotura", "Ca"], correct: 0 },
-        { id: 'b3_77', text: "Glu (incorrecta):", options: ["Tipos", "Bloqueo Ca", "Despolarizada", "Iono", "Entrada"], correct: 1 },
-        { id: 'b3_78', text: "Excitotoxicidad:", options: ["ACh", "Serotonina", "Glu", "GABA", "NA"], correct: 2 },
-        { id: 'b3_79', text: "Hiperpolariza:", options: ["GABA A", "Glicina", "AMPA", "Nicotínico", "Adrenérgico"], correct: 0 },
-        { id: 'b3_80', text: "MAO:", options: ["ACh", "Glicina", "Catecolaminas", "Endorfinas", "Despolarización"], correct: 2 },
-        { id: 'b3_81', text: "Simple:", options: ["Na", "CO2", "Galactosa", "Ca", "Glucosa"], correct: 1 },
-        { id: 'b3_82', text: "Activo (incorrecto):", options: ["Contra", "Desequilibrio", "Secundario hidrólisis propia", "Primario", "Na/K"], correct: 2 },
-        { id: 'b3_83', text: "Facilitada:", options: ["Continuidad", "Satura", "Proteínas", "Lineal", "Energía"], correct: 1 },
-        { id: 'b3_84', text: "Tonicidad:", options: ["No depende", "Concentración", "Hiper", "Hipo", "Ideal"], correct: 3 },
-        { id: 'b3_85', text: "Proteínas:", options: ["Canales", "Endocitosis", "Activo", "Permeasas", "Simple"], correct: 1 },
-        { id: 'b3_86', text: "Permeabilidad (incorrecta):", options: ["Solo Na", "K y Na", "Fuga", "Influyen", "Bomba"], correct: 0 },
-        { id: 'b3_87', text: "Conexinas:", options: ["Adhesión", "Canales", "NT", "Hormonas", "Ligandos"], correct: 1 },
-        { id: 'b3_88', text: "Sinapsis (incorrecta):", options: ["Ca", "Hormonas", "Intracelulares", "G", "Ligando"], correct: 2 },
-        { id: 'b3_89', text: "Excitador:", options: ["ACh", "Glu", "Glicina", "GABA", "Ninguno"], correct: 1 },
-        { id: 'b3_90', text: "Hematopoyesis (incorrecta):", options: ["Mitosis", "Hígado", "EPO", "Megacariocito", "TPO"], correct: 0 },
-        { id: 'b3_91', text: "Eritrocitos:", options: ["Multi", "Reservas", "O2", "Horas", "Pocos"], correct: 2 },
-        { id: 'b3_92', text: "Transfusión AB:", options: ["A", "O", "AB", "A-", "B-"], correct: 2 },
-        { id: 'b3_93', text: "Plaquetas (incorrecta):", options: ["Fragmentos", "Defensa", "Tapón", "Gránulos", "Gap"], correct: 1 },
-        { id: 'b3_94', text: "Circulatorio:", options: ["Arterias", "Presión", "60", "120", "Diámetro"], correct: 0 },
-        { id: 'b3_95', text: "Capilares:", options: ["Fenestrados", "SNC", "Sinusoides", "Starling", "Transcitosis"], correct: 3 }
-    ];
-
-    const battery4 = [
-        { id: 'b4_1', text: "Distribución de agua:", options: ["Aumenta con edad", "Mayor porcentaje intracelular", "Intersticial/Intracelular más restrictiva", "Proteínas atraviesan capilares", "Iones libres"], correct: 1 },
-        { id: 'b4_2', text: "Eritrocitos:", options: ["Flexibles", "Menos resistencia", "Anaerobia total", "Sin citoesqueleto", "Oxida a metahemoglobina"], correct: 0 },
-        { id: 'b4_3', text: "Estroma médula ósea:", options: ["Precursores", "Entran/salen", "Citocinas", "Supervivencia", "Solo sostén"], correct: 2 },
-        { id: 'b4_4', text: "Neutrófilos:", options: ["Más abundante", "Vida larga", "Entran/salen", "Cadherinas", "Únicos fagocitos"], correct: 0 },
-        { id: 'b4_5', text: "Grupos A y O:", options: ["Suero A + hematíes O aglutina", "Suero O + hematíes A aglutina", "A recibe de O", "O recibe de A", "Anticuerpos donante aglutinan receptor"], correct: 2 },
-        { id: 'b4_6', text: "Hematomas espontáneos, coagula bien en tubo:", options: ["Endotelio", "Vía intrínseca", "Trombina", "Trombomodulina", "Plaquetas"], correct: 4 },
-        { id: 'b4_7', text: "Eliminar coágulo:", options: ["Heparina", "tPA", "Inhibidor tPA", "Proteína C", "Trombomodulina"], correct: 1 },
-        { id: 'b4_8', text: "Presión pulmonar inferior:", options: ["VD bombea menos", "Paredes distensibles", "Diámetro menor", "Resistencia baja", "Parasimpática"], correct: 3 },
-        { id: 'b4_9', text: "Contracción ventricular en bloque:", options: ["Acoplamiento eléctrico", "Velocidad His", "Sin canales Na", "Automatismo", "Retraso AV"], correct: 0 },
-        { id: 'b4_10', text: "Campo eléctrico corazón:", options: ["Constante tiempo", "Variable magnitud", "Constante dirección", "Máximo repolarización", "Mínimo diástole"], correct: 1 },
-        { id: 'b4_11', text: "Eje a la izquierda:", options: ["Endo a Epi", "Masa VI mayor", "Convención", "Sistema derecho", "Origen VI"], correct: 1 },
-        { id: 'b4_12', text: "Inicio llenado ventricular:", options: ["Inicio diástole", "Tras relajación isovolumétrica", "Cierre sigmoideas", "Presión V < Auricular", "Sístole auricular"], correct: 3 },
-        { id: 'b4_13', text: "NO aumenta fuerza ventricular:", options: ["Aumento VTD", "Aumento Ca", "Aumento retorno", "Aumento presión arterial (postcarga)", "Barorreceptores"], correct: 3 },
-        { id: 'b4_14', text: "Resistencia aumenta con:", options: ["Hematocrito", "Parasimpática", "Disminución tono", "Barorreceptores", "Vasoconstricción"], correct: 4 },
-        { id: 'b4_15', text: "Propiedades vasos:", options: ["Velocidad mínima capilares", "Arteriolas más músculo", "Venas elásticas", "Arterias finas", "Elásticas igual"], correct: 0 },
-        { id: 'b4_16', text: "Presión arterial aumenta por:", options: ["Volumen sistólico", "Vasodilatación", "Simpática", "Bradicardia", "Barorreceptores"], correct: 2 },
-        { id: 'b4_17', text: "Control miógeno:", options: ["Simpático", "Metabólico", "Evita oscilaciones presión", "Mantiene presión", "Emergencia"], correct: 2 },
-        { id: 'b4_18', text: "Intercambio capilar:", options: ["Filtración", "Transcitosis", "Difusión", "Transportadores", "Bomba"], correct: 2 },
-        { id: 'b4_19', text: "Capilares cerebrales permeables a:", options: ["Gases", "Protones", "Liposolubles", "Péptidos", "Glucosa"], correct: 2 },
-        { id: 'b4_20', text: "Extremo venoso capilar:", options: ["Menor permeabilidad", "Salida líquido", "Neoangiogénesis", "Mayor presión", "Extravasación leucocitos"], correct: 4 },
-        { id: 'b4_21', text: "Barorreceptores estimulación:", options: ["Disminución tensión", "Disminuye FC", "Vasoconstricción", "Disminuye centro vasomotor", "Disminuye vagal"], correct: 1 },
-        { id: 'b4_22', text: "Participa inspiración activa:", options: ["Diafragma", "Frénico", "Elásticas", "Surfactante", "Abdominal"], correct: 0 },
-        { id: 'b4_23', text: "Ciclo respiratorio:", options: ["Volumen mayor espiración", "Aire fluye presión subatmosférica", "Pleural supera", "Complianza mayor", "Resistencia constante"], correct: 1 },
-        { id: 'b4_24', text: "Base pulmón erguido:", options: ["Menor perfusión", "Mayor ventilación", "Pleural negativa", "Alveolos distendidos", "V/Q mayor"], correct: 1 },
-        { id: 'b4_25', text: "Importancia O2 disuelto:", options: ["Determina saturación Hb", "Reserva", "Favorece CO2", "Carece importancia", "Muy soluble"], correct: 0 },
-        { id: 'b4_26', text: "Aire espirado final:", options: ["Atmosférico", "Alveolar", "Arterial", "Venosa", "Intersticial"], correct: 1 },
-        { id: 'b4_27', text: "Centros respiratorios:", options: ["Médula/Músculo", "Protuberancia/Bulbo", "Corteza/Tronco", "Tronco/Músculo", "Bulbo/Médula"], correct: 3 },
-        { id: 'b4_28', text: "Ganglios paravertebrales:", options: ["Intestinointestinales", "Vagales", "Vagovagales", "Pared", "Gastroileal"], correct: 0 },
-        { id: 'b4_29', text: "Ondas lentas digestivo:", options: ["Máxima íleo", "Fibras musculares", "Delgado no grueso", "Desencadenan contracciones", "Solo con PA"], correct: 4 },
-        { id: 'b4_30', text: "Peristaltismo:", options: ["Dirección oral", "Longitudinal propulsor", "Circular receptor", "Circular propulsor", "Mezcla"], correct: 3 },
-        { id: 'b4_31', text: "Células parietales:", options: ["Intrínseco", "Gastrina", "Somatostatina", "Pepsinas", "HCl"], correct: 4 },
-        { id: 'b4_32', text: "NO en saliva:", options: ["Lipasa", "Amilasa", "Mucina", "Tripsina", "Lisozima"], correct: 3 },
-        { id: 'b4_33', text: "Histamina en parietal:", options: ["Aumento Na", "Aumento AMPc", "Aumento GMPc", "Potencia gastrina", "Disminuye Ca"], correct: 1 },
-        { id: 'b4_34', text: "Absorción digestiva:", options: ["Yeyuno K activo", "Yeyuno K facilitado", "Yeyuno K pasivo", "Íleo Na pasivo", "Colon K secretado"], correct: 2 },
-        { id: 'b4_35', text: "NO función hepática:", options: ["Albúmina", "Urea", "Quilomicrones", "Triglicéridos", "Cuerpos cetónicos"], correct: 2 },
-        { id: 'b4_36', text: "NO pasa glomérulo:", options: ["Albúmina", "Cloro", "Sodio", "Aminoácidos", "Fibrinógeno"], correct: 4 },
-        { id: 'b4_37', text: "Aumento filtrado:", options: ["Vasoconstricción aferente", "Vasoconstricción eferente", "Incremento P aferente", "Incremento oncótica", "Disminución P eferente"], correct: 1 },
-        { id: 'b4_38', text: "Final túbulo proximal:", options: ["Isosmótica", "Isotónica RBC", "Idéntica plasma", "Glucosa", "Albúmina"], correct: 0 },
-        { id: 'b4_39', text: "NO aumenta renina:", options: ["Disminución presión", "Aumento simpática", "Disminución ClNa", "Aumento Angiotensina II", "Vasodilatación aferente"], correct: 3 },
-        { id: 'b4_40', text: "NO depende osmolalidad orina:", options: ["ADH", "Urea", "ClNa", "Flujo vasa recta", "Reabsorción proximal"], correct: 4 },
-        { id: 'b4_41', text: "Aumento volumen extracelular:", options: ["Disminución renina", "Aumento ANP", "Aumento aldosterona", "Disminución filtrado", "Aumento ADH"], correct: 1 },
-        { id: 'b4_42', text: "Reflejo micción:", options: ["Parasimpático", "Simpático", "Somático", "Vías superiores", "Médula sacra"], correct: 4 },
-        { id: 'b4_43', text: "Paso iones membrana:", options: ["Simple", "Activo", "Facilitada", "Canales", "Ósmosis"], correct: 3 },
-        { id: 'b4_44', text: "Unidades motoras (100 axones):", options: ["1", "10", "100", "1000", "10000"], correct: 2 },
-        { id: 'b4_45', text: "Flujo neto 0:", options: ["Reposo", "Acción", "Equilibrio", "Local", "Receptor"], correct: 2 },
-        { id: 'b4_46', text: "Esófago vago directa:", options: ["Tercio superior", "Estriada", "Inferior", "Cardias", "No existe"], correct: 1 },
-        { id: 'b4_47', text: "Ausencia parietales excepto:", options: ["Proteínas", "B12", "Pepsina", "Bacterias", "pH"], correct: 2 },
-        { id: 'b4_48', text: "Lipasa inhibida:", options: ["Falta bilis", "Pérdida grasa heces", "No vitaminas", "Bilis suple", "Absorción colon"], correct: 1 },
-        { id: 'b4_49', text: "Afinidad Hb-O2 aumenta:", options: ["Temp", "Baja pH", "Baja CO2", "Sube CO2", "Sube O2"], correct: 2 },
-        { id: 'b4_50', text: "Frank-Starling:", options: ["Gasto invariable", "Aumenta VTD aumenta fuerza", "Baja precarga sube fuerza", "Precarga sin efecto", "Ninguna"], correct: 1 },
-        { id: 'b4_51', text: "Reflejo barorreceptor:", options: ["Modifican O2", "Aumentan disparo con presión", "Deja funcionar HTA", "Cambios rápidos", "Ninguna"], correct: 1 },
-        { id: 'b4_52', text: "Electrofisiología cardíaca:", options: ["Marcapasos AV", "Sincitio único", "Marcapasos SA", "Meseta salida K", "Simpático aumenta FC"], correct: 4 },
-        { id: 'b4_53', text: "Incorrecta respiratorio:", options: ["Asma obstructiva", "Edema disminuye difusión", "CRF = VR + VER", "Volumen corriente disminuye ejercicio", "Volumen sistólico"], correct: 3 },
-        { id: 'b4_54', text: "Parasimpático activa:", options: ["Detrusor", "Broncodilatación", "Vasoconstricción", "Defecación", "Adrenalina"], correct: 0 },
-        { id: 'b4_55', text: "Respiratorio cierto:", options: ["Base peor perfundida", "Espacio muerto", "Tasa aumenta grosor", "Tasa depende gradiente", "Ninguna"], correct: 3 },
-        { id: 'b4_56', text: "Renal cierto:", options: ["Tasa oscila", "Filtra 20% excreta", "Glucosa/Na acoplado", "Asa Henle permeabilidad", "Ninguna"], correct: 4 },
-        { id: 'b4_57', text: "Eje hipotálamo-adrenal:", options: ["CRH hipófisis", "Cortisol inhibe", "ACTH positiva", "Estables", "Cortisol bajo sube ACTH"], correct: 4 },
-        { id: 'b4_58', text: "Dolor:", options: ["Inútil", "Nocicepción dolor", "Hiperalgesia", "Vías mismas", "Componentes emocionales"], correct: 4 },
-        { id: 'b4_59', text: "Sinapsis:", options: ["Cualquier célula", "Excitadoras inhibidoras", "Potenciales locales", "GABA bloquea", "Eléctricas integración"], correct: 1 },
-        { id: 'b4_60', text: "Vestibular:", options: ["Utrículo angulares", "Endolinfa activa/inhibe", "Estriola orientación", "Canales gravedad", "Reflejo opuesto"], correct: 1 },
-        { id: 'b4_61', text: "Químicos:", options: ["Única vía", "Divergencia", "Entorrinal memoria", "Canales y mensajeros", "No límbico"], correct: 3 },
-        { id: 'b4_62', text: "Visión:", options: ["Directamente", "Fóvea punto ciego", "Bastones escotópica", "Homogénea", "Despolarización"], correct: 2 },
-        { id: 'b4_63', text: "Oído:", options: ["Umbral 20KHz", "Huesecillos amplificador", "Tímpano interno", "Basilar homogénea", "Diferencias localización"], correct: 4 },
-        { id: 'b4_64', text: "Memoria trauma:", options: ["Retrógrada", "Estriado", "Temporal medial", "Reaprender", "Atención"], correct: 2 },
-        { id: 'b4_65', text: "Sueño:", options: ["Homogénea", "Despertador", "Tálamo compuerta", "REM desincronizado", "REM profundo"], correct: 3 },
-        { id: 'b4_66', text: "Axotomía SNP:", options: ["Neurona activación", "Regenerativa proximal", "Reparan siempre", "Cicatriz glial", "Apoptosis"], correct: 1 },
-        { id: 'b4_67', text: "Agotamiento ATP 2º lugar:", options: ["Primario", "Cotransporte", "Facilitada", "Simple"], correct: 1 },
-        { id: 'b4_68', text: "Incompatible vida:", options: ["Na intra 10", "Na extra 140", "Na intra 140", "K extra 4"], correct: 2 },
-        { id: 'b4_69', text: "PA falso:", options: ["Reposo -90", "Despolarización K", "Corta duración", "Variación concentraciones"], correct: 1 },
-        { id: 'b4_70', text: "Impulso falso:", options: ["Ranvier", "Comunicantes químicas", "Eléctrica iones", "Velocidad"], correct: 1 },
-        { id: 'b4_71', text: "NO segundo mensajero:", options: ["Apertura Na", "Enzimas", "AMPc", "Transcripción"], correct: 0 },
-        { id: 'b4_72', text: "PA falso:", options: ["Entrada Na", "Salida K", "Refractario relativo", "Refractario absoluto"], correct: 3 },
-        { id: 'b4_73', text: "Sinapsis falso:", options: ["Presináptica Na", "Proporcional Ca", "Exocitosis", "Excitación inhibición"], correct: 0 },
-        { id: 'b4_74', text: "Contracción falso:", options: ["Túbulos T", "Energía Ca", "Ca TnC", "Cesa Ca"], correct: 2 },
-        { id: 'b4_75', text: "NO inhibe PFK:", options: ["Ejercicio", "Láctico", "ATP", "Citrato"], correct: 0 },
-        { id: 'b4_76', text: "Láctico aumenta excepto:", options: ["Alta intensidad", "Baja intensidad", "Insuficiente O2", "Acúmulo pirúvico"], correct: 1 },
-        { id: 'b4_77', text: "Placa motora falso:", options: ["Ca exocitosis", "Colinesterasa tetánica", "Curare", "Colinesterasa disminuye ACh"], correct: 1 },
-        { id: 'b4_78', text: "NO fuerza efectiva:", options: ["Ángulo", "Estiramiento", "Fatiga", "Sección"], correct: 3 },
-        { id: 'b4_79', text: "NO fuerza absoluta:", options: ["Edad", "Fibras", "Anatomía", "Fatiga"], correct: 3 },
-        { id: 'b4_80', text: "Contracción falsa:", options: ["Isovolumétrica", "Isocinética", "Excéntrica", "Isodinámica"], correct: 0 },
-        { id: 'b4_81', text: "Mecanorreceptores falso:", options: ["Paccini aponeurosis", "Meissner", "Paccini rotación", "Ruffini lenta"], correct: 2 },
-        { id: 'b4_82', text: "Huso falso:", options: ["Velocidad", "Grado", "Gamma sensitiva", "Reflejo"], correct: 2 },
-        { id: 'b4_83', text: "Reflejo estiramiento:", options: ["Respuesta", "Fibras extremos", "Gamma", "Nuclear"], correct: 1 },
-        { id: 'b4_84', text: "Extensor cruzado falso:", options: ["Tardío", "Menos mantenida", "Excitación extensor", "Inhibición flexor"], correct: 1 },
-        { id: 'b4_85', text: "Cerebelo falsa:", options: ["Vestibular", "Anticipa", "Cerebral", "Compara"], correct: 1 },
-        { id: 'b4_86', text: "Control motor falsa:", options: ["Respiración", "Gastrointestinal", "Caudado patrones", "Caudado color"], correct: 3 },
-        { id: 'b4_87', text: "Llenado falso:", options: ["Lento", "Activo", "Rápido", "Tercer ruido"], correct: 2 },
-        { id: 'b4_88', text: "Contracción cardíaca falso:", options: ["Calcio", "Sincitio", "Química", "Refractario"], correct: 2 },
-        { id: 'b4_89', text: "O2 no determinado:", options: ["Velocidad", "Temp", "Motivación", "Duración"], correct: 2 },
-        { id: 'b4_90', text: "Cociente R falso:", options: ["Inicio", "Aumenta", "Anaeróbico", "Glucosa"], correct: 3 },
-        { id: 'b4_91', text: "Adaptación cardio falso:", options: ["Flujo muscular", "Cerebral", "FC", "Volumen"], correct: 2 },
-        { id: 'b4_92', text: "Respiratorio falso:", options: ["Flujo", "Frecuencia", "Volumen", "Resistencias"], correct: 3 },
-        { id: 'b4_93', text: "Umbral excepto:", options: ["Pérdida", "Exponencial", "Cese O2", "Disminución R"], correct: 3 },
-        { id: 'b4_94', text: "Principios falso:", options: ["Glúcidos", "Lípidos", "Proteínas", "Glúcidos plástica"], correct: 3 },
-        { id: 'b4_95', text: "Falso:", options: ["Glúcidos sabor", "Lípidos vegetal", "Insaturado", "Proteínas leche"], correct: 2 },
-        { id: 'b4_96', text: "NO derecha curva:", options: ["CO2", "O2", "Temp", "pH"], correct: 1 },
-        { id: 'b4_97', text: "Sangre falsa:", options: ["B+", "A+", "Rh-", "Aglutinación"], correct: 0 },
-        { id: 'b4_98', text: "Verdadera:", options: ["Pelvis", "Neurona", "Distal", "Todas falsas"], correct: 3 },
-        { id: 'b4_99', text: "Verdadera SNS:", options: ["SNP alerta", "SNS flujo", "Antagonistas", "Todas falsas"], correct: 3 },
-        { id: 'b4_100', text: "Hormonas falsa:", options: ["Lejos", "Poco específica", "GAP", "Endocrina"], correct: 1 },
-        { id: 'b4_101', text: "Digestivo falsa:", options: ["SNC", "Liso", "Ptialina", "Gastroentérico"], correct: 0 },
-        { id: 'b4_102', text: "Verdadera digestivo:", options: ["Bilis carbohidratos", "Sales excretadas", "Glucosa activo", "Micela celular"], correct: 2 },
-        { id: 'b4_103', text: "Miofibrillas cierto:", options: ["Sarcómero", "Miosina calcio", "Inervada", "Actina A"], correct: 0 },
-        { id: 'b4_104', text: "Contracción cierto:", options: ["Acorta", "Puentes", "Relajación energía", "Ca abundante"], correct: 2 },
-        { id: 'b4_105', text: "Unidad motora:", options: ["Dendritas", "Neurona y fibras", "Macro", "Fibra y neuronas"], correct: 1 },
-        { id: 'b4_106', text: "PA fibra muscular:", options: ["Túbulos T", "Muchas neuronas", "Tendón", "Todas"], correct: 0 },
-        { id: 'b4_107', text: "Mecanorreceptores:", options: ["Ruffini", "Golpes", "Meissner", "Nociceptores"], correct: 1 },
-        { id: 'b4_108', text: "Cierto sensorial:", options: ["Campo", "2 orden", "Corte", "Todas"], correct: 3 },
-        { id: 'b4_109', text: "Huso primario:", options: ["Estático", "Mielínicas", "Anuloespiral", "4 orden"], correct: 2 },
-        { id: 'b4_110', text: "Miotático:", options: ["Tensión", "Postura", "Antagonistas", "Tendón"], correct: 1 },
-        { id: 'b4_111', text: "Retirada:", options: ["Golgi", "Flexores", "Estiramiento", "Monosináptico"], correct: 1 },
-        { id: 'b4_112', text: "Médula:", options: ["Reflejos", "Postura", "Equilibrio", "Todas"], correct: 0 },
-        { id: 'b4_113', text: "Coordinación:", options: ["Reticular", "Corteza", "Cerebelo", "Ganglios"], correct: 2 },
-        { id: 'b4_114', text: "Equilibrio:", options: ["Reticular", "Corteza", "Cerebelo", "Ganglios"], correct: 0 },
-        { id: 'b4_115', text: "Voluntaria:", options: ["Medial", "Tronco", "Bulbo", "Corteza"], correct: 3 },
-        { id: 'b4_116', text: "Agua:", options: ["Activo", "Solutos", "Intravascular", "Potasio"], correct: 3 },
-        { id: 'b4_117', text: "Hipertónico:", options: ["Osmolaridad alta", "Ceder agua", "Baja", "Todas"], correct: 0 },
-        { id: 'b4_118', text: "PA:", options: ["Todas", "Rápido", "Agua", "Sinápticas"], correct: 1 },
-        { id: 'b4_119', text: "Recarga:", options: ["Sináptica", "Bomba", "Puentes", "Todas"], correct: 1 },
-        { id: 'b4_120', text: "PA nerviosa:", options: ["Suficientes", "Sodio", "Positivas", "Intenso"], correct: 1 },
-        { id: 'b4_121', text: "Impulso:", options: ["Soma", "Hiperpolarización", "Mielinizadas", "Núcleo"], correct: 2 },
-        { id: 'b4_122', text: "Alfa:", options: ["Amielínicas", "2 m/s", "Saltatoria", "IV"], correct: 2 },
-        { id: 'b4_123', text: "PPSE:", options: ["Inhibitorios", "Presináptica", "Capaz", "Inhibe"], correct: 2 },
-        { id: 'b4_124', text: "Sangre:", options: ["pH", "Osmolaridad", "Temp", "Hto 45"], correct: 3 },
-        { id: 'b4_125', text: "Hematíes:", options: ["5000", "Núcleo", "Hb 14", "Gránulos"], correct: 2 },
-        { id: 'b4_126', text: "Anemia frágiles:", options: ["Aplástica", "Carencial", "Hemolítica", "Hemorrágica"], correct: 2 },
-        { id: 'b4_127', text: "AB- da a:", options: ["A-", "AB+", "0-", "B+"], correct: 1 },
-        { id: 'b4_128', text: "Hemolítica RN:", options: ["Feto -", "Madre - Padre +", "Madre +", "Todos"], correct: 1 },
-        { id: 'b4_129', text: "Fagocitar bacterias:", options: ["Linfocitos", "Eosinófilos", "Neutrófilos", "Monocitos"], correct: 2 },
-        { id: 'b4_130', text: "Correcta:", options: ["Eritrocitos", "Timo", "Basófilos potentes", "Eosinófilos alergia"], correct: 3 },
-        { id: 'b4_131', text: "Correcta basófilos:", options: ["Inflamación", "Vasodilatadores", "Coloración", "Todas"], correct: 3 },
-        { id: 'b4_132', text: "Verdadera linfo:", options: ["Adquirida", "Humoral p", "B anticuerpos", "Monolitos"], correct: 2 },
-        { id: 'b4_133', text: "Fuerza efectiva:", options: ["Estiramiento", "Igual", "Motivación", "Temp"], correct: 0 },
-        { id: 'b4_134', text: "Anaeróbica falso:", options: ["Láctico", "Más O2 más láctico", "Insuficiente O2", "Más glucógeno"], correct: 1 },
-        { id: 'b4_135', text: "Glucosa no procede:", options: ["Propias", "Cercanos", "Hepáticas", "Neoglucogénesis"], correct: 1 },
-        { id: 'b4_136', text: "Metabolismo:", options: ["Aeróbica rápido", "Láctico", "Lípidos aeróbica", "Anaeróbico mayor"], correct: 2 },
-        { id: 'b4_137', text: "No estimula:", options: ["ATP", "Calcio", "ADP", "Adrenalina"], correct: 0 },
-        { id: 'b4_138', text: "Metabolismo falso:", options: ["ATP", "1-2 min", "Creatina", "Recarga"], correct: 1 },
-        { id: 'b4_139', text: "Nerviosos falso:", options: ["Sin sección", "Contralateral", "Imposible sin hipertrofia", "Velocidad"], correct: 2 },
-        { id: 'b4_140', text: "Elástica falso:", options: ["Puentes", "Pierde contráctil", "Tendón", "70%"], correct: 1 },
-        { id: 'b4_141', text: "Agotamiento ATP:", options: ["Favor", "Contra", "Facilitada", "Simple"], correct: 1 },
-        { id: 'b4_142', text: "PA falso:", options: ["-90", "Na", "Corta", "Afectadas"], correct: 3 },
-        { id: 'b4_143', text: "Impulso falso:", options: ["Ranvier no", "Comunicantes", "Eléctrica", "Velocidad"], correct: 0 },
-        { id: 'b4_144', text: "Neuropéptidos no:", options: ["Lenta", "Duradera", "Potente", "Citosol"], correct: 3 },
-        { id: 'b4_145', text: "Adaptaciones falsa:", options: ["Gasto", "Frecuencia", "Hipertrofia tabiques", "Difusión"], correct: 2 },
-        { id: 'b4_146', text: "No produce:", options: ["Intra glúcidos", "Extra glúcidos", "Intra lípidos", "Extra lípidos"], correct: 3 },
-        { id: 'b4_147', text: "Transporte falso:", options: ["CO2", "Na K", "Glucosa difusión", "Transportador"], correct: 2 },
-        { id: 'b4_148', text: "Transporte falsa:", options: ["Bomba ext/mito", "Bomba ext/retic", "Cotransporte ATP", "Entra sale"], correct: 2 },
-    ];
-
-    // ==========================================
-    // LÓGICA
-    // ==========================================
-
+    // --- Logic ---
     let currentQuestions = [];
     let userAnswers = {};
     let markedQuestions = new Set();
-    let currentBatteryMode = 'all';
+    let currentMode = 'ordered';
 
     function selectBattery(mode) {
-        currentBatteryMode = mode;
-        
+        currentMode = mode;
         if (mode === 'exam') {
             startQuiz('random');
         } else {
             document.getElementById('order-options').style.display = 'block';
-            // Scroll to order options
             document.getElementById('order-options').scrollIntoView({ behavior: 'smooth' });
         }
     }
 
-    function startQuiz(orderMode) {
+    function startQuiz(mode) {
         userAnswers = {};
         markedQuestions.clear();
-        let rawSet = [];
-
-        if (currentBatteryMode === 'b1') rawSet = [...battery1];
-        else if (currentBatteryMode === 'b2') rawSet = [...battery2];
-        else if (currentBatteryMode === 'b3') rawSet = [...battery3];
-        else if (currentBatteryMode === 'b4') rawSet = [...battery4];
-        else rawSet = [...battery1, ...battery2, ...battery3, ...battery4];
-
-        if (currentBatteryMode === 'exam') {
-            rawSet.sort(() => Math.random() - 0.5);
-            currentQuestions = rawSet.slice(0, 100);
-        } else {
-            currentQuestions = rawSet;
-            if (orderMode === 'random') {
-                currentQuestions.sort(() => Math.random() - 0.5);
-            }
+        let indices = battery3_optimized.map((_, i) => i);
+        
+        if (mode === 'random' || currentMode === 'exam') {
+            indices.sort(() => Math.random() - 0.5);
+        }
+        
+        if (currentMode === 'exam') {
+            indices = indices.slice(0, 20);
         }
 
-        loadQuestions();
-        
+        loadQuestions(indices);
         document.getElementById('start-screen').classList.remove('active');
         document.getElementById('results-screen').classList.remove('active');
         document.getElementById('quiz-screen').classList.add('active');
     }
 
-    function loadQuestions() {
+    function loadQuestions(indices) {
+        currentQuestions = indices;
         const container = document.getElementById('questions-list');
         const navGrid = document.getElementById('nav-grid');
-        const sidebarTitle = document.getElementById('sidebar-title');
         
         container.innerHTML = '';
         navGrid.innerHTML = '';
-        sidebarTitle.innerText = `Preguntas: ${currentQuestions.length}`;
 
-        currentQuestions.forEach((q, index) => {
-            const displayIndex = index + 1;
-            
-            const div = document.createElement('div');
-            div.className = 'question-container';
-            div.id = `q-${index}`; 
+        indices.forEach((qIndex, displayIndex) => {
+            const q = battery3_optimized[qIndex];
             
             let optionIndices = q.options.map((_, i) => i);
             optionIndices.sort(() => Math.random() - 0.5);
 
-            let batName = "B1";
-            if(q.id.startsWith('b2')) batName = "B2";
-            if(q.id.startsWith('b3')) batName = "B3";
-            if(q.id.startsWith('b4')) batName = "B4";
-
+            const div = document.createElement('div');
+            div.className = 'question-container';
+            div.id = `q-${qIndex}`;
             div.innerHTML = `
                 <div class="question-header">
-                    <span class="question-text">
-                        ${displayIndex}. ${q.text} 
-                        <span class="badge" title="Origen: Batería ${batName}">${batName}</span>
-                    </span>
-                    <span class="mark-check" onclick="toggleMark(${index})" id="mark-${index}" title="Marcar para revisar">★</span>
+                    <span class="question-text">${displayIndex}. ${q.text}</span>
+                    <span class="mark-check" onclick="toggleMark(${qIndex})" id="mark-${qIndex}" title="Marcar">★</span>
                 </div>
                 <div class="options-grid">
                     ${optionIndices.map(optIdx => `
-                        <div class="option" onclick="selectAnswer(${index}, ${optIdx}, this, ${q.correct})">
+                        <div class="option" onclick="selectAnswer(${qIndex}, ${optIdx}, this, ${q.correct})">
                             ${q.options[optIdx]}
                         </div>
                     `).join('')}
                 </div>
-                <div class="feedback" id="feedback-${index}"></div>
+                <div class="feedback" id="feedback-${qIndex}"></div>
             `;
             container.appendChild(div);
 
             const navBtn = document.createElement('button');
             navBtn.className = 'nav-btn';
             navBtn.innerText = displayIndex;
-            navBtn.id = `nav-${index}`;
-            navBtn.onclick = () => document.getElementById(`q-${index}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+            navBtn.id = `nav-${qIndex}`;
+            navBtn.onclick = () => document.getElementById(`q-${qIndex}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
             navGrid.appendChild(navBtn);
         });
     }
 
-    function selectAnswer(index, selectedOptIdx, optionElem, correctOptIdx) {
-        if (userAnswers[index]) return;
+    function selectAnswer(qIndex, selectedOptIdx, optionElem, correctOptIdx) {
+        if (userAnswers[qIndex]) return;
 
-        const q = currentQuestions[index];
         const isCorrect = selectedOptIdx === correctOptIdx;
-        userAnswers[index] = { selectedOption: selectedOptIdx, isCorrect: isCorrect, qId: q.id };
+        userAnswers[qIndex] = { selectedOption: selectedOptIdx, isCorrect: isCorrect };
 
         const parent = optionElem.parentNode;
         const options = parent.getElementsByClassName('option');
         
         for(let opt of options) {
             opt.classList.add('disabled');
-            if (opt.innerText.trim() === q.options[correctOptIdx].trim()) {
+            if (opt.innerText.trim() === battery3_optimized[qIndex].options[correctOptIdx].trim()) {
                 opt.classList.add('correct');
             }
         }
 
         if (!isCorrect) optionElem.classList.add('incorrect');
 
-        const feedbackEl = document.getElementById(`feedback-${index}`);
+        const feedbackEl = document.getElementById(`feedback-${qIndex}`);
         feedbackEl.style.display = 'block';
-        feedbackEl.innerHTML = `<strong>${isCorrect ? '¡Correcto!' : 'Respuesta Incorrecta'}</strong><br>${q.explanation || ''}`;
+        feedbackEl.innerHTML = `<strong>${isCorrect ? '¡Correcto!' : 'Respuesta Incorrecta'}</strong><br>${battery3_optimized[qIndex].explanation || ''}`;
         feedbackEl.classList.add(isCorrect ? 'success' : 'error');
 
-        document.getElementById(`nav-${index}`).classList.add(isCorrect ? 'correct' : 'incorrect');
+        document.getElementById(`nav-${qIndex}`).classList.add(isCorrect ? 'correct' : 'incorrect');
     }
 
-    function toggleMark(index) {
-        if (markedQuestions.has(index)) {
-            markedQuestions.delete(index);
-            document.getElementById(`mark-${index}`).classList.remove('marked');
-            document.getElementById(`nav-${index}`).classList.remove('marked');
+    function toggleMark(qIndex) {
+        if (markedQuestions.has(qIndex)) {
+            markedQuestions.delete(qIndex);
+            document.getElementById(`mark-${qIndex}`).classList.remove('marked');
+            document.getElementById(`nav-${qIndex}`).classList.remove('marked');
         } else {
-            markedQuestions.add(index);
-            document.getElementById(`mark-${index}`).classList.add('marked');
-            document.getElementById(`nav-${index}`).classList.add('marked');
+            markedQuestions.add(qIndex);
+            document.getElementById(`mark-${qIndex}`).classList.add('marked');
+            document.getElementById(`nav-${qIndex}`).classList.add('marked');
         }
     }
 
@@ -831,7 +703,7 @@
         const correct = Object.values(userAnswers).filter(a => a.isCorrect).length;
         const score = total > 0 ? ((correct / total) * 10).toFixed(1) : 0;
 
-        document.getElementById('score-display').innerText = `Nota: ${score}`;
+        document.getElementById('score-display').innerText = `Nota: ${score} / 10`;
         document.getElementById('stats-display').innerText = `Aciertos: ${correct} / ${total}`;
         
         document.getElementById('quiz-screen').classList.remove('active');
@@ -839,39 +711,31 @@
     }
 
     function resetQuiz(criteria) {
+        let nextIndices = [];
         if (criteria === 'all') {
-            userAnswers = {};
-            currentQuestions.sort(() => Math.random() - 0.5);
-            document.getElementById('results-screen').classList.remove('active');
-            document.getElementById('quiz-screen').classList.add('active');
-            loadQuestions();
+            startQuiz('ordered');
             return;
         }
-
-        let subset = [];
         if (criteria === 'failed') {
-            subset = currentQuestions.filter((q, i) => userAnswers[i] && !userAnswers[i].isCorrect);
+            nextIndices = currentQuestions.filter(idx => userAnswers[idx] && !userAnswers[idx].isCorrect);
         } else if (criteria === 'marked') {
-            subset = currentQuestions.filter((q, i) => markedQuestions.has(i));
+            nextIndices = Array.from(markedQuestions);
         } else if (criteria === 'failed_marked') {
-            subset = currentQuestions.filter((q, i) => 
-                (userAnswers[i] && !userAnswers[i].isCorrect) || markedQuestions.has(i)
-            );
+            const failed = currentQuestions.filter(idx => userAnswers[idx] && !userAnswers[idx].isCorrect);
+            const marked = Array.from(markedQuestions);
+            nextIndices = [...new Set([...failed, ...marked])];
         }
 
-        if (subset.length === 0) {
-            alert("No hay preguntas que cumplan ese criterio.");
+        if (nextIndices.length === 0) {
+            alert("No hay preguntas para ese criterio.");
             return;
         }
 
-        currentQuestions = subset;
         userAnswers = {};
-        markedQuestions.clear();
-        currentQuestions.sort(() => Math.random() - 0.5);
-
+        nextIndices.sort(() => Math.random() - 0.5);
+        loadQuestions(nextIndices);
         document.getElementById('results-screen').classList.remove('active');
         document.getElementById('quiz-screen').classList.add('active');
-        loadQuestions();
     }
 </script>
 </body>
