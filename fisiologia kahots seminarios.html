@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Fisiología - Kahoots y Seminarios</title>
+    <style>
+        :root {
+            --primary: #8e44ad; /* Morado estilo Kahoot */
+            --secondary: #9b59b6;
+            --success: #27ae60;
+            --danger: #c0392b;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            color: #333;
+            background-color: #f4f6f7;
+        }
+        
+        /* Sidebar */
+        #sidebar {
+            width: 320px;
+            background-color: var(--dark);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            flex-shrink: 0;
+            border-right: 1px solid #1a252f;
+        }
+
+        #sidebar h3 {
+            margin-top: 0;
+            text-align: center;
+            font-size: 1.1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        #nav-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 4px;
+            overflow-y: auto;
+            padding-right: 5px;
+            flex-grow: 1;
+            align-content: start;
+        }
+
+        #nav-grid::-webkit-scrollbar { width: 6px; }
+        #nav-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 3px; }
+
+        .nav-btn {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 4px;
+            border: none;
+            background-color: rgba(255,255,255,0.1);
+            color: #ecf0f1;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 11px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.1s;
+        }
+
+        .nav-btn:hover { background-color: var(--secondary); transform: scale(1.1); z-index: 2; }
+        .nav-btn.active { background-color: var(--secondary); border: 2px solid white; }
+        .nav-btn.correct { background-color: var(--success); color: white; }
+        .nav-btn.incorrect { background-color: var(--danger); color: white; }
+        .nav-btn.marked { box-shadow: inset 0 0 0 2px var(--warning); }
+
+        .legend {
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            flex-shrink: 0;
+        }
+        .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+
+        /* Main Content */
+        #main {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .screen { display: none; max-width: 900px; margin: 0 auto; }
+        .screen.active { display: block; }
+
+        /* UI Elements */
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .btn {
+            padding: 15px 25px;
+            margin: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.1s, box-shadow 0.2s;
+            min-width: 200px;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-secondary { background-color: var(--dark); color: white; }
+        .btn-exam { background-color: var(--danger); color: white; }
+        .btn-action { background-color: var(--success); color: white; }
+        .btn-warning { background-color: var(--warning); color: #2c3e50; }
+
+        /* Question Styles */
+        .question-container {
+            background: white;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        .question-text { font-size: 1.2em; font-weight: 600; color: #2c3e50; line-height: 1.4; text-align: left; }
+        
+        .mark-check {
+            cursor: pointer;
+            color: #bdc3c7;
+            font-size: 28px;
+            transition: color 0.2s;
+            user-select: none;
+            margin-left: 15px;
+        }
+        .mark-check.marked { color: var(--warning); }
+        
+        .options-grid { display: grid; gap: 12px; }
+        .option {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.05em;
+            text-align: left;
+        }
+        .option:hover:not(.disabled) { background-color: #e2e6ea; border-color: #adb5bd; }
+        .option.correct { background-color: #d4edda; border-color: var(--success); color: #155724; }
+        .option.incorrect { background-color: #f8d7da; border-color: var(--danger); color: #721c24; }
+        .option.disabled { cursor: default; pointer-events: none; opacity: 0.7; }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f6f3;
+            border-radius: 8px;
+            display: none;
+            border-left: 5px solid var(--success);
+            text-align: left;
+        }
+        .feedback.error { background-color: #fdeaea; border-color: var(--danger); }
+
+        #controls {
+            position: fixed;
+            bottom: 30px;
+            right: 40px;
+            z-index: 100;
+        }
+        
+        .section-badge {
+            background-color: var(--primary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <h3 id="sidebar-title">Preguntas</h3>
+        <div id="nav-grid"></div>
+        <div class="legend">
+            <span><div class="dot" style="background:var(--success)"></div> Bien</span>
+            <span><div class="dot" style="background:var(--danger)"></div> Mal</span>
+            <span><div class="dot" style="background:var(--warning)"></div> Marca</span>
+        </div>
+    </div>
+
+    <div id="main">
+        <div id="start-screen" class="screen active">
+            <div class="card">
+                <h1 style="color:var(--primary)">Fisiología: Kahoots y Seminarios</h1>
+                <h3 style="color:#7f8c8d">Recopilación de Preguntas de Clase</h3>
+                <p>Contiene preguntas de seminarios, casos clínicos y Kahoots.</p>
+                <hr style="margin: 30px 0; opacity: 0.2">
+                
+                <div style="display:flex; flex-direction:column; gap:10px; align-items:center;">
+                    <button class="btn btn-primary" onclick="startQuiz('ordered')">Repasar Todo (Ordenado)</button>
+                    <button class="btn btn-secondary" onclick="startQuiz('random')">Repasar Todo (Aleatorio)</button>
+                    <button class="btn btn-exam" onclick="startQuiz('exam20')">Simulacro Examen (20 Preguntas)</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="quiz-screen" class="screen">
+            <div id="questions-list"></div>
+            <div id="controls">
+                <button class="btn btn-exam" style="box-shadow: 0 4px 10px rgba(0,0,0,0.3);" onclick="finishQuiz()">Finalizar Test</button>
+            </div>
+        </div>
+
+        <div id="results-screen" class="screen">
+            <div class="card">
+                <h2 style="color:var(--primary)">Resultados</h2>
+                <div id="score-display" style="font-size: 3em; font-weight:bold; color:var(--secondary); margin: 20px 0;"></div>
+                <div id="stats-display" style="color:#7f8c8d; font-size: 1.2em;"></div>
+                
+                <hr style="margin: 30px 0; opacity: 0.2">
+                <h3>Opciones de Repaso</h3>
+                <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px;">
+                    <button class="btn btn-exam" onclick="resetQuiz('failed')">Repetir Falladas</button>
+                    <button class="btn btn-warning" onclick="resetQuiz('marked')">Repetir Marcadas</button>
+                    <button class="btn btn-secondary" onclick="resetQuiz('failed_marked')">Falladas + Marcadas</button>
+                    <button class="btn btn-action" onclick="resetQuiz('all')">Repetir Test Completo</button>
+                </div>
+                <br>
+                <button class="btn btn-primary" onclick="location.reload()">Volver al Inicio</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // --- Data Base (Kahoots & Seminarios) ---
+    // Respuestas inferidas de fisiología estándar cuando el texto decía "SIN RESPUESTAS"
+    const questionsDB = [
+        // SEMINARIO 1 (Neurona)
+        { id: 1, section: "Seminario Neurona", text: "Un aumento en la conductancia del ion potasio en una neurona en reposo conllevaría:", options: ["Despolarización neuronal", "Hiperpolarización neuronal", "No se generarían cambios", "Apoptosis neuronal"], correct: 1, explanation: "La salida de K+ (hiperpolarizante) aumenta, llevando el potencial más cerca del equilibrio del K+ (-90mV)." },
+        { id: 2, section: "Seminario Neurona", text: "¿A qué se deben las concentraciones fisiológicas de Na+ y K+ tanto extracelulares como intracelulares?", options: ["A los alimentos con NaCl", "Bombas de calcio", "Actividad de las bombas Na+/K+", "Potenciales de acción"], correct: 2, explanation: "La bomba Na+/K+ ATPasa mantiene los gradientes iónicos." },
+        { id: 3, text: "¿Cuál de las siguiente opciones NO es correcta?", options: ["La membrana celular es más permeable al K+ que al Na+", "El movimiento de iones se produce a través de canales iónicos específicos", "La membrana celular es más permeable al Na+ que al K+", "El mov de iones en el PA es un transporte pasivo"], correct: 2, explanation: "En reposo, la membrana es mucho más permeable al K+." },
+        { id: 4, text: "¿Cómo inducirías una despolarización en una neurona glutamatérgica?", options: ["Inyectando corriente positiva", "Haciéndola menos permeable al K+", "Añadiendo glutamato extracelular", "Todas son correctas"], correct: 3, explanation: "Todas las opciones acercan el potencial al umbral." },
+        { id: 5, text: "Según la Ley de Ohm, la resistencia se define como:", options: ["Voltaje x Intensidad", "Intensidad / Voltaje", "Voltaje / Intensidad", "Necesito conductancia"], correct: 2, explanation: "R = V / I." },
+        { id: 6, text: "Conociendo las bases del PA, ¿cómo piensas que funciona la lidocaína?", options: ["Activando fugas K+", "Inhibiendo fugas K+", "Manteniendo activos canales Na+", "Inhibiendo canales de Na+ voltaje dependientes"], correct: 3, explanation: "Los anestésicos locales bloquean canales de Na+." },
+
+        // SEMINARIO Cultivo/Transporte
+        { id: 7, section: "Seminario Cultivo", text: "La osmolaridad del cuerpo humano es:", options: ["Aprox 300 mOsm en todos los compartimentos", "Aprox 150 mOsm", "Variable según tejido", "500 mOsm"], correct: 0 },
+        { id: 8, text: "¿Qué no es necesario en un medio de cultivo celular?", options: ["Nutrientes", "Factores de crecimiento", "Partículas magnéticas", "Soporte estéril"], correct: 2 },
+        { id: 9, text: "¿Cuál de estas afirmaciones es correcta sobre la difusión facilitada?", options: ["Requiere ATP", "Sin energía, usa proteínas, a favor de gradiente", "En contra de gradiente", "No usa proteínas"], correct: 1 },
+        { id: 10, text: "¿Qué molécula es importante en los procesos de endocitosis?", options: ["Actina", "Miosina", "Clatrina", "Tubulina"], correct: 2 },
+        { id: 11, text: "El transporte activo secundario:", options: ["Usa ATP directamente", "Utiliza el gradiente generado por el primario (energía cinética)", "Es pasivo", "No requiere proteína"], correct: 1 },
+        { id: 12, text: "¿Qué sucede si la presión osmótica es mayor fuera de la célula que dentro (medio hipertónico)?", options: ["Crenación", "La célula no cambia", "Turgencia", "Hidrólisis"], correct: 0 },
+
+        // SEMINARIO 2 (Fibrosis Quística)
+        { id: 13, section: "Seminario Fibrosis", text: "Infección frecuente en fibrosis quística:", options: ["Haemophilus influenzae", "Pseudomonas aeruginosa", "Vibrio colera", "Salmonella tiphy"], correct: 1 },
+        { id: 14, text: "El ileo meconial está relacionado con la fibrosis, ¿a qué afecta?", options: ["Pulmón", "Páncreas", "Intestino", "Hígado"], correct: 2 },
+        { id: 15, text: "El sudor más salado en pacientes con fibrosis se debe a:", options: ["Mayor excreción de agua", "Menor reabsorción de iones Cloro", "Exceso de sodio en dieta", "Fallo renal"], correct: 1 },
+        { id: 16, text: "La fibrosis quística es una enfermedad:", options: ["Autosómica dominante", "Ligada al cromosoma X", "Autosómica recesiva", "Mitocondrial"], correct: 2 },
+        { id: 17, text: "El resultado del test del sudor en fibrosis quística:", options: ["< 30 mEq/L es positivo", "40-60 mEq/L es un valor limítrofe", "> 90 mEq/L es normal", "No sirve para diagnóstico"], correct: 1 },
+
+        // SEMINARIO 3 (Miastenia Gravis)
+        { id: 18, section: "Seminario Miastenia", text: "¿Qué evalúa un electroneurograma?", options: ["La actividad eléctrica de los nervios sensoriales y motores", "La contracción muscular", "La actividad cerebral", "La oxigenación"], correct: 0 },
+        { id: 19, text: "¿Qué mide la electromiografía?", options: ["Actividad nerviosa", "Actividad eléctrica de los músculos", "Fuerza muscular", "Tono muscular"], correct: 1 },
+        { id: 20, text: "En la Miastenia gravis, los anticuerpos reducen los receptores de ACh, disminuyendo el factor de seguridad:", options: ["Verdadero", "Falso"], correct: 0 },
+        { id: 21, text: "¿Qué tipo de disfunción causa la Miastenia gravis?", options: ["Déficit adrenérgico", "Déficit en la función colinérgica", "Exceso de dopamina", "Fallo en canales de potasio"], correct: 1 },
+        { id: 22, text: "¿Por qué la inyección de Prostigmina mejora los síntomas de la Miastenia?", options: ["Aumenta liberación de ACh", "Bloquea la acetilcolinesterasa (inhibe degradación ACh)", "Activa receptores directamente", "Inhibe recaptación"], correct: 1 },
+        { id: 23, text: "Se recomienda TC o MRI a todos los pacientes con Miastenia gravis para detectar timoma:", options: ["Verdadero", "Falso"], correct: 0 },
+        { id: 24, text: "¿Los Ac anti-RAChN bloquean los receptores de ACh y afectan la transmisión neuromuscular en la MG?", options: ["Verdadero", "Falso"], correct: 0 },
+        { id: 25, text: "¿Cuál NO es un mecanismo por el cual los anticuerpos reducen los receptores de ACh en MG?", options: ["Degradación acelerada", "Aumento de la producción de Acetilcolina", "Lesión por complemento", "Bloqueo del sitio activo"], correct: 1 },
+        { id: 26, text: "¿Por qué la MG se considera una enfermedad autoinmune?", options: ["Por infección viral", "El sistema inmune ataca sus propios receptores de ACh", "Por déficit genético", "Por toxinas"], correct: 1 },
+        { id: 27, text: "¿Qué ocurre en la MG que impide la contracción muscular?", options: ["Falta de Calcio", "Falta de ATP", "Anticuerpos bloquean/destruyen receptores ACh", "Fallo en el nervio"], correct: 2 },
+
+        // SEMINARIO Sinapsis/Integración
+        { id: 28, section: "Seminario Sinapsis", text: "Entre los NT que inducen potenciales sinápticos inhibidores, se encuentra:", options: ["Glutamato", "Acetilcolina", "Glicina", "Tetrodoxina"], correct: 2 },
+        { id: 29, text: "El valor tau o cte de tiempo de la membrana viene definida como:", options: ["Resistencia x Capacitancia de membrana", "Potencial x Capacitancia", "Es constante universal", "Velocidad de conducción"], correct: 0 },
+        { id: 30, text: "Cuanto mayor es la cte de espacio (lambda):", options: ["Menor probabilidad de suma espacial", "Mayor probabilidad de suma espacial", "Menos probabilidad de PA", "Menor distancia de propagación"], correct: 1 },
+        { id: 31, text: "Los PA se inician en la neurona en:", options: ["Las dendritas", "El soma", "El cono axónico", "El terminal sináptico"], correct: 2 },
+        { id: 32, text: "Cuando los potenciales sinápticos generados en la misma región pueden sumarse hablamos de:", options: ["Sumación espacial", "Sumación temporal", "Facilitación", "Potenciación"], correct: 1 },
+
+        // SEMINARIO 6 - FISIO INTEGRATIVA
+        { id: 33, section: "Seminario Integrativa", text: "¿Qué son las sinapsis silenciosas?", options: ["Sin actividad eléctrica", "Sin neuronas", "Sin receptores (funcionales AMPA)", "Sin NT"], correct: 2 },
+        { id: 34, text: "¿Qué NT está implicado en la depresión?", options: ["GABA", "Dopamina", "Serotonina", "Adrenalina"], correct: 2 },
+        { id: 35, text: "¿Qué es la neurogénesis?", options: ["Conexión de neuronas", "Destrucción de neuronas", "Creación de nuevas neuronas", "Muerte celular"], correct: 2 },
+        { id: 36, text: "¿Qué afecta a la neurogénesis?", options: ["Entorno", "Sueño", "Ejercicio", "Todas las anteriores"], correct: 3 },
+        { id: 37, text: "¿Qué mide la TMR?", options: ["Metabolismo en reposo", "Glucosa", "Frecuencia cardíaca", "Presión"], correct: 0 },
+        { id: 38, text: "¿Qué fórmula se usa para la TMR?", options: ["Harris-Benedict", "Glucosa", "Calorías", "IMC"], correct: 0 },
+        { id: 39, text: "¿Qué actividad aumenta más la TMR?", options: ["Moderada", "Sedentaria", "Activa", "Muy activa"], correct: 3 },
+        { id: 40, text: "¿Qué es el IMC?", options: ["Índice de masa corporal", "Índice metabólico", "Ingesta media", "Índice muscular"], correct: 0 },
+        { id: 41, text: "¿Qué menú tiene más colesterol?", options: ["Cafetería", "Casa", "Hospital", "Vegetariano"], correct: 0 },
+        { id: 42, text: "¿Qué menú tiene más sal?", options: ["Cafetería", "Casa", "Hospital", "Vegetariano"], correct: 0 },
+        { id: 43, text: "La depresión tiene tratamiento:", options: ["Verdadero", "Falso"], correct: 0 },
+        { id: 44, text: "¿Qué es la inervación colinérgica?", options: ["Conexión con acetilcolina", "Conexión con adrenalina", "Conexión con GABA", "Conexión eléctrica"], correct: 0 },
+        { id: 45, text: "¿Qué es la inervación noradrenérgica?", options: ["Conexión con acetilcolina", "Conexión con noradrenalina", "Conexión con serotonina", "Conexión con dopamina"], correct: 1 },
+
+        // SEMINARIO - COAGULACIÓN
+        { id: 46, section: "Seminario Coagulación", text: "¿Qué es la hemostasia y cómo se relaciona con la coagulación?", options: ["Coagulación antes que hemostasia", "Solo hemostasia detiene sangrado", "Son lo mismo", "Hemostasia previene sangrado, coagulación refuerza tapón"], correct: 3 },
+        { id: 47, text: "¿Cómo se activa la vía intrínseca y qué hace la trombina?", options: ["Trombina activa XII", "Factor XII activa vía, trombina convierte fibrinógeno en fibrina", "Intrínseca inicia con plaquetas", "Fibrinógeno activa vía"], correct: 1 },
+        { id: 48, text: "¿Qué puede causar una coagulación inapropiada?", options: ["Aumento plaquetas saludables", "Mejora oxigenación", "Disminución riesgo", "Trombos que generan embolias"], correct: 3 },
+        { id: 49, text: "Primer paso en hemostasia primaria:", options: ["Activación trombina", "Fibrinógeno a fibrina", "Adhesión de plaquetas al colágeno", "Retracción coágulo"], correct: 2 },
+        { id: 50, text: "¿Qué sucede tras la formación del coágulo para reparar el tejido?", options: ["Solo fibrinolisis", "Bloqueo permanente", "Retracción, inflamación y fibrinolisis", "Regeneración antes del coágulo"], correct: 2 },
+        { id: 51, text: "Combinación correcta vías coagulación:", options: ["Extrínseca: lenta", "Intrínseca: rápida", "Común: inicia colágeno", "Extrínseca: rápida y factor tisular"], correct: 3 },
+        { id: 52, text: "Sangrado dental + TTPa alargado + plaquetas normales. ¿Diagnóstico probable?", options: ["Enfermedad de Von Willebrand (o Hemofilia A)", "Púrpura trombótica", "Déficit factor VII", "Déficit vit K"], correct: 0 },
+        { id: 53, text: "¿Qué causa el color en un hematoma con el tiempo?", options: ["Destrucción plaquetas", "Falta oxígeno", "Actividad de enzimas (degradación hemo)", "Vasoconstricción"], correct: 2 },
+        { id: 54, text: "¿Cómo reduce la aspirina la trombosis?", options: ["Aumenta TXA2", "Activa plaquetas", "Inhibe COX-1 (reduce TXA2)", "Estimula fibrina"], correct: 2 },
+        { id: 55, text: "¿Qué diferencia el suero del plasma?", options: ["Tiene más células", "Carece de fibrina/fibrinógeno", "Tiene anticoagulante", "Es sangre entera"], correct: 1 },
+        { id: 56, text: "¿Ion imprescindible para la hemostasia?", options: ["Sodio", "Calcio", "Potasio", "Magnesio"], correct: 1 },
+        { id: 57, text: "Orden fases hemostasia:", options: ["Espasmo -> Tapón -> Coágulo -> Reparación", "Tapón -> Espasmo -> Reparación", "Coágulo -> Tapón -> Espasmo", "Reparación -> Coágulo"], correct: 0 },
+
+        // BONUS KAHOOT BERNARDO
+        { id: 58, section: "Bonus Bernardo", text: "¿Qué NO caracteriza las sinapsis eléctricas?", options: ["Retraso sináptico", "Bidireccionalidad", "Más rápida que químicas", "Transmisión continua"], correct: 0 },
+        { id: 59, text: "¿Qué caracteriza las sinapsis químicas?", options: ["Retraso sináptico", "Sincronización rápida", "Bidireccional", "Acoplamiento eléctrico"], correct: 0 },
+        { id: 60, text: "¿Qué son las v-SNARES y t-SNARES?", options: ["Canales", "Transportadores", "Receptores", "Proteínas de fusión vesicular"], correct: 3 },
+        { id: 61, text: "¿Cuál es la función de la sinaptotagmina?", options: ["Canal iónico", "Aumenta Ca", "Inhibe liberación", "Sensor de calcio (cataliza fusión)"], correct: 3 },
+        { id: 62, text: "¿Qué función tiene el Ca en la sinapsis?", options: ["Inhibe liberación", "Bloquea señal", "Induce fusión vesicular", "Aumenta reposo"], correct: 2 },
+        { id: 63, text: "¿Cómo se reciclan las vesículas sinápticas?", options: ["Difusión", "Exocitosis", "Transporte activo", "Endocitosis"], correct: 3 },
+        { id: 64, text: "¿Qué efecto tiene la toxina botulínica?", options: ["Estimula sinapsis", "Inhibe liberación de NT (bloquea SNARE)", "No tiene efecto", "Aumenta señal"], correct: 1 }
+    ];
+
+    // --- Quiz Logic ---
+    let currentQuestions = [];
+    let userAnswers = {};
+    let markedQuestions = new Set();
+    let currentMode = 'ordered';
+
+    function startQuiz(mode) {
+        currentMode = mode;
+        userAnswers = {};
+        markedQuestions.clear();
+        
+        let indices = questionsDB.map((_, i) => i);
+        
+        if (mode === 'random') {
+            indices.sort(() => Math.random() - 0.5);
+        } else if (mode === 'exam20') {
+            indices.sort(() => Math.random() - 0.5);
+            indices = indices.slice(0, 20);
+        }
+
+        loadQuestions(indices);
+        
+        document.getElementById('start-screen').classList.remove('active');
+        document.getElementById('results-screen').classList.remove('active');
+        document.getElementById('quiz-screen').classList.add('active');
+    }
+
+    function loadQuestions(indices) {
+        currentQuestions = indices;
+        const container = document.getElementById('questions-list');
+        const navGrid = document.getElementById('nav-grid');
+        
+        container.innerHTML = '';
+        navGrid.innerHTML = '';
+
+        indices.forEach((qIndex, displayIndex) => {
+            const q = questionsDB[qIndex];
+            
+            // Randomize options map
+            let optionIndices = [0, 1, 2, 3];
+            optionIndices.sort(() => Math.random() - 0.5);
+            
+            // Render HTML
+            const div = document.createElement('div');
+            div.className = 'question-container';
+            div.id = `q-${qIndex}`;
+            div.innerHTML = `
+                <div class="question-header">
+                    <span class="question-text">
+                        ${displayIndex}. ${q.text}
+                        ${q.section ? `<span class="section-badge">${q.section}</span>` : ''}
+                    </span>
+                    <span class="mark-check" onclick="toggleMark(${qIndex})" id="mark-${qIndex}" title="Marcar para revisar">★</span>
+                </div>
+                <div class="options-grid">
+                    ${optionIndices.map(optIdx => `
+                        <div class="option" onclick="selectAnswer(${qIndex}, ${optIdx}, this, ${q.correct})">
+                            ${q.options[optIdx]}
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="feedback" id="feedback-${qIndex}"></div>
+            `;
+            container.appendChild(div);
+
+            // Sidebar Item
+            const navBtn = document.createElement('button');
+            navBtn.className = 'nav-btn';
+            navBtn.innerText = displayIndex;
+            navBtn.id = `nav-${qIndex}`;
+            navBtn.onclick = () => {
+                document.getElementById(`q-${qIndex}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+            };
+            navGrid.appendChild(navBtn);
+        });
+    }
+
+    function selectAnswer(qIndex, selectedOptIdx, optionElem, correctOptIdx) {
+        if (userAnswers[qIndex]) return; // Already answered
+
+        const isCorrect = selectedOptIdx === correctOptIdx;
+        userAnswers[qIndex] = { selectedOption: selectedOptIdx, isCorrect: isCorrect };
+
+        // UI Updates
+        const parent = optionElem.parentNode;
+        const options = parent.getElementsByClassName('option');
+        
+        for(let opt of options) {
+            opt.classList.add('disabled');
+            if (opt.innerText.trim() === questionsDB[qIndex].options[correctOptIdx]) {
+                opt.classList.add('correct');
+            }
+        }
+
+        if (!isCorrect) {
+            optionElem.classList.add('incorrect');
+        }
+
+        // Show Feedback
+        const feedbackEl = document.getElementById(`feedback-${qIndex}`);
+        feedbackEl.style.display = 'block';
+        
+        let explanationText = "";
+        if(questionsDB[qIndex].explanation) {
+            explanationText = `<br><em>${questionsDB[qIndex].explanation}</em>`;
+        }
+
+        feedbackEl.innerHTML = `<strong>${isCorrect ? '¡Correcto!' : 'Respuesta Incorrecta'}</strong><br>La respuesta correcta es: ${questionsDB[qIndex].options[correctOptIdx]}${explanationText}`;
+        feedbackEl.classList.add(isCorrect ? 'success' : 'error');
+
+        // Update Sidebar
+        const navBtn = document.getElementById(`nav-${qIndex}`);
+        navBtn.classList.add(isCorrect ? 'correct' : 'incorrect');
+    }
+
+    function toggleMark(qIndex) {
+        if (markedQuestions.has(qIndex)) {
+            markedQuestions.delete(qIndex);
+            document.getElementById(`mark-${qIndex}`).classList.remove('marked');
+            document.getElementById(`nav-${qIndex}`).classList.remove('marked');
+        } else {
+            markedQuestions.add(qIndex);
+            document.getElementById(`mark-${qIndex}`).classList.add('marked');
+            document.getElementById(`nav-${qIndex}`).classList.add('marked');
+        }
+    }
+
+    function finishQuiz() {
+        const total = currentQuestions.length;
+        const correct = Object.values(userAnswers).filter(a => a.isCorrect).length;
+        const score = total > 0 ? ((correct / total) * 10).toFixed(1) : 0;
+
+        const scoreEl = document.getElementById('score-display');
+        const statsEl = document.getElementById('stats-display');
+
+        scoreEl.innerHTML = `Nota: ${score} / 10`;
+        statsEl.innerHTML = `Aciertos: ${correct} / ${total}`;
+
+        document.getElementById('quiz-screen').classList.remove('active');
+        document.getElementById('results-screen').classList.add('active');
+    }
+
+    function resetQuiz(criteria) {
+        let nextIndices = [];
+
+        if (criteria === 'all') {
+            startQuiz(currentMode);
+            return;
+        }
+
+        if (criteria === 'failed') {
+            nextIndices = currentQuestions.filter(idx => userAnswers[idx] && !userAnswers[idx].isCorrect);
+        } else if (criteria === 'marked') {
+            nextIndices = Array.from(markedQuestions);
+        } else if (criteria === 'failed_marked') {
+            const failed = currentQuestions.filter(idx => userAnswers[idx] && !userAnswers[idx].isCorrect);
+            const marked = Array.from(markedQuestions);
+            nextIndices = [...new Set([...failed, ...marked])];
+        }
+
+        if (nextIndices.length === 0) {
+            alert("No hay preguntas que cumplan ese criterio.");
+            return;
+        }
+
+        userAnswers = {};
+        // Shuffle for retry
+        nextIndices.sort(() => Math.random() - 0.5);
+
+        loadQuestions(nextIndices);
+        document.getElementById('results-screen').classList.remove('active');
+        document.getElementById('quiz-screen').classList.add('active');
+    }
+</script>
+</body>
+</html>
