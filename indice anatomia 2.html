@@ -13,6 +13,7 @@
             --quiz-color: #27ae60;   /* Verde */
             --exam-color: #e67e22;   /* Naranja (Sep 2020) */
             --exam21-color: #8e44ad; /* Morado (Feb 2021) */
+            --exam19-color: #16a085; /* Turquesa (Jun 2019) - NUEVO */
             --white: #ffffff;
         }
 
@@ -88,10 +89,15 @@
         .card-exam h2 { color: var(--exam-color); }
         .card-exam:hover .icon { background-color: var(--exam-color); color: white; }
 
-        /* Examen Feb 2021 (NUEVO) */
+        /* Examen Feb 2021 */
         .card-exam21 { border-top-color: var(--exam21-color); }
         .card-exam21 h2 { color: var(--exam21-color); }
         .card-exam21:hover .icon { background-color: var(--exam21-color); color: white; }
+
+        /* Examen Jun 2019 (NUEVO) */
+        .card-exam19 { border-top-color: var(--exam19-color); }
+        .card-exam19 h2 { color: var(--exam19-color); }
+        .card-exam19:hover .icon { background-color: var(--exam19-color); color: white; }
 
         .icon {
             width: 80px;
@@ -184,11 +190,18 @@
             <div class="btn-text">Realizar Examen ➜</div>
         </a>
 
+        <a href="examen 19.html" class="card card-exam19">
+            <div class="icon">J</div>
+            <h2>Jun 2019</h2>
+            <p>Examen de Anatomía I (126 preguntas).</p>
+            <div class="btn-text">Realizar Examen ➜</div>
+        </a>
+
     </div>
 
     <footer>
         U Cádiz - Facultad de Medicina.<br>
-        Asegúrate de que <b>examen 21.html</b> y el resto de archivos estén en la misma carpeta.
+        Asegúrate de que todos los archivos (<b>examen 19.html</b>, etc.) estén en la misma carpeta.
     </footer>
 
 </body>
