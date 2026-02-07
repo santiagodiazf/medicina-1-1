@@ -3,156 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1º Medicina - 2º Cuatrimestre</title>
+    <title>Índice de Fisiología - Banco de Preguntas</title>
     <style>
         :root {
             --primary: #2c3e50;
-            --secondary: #34495e;
             --accent: #3498db;
-            --bg: #ecf0f1;
-            --white: #ffffff;
-            --card-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            --hover-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            --bg: #f4f6f7;
+            --card-bg: #ffffff;
+            --text: #333;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --hover-shadow: 0 10px 15px rgba(0,0,0,0.15);
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg);
-            color: var(--primary);
+            color: var(--text);
             margin: 0;
-            padding: 40px 20px;
+            padding: 0;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
         }
 
         header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin: 0;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        p.subtitle {
-            font-size: 1.2rem;
-            color: var(--secondary);
-            margin-top: 10px;
-            font-weight: 300;
-        }
-
-        /* Contenedor de asignaturas */
-        .subjects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            background-color: var(--primary);
+            color: white;
             width: 100%;
-            max-width: 1200px;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
         }
 
-        /* Tarjeta de Asignatura */
-        .subject-card {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 40px;
-            text-decoration: none;
+        header h1 {
+            margin: 0;
+            font-weight: 300;
+            font-size: 2.5rem;
+        }
+
+        header p {
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            padding-bottom: 40px;
+        }
+
+        .section-title {
+            border-left: 5px solid var(--accent);
+            padding-left: 15px;
+            margin: 30px 0 20px 0;
+            font-size: 1.5rem;
             color: var(--primary);
-            box-shadow: var(--card-shadow);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            text-decoration: none;
+            color: var(--text);
+            box-shadow: var(--shadow);
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            border-top: 4px solid transparent;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            text-align: center;
-            border-bottom: 8px solid var(--accent);
+            justify-content: space-between;
+            height: 140px;
         }
 
-        .subject-card:hover {
-            transform: translateY(-10px);
+        .card:hover {
+            transform: translateY(-5px);
             box-shadow: var(--hover-shadow);
         }
 
-        .icon-container {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            color: var(--accent);
+        /* Colores específicos por categoría */
+        .card.exam { border-top-color: #e74c3c; }
+        .card.battery { border-top-color: #27ae60; }
+        .card.seminar { border-top-color: #8e44ad; }
+        .card.mega { border-top-color: #f1c40f; }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
         }
 
-        .subject-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin: 0 0 10px 0;
-        }
-
-        .subject-desc {
-            color: #7f8c8d;
-            font-size: 1rem;
-        }
-
-        .arrow-indicator {
-            margin-top: 25px;
+        .icon {
             font-size: 1.5rem;
-            color: var(--accent);
-            opacity: 0;
-            transform: translateX(-20px);
-            transition: all 0.3s ease;
         }
 
-        .subject-card:hover .arrow-indicator {
-            opacity: 1;
-            transform: translateX(0);
+        .card h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--primary);
         }
 
-        /* Estilos para futuras asignaturas (Variaciones de color) */
-        .card-red { border-bottom-color: #e74c3c; }
-        .card-red .icon-container, .card-red .arrow-indicator { color: #e74c3c; }
+        .card p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 10px;
+            line-height: 1.4;
+        }
 
-        .card-green { border-bottom-color: #27ae60; }
-        .card-green .icon-container, .card-green .arrow-indicator { color: #27ae60; }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: white;
+            background: #95a5a6;
+        }
+        
+        .badge.new { background: #e74c3c; }
 
-        .card-purple { border-bottom-color: #9b59b6; }
-        .card-purple .icon-container, .card-purple .arrow-indicator { color: #9b59b6; }
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
 
     </style>
 </head>
 <body>
 
     <header>
-        <h1>1º Medicina</h1>
-        <p class="subtitle">Selecciona una asignatura para acceder al temario</p>
+        <h1>Banco de Preguntas</h1>
+        <p>Selecciona un test para comenzar a practicar</p>
     </header>
 
-    <div class="subjects-grid">
+    <div class="container">
+        
+        <h2 class="section-title">Exámenes Oficiales</h2>
+        <div class="grid">
+            <a href="fisiologia examen junio 25.html" class="card exam">
+                <div class="card-header">
+                    <span class="icon">📝</span>
+                    <span class="badge new">NUEVO</span>
+                </div>
+                <h3>Examen Junio 2025</h3>
+                <p>Último examen oficial recopilado.</p>
+            </a>
 
-        <a href="indice anatomia 2.html" class="subject-card">
-            <div class="icon-container">💀</div>
-            <div class="subject-title">Anatomía II</div>
-            <div class="subject-desc">Esplacnología, Cabeza y Cuello</div>
-            <div class="arrow-indicator">Entrar ➜</div>
-        </a>
+            <a href="fisiologia examen junio 23.html" class="card exam">
+                <div class="card-header">
+                    <span class="icon">📝</span>
+                </div>
+                <h3>Examen Junio 2023</h3>
+                <p>Preguntas del examen oficial de la convocatoria 2023.</p>
+            </a>
 
-        <a href="indice bioquimica medica.html" class="subject-card card-green">
-            <div class="icon-container">🧬</div>
-            <div class="subject-title">Bioquímica Médica</div>
-            <div class="subject-desc">Metabolismo y Biología Molecular</div>
-            <div class="arrow-indicator">Entrar ➜</div>
-        </a>
+            <a href="fisiologia examen junio 20.html" class="card exam">
+                <div class="card-header">
+                    <span class="icon">📝</span>
+                </div>
+                <h3>Examen Junio 2020</h3>
+                <p>Preguntas del examen oficial de la convocatoria 2020.</p>
+            </a>
+        </div>
 
-        <a href="indice comunicacionmedica.html" class="subject-card card-purple">
-            <div class="icon-container">🗣️</div>
-            <div class="subject-title">Com. Médica</div>
-            <div class="subject-desc">Relación Médico-Paciente y Ética</div>
-            <div class="arrow-indicator">Entrar ➜</div>
-        </a>
+        <h2 class="section-title">Baterías de Estudio</h2>
+        <div class="grid">
+            <a href="fisiologia bateria 2025.html" class="card battery">
+                <div class="card-header">
+                    <span class="icon">📚</span>
+                </div>
+                <h3>Batería 2025</h3>
+                <p>Recopilación específica de preguntas para el curso 2025.</p>
+            </a>
+
+            <a href="fisiologia baterias.html" class="card mega">
+                <div class="card-header">
+                    <span class="icon">⭐</span>
+                    <span class="badge">COMPLETO</span>
+                </div>
+                <h3>Mega Batería (Todas)</h3>
+                <p>Colección masiva de todas las baterías. Ideal para repaso final.</p>
+            </a>
+        </div>
+
+        <h2 class="section-title">Seminarios y Kahoot</h2>
+        <div class="grid">
+            <a href="fisiologia kahots seminarios.html" class="card seminar">
+                <div class="card-header">
+                    <span class="icon">💡</span>
+                </div>
+                <h3>Kahoots y Seminarios</h3>
+                <p>Preguntas rápidas de clase y seminarios prácticos.</p>
+            </a>
+        </div>
 
     </div>
+
+    <footer>
+        <p>Generado para estudio personal - Fisiología</p>
+    </footer>
 
 </body>
 </html>
