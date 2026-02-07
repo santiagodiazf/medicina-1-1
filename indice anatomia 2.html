@@ -11,7 +11,8 @@
             --carmen-color: #c0392b; /* Rojo */
             --prada-color: #2980b9;  /* Azul */
             --quiz-color: #27ae60;   /* Verde */
-            --exam-color: #e67e22;   /* Naranja para el nuevo examen */
+            --exam-color: #e67e22;   /* Naranja (Sep 2020) */
+            --exam21-color: #8e44ad; /* Morado (Feb 2021) */
             --white: #ffffff;
         }
 
@@ -82,10 +83,15 @@
         .card-quiz h2 { color: var(--quiz-color); }
         .card-quiz:hover .icon { background-color: var(--quiz-color); color: white; }
 
-        /* Nueva Tarjeta para el Examen Reciente */
+        /* Examen Sep 2020 */
         .card-exam { border-top-color: var(--exam-color); }
         .card-exam h2 { color: var(--exam-color); }
         .card-exam:hover .icon { background-color: var(--exam-color); color: white; }
+
+        /* Examen Feb 2021 (NUEVO) */
+        .card-exam21 { border-top-color: var(--exam21-color); }
+        .card-exam21 h2 { color: var(--exam21-color); }
+        .card-exam21:hover .icon { background-color: var(--exam21-color); color: white; }
 
         .icon {
             width: 80px;
@@ -171,11 +177,18 @@
             <div class="btn-text">Realizar Examen ➜</div>
         </a>
 
+        <a href="examen 21.html" class="card card-exam21">
+            <div class="icon">F</div>
+            <h2>Feb 2021</h2>
+            <p>Examen de Tronco y Esplancnología (135 preguntas).</p>
+            <div class="btn-text">Realizar Examen ➜</div>
+        </a>
+
     </div>
 
     <footer>
         U Cádiz - Facultad de Medicina.<br>
-        Asegúrate de que <b>examen 2020.html</b> y el resto de archivos estén en la misma carpeta.
+        Asegúrate de que <b>examen 21.html</b> y el resto de archivos estén en la misma carpeta.
     </footer>
 
 </body>
