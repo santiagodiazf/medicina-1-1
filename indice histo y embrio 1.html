@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Índice - Histología y Embriología 1</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --embrio: #27ae60;
+            --histo: #e67e22;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --text: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+
+        h1 { margin: 0; font-size: 2.5em; font-weight: 300; letter-spacing: 1px; }
+        h2 { margin: 10px 0 0 0; font-size: 1.2em; opacity: 0.8; font-weight: 400; }
+
+        .container {
+            max-width: 1000px;
+            width: 90%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding-bottom: 50px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            height: 8px;
+            width: 100%;
+        }
+
+        .card-body {
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .card-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .card-desc {
+            font-size: 0.95em;
+            color: #7f8c8d;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .tag {
+            background: #eee;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            color: #555;
+            margin-top: auto;
+        }
+
+        /* Estilos Específicos */
+        .card-teoria .card-header { background: var(--accent); }
+        .card-teoria .icon { color: var(--accent); }
+        
+        .card-embrio .card-header { background: var(--embrio); }
+        .card-embrio .icon { color: var(--embrio); }
+
+        .card-histo .card-header { background: var(--histo); }
+        .card-histo .icon { color: var(--histo); }
+
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            color: #95a5a6;
+            font-size: 0.9em;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Histología y Embriología 1</h1>
+        <h2>Panel de Entrenamiento y Repaso</h2>
+    </header>
+
+    <div class="container">
+        
+        <a href="embrio daypo pro.html" class="card card-teoria">
+            <div class="card-header"></div>
+            <div class="card-body">
+                <div class="icon">📝</div>
+                <div class="card-title">Teoría Completa</div>
+                <div class="card-desc">
+                    Banco de preguntas teórico. Incluye Embriología General, Histología Epitelial, Tejidos y exámenes anteriores.
+                </div>
+                <div class="tag">215 Preguntas</div>
+            </div>
+        </a>
+
+        <a href="imagenes embrio.html" class="card card-embrio">
+            <div class="card-header"></div>
+            <div class="card-body">
+                <div class="icon">👶</div>
+                <div class="card-title">Visual: Embriología</div>
+                <div class="card-desc">
+                    Identificación de estructuras embrionarias, placenta, vellosidades y epitelios asociados al desarrollo.
+                </div>
+                <div class="tag">51 Imágenes</div>
+            </div>
+        </a>
+
+        <a href="imagenes histo.html" class="card card-histo">
+            <div class="card-header"></div>
+            <div class="card-body">
+                <div class="icon">🔬</div>
+                <div class="card-title">Visual: Histología</div>
+                <div class="card-desc">
+                    Reconocimiento de tejidos al microscopio: Cartílago, Hueso, Sangre, Tejido Adiposo y Conectivo.
+                </div>
+                <div class="tag">74 Imágenes</div>
+            </div>
+        </a>
+
+    </div>
+
+    <footer>
+        Asegúrate de que todos los archivos HTML y las carpetas de imágenes estén en el mismo directorio.
+    </footer>
+
+</body>
+</html>
