@@ -37,6 +37,17 @@
             margin-bottom: 2rem;
         }
 
+        header h1 {
+            margin: 0;
+            font-weight: 300;
+            font-size: 2.5rem;
+        }
+
+        header p {
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+
         .container {
             width: 90%;
             max-width: 1000px;
@@ -77,21 +88,56 @@
             box-shadow: var(--hover-shadow);
         }
 
-        /* Colores por categoría */
+        /* Colores específicos por categoría */
         .card.exam { border-top-color: #e74c3c; }
         .card.battery { border-top-color: #27ae60; }
         .card.seminar { border-top-color: #8e44ad; }
         .card.mega { border-top-color: #f1c40f; }
 
-        .card h3 { margin: 0; font-size: 1.2rem; color: var(--primary); }
-        .card p { font-size: 0.9rem; color: #666; margin-top: 10px; }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .icon {
+            font-size: 1.5rem;
+        }
+
+        .card h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 10px;
+            line-height: 1.4;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: white;
+            background: #95a5a6;
+        }
+        
+        .badge.new { background: #e74c3c; }
 
         footer {
             margin-top: auto;
             padding: 20px;
+            text-align: center;
             color: #7f8c8d;
             font-size: 0.9rem;
         }
+
     </style>
 </head>
 <body>
@@ -106,14 +152,26 @@
         <h2 class="section-title">Exámenes Oficiales</h2>
         <div class="grid">
             <a href="fisiologia examen junio 25.html" class="card exam">
+                <div class="card-header">
+                    <span class="icon">📝</span>
+                    <span class="badge new">NUEVO</span>
+                </div>
                 <h3>Examen Junio 2025</h3>
                 <p>Último examen oficial recopilado.</p>
             </a>
+
             <a href="fisiologia examen junio 23.html" class="card exam">
+                <div class="card-header">
+                    <span class="icon">📝</span>
+                </div>
                 <h3>Examen Junio 2023</h3>
                 <p>Preguntas del examen oficial de la convocatoria 2023.</p>
             </a>
+
             <a href="fisiologia examen junio 20.html" class="card exam">
+                <div class="card-header">
+                    <span class="icon">📝</span>
+                </div>
                 <h3>Examen Junio 2020</h3>
                 <p>Preguntas del examen oficial de la convocatoria 2020.</p>
             </a>
@@ -122,20 +180,39 @@
         <h2 class="section-title">Baterías de Estudio</h2>
         <div class="grid">
             <a href="fisiologia bateria 2025.html" class="card battery">
+                <div class="card-header">
+                    <span class="icon">📚</span>
+                </div>
                 <h3>Batería 2025</h3>
                 <p>Recopilación específica de preguntas para el curso 2025.</p>
             </a>
+
             <a href="fisiologia baterias.html" class="card mega">
+                <div class="card-header">
+                    <span class="icon">⭐</span>
+                    <span class="badge">COMPLETO</span>
+                </div>
                 <h3>Mega Batería (Todas)</h3>
-                <p>Colección masiva de todas las baterías.</p>
+                <p>Colección masiva de todas las baterías. Ideal para repaso final.</p>
             </a>
         </div>
 
         <h2 class="section-title">Seminarios y Kahoot</h2>
         <div class="grid">
             <a href="temas 2 y 3.html" class="card seminar">
-                <h3>Kahoots y Seminarios: Temas 2 y 3</h3>
-                <p>Fisiología Celular y Tisular: Transporte, Ósmosis y Canales.</p>
+                <div class="card-header">
+                    <span class="icon">💡</span>
+                </div>
+                <h3>Temas 2 y 3: Fisiología Celular</h3>
+                <p>Quiz sobre membrana, transporte y ósmosis.</p>
+            </a>
+
+            <a href="fisiologia kahots seminarios.html" class="card seminar">
+                <div class="card-header">
+                    <span class="icon">💡</span>
+                </div>
+                <h3>Kahoots y Seminarios</h3>
+                <p>Preguntas rápidas de clase y seminarios prácticos.</p>
             </a>
         </div>
 
