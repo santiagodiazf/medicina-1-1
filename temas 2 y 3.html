@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Fisiología Celular y Tisular</title>
+    <style>
+        :root {
+            --primary: #46178f;
+            --secondary: #2c3e50;
+            --success: #26890c;
+            --danger: #e21b3c;
+            --bg: #f2f2f2;
+        }
+
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; display: flex; }
+        
+        /* Modal de Inicio */
+        #setup-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; }
+
+        /* Barra Lateral */
+        #sidebar { width: 80px; background: white; height: 100vh; position: fixed; border-right: 1px solid #ddd; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding-top: 20px; }
+        .nav-dot { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); margin-bottom: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .nav-dot.answered { background: var(--primary); color: white; }
+        .nav-dot.marked { border-color: #ffa500; background: #fff3e0; }
+        .nav-dot.current { transform: scale(1.2); box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+
+        /* Contenedor Principal */
+        main { margin-left: 80px; padding: 40px; width: 100%; max-width: 900px; }
+        .question-card { background: white; padding: 25px; border-radius: 12px; margin-bottom: 40px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: relative; }
+        
+        .tag-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .mark-btn { cursor: pointer; background: #eee; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.8em; }
+        .mark-btn.active { background: #ffa500; color: white; }
+
+        h3 { margin-top: 0; color: var(--secondary); }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+        .opt { padding: 15px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: 0.2s; position: relative; }
+        .opt:hover { border-color: var(--primary); background: #f9f9f9; }
+        .opt.selected { border-color: var(--primary); background: #f0ebf8; }
+        
+        /* Colores de Corrección */
+        .opt.correct { background: var(--success) !important; color: white; border-color: var(--success); }
+        .opt.wrong { background: var(--danger) !important; color: white; border-color: var(--danger); }
+
+        .explanation { display: none; margin-top: 15px; padding: 15px; background: #e7f3ff; border-left: 5px solid #2196f3; border-radius: 4px; }
+        .feedback-btn { margin-top: 15px; background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+
+        /* Controles Finales */
+        .controls { background: white; padding: 30px; border-radius: 12px; text-align: center; }
+        .btn-group { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
+        .btn { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-outline { border: 2px solid var(--primary); color: var(--primary); background: white; }
+    </style>
+</head>
+<body>
+
+<div id="setup-modal">
+    <div class="modal-content">
+        <h2>Configuración del Quiz</h2>
+        <p>¿Cómo prefieres las preguntas?</p>
+        <button class="btn btn-primary" onclick="startQuiz(false)">Orden Preestablecido</button>
+        <button class="btn btn-outline" style="margin-top:10px" onclick="startQuiz(true)">Orden Aleatorio</button>
+    </div>
+</div>
+
+<div id="sidebar"></div>
+
+<main id="quiz-container">
+    <div id="questions-wrapper"></div>
+    <div class="controls" id="final-controls" style="display:none;">
+        <h2>Cuestionario Finalizado</h2>
+        <p id="final-score"></p>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="restartQuiz('all')">Repetir Todo</button>
+            <button class="btn btn-outline" onclick="restartQuiz('wrong')">Repetir Falladas</button>
+            <button class="btn btn-outline" onclick="restartQuiz('marked')">Repetir Marcadas</button>
+            <button class="btn btn-outline" onclick="restartQuiz('mixed')">Falladas + Marcadas</button>
+        </div>
+    </div>
+</main>
+
+<script>
+const rawData = [
+    { id: 1, tema: 2, q: "¿Qué efecto es más probable que NO tenga relación con una canalopatía cardiaca?", options: ["Arritmia (alteración del ritmo cardíaco)", "Taquicardia (aumento frecuencia cardíaca)", "Infarto de miocardio", "Bradicardia (descenso frecuencia cardíaca)"], correct: [2], exp: "El infarto es un evento isquémico vascular, mientras que las canalopatías son defectos eléctricos en las proteínas de canal." },
+    { id: 2, tema: 2, q: "¿Qué deja pasar la bicapa lipídica?", options: ["Glucosa", "Moléculas liposolubles", "Iones", "Moléculas hidrosolubles pequeñas no cargadas"], correct: [1, 3], exp: "Pasan sustancias liposolubles y moléculas pequeñas sin carga (como O2, CO2 o urea)." },
+    { id: 3, tema: 2, q: "¿Qué es la presión osmótica?", options: ["Presión en el citoplasma", "Presión para igualar volúmenes", "Presión en el núcleo", "Presión en el espacio intercelular"], correct: [1], exp: "Es la presión necesaria para detener el flujo neto de agua a través de una membrana semipermeable." },
+    { id: 4, tema: 2, q: "¿Qué describe la ley de Fick?", options: ["Flujo de agua", "Flujo de moléculas", "Flujo de electricidad", "Flujo de calor"], correct: [1], exp: "Determina la tasa de difusión de solutos a través de una membrana." },
+    { id: 5, tema: 2, q: "¿Qué ocurre en una solución hipotónica?", options: ["Células se deshidratan", "Células se estabilizan", "Células se hinchan", "Células se crenan"], correct: [2], exp: "El agua entra en la célula por ósmosis, aumentando su volumen." },
+    { id: 6, tema: 2, q: "¿Qué son los canales iónicos?", options: ["Lípidos de membrana", "Proteínas de transporte", "Carbohidratos", "Ácidos nucleicos"], correct: [1], exp: "Son proteínas transmembrana que permiten el paso selectivo de iones." },
+    { id: 7, tema: 2, q: "¿Qué es la ósmosis?", options: ["Movimiento de agua", "Movimiento de solutos", "Movimiento de iones", "Movimiento de proteínas"], correct: [0], exp: "Es el movimiento neto de solvente (agua) hacia donde hay más concentración de solutos." },
+    // TEMA 3
+    { id: 8, tema: 3, q: "1. ¿Cuál es la función de las permeasas?", options: ["a) Transportar solutos a favor de gradiente", "b) Producir ATP", "c) Almacenar energía", "d) Transportar solutos en contra del gradiente"], correct: [0], exp: "Las permeasas median la difusión facilitada, que siempre es a favor de gradiente." },
+    { id: 9, tema: 3, q: "2. ¿Qué representa la Km en la cinética de difusión facilitada?", options: ["a) Velocidad máxima de transporte", "b) Afinidad del soluto por su sitio de unión", "c) Cantidad de transportador", "d) Concentración de ATP"], correct: [1], exp: "Km indica la afinidad; a menor Km, mayor afinidad del transportador por el sustrato." },
+    { id: 10, tema: 3, q: "3. ¿Qué transporta el transportador GLUT?", options: ["a) Hexosas", "b) Ácidos grasos", "c) Aminoácidos", "d) Proteínas"], correct: [0], exp: "GLUT es el transportador específico para glucosa y otras hexosas." },
+    { id: 11, tema: 3, q: "4. En la Difusión Facilitada la velocidad de transporte NO depende de:", options: ["a) Concentración del soluto al transportar", "b) La afinidad del soluto por el sitio de unión", "c) La cantidad del transportador", "d) La carga eléctrica del soluto"], correct: [3], exp: "Depende de la saturación del transportador, no de la carga eléctrica directamente (esto influye en canales)." },
+    { id: 12, tema: 3, q: "5. En el proceso de inhibición competitiva:", options: ["a) Disminuye la Vmax", "b) No se afecta el transporte", "c) Cambia la Km por el soluto a transprtar", "d) Aumenta la Vmax"], correct: [2], exp: "El inhibidor compite por el sitio activo, aumentando la Km aparente pero sin alterar la Vmax." },
+    { id: 13, tema: 3, q: "6. ¿Qué es el simporte?", options: ["a) Transportar un soluto", "b) Transporte de dos solutos en direcciones opuestas", "c) Transporte de dos solutos en la misma dirección", "d) Sólo ocurre en el caso de transporte pasivo"], correct: [2], exp: "Simporte (cotransporte) mueve dos moléculas hacia el mismo lado de la membrana." },
+    { id: 14, tema: 3, q: "7. La ATPasa de Na+ -K+", options: ["a) Utiliza de forma indirecta la energía del ATP", "b) Mueve Na+ y K+ a favor de sus gradientes electroquímicos", "c) Saca de la célula 2 K+ por cada 3 Na+ que mete", "d) Saca más cargas positivas de la célula de las que mete"], correct: [3], exp: "Saca 3 Na+ y mete 2 K+, siendo un proceso electrogénico (genera negatividad interna)." },
+    { id: 15, tema: 3, q: "8. En un estado de acidosis, ¿qué sucede a nivel renal?", options: ["a) Se promueve la excreción de H+", "b) Se promueve la reabsorción de K+", "c) Se promueve la excreción de HCO3-", "d) Se promueve la excreción de K+"], correct: [0, 3], exp: "En acidosis se excretan protones y, por el intercambio iónico, también se favorece la excreción de potasio." },
+    { id: 16, tema: 3, q: "9. La Glucosuria renal puede deberse a:", options: ["a) Un exceso en la funcionalidad del transportador SGLT a nivel renal", "b) Un defecto del transportador SGLT a nivel renal", "c) Un exceso en la funcionalidad del transportador SGLT a nivel intestinal", "d) Un defecto del transportador SGLT a nivel intestinal"], correct: [1], exp: "Si el SGLT renal falla, no se reabsorbe la glucosa filtrada y aparece en orina." }
+];
+
+let questions = [];
+let userState = { marked: new Set(), wrong: new Set(), answered: new Set() };
+
+function startQuiz(randomize) {
+    document.getElementById('setup-modal').style.display = 'none';
+    questions = [...rawData];
+    if(randomize) questions.sort(() => Math.random() - 0.5);
+    renderQuiz();
+}
+
+function renderQuiz() {
+    const wrapper = document.getElementById('questions-wrapper');
+    const sidebar = document.getElementById('sidebar');
+    wrapper.innerHTML = "";
+    sidebar.innerHTML = "";
+
+    questions.forEach((q, index) => {
+        // Nav Dot
+        const dot = document.createElement('div');
+        dot.className = `nav-dot ${userState.marked.has(q.id) ? 'marked' : ''}`;
+        dot.id = `nav-${index}`;
+        dot.innerText = index + 1;
+        dot.onclick = () => document.getElementById(`q-${index}`).scrollIntoView({ behavior: 'smooth' });
+        sidebar.appendChild(dot);
+
+        // Card
+        const card = document.createElement('div');
+        card.className = "question-card";
+        card.id = `q-${index}`;
+        
+        // Barajado de opciones local
+        const indexedOptions = q.options.map((text, i) => ({ text, originalIdx: i }));
+        indexedOptions.sort(() => Math.random() - 0.5);
+
+        card.innerHTML = `
+            <div class="tag-row">
+                <span>Tema ${q.tema} - Pregunta ${index + 1}</span>
+                <button class="mark-btn ${userState.marked.has(q.id) ? 'active' : ''}" onclick="toggleMark(${q.id}, this, ${index})">
+                    ${userState.marked.has(q.id) ? '★ Marcada' : '☆ Marcar'}
+                </button>
+            </div>
+            <h3>${q.q}</h3>
+            <div class="options-grid">
+                ${indexedOptions.map(opt => `
+                    <div class="opt" data-orig="${opt.originalIdx}" onclick="selectOption(this, ${index})">${opt.text}</div>
+                `).join('')}
+            </div>
+            <button class="feedback-btn" onclick="checkAnswer(${index}, ${q.id})">Comprobar</button>
+            <div class="explanation" id="exp-${index}">${q.exp}</div>
+        `;
+        wrapper.appendChild(card);
+    });
+    document.getElementById('final-controls').style.display = 'block';
+}
+
+function toggleMark(id, btn, idx) {
+    if(userState.marked.has(id)) {
+        userState.marked.delete(id);
+        btn.innerText = "☆ Marcar";
+        btn.classList.remove('active');
+        document.getElementById(`nav-${idx}`).classList.remove('marked');
+    } else {
+        userState.marked.add(id);
+        btn.innerText = "★ Marcada";
+        btn.classList.add('active');
+        document.getElementById(`nav-${idx}`).classList.add('marked');
+    }
+}
+
+function selectOption(el, qIdx) {
+    const card = document.getElementById(`q-${qIdx}`);
+    if(card.classList.contains('locked')) return;
+    
+    // Si no es multirespuesta (solo id 2 y 15), desmarcar otros
+    const qId = questions[qIdx].id;
+    const isMulti = [2, 15].includes(qId);
+    
+    if(!isMulti) {
+        card.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+    }
+    el.classList.toggle('selected');
+}
+
+function checkAnswer(qIdx, qId) {
+    const card = document.getElementById(`q-${qIdx}`);
+    if(card.classList.contains('locked')) return;
+
+    const selected = Array.from(card.querySelectorAll('.opt.selected')).map(o => parseInt(o.dataset.orig));
+    const correctAnswers = questions[qIdx].correct;
+    
+    if(selected.length === 0) return alert("Selecciona al menos una respuesta");
+
+    const isCorrect = selected.length === correctAnswers.length && selected.every(v => correctAnswers.includes(v));
+    
+    card.querySelectorAll('.opt').forEach(opt => {
+        const origIdx = parseInt(opt.dataset.orig);
+        if(correctAnswers.includes(origIdx)) opt.classList.add('correct');
+        else if(selected.includes(origIdx)) opt.classList.add('wrong');
+    });
+
+    if(!isCorrect) userState.wrong.add(qId);
+    else userState.wrong.delete(qId);
+    
+    userState.answered.add(qId);
+    document.getElementById(`nav-${qIdx}`).classList.add('answered');
+    document.getElementById(`exp-${qIdx}`).style.display = 'block';
+    card.classList.add('locked');
+}
+
+function restartQuiz(mode) {
+    let newPool = [];
+    if(mode === 'all') newPool = [...rawData];
+    else if(mode === 'wrong') newPool = rawData.filter(q => userState.wrong.has(q.id));
+    else if(mode === 'marked') newPool = rawData.filter(q => userState.marked.has(q.id));
+    else if(mode === 'mixed') newPool = rawData.filter(q => userState.wrong.has(q.id) || userState.marked.has(q.id));
+
+    if(newPool.length === 0) return alert("No hay preguntas en esta categoría");
+
+    questions = newPool;
+    // Resetear solo estados de respuesta, mantener marcados si se desea
+    userState.answered.clear();
+    // No limpiamos userState.wrong para permitir reintentos sobre el error original
+    renderQuiz();
+    window.scrollTo(0,0);
+}
+</script>
+
+</body>
+</html>
