@@ -17,11 +17,21 @@
         
         /* Modal de Inicio */
         #setup-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; }
+        .modal-content { background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%; }
+        
+        select {
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            width: 100%;
+            margin-bottom: 20px;
+            font-size: 16px;
+            background-color: white;
+        }
 
         /* Barra Lateral */
         #sidebar { width: 80px; background: white; height: 100vh; position: fixed; border-right: 1px solid #ddd; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding-top: 20px; }
-        .nav-dot { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); margin-bottom: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .nav-dot { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); margin-bottom: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; transition: 0.3s; flex-shrink: 0; }
         .nav-dot.answered { background: var(--primary); color: white; }
         .nav-dot.marked { border-color: #ffa500; background: #fff3e0; }
         .nav-dot.current { transform: scale(1.2); box-shadow: 0 0 10px rgba(0,0,0,0.2); }
@@ -35,7 +45,9 @@
         .mark-btn.active { background: #ffa500; color: white; }
 
         h3 { margin-top: 0; color: var(--secondary); }
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin: 20px 0; }
+        @media(min-width: 600px) { .options-grid { grid-template-columns: 1fr 1fr; } }
+        
         .opt { padding: 15px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: 0.2s; position: relative; }
         .opt:hover { border-color: var(--primary); background: #f9f9f9; }
         .opt.selected { border-color: var(--primary); background: #f0ebf8; }
@@ -60,6 +72,15 @@
 <div id="setup-modal">
     <div class="modal-content">
         <h2>Configuración del Quiz</h2>
+        <p>Selecciona el tema:</p>
+        <select id="topic-select">
+            <option value="all">Todos los temas</option>
+            <option value="2">Tema 2</option>
+            <option value="3">Tema 3</option>
+            <option value="4">Tema 4</option>
+            <option value="5">Tema 5</option>
+        </select>
+
         <p>¿Cómo prefieres las preguntas?</p>
         <button class="btn btn-primary" onclick="startQuiz(false)">Orden Preestablecido</button>
         <button class="btn btn-outline" style="margin-top:10px" onclick="startQuiz(true)">Orden Aleatorio</button>
@@ -84,6 +105,7 @@
 
 <script>
 const rawData = [
+    // TEMA 2
     { id: 1, tema: 2, q: "¿Qué efecto es más probable que NO tenga relación con una canalopatía cardiaca?", options: ["Arritmia (alteración del ritmo cardíaco)", "Taquicardia (aumento frecuencia cardíaca)", "Infarto de miocardio", "Bradicardia (descenso frecuencia cardíaca)"], correct: [2], exp: "El infarto es un evento isquémico vascular, mientras que las canalopatías son defectos eléctricos en las proteínas de canal." },
     { id: 2, tema: 2, q: "¿Qué deja pasar la bicapa lipídica?", options: ["Glucosa", "Moléculas liposolubles", "Iones", "Moléculas hidrosolubles pequeñas no cargadas"], correct: [1, 3], exp: "Pasan sustancias liposolubles y moléculas pequeñas sin carga (como O2, CO2 o urea)." },
     { id: 3, tema: 2, q: "¿Qué es la presión osmótica?", options: ["Presión en el citoplasma", "Presión para igualar volúmenes", "Presión en el núcleo", "Presión en el espacio intercelular"], correct: [1], exp: "Es la presión necesaria para detener el flujo neto de agua a través de una membrana semipermeable." },
@@ -91,6 +113,7 @@ const rawData = [
     { id: 5, tema: 2, q: "¿Qué ocurre en una solución hipotónica?", options: ["Células se deshidratan", "Células se estabilizan", "Células se hinchan", "Células se crenan"], correct: [2], exp: "El agua entra en la célula por ósmosis, aumentando su volumen." },
     { id: 6, tema: 2, q: "¿Qué son los canales iónicos?", options: ["Lípidos de membrana", "Proteínas de transporte", "Carbohidratos", "Ácidos nucleicos"], correct: [1], exp: "Son proteínas transmembrana que permiten el paso selectivo de iones." },
     { id: 7, tema: 2, q: "¿Qué es la ósmosis?", options: ["Movimiento de agua", "Movimiento de solutos", "Movimiento de iones", "Movimiento de proteínas"], correct: [0], exp: "Es el movimiento neto de solvente (agua) hacia donde hay más concentración de solutos." },
+    
     // TEMA 3
     { id: 8, tema: 3, q: "1. ¿Cuál es la función de las permeasas?", options: ["a) Transportar solutos a favor de gradiente", "b) Producir ATP", "c) Almacenar energía", "d) Transportar solutos en contra del gradiente"], correct: [0], exp: "Las permeasas median la difusión facilitada, que siempre es a favor de gradiente." },
     { id: 9, tema: 3, q: "2. ¿Qué representa la Km en la cinética de difusión facilitada?", options: ["a) Velocidad máxima de transporte", "b) Afinidad del soluto por su sitio de unión", "c) Cantidad de transportador", "d) Concentración de ATP"], correct: [1], exp: "Km indica la afinidad; a menor Km, mayor afinidad del transportador por el sustrato." },
@@ -100,15 +123,45 @@ const rawData = [
     { id: 13, tema: 3, q: "6. ¿Qué es el simporte?", options: ["a) Transportar un soluto", "b) Transporte de dos solutos en direcciones opuestas", "c) Transporte de dos solutos en la misma dirección", "d) Sólo ocurre en el caso de transporte pasivo"], correct: [2], exp: "Simporte (cotransporte) mueve dos moléculas hacia el mismo lado de la membrana." },
     { id: 14, tema: 3, q: "7. La ATPasa de Na+ -K+", options: ["a) Utiliza de forma indirecta la energía del ATP", "b) Mueve Na+ y K+ a favor de sus gradientes electroquímicos", "c) Saca de la célula 2 K+ por cada 3 Na+ que mete", "d) Saca más cargas positivas de la célula de las que mete"], correct: [3], exp: "Saca 3 Na+ y mete 2 K+, siendo un proceso electrogénico (genera negatividad interna)." },
     { id: 15, tema: 3, q: "8. En un estado de acidosis, ¿qué sucede a nivel renal?", options: ["a) Se promueve la excreción de H+", "b) Se promueve la reabsorción de K+", "c) Se promueve la excreción de HCO3-", "d) Se promueve la excreción de K+"], correct: [0, 3], exp: "En acidosis se excretan protones y, por el intercambio iónico, también se favorece la excreción de potasio." },
-    { id: 16, tema: 3, q: "9. La Glucosuria renal puede deberse a:", options: ["a) Un exceso en la funcionalidad del transportador SGLT a nivel renal", "b) Un defecto del transportador SGLT a nivel renal", "c) Un exceso en la funcionalidad del transportador SGLT a nivel intestinal", "d) Un defecto del transportador SGLT a nivel intestinal"], correct: [1], exp: "Si el SGLT renal falla, no se reabsorbe la glucosa filtrada y aparece en orina." }
+    { id: 16, tema: 3, q: "9. La Glucosuria renal puede deberse a:", options: ["a) Un exceso en la funcionalidad del transportador SGLT a nivel renal", "b) Un defecto del transportador SGLT a nivel renal", "c) Un exceso en la funcionalidad del transportador SGLT a nivel intestinal", "d) Un defecto del transportador SGLT a nivel intestinal"], correct: [1], exp: "Si el SGLT renal falla, no se reabsorbe la glucosa filtrada y aparece en orina." },
+
+    // TEMA 4 (NUEVAS PREGUNTAS)
+    { id: 17, tema: 4, q: "La destrucción autoinmune de las células β-pancreáticas son la base de:", options: ["Diabetes mellitus tipo II", "Aterosclerosis prematura", "Exocitosis", "Diabetes mellitus tipo I"], correct: [3], exp: "La Diabetes tipo I se caracteriza por la destrucción autoinmune de las células productoras de insulina." },
+    { id: 18, tema: 4, q: "Los anticuerpos de la leche materna pasan al cuerpo del recién nacido por:", options: ["Difusión facilitada", "Difusión simple", "Transcitosis", "Fagocitosis a nivel intestinal"], correct: [2], exp: "La transcitosis permite el transporte de macromoléculas (como anticuerpos IgA) a través de las células epiteliales." },
+    { id: 19, tema: 4, q: "¿Cómo se transporta el hierro en sangre?", options: ["Asociado a la transferrina", "En forma libre", "Asociado a la hemosiderina", "Asociado a la ferritina"], correct: [0], exp: "El hierro circula en el plasma unido a la transferrina." },
+    { id: 20, tema: 4, q: "Una alteración genética que dificulta la endocitosis de LDL puede provocar:", options: ["Diabetes mellitus tipo II", "Aterosclerosis prematura", "Que el Cádiz CF ascienda", "Diabetes mellitus tipo I"], correct: [1], exp: "La acumulación de LDL en sangre debido a fallos en su endocitosis predispone a la formación de placas de ateroma." },
+    { id: 21, tema: 4, q: "¿Cómo se elimina del plasma el LDL “colesterol malo”?", options: ["Exocitosis", "Endocitosis mediada por receptor", "Transcitosis", "Por difusión"], correct: [1], exp: "Las células captan el LDL circulante mediante receptores específicos en su membrana." },
+
+    // TEMA 5 (NUEVAS PREGUNTAS)
+    { id: 22, tema: 5, q: "1️⃣ Las hormonas esteroideas:", options: ["a) Se unen a receptores acoplados a proteína G en la membrana celular", "b) Se unen a receptores intracelulares", "c) Desarrollan una respuesta rápida en la célula", "d) Origina una señal eléctrica al unirse al receptor"], correct: [1], exp: "Al ser lipofílicas, atraviesan la membrana y se unen a receptores dentro de la célula." },
+    { id: 23, tema: 5, q: "2️⃣ Ordena la siguiente secuencia:", options: ["Receptor -> Molécula señalizadora -> Respuesta -> Moléculas de señalización intracelular", "Molécula señalizadora -> Receptor -> Moléculas de señalización intracelular -> Respuesta", "Respuesta -> Receptor -> Molécula señalizadora -> Moléculas de señalización intracelular", "Molécula señalizadora -> Moléculas de señalización intracelular -> Receptor -> Respuesta"], correct: [1], exp: "El orden lógico es: Señal -> Receptor -> Transducción (intracelular) -> Respuesta." },
+    { id: 24, tema: 5, q: "3️⃣ ¿Por qué unas células responden a unas señales y no a otras?", options: ["a) Depende de los receptores que expresen", "b) Porque las células pueden generar señales al azar", "c) Todas las células responden igual a todas las señales", "d) Depende de la concentración de moléculas señalizadoras"], correct: [0], exp: "La especificidad de la respuesta depende de si la célula posee el receptor específico para esa señal." },
+    { id: 25, tema: 5, q: "4️⃣ ¿Por qué los receptores celulares son un objetivo clave en el desarrollo de fármacos?", options: ["a) Porque regulan funciones celulares y la comunicación intercelular", "b) Porque solo se encuentran en células dañadas o enfermas", "c) Porque los fármacos reemplazan a los receptores dañados", "d) Porque eliminan los receptores que no funcionan correctamente"], correct: [0], exp: "Al modular los receptores, los fármacos pueden alterar las funciones celulares controladas por estos." },
+    { id: 26, tema: 5, q: "5️⃣ Cuando un receptor celular se une a su ligando, siempre genera una respuesta inmediata en la célula.", options: ["Verdadero", "Falso"], correct: [1], exp: "Falso. Algunas respuestas son rápidas (canales iónicos), pero otras son lentas (cambios en la expresión génica)." }
 ];
 
 let questions = [];
 let userState = { marked: new Set(), wrong: new Set(), answered: new Set() };
 
 function startQuiz(randomize) {
+    const topicSelect = document.getElementById('topic-select');
+    const selectedTopic = topicSelect.value;
+
     document.getElementById('setup-modal').style.display = 'none';
-    questions = [...rawData];
+    
+    // Filtrado por tema
+    if (selectedTopic === 'all') {
+        questions = [...rawData];
+    } else {
+        questions = rawData.filter(q => q.tema == selectedTopic);
+    }
+
+    if (questions.length === 0) {
+        alert("No se encontraron preguntas para este tema.");
+        location.reload();
+        return;
+    }
+
     if(randomize) questions.sort(() => Math.random() - 0.5);
     renderQuiz();
 }
@@ -133,9 +186,12 @@ function renderQuiz() {
         card.className = "question-card";
         card.id = `q-${index}`;
         
-        // Barajado de opciones local
+        // Barajado de opciones local (manteniendo índice original para corrección)
         const indexedOptions = q.options.map((text, i) => ({ text, originalIdx: i }));
-        indexedOptions.sort(() => Math.random() - 0.5);
+        // Solo barajamos opciones si NO es Verdadero/Falso (para mantener orden lógico V/F)
+        if(q.options.length > 2) {
+            indexedOptions.sort(() => Math.random() - 0.5);
+        }
 
         card.innerHTML = `
             <div class="tag-row">
@@ -214,7 +270,17 @@ function checkAnswer(qIdx, qId) {
 
 function restartQuiz(mode) {
     let newPool = [];
-    if(mode === 'all') newPool = [...rawData];
+    
+    // Al reiniciar, miramos si hay filtro de tema aplicado actualmente? 
+    // Por simplicidad, los modos de "Repetir Falladas/Marcadas" ignoran el filtro de tema original y usan todo el pool rawData para encontrar esas IDs
+    // Pero "Repetir Todo" debería respetar el filtro si quisieras, aunque lo más fácil es reiniciar la página o volver a filtrar rawData.
+    // Aquí usaremos la lógica estándar basada en lo que ya se cargó en rawData.
+
+    if(mode === 'all') {
+        // Recargar la página para volver al selector de temas
+        location.reload(); 
+        return;
+    }
     else if(mode === 'wrong') newPool = rawData.filter(q => userState.wrong.has(q.id));
     else if(mode === 'marked') newPool = rawData.filter(q => userState.marked.has(q.id));
     else if(mode === 'mixed') newPool = rawData.filter(q => userState.wrong.has(q.id) || userState.marked.has(q.id));
@@ -222,7 +288,6 @@ function restartQuiz(mode) {
     if(newPool.length === 0) return alert("No hay preguntas en esta categoría");
 
     questions = newPool;
-    // Resetear solo estados de respuesta, mantener marcados si se desea
     userState.answered.clear();
     // No limpiamos userState.wrong para permitir reintentos sobre el error original
     renderQuiz();
