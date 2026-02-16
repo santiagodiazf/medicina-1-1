@@ -13,7 +13,8 @@
             --quiz-color: #27ae60;   /* Verde */
             --exam-color: #e67e22;   /* Naranja (Sep 2020) */
             --exam21-color: #8e44ad; /* Morado (Feb 2021) */
-            --exam19-color: #16a085; /* Turquesa (Jun 2019) - NUEVO */
+            --exam19-color: #16a085; /* Turquesa (Jun 2019) */
+            --notebook-color: #34495e; /* Azul Oscuro (Notebook) */
             --white: #ffffff;
         }
 
@@ -25,18 +26,30 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
             padding: 20px;
         }
 
         h1 {
             font-size: 2.5rem;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
             color: #34495e;
             text-transform: uppercase;
             letter-spacing: 2px;
             text-align: center;
+        }
+
+        /* Separador de secciones */
+        .section-header {
+            width: 100%;
+            max-width: 1000px;
+            text-align: left;
+            border-bottom: 2px solid #ddd;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            color: var(--notebook-color);
+            font-size: 1.5rem;
+            font-weight: 300;
         }
 
         .container {
@@ -84,20 +97,22 @@
         .card-quiz h2 { color: var(--quiz-color); }
         .card-quiz:hover .icon { background-color: var(--quiz-color); color: white; }
 
-        /* Examen Sep 2020 */
         .card-exam { border-top-color: var(--exam-color); }
         .card-exam h2 { color: var(--exam-color); }
         .card-exam:hover .icon { background-color: var(--exam-color); color: white; }
 
-        /* Examen Feb 2021 */
         .card-exam21 { border-top-color: var(--exam21-color); }
         .card-exam21 h2 { color: var(--exam21-color); }
         .card-exam21:hover .icon { background-color: var(--exam21-color); color: white; }
 
-        /* Examen Jun 2019 (NUEVO) */
         .card-exam19 { border-top-color: var(--exam19-color); }
         .card-exam19 h2 { color: var(--exam19-color); }
         .card-exam19:hover .icon { background-color: var(--exam19-color); color: white; }
+
+        /* Estilo Nuevo Notebook */
+        .card-notebook { border-top-color: var(--notebook-color); }
+        .card-notebook h2 { color: var(--notebook-color); }
+        .card-notebook:hover .icon { background-color: var(--notebook-color); color: white; }
 
         .icon {
             width: 80px;
@@ -199,9 +214,21 @@
 
     </div>
 
+    <h2 class="section-header">Test Notebook (Por Temas)</h2>
+    <div class="container">
+        
+        <a href="test note anatomia II. 1.html" class="card card-notebook">
+            <div class="icon">N</div>
+            <h2>Tronco y Esplacnología</h2>
+            <p>Osteología, Vascularización, Corazón, Tórax, Abdomen y Neuroanatomía.</p>
+            <div class="btn-text">Practicar ➜</div>
+        </a>
+
+        </div>
+
     <footer>
         U Cádiz - Facultad de Medicina.<br>
-        Asegúrate de que todos los archivos (<b>examen 19.html</b>, etc.) estén en la misma carpeta.
+        Asegúrate de que todos los archivos (<b>test note anatomia II. 1.html</b>, etc.) estén en la misma carpeta.
     </footer>
 
 </body>
