@@ -10,6 +10,7 @@
             --accent: #3498db;
             --embrio: #27ae60;
             --histo: #e67e22;
+            --notebook: #9b59b6; /* Nuevo color para Notebook */
             --bg: #f4f7f6;
             --card-bg: #ffffff;
             --text: #333;
@@ -39,6 +40,17 @@
 
         h1 { margin: 0; font-size: 2.5em; font-weight: 300; letter-spacing: 1px; }
         h2 { margin: 10px 0 0 0; font-size: 1.2em; opacity: 0.8; font-weight: 400; }
+        
+        /* Section Title Style */
+        .section-title {
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px 0 10px 0;
+            font-size: 1.5em;
+            color: var(--primary);
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
 
         .container {
             max-width: 1000px;
@@ -128,6 +140,9 @@
         .card-histo .card-header { background: var(--histo); }
         .card-histo .icon { color: var(--histo); }
 
+        .card-notebook .card-header { background: var(--notebook); }
+        .card-notebook .icon { color: var(--notebook); }
+
         footer {
             margin-top: auto;
             padding: 20px;
@@ -144,6 +159,7 @@
         <h2>Panel de Entrenamiento y Repaso</h2>
     </header>
 
+    <div class="section-title">Material General</div>
     <div class="container">
         
         <a href="embrio daypo pro.html" class="card card-teoria">
@@ -183,6 +199,23 @@
         </a>
 
     </div>
+
+    <div class="section-title">Test Notebook (Por Temas)</div>
+    <div class="container">
+        
+        <a href="test note embrio 1.html" class="card card-notebook">
+            <div class="card-header"></div>
+            <div class="card-body">
+                <div class="icon">📓</div>
+                <div class="card-title">Embriología I</div>
+                <div class="card-desc">
+                    Generalidades, Gametogénesis, Fecundación y Primera Semana del Desarrollo.
+                </div>
+                <div class="tag">100 Preguntas</div>
+            </div>
+        </a>
+
+        </div>
 
     <footer>
         Asegúrate de que todos los archivos HTML y las carpetas de imágenes estén en el mismo directorio.
