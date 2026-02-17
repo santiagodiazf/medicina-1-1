@@ -3,119 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Fisiología: Señalización</title>
+    <title>Quiz Fisiología: Señalización Celular</title>
     <style>
-        :root {
-            --primary: #2c3e50;
-            --accent: #9b59b6; 
-            --success: #27ae60;
-            --error: #c0392b;
-        }
-
-        body {
-            font-family: sans-serif;
-            margin: 0; padding: 0;
-            background-color: #f4f6f7;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
+        body { font-family: sans-serif; margin: 0; background: #f4f6f7; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        
         /* Pantallas */
-        #start-screen, #results-modal {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+        #start-screen, #results-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 100;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
             text-align: center;
         }
-
         .hidden { display: none !important; }
 
-        .btn-container { display: flex; gap: 10px; margin-top: 20px; }
+        /* Botones */
+        button { padding: 15px 30px; font-size: 16px; margin: 10px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; color: white; }
+        .btn-blue { background: #2c3e50; }
+        .btn-purple { background: #8e44ad; }
+        .btn-red { background: #c0392b; }
+        .btn-green { background: #27ae60; }
+
+        /* App Layout */
+        #app { display: flex; flex: 1; height: 100%; }
         
-        button {
-            padding: 15px 25px;
-            font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-accent { background: var(--accent); color: white; }
-        .btn-danger { background: var(--error); color: white; }
-
-        /* Layout */
-        #app { display: flex; flex: 1; overflow: hidden; }
-
         #sidebar {
-            width: 65px;
-            background: var(--primary);
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px 0;
-            gap: 10px;
+            width: 70px; background: #2c3e50; overflow-y: auto;
+            display: flex; flex-direction: column; align-items: center; padding: 20px 0;
         }
-
         .dot {
-            width: 35px; height: 35px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 13px;
-            cursor: pointer;
+            width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.3);
+            margin-bottom: 10px; color: white; display: flex; justify-content: center; align-items: center;
+            font-size: 12px; cursor: pointer; flex-shrink: 0;
         }
-        .dot.correct { background: var(--success); }
-        .dot.wrong { background: var(--error); }
+        .dot.correct { background: #27ae60; }
+        .dot.wrong { background: #c0392b; }
 
-        #content { flex: 1; overflow-y: auto; padding: 30px; scroll-behavior: smooth; }
+        #main { flex: 1; overflow-y: auto; padding: 40px; scroll-behavior: smooth; }
 
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            margin: 0 auto 40px auto;
-            max-width: 800px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-
+        /* Tarjetas */
+        .card { background: white; padding: 25px; margin-bottom: 40px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .opt {
-            display: block; width: 100%;
-            text-align: left;
-            padding: 15px;
-            margin: 10px 0;
-            border: 2px solid #eee;
-            border-radius: 8px;
-            background: white;
-            cursor: pointer;
-            font-size: 1em;
+            display: block; width: 100%; padding: 15px; margin: 10px 0;
+            background: #fff; border: 2px solid #eee; border-radius: 5px; text-align: left; cursor: pointer;
         }
-        .opt:hover:not(:disabled) { border-color: var(--accent); }
-        .opt.correct { background: #d4edda !important; border-color: var(--success) !important; color: #155724; }
-        .opt.wrong { background: #f8d7da !important; border-color: var(--error) !important; color: #721c24; }
+        .opt:hover { background: #f9f9f9; }
+        .opt.correct { background: #d4edda !important; border-color: #27ae60 !important; }
+        .opt.wrong { background: #f8d7da !important; border-color: #c0392b !important; }
 
         .exp {
-            margin-top: 20px; padding: 15px;
-            background: #e8f6f3;
-            border-left: 5px solid var(--success);
-            display: none;
-        }
-        
-        .diagram-placeholder {
-            margin-top: 15px; padding: 15px; border: 2px dashed #ccc; color: #555; text-align: center;
+            display: none; margin-top: 15px; padding: 15px; background: #e8f6f3; 
+            border-left: 5px solid #27ae60; line-height: 1.5;
         }
     </style>
 </head>
@@ -123,47 +60,63 @@
 
     <div id="start-screen">
         <h1>Fisiología: Señalización Celular</h1>
-        <p>50 Preguntas Literales | Receptores y Segundos Mensajeros</p>
-        <div class="btn-container">
-            <button class="btn-primary" onclick="loadQuiz(false)">Orden Normal</button>
-            <button class="btn-accent" onclick="loadQuiz(true)">Orden Aleatorio</button>
+        <p>50 Preguntas | Receptores y Segundos Mensajeros</p>
+        <div>
+            <button class="btn-blue" onclick="startQuiz(false)">Orden Normal</button>
+            <button class="btn-purple" onclick="startQuiz(true)">Orden Aleatorio</button>
         </div>
     </div>
 
     <div id="app" class="hidden">
         <div id="sidebar"></div>
-        <div id="content"></div>
-        <button class="btn-danger" style="position:fixed; bottom:25px; right:25px;" onclick="finish()">Finalizar</button>
+        <div id="main"></div>
+        <button class="btn-red" style="position:fixed; bottom:20px; right:20px;" onclick="finishQuiz()">Finalizar</button>
     </div>
 
-    <div id="results-modal" class="hidden">
-        <h2>Quiz Finalizado</h2>
-        <p id="final-score" style="font-size: 28px; font-weight: bold;"></p>
-        <button class="btn-primary" onclick="location.reload()">Reiniciar Todo</button>
+    <div id="results-screen" class="hidden">
+        <h2>Resultados</h2>
+        <h1 id="score"></h1>
+        <button class="btn-blue" onclick="location.reload()">Reiniciar</button>
     </div>
 
     <script>
+        // HE ELIMINADO TODOS LOS SALTOS DE LÍNEA QUE ROMPÍAN EL CÓDIGO ANTERIOR
         const db = [
-            { id: 1, q: "El proceso por el cual una señal química externa se transforma en una señal intracelular que desencadena una respuesta biológica se denomina:", options: ["Transfección.", "Transducción de señal.", "Transcripción génica.", "Potencial de acción."], ans: 1, exp: "Respuesta: B." },
-            { id: 2, q: "¿Qué determina que una célula responda a una señal y otra célula vecina no lo haga ante la misma molécula?", options: ["La cantidad de ATP disponible en la célula.", "La presencia del receptor específico para ese ligando en la célula diana.", "El tamaño de la célula.", "La temperatura del medio extracelular."], ans: 1, exp: "Respuesta: B." },
+            { id: 1, q: "El proceso por el cual una señal química externa se transforma en una señal intracelular que desencadena una respuesta biológica se denomina:", options: ["Transfección.", "Transducción de señal.", "Transcripción génica.", "Potencial de acción."], ans: 1, exp: "Respuesta: B 
+
+[Image of signal transduction pathway overview]
+" },
+            { id: 2, q: "¿Qué determina que una célula responda a una señal y otra célula vecina no lo haga ante la misma molécula?", options: ["La cantidad de ATP disponible en la célula.", "La presencia del receptor específico para ese ligando en la célula diana.", "El tamaño de la célula.", "La temperatura del medio extracelular."], ans: 1, exp: "Respuesta: B (El profesor insiste: 'reconocen de forma selectiva y específica')." },
             { id: 3, q: "En la farmacología de los receptores, un antagonista se define como:", options: ["Un ligando que activa desencadenando la respuesta máxima.", "Una molécula que destruye el receptor.", "Un ligando que se une al receptor pero no lo activa, bloqueando la unión del agonista.", "Una enzima que degrada al ligando endógeno."], ans: 2, exp: "Respuesta: C" },
             { id: 4, q: "¿Qué fenómeno ocurre cuando una célula está expuesta de forma continua a altas concentraciones de un ligando?", options: ["Hipersensibilización.", "Regulación a la baja (down-regulation) o desensibilización.", "Aumento de afinidad.", "Síntesis masiva."], ans: 1, exp: "Respuesta: B" },
             { id: 5, q: "La especificidad de la comunicación celular depende fundamentalmente de:", options: ["Solubilidad del ligando.", "Encaje estructural preciso entre el ligando y el receptor.", "Velocidad de difusión.", "pH del medio."], ans: 1, exp: "Respuesta: B" },
-            { id: 6, q: "¿Qué característica debe tener una molécula para actuar sobre receptores intracelulares?", options: ["Hidrofílica y grande.", "Lipofílica (hidrofóbica) o un gas para atravesar la membrana.", "Cargada positivamente.", "Proteína grande."], ans: 1, exp: "Respuesta: B" },
-            { id: 7, q: "En el mecanismo de la testosterona, ¿qué función cumplen las chaperonas en el citoplasma?", options: ["Degradan la hormona.", "Estabilizan el receptor y lo mantienen inactivo hasta que llega la hormona.", "Transportan el receptor antes de la señal.", "Fosforilan."], ans: 1, exp: "Respuesta: B" },
+            { id: 6, q: "¿Qué característica debe tener una molécula para actuar sobre receptores intracelulares?", options: ["Hidrofílica y grande.", "Lipofílica (hidrofóbica) o un gas para atravesar la membrana.", "Cargada positivamente.", "Proteína grande."], ans: 1, exp: "Respuesta: B (Ej. Hormonas esteroideas, NO)." },
+            { id: 7, q: "En el mecanismo de la testosterona, ¿qué función cumplen las chaperonas en el citoplasma?", options: ["Degradan la hormona.", "Estabilizan el receptor y lo mantienen inactivo hasta que llega la hormona.", "Transportan el receptor antes de la señal.", "Fosforilan."], ans: 1, exp: "Respuesta: B 
+
+[Image of intracellular receptor mechanism steroid hormone]
+" },
             { id: 8, q: "¿Por qué la respuesta mediada por receptores intracelulares es más lenta?", options: ["La hormona tarda en entrar.", "Implica translocación al núcleo y regulación de la expresión génica.", "No hay amplificación.", "Poca afinidad."], ans: 1, exp: "Respuesta: B" },
             { id: 9, q: "Activado el receptor intracelular, su función principal en el núcleo es:", options: ["Quinasa.", "Canal iónico.", "Factor de transcripción que se une al ADN.", "Polimerasa."], ans: 2, exp: "Respuesta: C" },
             { id: 10, q: "¿Cuál de estos ligandos actúa por receptor intracelular?", options: ["Insulina.", "Adrenalina.", "Cortisol o Testosterona.", "Acetilcolina."], ans: 2, exp: "Respuesta: C" },
             { id: 11, q: "Los receptores ionotrópicos se caracterizan por:", options: ["Respuestas muy rápidas (milisegundos).", "Síntesis proteica.", "Activar proteína G.", "Células no excitables."], ans: 0, exp: "Respuesta: A" },
-            { id: 12, q: "Mecanismo básico de un receptor canal:", options: ["Fosforilación.", "Unión ligando -> cambio conformacional -> apertura poro.", "Endocitosis.", "Unión ADN."], ans: 1, exp: "Respuesta: B" },
+            { id: 12, q: "Mecanismo básico de un receptor canal:", options: ["Fosforilación.", "Unión ligando -> cambio conformacional -> apertura poro.", "Endocitosis.", "Unión ADN."], ans: 1, exp: "Respuesta: B 
+
+[Image of ligand-gated ion channel mechanism]
+" },
             { id: 13, q: "Ejemplo de ligando ionotrópico mencionado en el audio:", options: ["Insulina.", "GABA o Glutamato.", "Hormona crecimiento.", "Estrógenos."], ans: 1, exp: "Respuesta: B" },
             { id: 14, q: "El receptor de insulina pertenece a la familia de:", options: ["GPCR.", "Canales.", "Actividad enzimática intrínseca (Tirosina Quinasa).", "Nucleares."], ans: 2, exp: "Respuesta: C" },
             { id: 15, q: "Evento tras la unión de insulina al receptor:", options: ["Apertura canal Na.", "Autofosforilación en residuos de tirosina de la parte intracelular.", "Activación Adenilato Ciclasa.", "Translocación nuclear."], ans: 1, exp: "Respuesta: B" },
             { id: 16, q: "La vía PI3K/Akt activada por insulina provoca:", options: ["Síntesis ADN.", "Translocación de vesículas GLUT-4 a la membrana.", "Apertura canales K.", "Degradación receptor."], ans: 1, exp: "Respuesta: B" },
             { id: 17, q: "La vía de las MAP-kinasas regula:", options: ["Contracción muscular.", "Expresión génica, proliferación y supervivencia celular.", "Canales cloro.", "Digestión."], ans: 1, exp: "Respuesta: B" },
             { id: 18, q: "¿Qué define a la fosforilación en cascada?", options: ["Ruptura receptor.", "Una quinasa activa fosforila a otra, amplificando la señal.", "Fosfato sale de la célula.", "Gasto total de ATP."], ans: 1, exp: "Respuesta: B" },
-            { id: 19, q: "Los GPCR atraviesan la membrana:", options: ["1 vez.", "Canales.", "7 veces (dominios transmembrana).", "0 veces."], ans: 2, exp: "Respuesta: C" },
-            { id: 20, q: "Activación de la proteína G heterotrimérica:", options: ["Fosforilación alfa.", "Intercambio GDP por GTP en subunidad alfa.", "Unión de las tres subunidades.", "Hidrólisis GTP."], ans: 1, exp: "Respuesta: B" },
+            { id: 19, q: "Los GPCR atraviesan la membrana:", options: ["1 vez.", "Canales.", "7 veces (dominios transmembrana).", "0 veces."], ans: 2, exp: "Respuesta: C 
+
+[Image of G protein coupled receptor structure]
+" },
+            { id: 20, q: "Activación de la proteína G heterotrimérica:", options: ["Fosforilación alfa.", "Intercambio GDP por GTP en subunidad alfa.", "Unión de las tres subunidades.", "Hidrólisis GTP."], ans: 1, exp: "Respuesta: B 
+
+[Image of G protein activation cycle]
+" },
             { id: 21, q: "La subunidad Gs (estimuladora) activa a:", options: ["Fosfolipasa C.", "Adenilato Ciclasa.", "Fosfodiesterasa.", "Tirosina quinasa."], ans: 1, exp: "Respuesta: B" },
             { id: 22, q: "La Adenilato Ciclasa aumenta el nivel de:", options: ["Calcio.", "IP3.", "AMP cíclico (AMPc).", "GMP cíclico."], ans: 2, exp: "Respuesta: C" },
             { id: 23, q: "El AMPc activa principalmente a:", options: ["Proteína Quinasa A (PKA).", "Proteína Quinasa C (PKC).", "Calmodulina.", "Canales Na."], ans: 0, exp: "Respuesta: A" },
@@ -172,9 +125,15 @@
             { id: 26, q: "Proteína sensora de calcio frecuente en el citosol:", options: ["Calmodulina.", "Clatrina.", "Actina.", "Albúmina."], ans: 0, exp: "Respuesta: A" },
             { id: 27, q: "Apagado de la señal de la proteína G:", options: ["Actividad GTPasa intrínseca de la subunidad alfa (GTP -> GDP).", "Destrucción proteína G.", "Fosforilación receptor.", "Falta ATP."], ans: 0, exp: "Respuesta: A" },
             { id: 28, q: "% aproximado de fármacos que actúan sobre GPCR:", options: ["10%", "50%", "90%", "0%."], ans: 1, exp: "Respuesta: B" },
-            { id: 29, q: "En Diabetes Tipo 1, el fallo es:", options: ["Receptor no funciona.", "Destrucción autoinmune de células beta (falta ligando).", "Exceso insulina.", "Fallo proteína G."], ans: 1, exp: "Respuesta: B" },
+            { id: 29, q: "En Diabetes Tipo 1, el fallo es:", options: ["Receptor no funciona.", "Destrucción autoinmune de células beta (falta ligando).", "Exceso insulina.", "Fallo proteína G."], ans: 1, exp: "Respuesta: B 
+
+[Image of type 1 diabetes mechanism autoimmune]
+" },
             { id: 30, q: "Tratamiento lógico para Diabetes Tipo 1:", options: ["Dieta solo.", "Administración exógena de insulina.", "Aumentar sensibilidad.", "Antibióticos."], ans: 1, exp: "Respuesta: B" },
-            { id: 31, q: "En Diabetes Tipo 2, el problema es:", options: ["Ausencia insulina.", "Resistencia a la insulina (transducción post-receptor fallida).", "Páncreas destruido.", "Falta glucosa."], ans: 1, exp: "Respuesta: B" },
+            { id: 31, q: "En Diabetes Tipo 2, el problema es:", options: ["Ausencia insulina.", "Resistencia a la insulina (transducción post-receptor fallida).", "Páncreas destruido.", "Falta glucosa."], ans: 1, exp: "Respuesta: B 
+
+[Image of insulin resistance mechanism type 2 diabetes]
+" },
             { id: 32, q: "¿Qué fármaco análogo de GLP-1 actúa sobre GPCR?", options: ["Morfina.", "Semaglutida (Ozempic).", "Aspirina.", "Insulina."], ans: 1, exp: "Respuesta: B" },
             { id: 33, q: "El Óxido Nítrico (NO) activa a:", options: ["Receptores membrana.", "Guanilato Ciclasa citosólica (genera GMPc).", "Adenilato Ciclasa.", "Factor transcripción."], ans: 1, exp: "Respuesta: B" },
             { id: 34, q: "Efecto cardiovascular del Óxido Nítrico:", options: ["Vasoconstricción.", "Vasodilatación (relajación músculo liso).", "Coagulación.", "Taquicardia."], ans: 1, exp: "Respuesta: B" },
@@ -188,78 +147,87 @@
             { id: 42, q: "Tras activarse, los receptores de membrana suelen:", options: ["Seguir activos.", "Sufrir desensibilización, endocitosis o degradación.", "Duplicarse.", "Convertirse en ligandos."], ans: 1, exp: "Respuesta: B" },
             { id: 43, q: "En la vía Gq, el Calcio y DAG activan a:", options: ["PKA.", "PKC.", "PKG.", "Tirosina Quinasa."], ans: 1, exp: "Respuesta: B" },
             { id: 44, q: "Los receptores de citoquinas suelen usar la vía:", options: ["Canal iónico.", "GPCR.", "JAK-STAT (reclutan quinasas citosólicas).", "Esteroidea."], ans: 2, exp: "Respuesta: C" },
-            { id: 45, q: "El \"Primer mensajero\" es:", options: ["AMPc.", "Ligando extracelular.", "Proteína G.", "Receptor."], ans: 1, exp: "Respuesta: B" },
+            { id: 45, q: "El 'Primer mensajero' es:", options: ["AMPc.", "Ligando extracelular.", "Proteína G.", "Receptor."], ans: 1, exp: "Respuesta: B" },
             { id: 46, q: "Fosforilación es regulada por:", options: ["Quinasas y Fosfatasas.", "Quinasas y Proteasas.", "Sintetasas.", "Receptores."], ans: 0, exp: "Respuesta: A" },
             { id: 47, q: "Receptor para huida rápida (contracción):", options: ["Nuclear.", "Canal iónico (Nicotínico).", "Insulina.", "Crecimiento."], ans: 1, exp: "Respuesta: B" },
-            { id: 48, q: "La \"afinidad\" es:", options: ["Distinguir señales.", "Fuerza de unión ligando-receptor (Kd).", "Velocidad.", "Número."], ans: 1, exp: "Respuesta: B" },
+            { id: 48, q: "La 'afinidad' es:", options: ["Distinguir señales.", "Fuerza de unión ligando-receptor (Kd).", "Velocidad.", "Número."], ans: 1, exp: "Respuesta: B" },
             { id: 49, q: "La toxina colérica causa diarrea porque:", options: ["Cierra canales Cl.", "Sube masivo AMPc, abre canales Cl- y arrastra agua.", "Inhibe Adenilato.", "Destruye intestino."], ans: 1, exp: "Respuesta: B" },
             { id: 50, q: "Afirmación CORRECTA sobre transducción:", options: ["Todas las células responden igual.", "Una señal puede generar respuestas distintas según el tejido.", "Receptores siempre van al núcleo.", "Sin energía."], ans: 1, exp: "Respuesta: B" }
         ];
 
-        function loadQuiz(randomize) {
+        function startQuiz(randomize) {
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('app').classList.remove('hidden');
 
             const sidebar = document.getElementById('sidebar');
-            const content = document.getElementById('content');
-            
-            let quizList = [...db];
-            if(randomize) quizList.sort(() => Math.random() - 0.5);
+            const main = document.getElementById('main');
+            sidebar.innerHTML = "";
+            main.innerHTML = "";
 
-            quizList.forEach(q => {
-                // Punto lateral
+            let list = [...db];
+            if(randomize) list.sort(() => Math.random() - 0.5);
+
+            list.forEach((q, index) => {
+                // 1. Sidebar Dot
                 const dot = document.createElement('div');
                 dot.className = 'dot';
-                dot.id = `dot-${q.id}`;
                 dot.innerText = q.id;
-                dot.onclick = () => document.getElementById(`card-${q.id}`).scrollIntoView({behavior:'smooth', block:'center'});
+                dot.id = `dot-${q.id}`;
+                dot.onclick = () => document.getElementById(`card-${q.id}`).scrollIntoView();
                 sidebar.appendChild(dot);
 
-                // Tarjeta
+                // 2. Card
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.id = `card-${q.id}`;
                 card.innerHTML = `<h3>${q.id}. ${q.q}</h3>`;
 
+                // 3. Options
                 q.options.forEach((opt, idx) => {
                     const btn = document.createElement('button');
                     btn.className = 'opt';
                     btn.innerText = opt;
-                    btn.onclick = () => {
-                        if(card.classList.contains('done')) return;
-                        card.classList.add('done');
-                        
-                        const exp = card.querySelector('.exp');
-                        exp.style.display = 'block';
-                        const dotEl = document.getElementById(`dot-${q.id}`);
-
-                        if(idx === q.ans) {
-                            btn.classList.add('correct');
-                            dotEl.classList.add('correct');
-                        } else {
-                            btn.classList.add('wrong');
-                            dotEl.classList.add('wrong');
-                            card.querySelectorAll('.opt')[q.ans].classList.add('correct');
-                        }
-                    };
+                    btn.onclick = () => check(q, idx, btn, card);
                     card.appendChild(btn);
                 });
 
-                const expDiv = document.createElement('div');
-                expDiv.className = 'exp';
-                let expText = q.exp.replace(/\]+)\]/g, '<div class="diagram-placeholder">Diagrama: $1</div>');
-                expDiv.innerHTML = `<strong>Explicación:</strong><br>${expText}`;
-                card.appendChild(expDiv);
+                // 4. Explanation
+                const exp = document.createElement('div');
+                exp.className = 'exp';
+                // Clean image tag to prevent layout break, replace with text
+                let cleanExp = q.exp.replace(/\]+)\]/g, '<br><small><em>(Diagrama: $1)</em></small>');
+                exp.innerHTML = `<strong>Explicación:</strong> ${cleanExp}`;
+                card.appendChild(exp);
 
-                content.appendChild(card);
+                main.appendChild(card);
             });
         }
 
-        function finish() {
+        function check(q, idx, btn, card) {
+            if(card.classList.contains('answered')) return;
+            card.classList.add('answered');
+
+            const dot = document.getElementById(`dot-${q.id}`);
+            const exp = card.querySelector('.exp');
+            exp.style.display = 'block';
+
+            if(idx === q.ans) {
+                btn.classList.add('correct');
+                dot.classList.add('correct');
+            } else {
+                btn.classList.add('wrong');
+                dot.classList.add('wrong');
+                // Show correct
+                const allBtns = card.querySelectorAll('.opt');
+                allBtns[q.ans].classList.add('correct');
+            }
+        }
+
+        function finishQuiz() {
             const corrects = document.querySelectorAll('.dot.correct').length;
             document.getElementById('app').classList.add('hidden');
-            document.getElementById('results-modal').classList.remove('hidden');
-            document.getElementById('final-score').innerText = `Puntos: ${corrects} / 50`;
+            document.getElementById('results-screen').classList.remove('hidden');
+            document.getElementById('score').innerText = `Aciertos: ${corrects} / 50`;
         }
     </script>
 </body>
