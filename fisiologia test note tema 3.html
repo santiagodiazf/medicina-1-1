@@ -16,7 +16,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f6f7;
@@ -27,34 +27,30 @@
             overflow: hidden;
         }
 
+        /* --- PANTALLAS --- */
         #start-screen, #results-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.98);
+            background: white;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 2000;
-            padding: 20px;
             text-align: center;
         }
 
         .hidden { display: none !important; }
 
-        h1 { color: var(--primary); margin-bottom: 10px; }
-        h2 { color: var(--primary); margin-bottom: 20px; }
-        p { font-size: 1.1em; color: #555; max-width: 600px; margin-bottom: 20px; }
-
         .btn-container {
             display: flex;
             gap: 15px;
-            flex-wrap: wrap;
             justify-content: center;
-            margin-top: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
         }
 
         button {
@@ -63,60 +59,49 @@
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            transition: all 0.2s;
             font-weight: 600;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: 0.2s;
         }
-
-        button:hover { transform: translateY(-2px); box-shadow: 0 6px 8px rgba(0,0,0,0.15); }
-        button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
         .btn-primary { background-color: var(--primary); color: white; }
         .btn-secondary { background-color: var(--accent); color: white; }
         .btn-danger { background-color: var(--error); color: white; }
-        .btn-warning { background-color: var(--warning); color: #333; }
         .btn-info { background-color: #3498db; color: white; }
 
+        /* --- LAYOUT --- */
         #app-container {
             display: flex;
             flex: 1;
-            height: 100%;
-            overflow: hidden;
+            height: 100vh;
         }
 
         #sidebar {
-            width: 70px;
-            background-color: var(--primary);
+            width: 80px;
+            background: var(--primary);
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 20px 0;
             gap: 10px;
-            flex-shrink: 0;
         }
 
         .nav-dot {
             width: 35px;
             height: 35px;
             border-radius: 50%;
-            background-color: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.2);
             color: white;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 0.8em;
             cursor: pointer;
-            transition: all 0.2s;
-            border: 2px solid transparent;
-            flex-shrink: 0;
+            font-size: 0.8em;
         }
 
-        .nav-dot:hover { background-color: rgba(255,255,255,0.4); }
-        .nav-dot.active { border-color: white; transform: scale(1.15); font-weight: bold; }
-        .nav-dot.correct { background-color: var(--success); }
-        .nav-dot.wrong { background-color: var(--error); }
-        .nav-dot.marked { border-color: var(--warning); color: var(--warning); font-weight: bold; }
+        .nav-dot.correct { background: var(--success); }
+        .nav-dot.wrong { background: var(--error); }
+        .nav-dot.marked { border: 2px solid var(--warning); color: var(--warning); }
 
         #main-area {
             flex: 1;
@@ -128,105 +113,52 @@
         .question-card {
             background: white;
             border-radius: 10px;
-            padding: 30px;
-            margin-bottom: 50px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-            border-left: 5px solid var(--accent);
-            max-width: 900px;
+            padding: 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            max-width: 800px;
             margin-left: auto;
             margin-right: auto;
         }
 
-        .q-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 20px;
-        }
-
-        .q-title {
-            font-size: 1.15em;
-            font-weight: 600;
-            color: var(--primary);
-            line-height: 1.4;
-            width: 85%;
-        }
-
-        .mark-container {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            font-size: 0.9em;
-            color: #7f8c8d;
-            user-select: none;
-        }
-        .mark-container input { display: none; }
-        .mark-icon { font-size: 1.5em; margin-right: 5px; }
-        .mark-container input:checked ~ .mark-icon { color: var(--warning); }
-        .mark-icon::before { content: '☆'; }
-        .mark-container input:checked ~ .mark-icon::before { content: '★'; }
-
-        .options-list { display: flex; flex-direction: column; gap: 10px; }
-
         .option-btn {
-            background: #fff;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 15px;
+            display: block;
+            width: 100%;
             text-align: left;
-            font-size: 1em;
-            color: var(--text);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .option-btn:hover:not(:disabled) { border-color: var(--accent); background-color: #f0f8ff; }
-        .option-btn.correct { background-color: #d4edda !important; border-color: var(--success) !important; color: #155724; }
-        .option-btn.wrong { background-color: #f8d7da !important; border-color: var(--error) !important; color: #721c24; }
-        
-        .explanation {
-            margin-top: 20px;
             padding: 15px;
-            background-color: #e8f6f3;
-            border-left: 4px solid var(--success);
-            border-radius: 4px;
-            display: none;
-            animation: fadeIn 0.5s;
-        }
-        
-        .diagram-placeholder {
-            margin-top: 10px;
-            padding: 10px;
+            margin: 8px 0;
             background: #fff;
-            border: 1px dashed #ccc;
-            color: #777;
-            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
         }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .option-btn:hover:not(:disabled) { background: #f0f0f0; }
+        .option-btn.correct { background-color: #d4edda !important; border-color: var(--success); }
+        .option-btn.wrong { background-color: #f8d7da !important; border-color: var(--error); }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background: #e8f6f3;
+            border-left: 4px solid var(--success);
+            display: none;
+        }
 
         #finish-btn {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 15px 30px;
-            z-index: 100;
+            bottom: 20px;
+            right: 20px;
         }
-
-        .stats-row { display: flex; gap: 40px; justify-content: center; margin: 20px 0; }
-        .stat-box { text-align: center; }
-        .stat-number { display: block; font-size: 2.5em; font-weight: bold; }
-        .text-success { color: var(--success); }
-        .text-danger { color: var(--error); }
     </style>
 </head>
 <body>
 
     <div id="start-screen">
         <h1>Fisiología: Transporte y Señalización</h1>
-        <p>50 Preguntas Literales | Cinética, Bombas, Potenciales y Célula Beta</p>
+        <p>50 Preguntas Literales</p>
         <div class="btn-container">
-            <button class="btn-primary" onclick="initQuiz('ordered')">Orden Numérico (1-50)</button>
+            <button class="btn-primary" onclick="initQuiz('ordered')">Orden Numérico</button>
             <button class="btn-secondary" onclick="initQuiz('random')">Orden Aleatorio</button>
         </div>
     </div>
@@ -234,252 +166,156 @@
     <div id="app-container" class="hidden">
         <nav id="sidebar"></nav>
         <main id="main-area"></main>
-        <button id="finish-btn" class="btn-danger" onclick="showResults()">Finalizar Quiz</button>
+        <button id="finish-btn" class="btn-danger" onclick="showResults()">Finalizar</button>
     </div>
 
     <div id="results-modal" class="hidden">
         <h2>Resultados</h2>
-        <div class="stats-row">
-            <div class="stat-box">
-                <span class="stat-number text-success" id="res-correct">0</span>
-                <span>Aciertos</span>
-            </div>
-            <div class="stat-box">
-                <span class="stat-number text-danger" id="res-wrong">0</span>
-                <span>Fallos</span>
-            </div>
-        </div>
         <p id="res-msg"></p>
         <div class="btn-container">
-            <button class="btn-primary" onclick="restartQuiz('all')">Repetir Completo</button>
-            <button class="btn-danger" id="btn-retry-failed" onclick="restartQuiz('failed')">Repetir Falladas</button>
-            <button class="btn-warning" id="btn-retry-marked" onclick="restartQuiz('marked')">Repetir Marcadas</button>
+            <button class="btn-primary" onclick="location.reload()">Reiniciar Todo</button>
+            <button class="btn-info" onclick="closeModal()">Revisar</button>
         </div>
-        <br>
-        <button class="btn-info" onclick="closeModal()">Revisar Respuestas</button>
     </div>
 
     <script>
         const dbQuestions = [
-            { id: 1, q: "El profesor utiliza la analogía del \"Canal de Panamá\" para explicar el funcionamiento de:", options: ["Los canales iónicos de fuga.", "Las permeasas o proteínas transportadoras.", "La difusión simple de gases.", "Los poros nucleares."], ans: 1, exp: "Respuesta: B (Pista del audio: nunca están abiertos a ambos lados a la vez, como las esclusas)." },
-            { id: 2, q: "A diferencia de la difusión simple o a través de canales, el transporte mediado por permeasas se caracteriza por:", options: ["No saturarse nunca.", "Ser un proceso mucho más rápido que los canales.", "Sufrir cambios conformacionales y saturación (Vmax).", "No requerir especificidad por el sustrato."], ans: 2, exp: "Respuesta: C. " },
-            { id: 3, q: "En la cinética de transporte, si observamos que la curva se hace más \"horizontal\" (la pendiente disminuye) y aumenta la Km, esto indica:", options: ["Un aumento de la afinidad del transportador.", "Una disminución de la afinidad del transportador por el sustrato.", "Que se ha alcanzado la velocidad máxima.", "Que el transporte ha pasado a ser activo."], ans: 1, exp: "Respuesta: B, (Pista del audio: el profesor pregunta cómo cambia la gráfica si disminuye la afinidad)." },
+            { id: 1, q: "El profesor utiliza la analogía del \"Canal de Panamá\" para explicar el funcionamiento de:", options: ["Los canales iónicos de fuga.", "Las permeasas o proteínas transportadoras.", "La difusión simple de gases.", "Los poros nucleares."], ans: 1, exp: "Respuesta: B (Pista: nunca están abiertos a ambos lados a la vez)." },
+            { id: 2, q: "A diferencia de la difusión simple o a través de canales, el transporte mediado por permeasas se caracteriza por:", options: ["No saturarse nunca.", "Ser un proceso mucho más rápido que los canales.", "Sufrir cambios conformacionales y saturación (Vmax).", "No requerir especificidad por el sustrato."], ans: 2, exp: "Respuesta: C." },
+            { id: 3, q: "En la cinética de transporte, si observamos que la curva se hace más \"horizontal\" y aumenta la Km, esto indica:", options: ["Un aumento de la afinidad del transportador.", "Una disminución de la afinidad del transportador por el sustrato.", "Que se ha alcanzado la velocidad máxima.", "Que el transporte ha pasado a ser activo."], ans: 1, exp: "Respuesta: B." },
             { id: 4, q: "¿Qué representa el parámetro \"Turnover\" en un transportador?", options: ["La cantidad total de transportadores en la membrana.", "La afinidad del sustrato (Km).", "La eficacia del transportador (ciclos de transporte por unidad de tiempo).", "La energía consumida por mol de sustrato."], ans: 2, exp: "Respuesta: C" },
-            { id: 5, q: "Si en un experimento añadimos Galactosa a un medio que contiene Glucosa y células con transportadores GLUT (que transportan ambas), ¿qué efecto cinético observaremos sobre el transporte de Glucosa?", options: ["Aumenta la Vmax de la glucosa.", "Disminuye la velocidad de transporte de la glucosa por inhibición competitiva.", "Cambia la afinidad estructural (Km) de la glucosa por el receptor.", "El transporte se detiene completamente."], ans: 1, exp: "Respuesta: B" },
-            { id: 6, q: "¿Cuál de las siguientes afirmaciones sobre la Vmax es la que el profesor destaca como un concepto dinámico y no fijo?", options: ["La Vmax nunca puede cambiar en una célula viva.", "La Vmax puede aumentar si la célula recluta más transportadores a la membrana (ej. insulina).", "La Vmax depende exclusivamente de la temperatura.", "La Vmax es idéntica para todos los solutos."], ans: 1, exp: "Respuesta: B" },
+            { id: 5, q: "Si en un experimento añadimos Galactosa a un medio que contiene Glucosa y células con transportadores GLUT, ¿qué efecto cinético observaremos?", options: ["Aumenta la Vmax de la glucosa.", "Disminuye la velocidad de transporte de la glucosa por inhibición competitiva.", "Cambia la afinidad estructural (Km) de la glucosa por el receptor.", "El transporte se detiene completamente."], ans: 1, exp: "Respuesta: B." },
+            { id: 6, q: "¿Cuál de las siguientes afirmaciones sobre la Vmax es la que el profesor destaca como un concepto dinámico?", options: ["La Vmax nunca puede cambiar en una célula viva.", "La Vmax puede aumentar si la célula recluta más transportadores a la membrana (ej. insulina).", "La Vmax depende exclusivamente de la temperatura.", "La Vmax es idéntica para todos los solutos."], ans: 1, exp: "Respuesta: B." },
             { id: 7, q: "La maltosa inhibe el transporte de glucosa en GLUT, pero no es transportada. Esto se debe a:", options: ["Inhibición alostérica.", "Inhibición competitiva por el sitio de unión, pero es demasiado grande para ser transportada.", "Destrucción del transportador.", "Modificación covalente del transportador."], ans: 1, exp: "Respuesta: B" },
             { id: 8, q: "Los transportadores GLUT son un ejemplo clásico de:", options: ["Transporte activo primario.", "Difusión facilitada (Uniporte).", "Transporte activo secundario (Simporte).", "Canal iónico dependiente de voltaje."], ans: 1, exp: "Respuesta: B" },
-            { id: 9, q: "¿Cuál es la diferencia fundamental entre un canal iónico y una permeasa en términos de estructura funcional?", options: ["Los canales son proteínas periféricas.", "Las permeasas forman un poro acuoso continuo entre LEC y LIC; los canales no.", "Los canales pueden formar un poro continuo (abierto); las permeasas nunca conectan ambos lados simultáneamente.", "Las permeasas son más rápidas."], ans: 2, exp: "Respuesta: C" },
-            { id: 10, q: "La constante de Michaelis-Menten (Km) se define como:", options: ["La velocidad máxima del transporte.", "La concentración de sustrato necesaria para alcanzar el 50% de la Vmax.", "La concentración de sustrato que satura todos los transportadores.", "El número de transportadores en la membrana."], ans: 1, exp: "Respuesta: B" },
-            { id: 11, q: "¿Qué característica define al transporte activo primario?", options: ["Utiliza el gradiente de otro ión.", "Hidroliza ATP directamente para mover un soluto contra su gradiente electroquímico.", "Siempre mueve solutos a favor de gradiente.", "No requiere proteínas transmembrana."], ans: 1, exp: "Respuesta: B" },
-            { id: 12, q: "La bomba Na+/K+ ATPasa es \"electrogénica\" porque:", options: ["Mueve 3 Na+ fuera y 3 K+ dentro (neutra).", "Mueve 2 Na+ fuera y 3 K+ dentro.", "Mueve 3 Na+ hacia el exterior y 2 K+ hacia el interior, generando una carga neta negativa en el interior.", "Genera ATP a partir de gradientes eléctricos."], ans: 2, exp: "Respuesta: C" },
-            { id: 13, q: "En el ciclo de la Na+/K+ ATPasa, ¿qué evento provoca la liberación del Na+ al exterior?", options: ["La unión del K+.", "La fosforilación de la bomba tras la hidrólisis de ATP.", "La desfosforilación de la bomba.", "La unión de una molécula de glucosa."], ans: 1, exp: "Respuesta: B" },
-            { id: 14, q: "¿Qué fármaco menciona el profesor que inhibe específicamente la bomba Na+/K+ ATPasa, pudiendo ser letal?", options: ["Tetrodotoxina.", "Ouabaina (o digitálicos).", "Curare.", "Aspirina."], ans: 1, exp: "Respuesta: B" },
-            { id: 15, q: "¿Cuándo están disponibles los sitios de unión para el Potasio (K+) en la bomba Na+/K+?", options: ["Cuando la bomba está abierta hacia el interior celular.", "Antes de que se una el sodio.", "Solo después de que se libera el Na+ al exterior y la bomba está fosforilada.", "Nunca, el potasio entra por difusión simple."], ans: 2, exp: "Respuesta: C" },
-            { id: 16, q: "La Ca2+-ATPasa (bomba de calcio) es capaz de mantener un gradiente de concentración entre el citosol y el exterior de:", options: ["2 veces.", "10 veces.", "4 órdenes de magnitud (10.000 veces).", "No mantiene gradiente."], ans: 2, exp: "Respuesta: C" },
-            { id: 17, q: "Además de la membrana plasmática, ¿dónde encontramos bombas de calcio (Ca2+-ATPasa) importantes?", options: ["En el núcleo.", "En el Retículo Sarcoplásmico/Endoplásmico y mitocondrias (almacenes intracelulares).", "En los lisosomas únicamente.", "En el aparato de Golgi exclusivamente."], ans: 1, exp: "Respuesta: B" },
-            { id: 18, q: "La desfosforilación de la bomba Na+/K+ ATPasa ocurre:", options: ["Inmediatamente tras unirse el Na+.", "Tras la unión del K+ desde el exterior, provocando su cambio conformacional hacia dentro.", "Espontáneamente sin unión de iones.", "Antes de hidrolizar ATP."], ans: 1, exp: "Respuesta: B" },
-            { id: 19, q: "¿Cuál es la función principal de las bombas o ATPasas en la fisiología celular?", options: ["Equilibrar las concentraciones a ambos lados.", "Generar y mantener los gradientes electroquímicos que se disiparían pasivamente.", "Transportar agua.", "Crear ATP."], ans: 1, exp: "Respuesta: B" },
-            { id: 20, q: "Si inhibimos la Na+/K+ ATPasa, ¿qué efecto inmediato esperamos en el volumen celular?", options: ["Ninguno.", "La célula se hincha por acumulación de solutos y entrada de agua (pérdida de control osmótico).", "La célula se encoge drásticamente.", "La célula se divide."], ans: 1, exp: "Respuesta: B" },
-            { id: 21, q: "El transporte activo secundario se distingue del primario en que:", options: ["No gasta energía en ningún paso.", "La proteína transportadora no hidroliza ATP, sino que usa la energía cinética de un gradiente (usualmente Na+) generado previamente.", "Es más rápido.", "Solo mueve iones."], ans: 1, exp: "Respuesta: B" },
-            { id: 22, q: "El transportador SGLT (Sodio-Glucosa) es un ejemplo de:", options: ["Antiporte.", "Uniporte.", "Simporte (Cotransporte).", "Difusión simple."], ans: 2, exp: "Respuesta: C " },
-            { id: 23, q: "En el mecanismo del SGLT explicado en clase, ¿qué debe unirse primero al transportador para que este adquiera afinidad por la glucosa?", options: ["La glucosa.", "El ATP.", "El Sodio (Na+).", "El Potasio."], ans: 2, exp: "Respuesta: C" },
-            { id: 24, q: "¿Dónde se localiza fisiológicamente el transportador SGLT para la absorción de nutrientes?", options: ["En la membrana basolateral de todas las células.", "En la membrana apical del epitelio intestinal y túbulo renal.", "En el cerebro.", "En el músculo esquelético."], ans: 1, exp: "Respuesta: B" },
-            { id: 25, q: "¿Qué ocurre con la glucosa en la nefrona gracias al SGLT en condiciones fisiológicas normales?", options: ["Se excreta toda en la orina.", "Se reabsorbe/recapta casi totalmente, resultando en una orina sin glucosa.", "Se secreta activamente.", "Se convierte en fructosa."], ans: 1, exp: "Respuesta: B" },
-            { id: 26, q: "La energía que impulsa al SGLT proviene directamente de:", options: ["La hidrólisis de ATP en el sitio SGLT.", "El gradiente electroquímico del Na+ creado por la bomba Na+/K+.", "El gradiente de glucosa.", "La temperatura corporal."], ans: 1, exp: "Respuesta: B" },
-            { id: 27, q: "Un sistema de transporte tipo \"Antiporte\" o intercambiador:", options: ["Mueve dos solutos en la misma dirección.", "Mueve un soluto y agua.", "Mueve dos solutos en direcciones opuestas (uno entra, otro sale).", "No requiere transportador."], ans: 2, exp: "Respuesta: C" },
-            { id: 28, q: "El intercambiador Na+/Ca2+ (NCX) mencionado en el contexto cardíaco o muscular es un:", options: ["Transporte activo primario.", "Transporte activo secundario tipo antiporte.", "Transporte activo secundario tipo simporte.", "Canal iónico."], ans: 1, exp: "Respuesta: B" },
-            { id: 29, q: "En el epitelio intestinal, para que la glucosa pase de la luz al torrente sanguíneo, la disposición correcta de transportadores es:", options: ["GLUT apical, SGLT basolateral.", "SGLT y Na+/K+ bomba apicales.", "SGLT apical (entra con Na+), GLUT basolateral (sale a sangre), Bomba Na+/K+ basolateral (mantiene gradiente).", "Solo difusión simple."], ans: 2, exp: "Respuesta: C" },
-            { id: 30, q: "Las células intercaladas tipo A del riñón funcionan principalmente en condiciones de:", options: ["Alcalosis.", "Acidosis.", "Hidratación excesiva.", "Ayuno de glucosa."], ans: 1, exp: "Respuesta: B" },
-            { id: 31, q: "¿Qué transportador utiliza la célula intercalada tipo A en su membrana apical para eliminar el exceso de ácido?", options: ["SGLT.", "H+-ATPasa y H+/K+-ATPasa.", "Intercambiador Cl-/HCO3-.", "Canales de sodio."], ans: 1, exp: "Respuesta: B" },
-            { id: 32, q: "En una situación de alcalosis, entran en juego las células intercaladas tipo B. ¿Cómo cambia su polaridad respecto a las tipo A?", options: ["Es idéntica, solo aumentan su velocidad.", "La disposición de transportadores se invierte (transporte de HCO3- hacia la orina).", "Dejan de funcionar.", "Se mueren."], ans: 1, exp: "Respuesta: B" },
-            { id: 33, q: "En la célula intercalada tipo A, ¿qué ocurre con el bicarbonato (HCO3-) generado?", options: ["Se excreta a la orina.", "Se reabsorbe a la sangre mediante un antiporte con Cl- (tampón).", "Se destruye.", "Se convierte en glucosa."], ans: 1, exp: "Respuesta: B" },
-            { id: 34, q: "¿Qué define una célula epitelial \"polarizada\"?", options: ["Que tiene carga eléctrica.", "Que expresa diferentes transportadores en su membrana apical y en su membrana basolateral.", "Que vive en el polo norte.", "Que solo tiene membrana basal."], ans: 1, exp: "Respuesta: B" },
-            { id: 35, q: "La endocitosis mediada por receptor se diferencia de la pinocitosis (fase fluida) en que:", options: ["Es inespecífica.", "Es un proceso selectivo que concentra moléculas específicas (ej. LDL, Transferrina).", "No gasta energía.", "No usa vesículas."], ans: 1, exp: "Respuesta: B 
-
-[Image of receptor-mediated endocytosis]
-" },
-            { id: 36, q: "En la endocitosis de LDL, ¿qué proteína recubre la vesícula intracelularmente formando una jaula?", options: ["Caveolina.", "Clatrina.", "Actina.", "Tubulina."], ans: 1, exp: "Respuesta: B" },
-            { id: 37, q: "¿Qué le sucede al receptor de LDL una vez que el endosoma se acidifica?", options: ["Se degrada junto con el LDL.", "Se disocia del LDL y se recicla a la membrana plasmática.", "Se va al núcleo.", "Se queda en el lisosoma."], ans: 1, exp: "Respuesta: B" },
-            { id: 38, q: "La hipercolesterolemia familiar puede deberse a un fallo genético en:", options: ["La síntesis de colesterol.", "El receptor de LDL (ej. falta de unión a adaptina), impidiendo su endocitosis.", "La bomba de sodio.", "Los canales de calcio."], ans: 1, exp: "Respuesta: B" },
-            { id: 39, q: "A diferencia del ciclo del LDL, en el ciclo de la Transferrina:", options: ["El receptor se degrada.", "Tanto el receptor como el ligando (apotransferrina) se reciclan a la membrana.", "El hierro se excreta.", "No se usa clatrina."], ans: 1, exp: "Respuesta: B" },
-            { id: 40, q: "¿Qué es la Transcitosis?", options: ["El paso de sustancias a través del citosol sin vesículas.", "El transporte de moléculas de un lado a otro de la célula mediante vesículas (ej. IgA en leche materna).", "La rotura de la célula.", "Un tipo de división celular."], ans: 1, exp: "Respuesta: B" },
-            { id: 41, q: "La exocitosis regulada (ej. liberación de insulina) requiere:", options: ["Que ocurra todo el tiempo sin parar.", "Una señal específica (aumento de Ca2+ intracelular) para la fusión de la vesícula.", "Ausencia de ATP.", "Que la célula esté muerta."], ans: 1, exp: "Respuesta: B" },
-            { id: 42, q: "En la célula beta pancreática, ¿qué canal se cierra cuando aumenta el ATP intracelular (tras comer)?", options: ["Canal de Sodio.", "Canal de Potasio sensible a ATP (K-ATP).", "Canal de Calcio.", "Canal de Cloro."], ans: 1, exp: "Respuesta: B " },
-            { id: 43, q: "El cierre del canal K-ATP en la célula beta provoca:", options: ["Hiperpolarización.", "Despolarización de la membrana (se hace menos negativa).", "Repolarización.", "Salida masiva de K+."], ans: 1, exp: "Respuesta: B" },
-            { id: 44, q: "La despolarización de la célula beta abre canales de ________ dependientes de voltaje, lo que desencadena la exocitosis de insulina.", options: ["Sodio.", "Potasio.", "Calcio (Ca2+).", "Cloro."], ans: 2, exp: "Respuesta: C" },
-            { id: 45, q: "¿Qué efecto tiene la insulina sobre las células musculares o adiposas en reposo?", options: ["Ninguno.", "Provoca la translocación (exocitosis regulada) de transportadores GLUT4 a la membrana para captar glucosa.", "Cierra los transportadores GLUT.", "Inhibe la síntesis de proteínas."], ans: 1, exp: "Respuesta: B" },
-            { id: 46, q: "La fagocitosis es un proceso:", options: ["Que realizan todas las células.", "Específico de células del sistema inmune (macrófagos, neutrófilos) mediado por reorganización del citoesqueleto (pseudópodos).", "Idéntico a la pinocitosis.", "Pasivo."], ans: 1, exp: "Respuesta: B" },
-            { id: 47, q: "En la Diabetes Tipo 1, el fallo principal en el mecanismo de la célula beta es:", options: ["El canal de K+ no cierra.", "Destrucción autoinmune de las células beta (no hay insulina).", "Resistencia en los receptores de insulina.", "Exceso de transportadores GLUT."], ans: 1, exp: "Respuesta: B" },
-            { id: 48, q: "En la Diabetes Tipo 2, el problema suele radicar en:", options: ["Ausencia total de insulina.", "Resistencia a la insulina (fallo en el receptor o señalización post-receptor).", "Falta de glucosa en la dieta.", "Exceso de células beta."], ans: 1, exp: "Respuesta: B" },
-            { id: 49, q: "La difusión pasiva (canales) se diferencia de la facilitada (carriers) en la gráfica de cinética porque:", options: ["La pasiva es lineal (no satura fisiológicamente) y la facilitada es hiperbólica (satura).", "La pasiva satura antes.", "Ambas son idénticas.", "La facilitada es lineal."], ans: 0, exp: "Respuesta: A" },
-            { id: 50, q: "El término \"Simporte\" implica:", options: ["Transporte de una sola molécula.", "Transporte de dos moléculas en direcciones opuestas.", "Transporte de dos moléculas en la misma dirección (Cotransporte).", "Transporte sin gasto de energía."], ans: 2, exp: "Respuesta: C" }
+            { id: 9, q: "¿Cuál es la diferencia fundamental entre un canal iónico y una permeasa en términos de estructura?", options: ["Los canales son proteínas periféricas.", "Las permeasas forman un poro acuoso continuo; los canales no.", "Los canales pueden formar un poro abierto; las permeasas nunca conectan ambos lados a la vez.", "Las permeasas son más rápidas."], ans: 2, exp: "Respuesta: C" },
+            { id: 10, q: "La constante de Michaelis-Menten (Km) se define como:", options: ["La velocidad máxima.", "La concentración de sustrato para alcanzar el 50% de la Vmax.", "La saturación total.", "El número de transportadores."], ans: 1, exp: "Respuesta: B" },
+            { id: 11, q: "¿Qué característica define al transporte activo primario?", options: ["Gradiente de otro ión.", "Hidroliza ATP directamente.", "A favor de gradiente.", "Sin proteínas."], ans: 1, exp: "Respuesta: B" },
+            { id: 12, q: "La bomba Na+/K+ ATPasa es \"electrogénica\" porque:", options: ["Mueve 3 Na+ fuera y 3 K+ dentro.", "Mueve 2 Na+ fuera y 3 K+ dentro.", "Mueve 3 Na+ fuera y 2 K+ dentro, generando carga neta negativa interna.", "Genera ATP."], ans: 2, exp: "Respuesta: C" },
+            { id: 13, q: "En el ciclo de la Na+/K+ ATPasa, ¿qué provoca la liberación del Na+ al exterior?", options: ["Unión del K+.", "Fosforilación de la bomba tras hidrólisis de ATP.", "Desfosforilación.", "Unión de glucosa."], ans: 1, exp: "Respuesta: B" },
+            { id: 14, q: "¿Qué fármaco inhibe la bomba Na+/K+ ATPasa?", options: ["Tetrodotoxina.", "Ouabaina (o digitálicos).", "Curare.", "Aspirina."], ans: 1, exp: "Respuesta: B" },
+            { id: 15, q: "¿Cuándo están disponibles los sitios para el Potasio (K+) en la bomba Na+/K+?", options: ["Hacia el interior.", "Antes del sodio.", "Tras liberar Na+ al exterior y estar fosforilada.", "Nunca."], ans: 2, exp: "Respuesta: C" },
+            { id: 16, q: "La Ca2+-ATPasa mantiene un gradiente de:", options: ["2 veces.", "10 veces.", "10.000 veces (4 órdenes).", "No mantiene."], ans: 2, exp: "Respuesta: C" },
+            { id: 17, q: "¿Dónde hay bombas de calcio importantes además de la membrana?", options: ["Núcleo.", "Retículo Sarcoplásmico/Endoplásmico.", "Lisosomas.", "Golgi."], ans: 1, exp: "Respuesta: B" },
+            { id: 18, q: "La desfosforilación de la bomba Na+/K+ ocurre:", options: ["Tras unirse Na+.", "Tras unión de K+ externo, provocando cambio hacia dentro.", "Sin iones.", "Antes de ATP."], ans: 1, exp: "Respuesta: B" },
+            { id: 19, q: "Función principal de las ATPasas:", options: ["Equilibrar lados.", "Mantener gradientes electroquímicos.", "Transportar agua.", "Crear ATP."], ans: 1, exp: "Respuesta: B" },
+            { id: 20, q: "Si inhibimos la Na+/K+ ATPasa, el volumen celular:", options: ["No cambia.", "Aumenta (hinchazón) por pérdida osmótica.", "Disminuye.", "Se divide."], ans: 1, exp: "Respuesta: B" },
+            { id: 21, q: "El transporte activo secundario se distingue en que:", options: ["No gasta energía.", "Usa energía de un gradiente previo (ej. Na+).", "Es más rápido.", "Solo iones."], ans: 1, exp: "Respuesta: B" },
+            { id: 22, q: "El transportador SGLT es un ejemplo de:", options: ["Antiporte.", "Uniporte.", "Simporte.", "Difusión."], ans: 2, exp: "Respuesta: C" },
+            { id: 23, q: "En SGLT, ¿qué se une primero?", options: ["Glucosa.", "ATP.", "Sodio (Na+).", "Potasio."], ans: 2, exp: "Respuesta: C" },
+            { id: 24, q: "Localización del SGLT:", options: ["Basolateral.", "Apical de epitelio intestinal y renal.", "Cerebro.", "Músculo."], ans: 1, exp: "Respuesta: B" },
+            { id: 25, q: "En la nefrona, el SGLT provoca que:", options: ["Se excrete glucosa.", "Se reabsorba casi totalmente.", "Se secrete.", "Se pierda."], ans: 1, exp: "Respuesta: B" },
+            { id: 26, q: "Energía del SGLT:", options: ["ATP directo.", "Gradiente de Na+ de la bomba Na/K.", "Glucosa.", "Calor."], ans: 1, exp: "Respuesta: B" },
+            { id: 27, q: "Un sistema Antiporte:", options: ["Misma dirección.", "Con agua.", "Direcciones opuestas.", "Sin proteína."], ans: 2, exp: "Respuesta: C" },
+            { id: 28, q: "El intercambiador Na+/Ca2+ (NCX) es:", options: ["Activo primario.", "Activo secundario antiporte.", "Simporte.", "Canal."], ans: 1, exp: "Respuesta: B" },
+            { id: 29, q: "Ruta de glucosa en intestino:", options: ["GLUT apical.", "SGLT apical y Na/K apical.", "SGLT apical, GLUT basolateral, Bomba Na/K basolateral.", "Simple."], ans: 2, exp: "Respuesta: C" },
+            { id: 30, q: "Células intercaladas A funcionan en:", options: ["Alcalosis.", "Acidosis.", "Hidratación.", "Ayuno."], ans: 1, exp: "Respuesta: B" },
+            { id: 31, q: "Transportador apical de célula A para ácido:", options: ["SGLT.", "H+-ATPasa y H+/K+-ATPasa.", "Cl/HCO3.", "Na."], ans: 1, exp: "Respuesta: B" },
+            { id: 32, q: "En alcalosis, las células B:", options: ["Iguales que A.", "Invierten transportadores (HCO3 a orina).", "Mueren.", "Paran."], ans: 1, exp: "Respuesta: B" },
+            { id: 33, q: "En célula A, el bicarbonato:", options: ["A la orina.", "A la sangre por antiporte con Cl.", "Se destruye.", "Glucosa."], ans: 1, exp: "Respuesta: B" },
+            { id: 34, q: "Célula polarizada implica:", options: ["Carga eléctrica.", "Diferentes transportadores en apical y basolateral.", "Polo Norte.", "Solo basal."], ans: 1, exp: "Respuesta: B" },
+            { id: 35, q: "Endocitosis por receptor es:", options: ["Inespecífica.", "Selectiva (concentra LDL, etc).", "Sin energía.", "Sin vesículas."], ans: 1, exp: "Respuesta: B" },
+            { id: 36, q: "Proteína que recubre vesícula de LDL:", options: ["Caveolina.", "Clatrina.", "Actina.", "Tubulina."], ans: 1, exp: "Respuesta: B" },
+            { id: 37, q: "El receptor de LDL tras acidificarse:", options: ["Se degrada.", "Se recicla a la membrana.", "Va al núcleo.", "Lisosoma."], ans: 1, exp: "Respuesta: B" },
+            { id: 38, q: "Hipercolesterolemia familiar se debe a fallo en:", options: ["Síntesis.", "Receptor de LDL.", "Bomba Na.", "Canal Ca."], ans: 1, exp: "Respuesta: B" },
+            { id: 39, q: "En Transferrina:", options: ["Se degrada.", "Receptor y ligando se reciclan.", "Hierro sale.", "Sin clatrina."], ans: 1, exp: "Respuesta: B" },
+            { id: 40, q: "Transcitosis es:", options: ["Sin vesículas.", "Paso de un lado a otro mediante vesículas.", "Rotura.", "División."], ans: 1, exp: "Respuesta: B" },
+            { id: 41, q: "Exocitosis regulada requiere:", options: ["Sin parada.", "Señal (ej. aumento de Ca2+).", "Sin ATP.", "Muerte."], ans: 1, exp: "Respuesta: B" },
+            { id: 42, q: "En célula beta, tras comer, se cierra:", options: ["Canal Na.", "Canal K-ATP.", "Canal Ca.", "Canal Cl."], ans: 1, exp: "Respuesta: B" },
+            { id: 43, q: "Cierre de K-ATP provoca:", options: ["Hiperpolarización.", "Despolarización.", "Repolarización.", "Salida K."], ans: 1, exp: "Respuesta: B" },
+            { id: 44, q: "La despolarización abre canales de:", options: ["Sodio.", "Potasio.", "Calcio (Ca2+) voltaje-dep.", "Cloro."], ans: 2, exp: "Respuesta: C" },
+            { id: 45, q: "Efecto de insulina en músculo:", options: ["Nada.", "Translocación de GLUT4 a membrana.", "Cierra GLUT.", "Inhibe."], ans: 1, exp: "Respuesta: B" },
+            { id: 46, q: "Fagocitosis es:", options: ["Todas las células.", "Sistema inmune (pseudópodos).", "Pinocitosis.", "Pasivo."], ans: 1, exp: "Respuesta: B" },
+            { id: 47, q: "Diabetes Tipo 1:", options: ["K no cierra.", "Destrucción autoinmune de células beta.", "Resistencia.", "Exceso."], ans: 1, exp: "Respuesta: B" },
+            { id: 48, q: "Diabetes Tipo 2:", options: ["Sin insulina.", "Resistencia al receptor.", "Sin glucosa.", "Exceso."], ans: 1, exp: "Respuesta: B" },
+            { id: 49, q: "Gráfica cinética:", options: ["Pasiva lineal, Facilitada hiperbólica (satura).", "Pasiva satura.", "Iguales.", "Facilitada lineal."], ans: 0, exp: "Respuesta: A" },
+            { id: 50, q: "Simporte implica:", options: ["Una molécula.", "Direcciones opuestas.", "Misma dirección.", "Sin energía."], ans: 2, exp: "Respuesta: C" }
         ];
 
         let currentList = [];
-        let markedIds = new Set();
         let failedIds = new Set();
-        let answeredIds = new Set();
+        let markedIds = new Set();
 
-        const shuffle = (array) => {
-            let currentIndex = array.length, randomIndex;
-            while (currentIndex != 0) {
-                randomIndex = Math.floor(Math.random() * currentIndex);
-                currentIndex--;
-                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
-            }
-            return array;
-        };
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
 
-        function initQuiz(mode, customList = null) {
+        function initQuiz(mode) {
             document.getElementById('start-screen').classList.add('hidden');
-            document.getElementById('results-modal').classList.add('hidden');
             document.getElementById('app-container').classList.remove('hidden');
-
-            const container = document.getElementById('main-area');
+            
             const sidebar = document.getElementById('sidebar');
-            container.innerHTML = "";
+            const main = document.getElementById('main-area');
             sidebar.innerHTML = "";
-            
-            let sourceList = customList ? customList : [...dbQuestions];
-            
-            if (!customList) {
-                markedIds.clear();
-                failedIds.clear();
-                answeredIds.clear();
-            }
+            main.innerHTML = "";
 
-            currentList = sourceList.map(q => {
-                let optionsObj = q.options.map((txt, idx) => ({ txt, isCorrect: idx === q.ans }));
-                return { ...q, shuffledOpts: shuffle([...optionsObj]) };
-            });
+            currentList = JSON.parse(JSON.stringify(dbQuestions));
+            if (mode === 'random') shuffle(currentList);
 
-            if (mode === 'random') {
-                currentList = shuffle(currentList);
-            } else {
-                currentList.sort((a,b) => a.id - b.id);
-            }
-
-            currentList.forEach((q) => {
+            currentList.forEach((q, index) => {
+                // Dot
                 const dot = document.createElement('div');
                 dot.className = 'nav-dot';
-                dot.innerText = q.id;
                 dot.id = `dot-${q.id}`;
-                dot.onclick = () => {
-                    document.getElementById(`card-${q.id}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
-                };
-                if(markedIds.has(q.id)) dot.classList.add('marked');
+                dot.innerText = q.id;
+                dot.onclick = () => document.getElementById(`card-${q.id}`).scrollIntoView();
                 sidebar.appendChild(dot);
 
+                // Card
                 const card = document.createElement('div');
                 card.className = 'question-card';
                 card.id = `card-${q.id}`;
+                
+                const qText = document.createElement('h3');
+                qText.innerText = `${q.id}. ${q.q}`;
 
-                const header = document.createElement('div');
-                header.className = 'q-header';
-                const title = document.createElement('div');
-                title.className = 'q-title';
-                title.innerText = `${q.id}. ${q.q}`;
-
-                const markLabel = document.createElement('label');
-                markLabel.className = 'mark-container';
-                const markInput = document.createElement('input');
-                markInput.type = 'checkbox';
-                markInput.checked = markedIds.has(q.id);
-                markInput.onchange = (e) => toggleMark(q.id, e.target.checked);
-                const markIcon = document.createElement('i');
-                markIcon.className = 'mark-icon';
-                markLabel.append(markInput, markIcon, document.createTextNode(" Revisar"));
-                header.append(title, markLabel);
-
-                const optList = document.createElement('div');
-                optList.className = 'options-list';
-                q.shuffledOpts.forEach(opt => {
+                const optsDiv = document.createElement('div');
+                q.options.forEach((opt, i) => {
                     const btn = document.createElement('button');
                     btn.className = 'option-btn';
-                    btn.innerText = opt.txt;
-                    btn.onclick = () => handleAnswer(q, opt, btn, card);
-                    optList.appendChild(btn);
+                    btn.innerText = opt;
+                    btn.onclick = () => checkAnswer(q, i, btn, card);
+                    optsDiv.appendChild(btn);
                 });
 
-                const expBox = document.createElement('div');
-                expBox.className = 'explanation';
-                let expContent = q.exp.replace(/\]+)\]/g, '<div class="diagram-placeholder">Diagrama: $1</div>');
-                expBox.innerHTML = `<strong>Explicación:</strong><br>${expContent}`;
+                const exp = document.createElement('div');
+                exp.className = 'explanation';
+                exp.id = `exp-${q.id}`;
+                exp.innerText = q.exp;
 
-                card.append(header, optList, expBox);
-                container.appendChild(card);
+                card.append(qText, optsDiv, exp);
+                main.appendChild(card);
             });
         }
 
-        function handleAnswer(qObj, optObj, btnElem, cardElem) {
-            if (cardElem.hasAttribute('data-answered')) return;
-            cardElem.setAttribute('data-answered', 'true');
-            answeredIds.add(qObj.id);
+        function checkAnswer(q, index, btn, card) {
+            if (card.classList.contains('answered')) return;
+            card.classList.add('answered');
+
+            const dots = document.getElementById(`dot-${q.id}`);
+            const exp = document.getElementById(`exp-${q.id}`);
+            exp.style.display = 'block';
+
+            if (index === q.ans) {
+                btn.classList.add('correct');
+                dots.classList.add('correct');
+            } else {
+                btn.classList.add('wrong');
+                dots.classList.add('wrong');
+                failedIds.add(q.id);
+                // Highlight correct
+                const buttons = card.querySelectorAll('.option-btn');
+                buttons[q.ans].classList.add('correct');
+            }
             
-            const allBtns = cardElem.querySelectorAll('.option-btn');
-            allBtns.forEach(b => b.disabled = true);
-
-            if (optObj.isCorrect) {
-                btnElem.classList.add('correct');
-            } else {
-                btnElem.classList.add('wrong');
-                failedIds.add(qObj.id);
-                allBtns.forEach(b => {
-                    const originalOpt = qObj.shuffledOpts.find(o => o.txt === b.innerText);
-                    if(originalOpt && originalOpt.isCorrect) b.classList.add('correct');
-                });
-            }
-
-            const dot = document.getElementById(`dot-${qObj.id}`);
-            dot.classList.add(optObj.isCorrect ? 'correct' : 'wrong');
-            cardElem.querySelector('.explanation').style.display = 'block';
-        }
-
-        function toggleMark(id, isChecked) {
-            const dot = document.getElementById(`dot-${id}`);
-            if (isChecked) {
-                markedIds.add(id);
-                dot.classList.add('marked');
-            } else {
-                markedIds.delete(id);
-                dot.classList.remove('marked');
-            }
+            const btns = card.querySelectorAll('.option-btn');
+            btns.forEach(b => b.disabled = true);
         }
 
         function showResults() {
-            const modal = document.getElementById('results-modal');
-            let corrects = 0;
-            let fails = 0;
-            
-            currentList.forEach(q => {
-                const card = document.getElementById(`card-${q.id}`);
-                if (card && card.hasAttribute('data-answered')) {
-                    if (card.querySelector('.option-btn.wrong')) fails++;
-                    else corrects++;
-                }
-            });
-
-            document.getElementById('res-correct').innerText = corrects;
-            document.getElementById('res-wrong').innerText = fails;
-            document.getElementById('res-msg').innerText = `Has completado el test.`;
-            
-            document.getElementById('btn-retry-failed').disabled = failedIds.size === 0;
-            document.getElementById('btn-retry-marked').disabled = markedIds.size === 0;
-
-            modal.classList.remove('hidden');
-        }
-
-        function restartQuiz(mode) {
-            if (mode === 'all') {
-                location.reload();
-                return;
-            }
-            let list = [];
-            if (mode === 'failed') list = dbQuestions.filter(q => failedIds.has(q.id));
-            if (mode === 'marked') list = dbQuestions.filter(q => markedIds.has(q.id));
-            
-            if (list.length > 0) initQuiz('random', list);
+            document.getElementById('results-modal').classList.remove('hidden');
+            const corrects = document.querySelectorAll('.nav-dot.correct').length;
+            document.getElementById('res-msg').innerText = `Has acertado ${corrects} de ${dbQuestions.length}`;
         }
 
         function closeModal() {
