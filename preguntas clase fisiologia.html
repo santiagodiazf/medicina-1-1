@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Fisiología Celular y Tisular</title>
+    <title>Quiz Fisiología Celular y Tisular - Completo</title>
     <style>
         :root {
             --primary: #46178f;
@@ -79,6 +79,11 @@
             <option value="3">Tema 3</option>
             <option value="4">Tema 4</option>
             <option value="5">Tema 5</option>
+            <option value="6">Tema 6</option>
+            <option value="7">Tema 7</option>
+            <option value="8">Tema 8</option>
+            <option value="9">Tema 9</option>
+            <option value="10">Tema 10</option>
         </select>
 
         <p>¿Cómo prefieres las preguntas?</p>
@@ -120,24 +125,58 @@ const rawData = [
     { id: 10, tema: 3, q: "3. ¿Qué transporta el transportador GLUT?", options: ["a) Hexosas", "b) Ácidos grasos", "c) Aminoácidos", "d) Proteínas"], correct: [0], exp: "GLUT es el transportador específico para glucosa y otras hexosas." },
     { id: 11, tema: 3, q: "4. En la Difusión Facilitada la velocidad de transporte NO depende de:", options: ["a) Concentración del soluto al transportar", "b) La afinidad del soluto por el sitio de unión", "c) La cantidad del transportador", "d) La carga eléctrica del soluto"], correct: [3], exp: "Depende de la saturación del transportador, no de la carga eléctrica directamente (esto influye en canales)." },
     { id: 12, tema: 3, q: "5. En el proceso de inhibición competitiva:", options: ["a) Disminuye la Vmax", "b) No se afecta el transporte", "c) Cambia la Km por el soluto a transprtar", "d) Aumenta la Vmax"], correct: [2], exp: "El inhibidor compite por el sitio activo, aumentando la Km aparente pero sin alterar la Vmax." },
-    { id: 13, tema: 3, q: "6. ¿Qué es el simporte?", options: ["a) Transportar un soluto", "b) Transporte de dos solutos en direcciones opuestas", "c) Transporte de dos solutos en la misma dirección", "d) Sólo ocurre en el caso de transporte pasivo"], correct: [2], exp: "Simporte (cotransporte) mueve dos moléculas hacia el mismo lado de la membrana." },
+    { id: 13, tema: 3, q: "6. ¿Qué es the simporte?", options: ["a) Transportar un soluto", "b) Transporte de dos solutos en direcciones opuestas", "c) Transporte de dos solutos en la misma dirección", "d) Sólo ocurre en el caso de transporte pasivo"], correct: [2], exp: "Simporte (cotransporte) mueve dos moléculas hacia el mismo lado de la membrana." },
     { id: 14, tema: 3, q: "7. La ATPasa de Na+ -K+", options: ["a) Utiliza de forma indirecta la energía del ATP", "b) Mueve Na+ y K+ a favor de sus gradientes electroquímicos", "c) Saca de la célula 2 K+ por cada 3 Na+ que mete", "d) Saca más cargas positivas de la célula de las que mete"], correct: [3], exp: "Saca 3 Na+ y mete 2 K+, siendo un proceso electrogénico (genera negatividad interna)." },
     { id: 15, tema: 3, q: "8. En un estado de acidosis, ¿qué sucede a nivel renal?", options: ["a) Se promueve la excreción de H+", "b) Se promueve la reabsorción de K+", "c) Se promueve la excreción de HCO3-", "d) Se promueve la excreción de K+"], correct: [0, 3], exp: "En acidosis se excretan protones y, por el intercambio iónico, también se favorece la excreción de potasio." },
     { id: 16, tema: 3, q: "9. La Glucosuria renal puede deberse a:", options: ["a) Un exceso en la funcionalidad del transportador SGLT a nivel renal", "b) Un defecto del transportador SGLT a nivel renal", "c) Un exceso en la funcionalidad del transportador SGLT a nivel intestinal", "d) Un defecto del transportador SGLT a nivel intestinal"], correct: [1], exp: "Si el SGLT renal falla, no se reabsorbe la glucosa filtrada y aparece en orina." },
 
-    // TEMA 4 (NUEVAS PREGUNTAS)
-    { id: 17, tema: 4, q: "La destrucción autoinmune de las células β-pancreáticas son la base de:", options: ["Diabetes mellitus tipo II", "Aterosclerosis prematura", "Exocitosis", "Diabetes mellitus tipo I"], correct: [3], exp: "La Diabetes tipo I se caracteriza por la destrucción autoinmune de las células productoras de insulina." },
-    { id: 18, tema: 4, q: "Los anticuerpos de la leche materna pasan al cuerpo del recién nacido por:", options: ["Difusión facilitada", "Difusión simple", "Transcitosis", "Fagocitosis a nivel intestinal"], correct: [2], exp: "La transcitosis permite el transporte de macromoléculas (como anticuerpos IgA) a través de las células epiteliales." },
-    { id: 19, tema: 4, q: "¿Cómo se transporta el hierro en sangre?", options: ["Asociado a la transferrina", "En forma libre", "Asociado a la hemosiderina", "Asociado a la ferritina"], correct: [0], exp: "El hierro circula en el plasma unido a la transferrina." },
-    { id: 20, tema: 4, q: "Una alteración genética que dificulta la endocitosis de LDL puede provocar:", options: ["Diabetes mellitus tipo II", "Aterosclerosis prematura", "Que el Cádiz CF ascienda", "Diabetes mellitus tipo I"], correct: [1], exp: "La acumulación de LDL en sangre debido a fallos en su endocitosis predispone a la formación de placas de ateroma." },
-    { id: 21, tema: 4, q: "¿Cómo se elimina del plasma el LDL “colesterol malo”?", options: ["Exocitosis", "Endocitosis mediada por receptor", "Transcitosis", "Por difusión"], correct: [1], exp: "Las células captan el LDL circulante mediante receptores específicos en su membrana." },
+    // TEMA 4
+    { id: 17, tema: 4, q: "La destrucción autoinmune de las células β-pancreáticas son la base de:", options: ["Diabetes mellitus tipo II", "Aterosclerosis prematura", "Exocitosis", "Diabetes mellitus tipo I"], correct: [3], exp: "La Diabetes tipo I se caracteriza por la destrucción autoinmune." },
+    { id: 18, tema: 4, q: "Los anticuerpos de la leche materna pasan al cuerpo del recién nacido por:", options: ["Difusión facilitada", "Difusión simple", "Transcitosis", "Fagocitosis a nivel intestinal"], correct: [2], exp: "La transcitosis permite el paso de macromoléculas a través de barreras epiteliales." },
+    { id: 19, tema: 4, q: "¿Cómo se transporta el hierro en sangre?", options: ["Asociado a la transferrina", "En forma libre", "Asociado a la hemosiderina", "Asociado a la ferritina"], correct: [0], exp: "El hierro viaja unido a la transferrina en el plasma." },
+    { id: 20, tema: 4, q: "Una alteración genética que dificulta la endocitosis de LDL puede provocar:", options: ["Diabetes mellitus tipo II", "Aterosclerosis prematura", "Que el Cádiz CF ascienda", "Diabetes mellitus tipo I"], correct: [1], exp: "Al no captarse el LDL, aumenta en sangre y favorece la aterosclerosis." },
+    { id: 21, tema: 4, q: "¿Cómo se elimina del plasma el LDL “colesterol malo”?", options: ["Exocitosis", "Endocitosis mediada por receptor", "Transcitosis", "Por difusión"], correct: [1], exp: "Se internaliza mediante receptores de LDL." },
 
-    // TEMA 5 (NUEVAS PREGUNTAS)
-    { id: 22, tema: 5, q: "1️⃣ Las hormonas esteroideas:", options: ["a) Se unen a receptores acoplados a proteína G en la membrana celular", "b) Se unen a receptores intracelulares", "c) Desarrollan una respuesta rápida en la célula", "d) Origina una señal eléctrica al unirse al receptor"], correct: [1], exp: "Al ser lipofílicas, atraviesan la membrana y se unen a receptores dentro de la célula." },
-    { id: 23, tema: 5, q: "2️⃣ Ordena la siguiente secuencia:", options: ["Receptor -> Molécula señalizadora -> Respuesta -> Moléculas de señalización intracelular", "Molécula señalizadora -> Receptor -> Moléculas de señalización intracelular -> Respuesta", "Respuesta -> Receptor -> Molécula señalizadora -> Moléculas de señalización intracelular", "Molécula señalizadora -> Moléculas de señalización intracelular -> Receptor -> Respuesta"], correct: [1], exp: "El orden lógico es: Señal -> Receptor -> Transducción (intracelular) -> Respuesta." },
-    { id: 24, tema: 5, q: "3️⃣ ¿Por qué unas células responden a unas señales y no a otras?", options: ["a) Depende de los receptores que expresen", "b) Porque las células pueden generar señales al azar", "c) Todas las células responden igual a todas las señales", "d) Depende de la concentración de moléculas señalizadoras"], correct: [0], exp: "La especificidad de la respuesta depende de si la célula posee el receptor específico para esa señal." },
-    { id: 25, tema: 5, q: "4️⃣ ¿Por qué los receptores celulares son un objetivo clave en el desarrollo de fármacos?", options: ["a) Porque regulan funciones celulares y la comunicación intercelular", "b) Porque solo se encuentran en células dañadas o enfermas", "c) Porque los fármacos reemplazan a los receptores dañados", "d) Porque eliminan los receptores que no funcionan correctamente"], correct: [0], exp: "Al modular los receptores, los fármacos pueden alterar las funciones celulares controladas por estos." },
-    { id: 26, tema: 5, q: "5️⃣ Cuando un receptor celular se une a su ligando, siempre genera una respuesta inmediata en la célula.", options: ["Verdadero", "Falso"], correct: [1], exp: "Falso. Algunas respuestas son rápidas (canales iónicos), pero otras son lentas (cambios en la expresión génica)." }
+    // TEMA 5
+    { id: 22, tema: 5, q: "1️⃣ Las hormonas esteroideas:", options: ["a) Se unen a receptores acoplados a proteína G en la membrana celular", "b) Se unen a receptores intracelulares", "c) Desarrollan una respuesta rápida en la célula", "d) Origina una señal eléctrica al unirse al receptor"], correct: [1], exp: "Son liposolubles y atraviesan la membrana." },
+    { id: 23, tema: 5, q: "2️⃣ Ordena la siguiente secuencia:", options: ["Receptor -> Molécula señalizadora -> Respuesta -> Moléculas de señalización intracelular", "Molécula señalizadora -> Receptor -> Moléculas de señalización intracelular -> Respuesta", "Respuesta -> Receptor -> Molécula señalizadora -> Moléculas de señalización intracelular", "Molécula señalizadora -> Moléculas de señalización intracelular -> Receptor -> Respuesta"], correct: [1], exp: "Orden estándar: Señal -> Receptor -> Cascada -> Efecto." },
+    { id: 24, tema: 5, q: "3️⃣ ¿Por qué unas células responden a unas señales y no a otras?", options: ["a) Depende de los receptores que expresen", "b) Porque las células pueden generar señales al azar", "c) Todas las células responden igual a todas las señales", "d) Depende de la concentración de moléculas señalizadoras"], correct: [0], exp: "La presencia del receptor específico determina la capacidad de respuesta." },
+    { id: 25, tema: 5, q: "4️⃣ ¿Por qué los receptores celulares son un objetivo clave en el desarrollo de fármacos?", options: ["a) Porque regulan funciones celulares y la comunicación intercelular", "b) Porque solo se encuentran en células dañadas o enfermas", "c) Porque los fármacos reemplazan a los receptores dañados", "d) Porque eliminan los receptores que no funcionan correctamente"], correct: [0], exp: "Son dianas terapéuticas fundamentales." },
+    { id: 26, tema: 5, q: "5️⃣ Cuando un receptor celular se une a su ligando, siempre genera una respuesta inmediata en la célula.", options: ["Verdadero", "Falso"], correct: [1], exp: "Falso. Puede haber respuestas lentas mediadas por transcripción." },
+
+    // TEMA 6
+    { id: 27, tema: 6, q: "1. ¿Qué ventajas que ofrece una cascada de señalización intracelular?", options: ["a) Amplificación de la señal y regulación eficiente de la respuesta celular", "b) Disminución de la sensibilidad celular a la señal", "c) Aumento del tiempo de respuesta de la célula", "d) Inhibición completa de la señal para evitar respuestas exageradas"], correct: [0], exp: "La cascada permite que pocas moléculas de señal generen una respuesta masiva." },
+    { id: 28, tema: 6, q: "2. Si un fármaco que aumenta la ACh origina bradicardia al unirse también a los receptores muscarínicos del corazón:", options: ["a) Administrarías Atropina (Antagonista muscarínico)", "b) Administrarías Pilocarpina (Agonista colinérgico)", "c) Administrarías Paracetamol y plan casa", "d) Administrarías Propranolol (Antagonista beta-adrenérgico)"], correct: [0], exp: "La atropina bloquea el efecto bradicardizante de la acetilcolina en el corazón." },
+    { id: 29, tema: 6, q: "3. ¿Qué consecuencias puede tener la exposición prolongada a un fármaco?", options: ["a) Desensibilización de receptores y tolerancia al fármaco", "b) Inhibición de la síntesis de proteínas esenciales para la célula", "c) Bloqueo de la transcripción génica", "d) Aumento de la afinidad por el ligando"], correct: [0], exp: "La sobreestimulación suele llevar a la regulación a la baja de los receptores." },
+    { id: 30, tema: 6, q: "4. Las vías de señalización constituyen una diana terapéutica para muchas patologías.", options: ["a) Verdadero", "b) Falso"], correct: [0], exp: "Muchos fármacos actúan sobre los componentes de estas vías." },
+    { id: 31, tema: 6, q: "5. Ordena el tipo de comunicación celular de más local (arriba) a más lejana (abajo):", options: ["Dependiente de contacto, Autocrina, Paracrina, Endocrina", "Endocrina, Paracrina, Autocrina, Dependiente de contacto", "Autocrina, Paracrina, Endocrina, Dependiente de contacto", "Dependiente de contacto, Paracrina, Autocrina, Endocrina"], correct: [0], exp: "De contacto (unida) > Autocrina (misma célula) > Paracrina (vecinas) > Endocrina (sangre/lejos)." },
+
+    // TEMA 7
+    { id: 32, tema: 7, q: "7. ¿Cuál es la principal función de las neurotrofinas?", options: ["a) Promover la inflamación", "b) Son hormonas que regulan la homeostasis del calcio", "c) Promover la supervivencia y diferenciación neuronal", "d) Inhibir la transmisión sináptica"], correct: [2], exp: "Son esenciales para el crecimiento y mantenimiento de las neuronas." },
+    { id: 33, tema: 7, q: "8. La proteína RAS actúa como una GTPasa reguladora del ciclo celular.", options: ["a) Verdadero", "b) Falso"], correct: [0], exp: "Ras es una proteína G monomérica clave en la señalización de crecimiento." },
+    { id: 34, tema: 7, q: "9. En cáncer, ¿qué efecto puede tener un aumento del factor VEGF?", options: ["a) Disminuye la angiogénesis, limitando el crecimiento tumoral", "b) Aumenta la angiogénesis, favoreciendo el crecimiento tumoral", "c) Inhibe la metástasis", "d) Induce apoptosis en células cancerosas"], correct: [1], exp: "VEGF promueve la formación de nuevos vasos para alimentar al tumor." },
+    { id: 35, tema: 7, q: "10. ¿Cuál es la principal característica de la comunicación paracrina?", options: ["a) Usa neurotransmisores desarrollando respuestas muy lentas", "b) Siempre actúa a larga distancia", "c) Secreta moléculas cuyo receptor está en células cercanas", "d) Solo está presente en el desarrollo embrionario"], correct: [2], exp: "Actúa localmente sobre células en el entorno inmediato." },
+    { id: 36, tema: 7, q: "5. Los receptores de los factores de crecimiento son fundamentalmente del tipo:", options: ["a) Tirosinacinasa", "b) Acoplados a proteína G", "c) Canales iónicos de membrana", "d) Receptores intracelulares"], correct: [0], exp: "Los RTKs (Receptor Tyrosine Kinases) son típicos para factores de crecimiento." },
+
+    // TEMA 8
+    { id: 37, tema: 8, q: "6. En la transición epitelio-mesenquimal (EMT), ¿qué molécula disminuye su expresión favoreciendo la migración celular?", options: ["a) N-cadherina", "b) E-cadherina", "c) Integrina", "d) ICAM"], correct: [1], exp: "La pérdida de E-cadherina rompe las uniones intercelulares fuertes." },
+    { id: 38, tema: 8, q: "1. ¿Qué estructura permite el intercambio de iones y señales entre células sin exponer el citoplasma al medio extracelular?", options: ["a) Uniones GAP", "b) Desmosomas", "c) Uniones ocluyentes", "d) Uniones adherentes"], correct: [0], exp: "Los conexones forman canales directos entre citoplasmas adyacentes." },
+    { id: 39, tema: 8, q: "2. Las integrinas son moléculas de adhesión que se unen principalmente a la matriz extracelular en lugar de a otras células.", options: ["a) Verdadero", "b) Falso"], correct: [0], exp: "Median principalmente la unión célula-matriz a través de fibras de colágeno/laminina." },
+    { id: 40, tema: 8, q: "3. ¿Cuál de las siguientes moléculas está involucrada en la extravasación de leucocitos?", options: ["a) Cadherina", "b) Selectinas", "c) Conexinas", "d) Ocludinas"], correct: [1], exp: "Las selectinas median el rodamiento (rolling) de los leucocitos en el endotelio." },
+    { id: 41, tema: 8, q: "4. ¿Qué proteína media la adhesión célula-célula en las uniones adherentes?", options: ["a) Integrinas", "b) Selectinas", "c) Cadherinas", "d) Conexinas"], correct: [2], exp: "Las cadherinas son las proteínas de adhesión homotípicas clásicas." },
+
+    // TEMA 9
+    { id: 42, tema: 9, q: "6. Los leucotrienos están implicados en la inflamación y broncoconstricción en el asma.", options: ["a) Verdadero", "b) Falso"], correct: [0], exp: "Son potentes mediadores inflamatorios derivados del ácido araquidónico." },
+    { id: 43, tema: 9, q: "7. ¿Por qué la aspirina se usa en la prevención de eventos cardiovasculares?", options: ["a) Bloquea la síntesis de TXA₂, inhibiendo la agregación plaquetaria", "b) Aumenta la síntesis de prostaciclina", "c) Bloquea la síntesis de serotonina", "d) Aumenta la producción de óxido nítrico"], correct: [0], exp: "Inhibe la COX-1 en plaquetas, reduciendo el tromboxano A2." },
+    { id: 44, tema: 9, q: "8. ¿Cuál es el enzima que sintetiza óxido nítrico en el endotelio?", options: ["a) Óxido nítrico sintasa endotelial (eNOS)", "b) NADPH oxidasa", "c) Guanilato ciclasa", "d) Prostaciclina S"], correct: [0], exp: "La eNOS produce NO a partir de L-arginina." },
+    { id: 45, tema: 9, q: "9. ¿Cuál de los siguientes NO es un efecto fisiológico del óxido nítrico?", options: ["a) Contracción del músculo liso vascular", "b) Vasodilatación", "c) Inhibición de la agregación plaquetaria", "d) Modulación de neurotransmisión en el SNC"], correct: [0], exp: "El NO es un relajante muscular (vasodilatador), no un contráctil." },
+    { id: 46, tema: 9, q: "4. ¿Cuál es la principal vía de señalización activada por el NO en el músculo liso vascular?", options: ["a) Activación de la guanilato ciclasa y producción de GMPc", "b) Activación de adenilato ciclasa y producción de AMPc", "c) Inhibición de fosfolipasa C", "d) Activación de canales de calcio dependientes de voltaje"], correct: [0], exp: "El NO activa la GC soluble aumentando los niveles de GMP cíclico." },
+
+    // TEMA 10
+    { id: 47, tema: 10, q: "1. Relativo a una hipercalemia/hiperpotasemia grave:", options: ["a) Puede provocar parada cardíaca", "b) Provoca hiperpolarización del Vm de las células", "c) Puede originarse por la excreción renal excesiva de K⁺", "d) No afecta negativamente al organismo"], correct: [0], exp: "El exceso de K+ extracelular despolariza las células y altera la excitabilidad cardiaca." },
+    { id: 48, tema: 10, q: "2. El aumento de la permeabilidad a qué ión/iones NO provocaría una despolarización del Vm:", options: ["a) Na⁺", "b) Ca²⁺", "c) Cl⁻", "d) K⁺"], correct: [2, 3], exp: "La entrada de Cl- o la salida de K+ tienden a hiperpolarizar o estabilizar el potencial." },
+    { id: 49, tema: 10, q: "3. Relativo al Vm en reposo de una célula:", options: ["a) Está más cerca del E_K⁺", "b) Está más cerca del E_Na⁺", "c) Está más cerca del E para el ión más permeable", "d) No existe flujo neto para el K⁺"], correct: [2], exp: "El potencial de membrana sigue al ión con mayor conductancia (permeabilidad)." },
+    { id: 50, tema: 10, q: "5. Relativo al potencial de equilibrio/Nernst de un ión:", options: ["a) Existe un flujo neto a través de la membrana para ese ión", "b) Es cero si las concentraciones extra e intracelulares son distintas para ese ión", "c) Representa el potencial al cual no existe flujo neto para ese ión", "d) Es igual al Vm en reposo si la membrana es exclusivamente permeable a ese ión"], correct: [2, 3], exp: "En el equilibrio de Nernst, las fuerzas químicas y eléctricas se anulan." }
 ];
 
 let questions = [];
@@ -149,7 +188,6 @@ function startQuiz(randomize) {
 
     document.getElementById('setup-modal').style.display = 'none';
     
-    // Filtrado por tema
     if (selectedTopic === 'all') {
         questions = [...rawData];
     } else {
@@ -157,7 +195,7 @@ function startQuiz(randomize) {
     }
 
     if (questions.length === 0) {
-        alert("No se encontraron preguntas para este tema.");
+        alert("No se encontraron preguntas.");
         location.reload();
         return;
     }
@@ -173,7 +211,6 @@ function renderQuiz() {
     sidebar.innerHTML = "";
 
     questions.forEach((q, index) => {
-        // Nav Dot
         const dot = document.createElement('div');
         dot.className = `nav-dot ${userState.marked.has(q.id) ? 'marked' : ''}`;
         dot.id = `nav-${index}`;
@@ -181,15 +218,12 @@ function renderQuiz() {
         dot.onclick = () => document.getElementById(`q-${index}`).scrollIntoView({ behavior: 'smooth' });
         sidebar.appendChild(dot);
 
-        // Card
         const card = document.createElement('div');
         card.className = "question-card";
         card.id = `q-${index}`;
         
-        // Barajado de opciones local (manteniendo índice original para corrección)
         const indexedOptions = q.options.map((text, i) => ({ text, originalIdx: i }));
-        // Solo barajamos opciones si NO es Verdadero/Falso (para mantener orden lógico V/F)
-        if(q.options.length > 2) {
+        if(q.options.length > 2 && !q.q.includes("Ordena")) {
             indexedOptions.sort(() => Math.random() - 0.5);
         }
 
@@ -232,9 +266,10 @@ function selectOption(el, qIdx) {
     const card = document.getElementById(`q-${qIdx}`);
     if(card.classList.contains('locked')) return;
     
-    // Si no es multirespuesta (solo id 2 y 15), desmarcar otros
     const qId = questions[qIdx].id;
-    const isMulti = [2, 15].includes(qId);
+    // Permitir selección múltiple en IDs específicos o si la pregunta lo sugiere
+    const multiIDs = [2, 15, 48, 50]; 
+    const isMulti = multiIDs.includes(qId);
     
     if(!isMulti) {
         card.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
@@ -269,19 +304,10 @@ function checkAnswer(qIdx, qId) {
 }
 
 function restartQuiz(mode) {
-    let newPool = [];
+    if(mode === 'all') { location.reload(); return; }
     
-    // Al reiniciar, miramos si hay filtro de tema aplicado actualmente? 
-    // Por simplicidad, los modos de "Repetir Falladas/Marcadas" ignoran el filtro de tema original y usan todo el pool rawData para encontrar esas IDs
-    // Pero "Repetir Todo" debería respetar el filtro si quisieras, aunque lo más fácil es reiniciar la página o volver a filtrar rawData.
-    // Aquí usaremos la lógica estándar basada en lo que ya se cargó en rawData.
-
-    if(mode === 'all') {
-        // Recargar la página para volver al selector de temas
-        location.reload(); 
-        return;
-    }
-    else if(mode === 'wrong') newPool = rawData.filter(q => userState.wrong.has(q.id));
+    let newPool = [];
+    if(mode === 'wrong') newPool = rawData.filter(q => userState.wrong.has(q.id));
     else if(mode === 'marked') newPool = rawData.filter(q => userState.marked.has(q.id));
     else if(mode === 'mixed') newPool = rawData.filter(q => userState.wrong.has(q.id) || userState.marked.has(q.id));
 
@@ -289,7 +315,6 @@ function restartQuiz(mode) {
 
     questions = newPool;
     userState.answered.clear();
-    // No limpiamos userState.wrong para permitir reintentos sobre el error original
     renderQuiz();
     window.scrollTo(0,0);
 }
