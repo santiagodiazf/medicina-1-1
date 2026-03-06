@@ -84,6 +84,9 @@
             <option value="8">Tema 8</option>
             <option value="9">Tema 9</option>
             <option value="10">Tema 10</option>
+            <option value="11">Tema 11</option>
+            <option value="12">Tema 12</option>
+            <option value="13">Tema 13</option>
         </select>
 
         <p>¿Cómo prefieres las preguntas?</p>
@@ -176,7 +179,32 @@ const rawData = [
     { id: 47, tema: 10, q: "1. Relativo a una hipercalemia/hiperpotasemia grave:", options: ["a) Puede provocar parada cardíaca", "b) Provoca hiperpolarización del Vm de las células", "c) Puede originarse por la excreción renal excesiva de K⁺", "d) No afecta negativamente al organismo"], correct: [0], exp: "El exceso de K+ extracelular despolariza las células y altera la excitabilidad cardiaca." },
     { id: 48, tema: 10, q: "2. El aumento de la permeabilidad a qué ión/iones NO provocaría una despolarización del Vm:", options: ["a) Na⁺", "b) Ca²⁺", "c) Cl⁻", "d) K⁺"], correct: [2, 3], exp: "La entrada de Cl- o la salida de K+ tienden a hiperpolarizar o estabilizar el potencial." },
     { id: 49, tema: 10, q: "3. Relativo al Vm en reposo de una célula:", options: ["a) Está más cerca del E_K⁺", "b) Está más cerca del E_Na⁺", "c) Está más cerca del E para el ión más permeable", "d) No existe flujo neto para el K⁺"], correct: [2], exp: "El potencial de membrana sigue al ión con mayor conductancia (permeabilidad)." },
-    { id: 50, tema: 10, q: "5. Relativo al potencial de equilibrio/Nernst de un ión:", options: ["a) Existe un flujo neto a través de la membrana para ese ión", "b) Es cero si las concentraciones extra e intracelulares son distintas para ese ión", "c) Representa el potencial al cual no existe flujo neto para ese ión", "d) Es igual al Vm en reposo si la membrana es exclusivamente permeable a ese ión"], correct: [2, 3], exp: "En el equilibrio de Nernst, las fuerzas químicas y eléctricas se anulan." }
+    { id: 50, tema: 10, q: "5. Relativo al potencial de equilibrio/Nernst de un ión:", options: ["a) Existe un flujo neto a través de la membrana para ese ión", "b) Es cero si las concentraciones extra e intracelulares son distintas para ese ión", "c) Representa el potencial al cual no existe flujo neto para ese ión", "d) Es igual al Vm en reposo si la membrana es exclusivamente permeable a ese ión"], correct: [2, 3], exp: "En el equilibrio de Nernst, las fuerzas químicas y eléctricas se anulan." },
+
+    // TEMA 11
+    { id: 51, tema: 11, q: "1. ¿Cómo se comportan los canales iónicos de fuga en el análogo eléctrico de la membrana celular?", options: ["Como transformador", "Como inductancia", "Como capacitancia", "Como resistencia"], correct: [3], exp: "En el análogo eléctrico de la membrana, los canales iónicos por los que fluyen los iones a favor de gradiente actúan como resistencias eléctricas." },
+    { id: 52, tema: 11, q: "2. ¿Que propiedad de la menbrana describe su potencialidad de almacenar cargas de signo opuesto?", options: ["Conductancia ionica", "Resistencia", "Capacitancia", "Modelo RC"], correct: [2], exp: "La bicapa lipídica actúa como un aislante que separa cargas, dotando a la membrana de la propiedad física de capacitancia." },
+    { id: 53, tema: 11, q: "3. ¿Qué determina la constante de espacio (λ) en la propagación de potenciales locales?", options: ["Amplitud inicial", "Fuerza de la señal", "Tiempo total", "Grado de atenuación espacial"], correct: [3], exp: "La constante de espacio (λ) es la medida que indica a qué distancia el potencial ha disminuido un 37% respecto a su origen." },
+    { id: 54, tema: 11, q: "4. ¿Qué efecto tiene un aumento en τ sobre los potenciales locales?", options: ["Extiende el curso temporal", "Aumenta la probabilidad de sumación espacial", "Disminuye la probabilidad de sumación espacial", "Aumenta la probabilidad de sumación temporal"], correct: [3], exp: "Al aumentar la constante de tiempo (τ), el potencial tarda más en desvanecerse, lo que da más tiempo para que estímulos sucesivos puedan sumarse temporalmente." },
+    { id: 55, tema: 11, q: "5. ¿Cuál NO es una característica de los potenciales sinápticos?", options: ["Son graduados", "Pueden ser despolarizantes", "Se propagan de forma activa", "Se propagan con decremento"], correct: [2], exp: "A diferencia de los potenciales de acción, los potenciales sinápticos o locales se propagan de forma electrotónica pasiva, decayendo a medida que avanzan." },
+
+    // TEMA 12
+    { id: 56, tema: 12, q: "1. ¿Qué ion es crucial en la fase de despolarización del potencial de acción?", options: ["Cloro", "Sodio", "Calcio", "Potasio"], correct: [1], exp: "La entrada abrupta de Sodio (Na+) a través de los canales dependientes de voltaje genera la rápida despolarización hacia valores positivos." },
+    { id: 57, tema: 12, q: "2. ¿Qué ocurre durante la fase repolarización del p.a.?", options: ["Despolarización", "Aumento de Vm", "Salida de Na⁺", "Salida de K⁺"], correct: [3], exp: "Los canales de Potasio dependientes de voltaje se abren y permiten la salida de K+, devolviendo la membrana a su estado de reposo negativo." },
+    { id: 58, tema: 12, q: "3. ¿Qué características son propias de los potenciales de acción?", options: ["Son estereotipados", "Se pueden sumar estpacial y temporalment", "Son potenciales graduados", "Siguen un comportamiento óhmico"], correct: [0], exp: "Los potenciales de acción siguen la ley del 'todo o nada' y su forma y amplitud es constante (estereotipada)." },
+    { id: 59, tema: 12, q: "4. ¿Qué caracteriza el periodo refractario absoluto de un p.a.?", options: ["Posible generar otro p.a.", "No se puede generar otro p.a", "Se puede generar otro p.a. con mayor intensidad de estímulo", "Los canales de Na+ voltaje-dependientes están inactivados"], correct: [1, 3], exp: "Durante esta fase, la inactivación de los canales de sodio impide totalmente que se inicie un nuevo potencial de acción, independientemente del estímulo." },
+    { id: 60, tema: 12, q: "5. ¿Qué tipo de canales se abren durante la despolarización?", options: ["Canales de Ca2+ voltaje-dependientes", "Canales de K+ voltaje-dependientes", "Canales de Cl- voltaje-dependientes", "Canales de Na+ voltaje-dependientes"], correct: [3], exp: "Es la apertura coordinada y rápida de los canales de Sodio (Na+) voltaje-dependientes la que genera la despolarización." },
+    { id: 61, tema: 12, q: "6. ¿Qué determina la frecuencia máxima a la que puede disparar una neurona?", options: ["El tamaño de la célula", "La duración del potencial", "La intensidad del estímulo", "Los periodos refractarios"], correct: [3], exp: "El periodo refractario absoluto impone un límite temporal de reposo obligatorio antes de que pueda surgir el siguiente impulso." },
+
+    // TEMA 13
+    { id: 62, tema: 13, q: "1. ¿Qué es el síndrome de Guillain-Barré?", options: ["Enfermedad digestiva", "Enfermedad respiratoria", "Enfermedad circulatoria", "Enfermedad desmielinizante"], correct: [3], exp: "Es una patología autoinmune que ataca la vaina de mielina del sistema nervioso periférico." },
+    { id: 63, tema: 13, q: "2. ¿Qué es la esclerosis múltiple?", options: ["Enfermedad muscular", "Enfermedad desmielinizante", "Enfermedad ósea", "Enfermedad cardíaca"], correct: [1], exp: "Se trata de una enfermedad desmielinizante progresiva que afecta, en este caso, al sistema nervioso central." },
+    { id: 64, tema: 13, q: "3. ¿Qué ocurre si falta mielina?", options: ["Conducción rápida", "Conducción normal", "Conducción lenta", "Conducción Inversa"], correct: [2], exp: "Al perder la mielina desaparece la ventaja de la conducción saltatoria y la transmisión del impulso nervioso se vuelve extremadamente lenta o llega a interrumpirse." },
+    { id: 65, tema: 13, q: "4. ¿Qué parámetro afecta la velocidad de conducción del p.a.?", options: ["Tamaño del soma", "Resistencia interna", "Número de dendritas", "Longitud del axón"], correct: [1], exp: "La disminución de la resistencia interna (frecuentemente debida a un mayor grosor del axón) permite a la corriente avanzar con más rapidez a lo largo de este." },
+    { id: 66, tema: 13, q: "5. ¿Qué estrategia evolutiva aumenta en mayor medida la velocidad de conducción del p.a.?", options: ["Mielinización", "Reducción de Rm", "Aumento de diámetro axonal", "Aumento de Cm"], correct: [0], exp: "El proceso de mielinización en los vertebrados permitió alcanzar altísimas velocidades de conducción sin tener que incrementar drásticamente el diámetro del axón." },
+    { id: 67, tema: 13, q: "6. ¿A qué hace referencia la capacitancia de membrana?", options: ["Generación de carga", "Distribución de carga", "Pérdida de carga", "Almacenamiento de carga"], correct: [3], exp: "Es la propiedad física mediante la cual la membrana acumula o almacena cargas iónicas." },
+    { id: 68, tema: 13, q: "7. ¿Cómo se propaga el potencial de acción?", options: ["Circularmente", "Aleatoriamente", "Bidireccionalmente", "Unidireccionalmente"], correct: [3], exp: "Avanza en una sola dirección hacia el terminal gracias a que los segmentos que deja atrás entran en un periodo refractario." },
+    { id: 69, tema: 13, q: "8. ¿Dónde inicia el potencial de acción?", options: ["Soma", "Segmento inicial", "Terminal axónico", "Dendritas"], correct: [1], exp: "Generalmente se desencadena en el cono axónico o segmento inicial debido a que es la zona con mayor concentración de canales de sodio voltaje-dependientes." }
 ];
 
 let questions = [];
@@ -266,10 +294,8 @@ function selectOption(el, qIdx) {
     const card = document.getElementById(`q-${qIdx}`);
     if(card.classList.contains('locked')) return;
     
-    const qId = questions[qIdx].id;
-    // Permitir selección múltiple en IDs específicos o si la pregunta lo sugiere
-    const multiIDs = [2, 15, 48, 50]; 
-    const isMulti = multiIDs.includes(qId);
+    // Detectar automáticamente si la pregunta tiene múltiples respuestas
+    const isMulti = questions[qIdx].correct.length > 1; 
     
     if(!isMulti) {
         card.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
