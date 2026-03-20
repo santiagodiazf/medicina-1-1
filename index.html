@@ -28,7 +28,7 @@
             min-height: 100vh;
         }
 
-        /* --- PANTALLA DE CONTRASEÑA --- */
+        /* --- PANTALLA DE ACCESO POR USUARIO --- */
         #login-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -129,25 +129,26 @@
 
     <div id="login-screen">
         <div class="login-box">
-            <h2>Acceso Restringido</h2>
-            <p>Introduce la contraseña para acceder al portal.</p>
-            <input type="password" id="password-input" placeholder="Contraseña" onkeypress="handleKeyPress(event)">
-            <button onclick="checkPassword()">Acceder</button>
-            <div class="error-msg" id="error-msg">Contraseña incorrecta. Inténtalo de nuevo.</div>
+            <h2>Acceso al Portal</h2>
+            <p>Introduce tu nombre de usuario para acceder.</p>
+            <input type="text" id="username-input" placeholder="Nombre de usuario" onkeypress="handleKeyPress(event)">
+            <button onclick="checkUser()">Acceder</button>
+            <div class="error-msg" id="error-msg">Usuario no reconocido. Inténtalo de nuevo.</div>
         </div>
     </div>
 
     <script>
-        // Nuevas contraseñas ofuscadas en formato hexadecimal
-        const _k = [
-            "\x39\x31\x31\x34\x33",                             // 91143
+        // Listado de usuarios autorizados (incluyendo "Buchi")
+        const _u = [
+            "\x39\x31\x31\x34\x33",                           // 91143
             "\x6d\x61\x72\x69\x61\x70\x65\x72\x65\x7a",         // mariaperez
             "\x6d\x61\x72\x74\x61\x6a\x69\x6d\x65\x6e\x65\x7a", // martajimenez
             "\x6d\x61\x72\x74\x61\x6c\x6f\x70\x65\x7a",         // martalopez
-            "\x61\x6c\x62\x61\x6c\x61\x69\x6e\x65\x7a"          // albalainez
+            "\x61\x6c\x62\x61\x6c\x61\x69\x6e\x65\x7a",         // albalainez
+            "\x42\x75\x63\x68\x69"                              // Buchi
         ];
 
-        // Contenido HTML fraccionado para ocultar los enlaces del código fuente
+        // Contenido HTML fraccionado
         const _c = [
             '<div id="main-content">',
             '<h', '1>G', 'rado e', 'n Me', 'dicin', 'a</h', '1>',
@@ -180,25 +181,24 @@
             '</div></div></div>'
         ];
 
-        function checkPassword() {
-            const input = document.getElementById("password-input").value;
+        function checkUser() {
+            const input = document.getElementById("username-input").value;
             const errorMsg = document.getElementById("error-msg");
 
-            // Verifica si el input coincide con alguna de las contraseñas del Array
-            if (_k.includes(input)) {
+            // Comparamos el nombre de usuario (sensible a mayúsculas/minúsculas)
+            if (_u.includes(input)) {
                 sessionStorage.setItem("_auth_tkn_882", "1");
-                sessionStorage.setItem("_auth_pass", input); // Guardamos la contraseña usada para validaciones posteriores
+                sessionStorage.setItem("_auth_user", input); 
                 unlockContent();
             } else {
                 errorMsg.style.display = "block";
-                document.getElementById("password-input").value = "";
-                document.getElementById("password-input").focus();
+                document.getElementById("username-input").value = "";
+                document.getElementById("username-input").focus();
             }
         }
 
         function unlockContent() {
             document.getElementById("login-screen").style.display = "none";
-            // Si el contenido aún no se ha creado, lo unimos y lo inyectamos
             if (!document.getElementById("main-content")) {
                 const payload = _c.join('');
                 document.body.insertAdjacentHTML('beforeend', payload);
@@ -207,11 +207,10 @@
 
         function handleKeyPress(event) {
             if (event.key === "Enter") {
-                checkPassword();
+                checkUser();
             }
         }
 
-        // Comprobar si ya estaba autenticado
         window.onload = function() {
             if (sessionStorage.getItem("_auth_tkn_882") === "1") {
                 unlockContent();
