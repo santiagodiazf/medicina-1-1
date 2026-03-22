@@ -3,153 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PORTAL GENERAL - MEDICINA</title>
+    <title>MÉDICO PIRATA</title>
     <style>
         :root {
-            --bg-color: #fdfbf7;
-            --text-color: #2c3e50;
-            
-            /* Colores identificativos por Curso */
-            --curso1-color: #34495e; 
-            --curso2-color: #d35400; 
-            --curso3-color: #8e44ad; 
-            --curso4-color: #27ae60; 
-            --privado-color: #c0392b; /* Color para la zona privada */
+            --p-dark: #2c3e50; --p-gold: #c0a16b; --c-blue: #0077be;
+            --c-sand: #fdfbf7; --o-stone: #d2b48c;
+            --c1: #34495e; --c2: #d35400; --pv: #c0392b;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+        body, html {
+            height: 100%; margin: 0; padding: 0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--c-sand); overflow: hidden; /* Evita doble scroll */
         }
 
-        /* --- PANTALLA DE ACCESO POR USUARIO --- */
-        #login-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--bg-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
+        /* --- PANTALLA DE ACCESO --- */
+        #l-s {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--c-blue) 0%, #ff7e5f 100%);
+            display: flex; justify-content: center; align-items: center; z-index: 10000;
         }
         
-        .login-box {
-            background: #fff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
+        .l-b {
+            background: rgba(255, 255, 255, 0.98); padding: 40px; border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); text-align: center; max-width: 400px; width: 90%;
+            border: 2px solid var(--p-gold); backdrop-filter: blur(10px);
         }
 
-        .login-box h2 { margin-top: 0; color: var(--text-color); }
-
-        .login-box input {
-            width: 100%; padding: 12px; margin: 20px 0;
-            border: 2px solid #ddd; border-radius: 6px;
-            font-size: 16px; box-sizing: border-box; outline: none;
+        .l-b input {
+            width: 100%; padding: 12px; margin: 20px 0; border: 2px solid #ddd;
+            border-radius: 8px; font-size: 16px; text-align: center; outline: none;
         }
         
-        .login-box input:focus { border-color: var(--curso1-color); }
-
-        .login-box button {
-            background-color: var(--curso1-color); color: white;
-            border: none; padding: 12px 24px; font-size: 16px;
-            border-radius: 6px; cursor: pointer; width: 100%;
-            transition: background 0.3s; font-weight: bold;
+        .l-b button {
+            background: var(--p-dark); color: white; border: 1px solid var(--p-gold);
+            padding: 12px; font-size: 16px; border-radius: 8px; cursor: pointer;
+            width: 100%; font-weight: bold; text-transform: uppercase;
         }
 
-        .login-box button:hover { background-color: #2c3e50; }
-
-        .error-msg {
-            color: #e74c3c; margin-top: 10px; font-size: 0.9rem; display: none;
+        /* --- LAYOUT PRINCIPAL (Banner + Iframe) --- */
+        .main-layout {
+            display: flex; flex-direction: column; height: 100vh; width: 100vw;
         }
 
-        /* --- CLASES DEL CONTENIDO PRINCIPAL --- */
-        #main-content {
-            width: 100%; max-width: 1000px; padding: 40px 20px;
-            box-sizing: border-box; display: flex;
-            flex-direction: column; align-items: center;
+        /* Banner Superior */
+        .h-b {
+            height: 25vh; min-height: 180px; width: 100%;
+            background: url('medico_pirate.png') no-repeat center center;
+            background-size: cover; border-bottom: 5px solid var(--o-stone);
+            position: relative; flex-shrink: 0;
         }
 
-        h1 {
-            font-size: 3rem; margin-bottom: 10px; text-transform: uppercase;
-            letter-spacing: 3px; text-align: center; color: #2c3e50;
-            border-bottom: 5px solid #2c3e50; padding-bottom: 15px; width: 100%;
+        /* Barra de Usuario (Capitán) */
+        .user-bar {
+            position: absolute; bottom: 10px; right: 20px;
+            background: rgba(44, 62, 80, 0.85); color: white;
+            padding: 8px 20px; border-radius: 50px;
+            display: flex; align-items: center; gap: 15px;
+            border: 1px solid var(--p-gold); backdrop-filter: blur(5px);
+            font-size: 0.9rem;
         }
 
-        .author-text {
-            font-size: 1.4rem; color: #2c3e50; font-weight: 600;
-            margin-top: 10px; margin-bottom: 40px; background-color: #e8eaf6;
-            padding: 8px 24px; border-radius: 50px; text-align: center;
+        .logout-btn {
+            background: var(--pv); color: white; border: none;
+            padding: 5px 12px; border-radius: 20px; cursor: pointer;
+            font-weight: bold; font-size: 0.8rem; transition: 0.3s;
+        }
+        .logout-btn:hover { background: #ff4d4d; }
+
+        /* Contenedor de contenido */
+        #content-area {
+            flex-grow: 1; position: relative; width: 100%; overflow-y: auto;
         }
 
-        .course-section { width: 100%; margin-bottom: 60px; }
-
-        .course-title {
-            font-size: 1.8rem; color: var(--text-color); margin-bottom: 20px;
-            padding-left: 15px; border-left: 5px solid; text-transform: uppercase; font-weight: 700;
+        /* Iframe de Trabajo (Toda la página menos el banner) */
+        #work-frame {
+            width: 100%; height: 100%; border: none; display: none;
+            background: white;
         }
 
-        .semester-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px;
+        /* Menú de selección inicial */
+        #menu-grid {
+            padding: 40px 20px; max-width: 1100px; margin: 0 auto;
         }
 
-        .semester-card {
-            background-color: #ffffff; border-radius: 15px; padding: 30px;
-            text-align: center; text-decoration: none; color: var(--text-color);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;
-            border: 1px solid rgba(0,0,0,0.05); display: flex;
-            flex-direction: column; justify-content: center; align-items: center;
-        }
+        h1 { font-size: 2.5rem; letter-spacing: 3px; text-align: center; border-bottom: 4px solid var(--p-gold); padding-bottom: 10px; margin-bottom: 30px; }
+        .a-t { text-align: center; margin-bottom: 40px; font-weight: 500; font-size: 1.2rem; }
 
-        .semester-card:hover {
-            transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-        }
-
+        .s-g { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .s-c { background: #fff; border-radius: 15px; padding: 30px; text-align: center; text-decoration: none; color: inherit; box-shadow: 0 5px 15px rgba(0,0,0,0.06); transition: 0.3s; border-bottom: 4px solid var(--p-gold); display: block; }
+        .s-c:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         .icon { font-size: 3rem; margin-bottom: 15px; }
+        .disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .semester-card h3 { margin: 0; font-size: 1.4rem; font-weight: 600; }
-
-        .semester-card span { font-size: 0.9rem; color: #95a5a6; margin-top: 8px; }
-
-        .disabled { opacity: 0.6; cursor: not-allowed; background-color: #f9f9f9; }
-        .disabled:hover { transform: none; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-
-        /* Estilos para el panel de estadísticas del Admin */
-        .admin-stats-panel {
-            margin-top: 30px; background: #fff; padding: 20px; 
-            border-radius: 12px; border: 2px solid var(--privado-color);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-        .admin-stats-panel h3 { color: var(--privado-color); margin-top: 0; }
-        .admin-stats-panel ul { list-style: none; padding: 0; margin: 0; }
-        .admin-stats-panel li {
-            padding: 8px 0; border-bottom: 1px solid #eee; font-size: 1.1rem;
-            display: flex; justify-content: space-between;
-        }
-        .admin-stats-panel li:last-child { border-bottom: none; }
-        .admin-note { font-size: 0.85rem; color: #7f8c8d; margin-top: 15px; font-style: italic; }
-
+        /* Panel Admin */
+        .a-p { background: #fff; padding: 25px; border-radius: 15px; border: 3px solid var(--pv); margin-top: 40px; }
     </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        <div class="login-box">
-            <h2>Acceso al Portal</h2>
-            <p>Introduce tu nombre de usuario para acceder.</p>
-            <input type="text" id="username-input" placeholder="Nombre de usuario" onkeypress="handleKeyPress(event)">
-            <button onclick="checkUser()">Acceder</button>
-            <div class="error-msg" id="error-msg">Usuario no reconocido. Inténtalo de nuevo.</div>
+    <div id="l-s">
+        <div class="l-b">
+            <h2 style="letter-spacing:2px; margin-top:0;">MÉDICO PIRATA</h2>
+            <p>Tripulación: Identifícate</p>
+            <input type="password" id="u-i" placeholder="Código de acceso" onkeypress="if(event.key==='Enter')hL()">
+            <button onclick="hL()">Navegar por la Bahía</button>
+            <div id="e-m" style="color:red; display:none; margin-top:15px; font-weight:bold;">Clave incorrecta.</div>
+        </div>
+    </div>
+
+    <div class="main-layout" id="main-view" style="display:none;">
+        <div class="h-b">
+            <div class="user-bar">
+                <span>⚓ Tripulante: <strong id="display-user"></strong></span>
+                <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <div id="content-area">
+            <div id="menu-grid">
+                <h1>MÉDICO PIRATA</h1>
+                <div class="a-t">Recursos para medic@s piratas en Cádiz</div>
+                
+                <div class="s-g">
+                    <a href="javascript:void(0)" onclick="openResource('index primero primer cuatrimestre.html')" class="s-c">
+                        <div class="icon">&#128218;</div>
+                        <h3 style="color:var(--c1)">1er Cuatrimestre</h3>
+                        <span>Anatomía I, Biología, Física...</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="openResource('indice segundo cuatri de preimero.html')" class="s-c">
+                        <div class="icon">&#128128;</div>
+                        <h3 style="color:var(--c1)">2do Cuatrimestre</h3>
+                        <span>Anatomía II, Histología...</span>
+                    </a>
+                </div>
+
+                <div id="admin-zone"></div> </div>
+
+            <iframe id="work-frame" name="work-frame"></iframe>
         </div>
     </div>
 
@@ -157,155 +148,73 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getDatabase, ref, get, update, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        const firebaseConfig = {
+        const fC = {
             apiKey: "AIzaSyAKughV5w2XAKRm3rWuUmhVldwU2bjj0zY",
             authDomain: "portal-estudio-medicina.firebaseapp.com",
             databaseURL: "https://portal-estudio-medicina-default-rtdb.europe-west1.firebasedatabase.app",
             projectId: "portal-estudio-medicina",
             storageBucket: "portal-estudio-medicina.firebasestorage.app",
             messagingSenderId: "536326985694",
-            appId: "1:536326985694:web:ee2428d39421653be26f4f",
-            measurementId: "G-52KKQDCFXD"
+            appId: "1:536326985694:web:ee2428d39421653be26f4f"
         };
 
-        const app = initializeApp(firebaseConfig);
+        const app = initializeApp(fC);
         const db = getDatabase(app);
 
-        const _u = [
-            "\x39\x31\x31\x34\x33",                            // 91143
-            "\x6d\x61\x72\x69\x61\x70\x65\x72\x65\x7a",        // mariaperez
-            "\x6d\x61\x72\x74\x61\x6a\x69\x6d\x65\x6e\x65\x7a", // martajimenez
-            "\x6d\x61\x72\x74\x61\x6c\x6f\x70\x65\x7a",        // martalopez
-            "\x61\x6c\x62\x61\x6c\x61\x69\x6e\x65\x7a",        // albalainez
-            "\x42\x75\x63\x68\x69"                              // Buchi
-        ];
+        // Seguridad: Nombres ofuscados
+        const _T = ["OTExNDM=", "bWFyaWFwZXJleg==", "bWFydGFqaW1lbmV6", "bWFydGFsb3Bleg==", "YWxiYWxhaW5leg==", "QnVjaGk="];
 
-        const _c = [
-            '<div id="main-content">',
-            '<h1>Grado en Medicina</h1>',
-            '<div class="author-text">Recursos de estudio de Santi Díaz</div>',
-            '<div class="course-section">',
-            '<div class="course-title" style="border-color: var(--curso1-color); color: var(--curso1-color);">Primero</div>',
-            '<div class="semester-grid" id="grid-primero">',
-            '<a href="index primero primer cuatrimestre.html" class="semester-card">',
-            '<div class="icon">&#128218;</div>',
-            '<h3 style="color: var(--curso1-color)">1er Cuatrimestre</h3>',
-            '<span>Anatomía I, Biología, Física...</span></a>',
-            '<a href="indice segundo cuatri de preimero.html" class="semester-card">',
-            '<div class="icon">&#128128;</div>',
-            '<h3 style="color: var(--curso1-color)">2do Cuatrimestre</h3>',
-            '<span>Anatomía II, Histología...</span></a>',
-            '</div></div>',
-            '<div class="course-section">',
-            '<div class="course-title" style="border-color: var(--curso2-color); color: var(--curso2-color);">Segundo</div>',
-            '<div class="semester-grid">',
-            '<a href="#" class="semester-card disabled">',
-            '<div class="icon">&#128274;</div>',
-            '<h3 style="color: var(--curso2-color)">1er Cuatrimestre</h3>',
-            '<span>No disponible aún</span></a>',
-            '<a href="#" class="semester-card disabled">',
-            '<div class="icon">&#128274;</div>',
-            '<h3 style="color: var(--curso2-color)">2do Cuatrimestre</h3>',
-            '<span>No disponible aún</span></a>',
-            '</div></div></div>'
-        ];
-
-        window.checkUser = function() {
-            const input = document.getElementById("username-input").value;
-            const errorMsg = document.getElementById("error-msg");
-
-            if (_u.includes(input)) {
-                sessionStorage.setItem("_auth_tkn_882", "1");
-                sessionStorage.setItem("_auth_user", input); 
-                unlockContent();
+        window.hL = function() {
+            const val = document.getElementById("u-i").value;
+            const encoded = btoa(val);
+            if (_T.includes(encoded)) {
+                sessionStorage.setItem("_a_t", "1");
+                sessionStorage.setItem("_a_u", val);
+                location.reload(); // Recarga para aplicar la vista
             } else {
-                errorMsg.style.display = "block";
-                document.getElementById("username-input").value = "";
-                document.getElementById("username-input").focus();
+                document.getElementById("e-m").style.display = "block";
             }
         };
 
-        window.handleKeyPress = function(event) {
-            if (event.key === "Enter") {
-                checkUser();
-            }
+        window.logout = function() {
+            sessionStorage.clear();
+            location.reload();
         };
 
-        async function unlockContent() {
-            document.getElementById("login-screen").style.display = "none";
-            
-            if (!document.getElementById("main-content")) {
-                const payload = _c.join('');
-                document.body.insertAdjacentHTML('beforeend', payload);
-                
-                const mainContent = document.getElementById("main-content");
-                const currentUser = sessionStorage.getItem("_auth_user");
-                
+        window.openResource = function(url) {
+            document.getElementById("menu-grid").style.display = "none";
+            const frame = document.getElementById("work-frame");
+            frame.src = url;
+            frame.style.display = "block";
+        };
+
+        // Lógica de carga al iniciar
+        window.onload = async function() {
+            if (sessionStorage.getItem("_a_t") === "1") {
+                const cU = sessionStorage.getItem("_a_u");
+                document.getElementById("l-s").style.display = "none";
+                document.getElementById("main-view").style.display = "flex";
+                document.getElementById("display-user").innerText = cU;
+
                 try {
-                    if (!sessionStorage.getItem('session_counted_for_' + currentUser)) {
-                        const userRef = ref(db, 'visitas/' + currentUser);
-                        update(userRef, { total: increment(1) });
-                        sessionStorage.setItem('session_counted_for_' + currentUser, "true");
-                    }
-                } catch (error) {
-                    console.log("Error de conexión con Firebase.");
-                }
-
-                // Lógica EXCLUSIVA para el usuario 91143
-                if (currentUser === "91143") {
-                    let listaContadores = '<li>Cargando datos...</li>';
+                    update(ref(db, 'visitas/' + cU), { total: increment(1) });
                     
-                    try {
-                        const snapshot = await get(ref(db, 'visitas'));
-                        const datosVisitas = snapshot.exists() ? snapshot.val() : {};
-                        listaContadores = '';
-                        _u.forEach(usuario => {
-                            let visitas = datosVisitas[usuario] ? datosVisitas[usuario].total : 0;
-                            listaContadores += `<li><strong>${usuario}</strong> <span>${visitas} visitas</span></li>`;
-                        });
-                    } catch (error) {
-                        listaContadores = '<li><em>Error al cargar estadísticas</em></li>';
-                    }
-
-                    const privateHTML = `
-                    <div class="course-section">
-                        <div class="course-title" style="border-color: var(--privado-color); color: var(--privado-color);">
-                            Zona Privada (Admin)
-                        </div>
+                    if (cU === "91143") {
+                        const snap = await get(ref(db, 'visitas'));
+                        const data = snap.val() || {};
+                        let list = Object.keys(data).map(k => `<li><span>${k}</span> <strong>${data[k].total}</strong></li>`).join('');
                         
-                        <div class="semester-grid">
-                            <a href="privados.html" class="semester-card">
-                                <div class="icon">&#128128;</div>
-                                <h3 style="color: var(--privado-color)">Exámenes 24 y 25</h3>
-                                <span>Anatomía II - Bloques 1 a 4</span>
-                            </a>
-
-                            <a href="quiz_privado_1.html" class="semester-card">
-                                <div class="icon">&#128272;</div>
-                                <h3 style="color: var(--privado-color)">Quizz Privado 1</h3>
-                                <span>Acceso Exclusivo</span>
-                            </a>
-                        </div>
-
-                        <div class="admin-stats-panel">
-                            <h3>☁️ Registro Global en la Nube</h3>
-                            <ul id="lista-visitas">
-                                ${listaContadores}
-                            </ul>
-                            <div class="admin-note">
-                                *Nota: Estas estadísticas se actualizan en tiempo real.
-                            </div>
-                        </div>
-                    </div>`;
-                    
-                    mainContent.insertAdjacentHTML('beforeend', privateHTML);
-                }
-            }
-        }
-
-        window.onload = function() {
-            if (sessionStorage.getItem("_auth_tkn_882") === "1") {
-                unlockContent();
+                        document.getElementById("admin-zone").innerHTML = `
+                            <div class="a-p">
+                                <h3 style="color:var(--pv)">Bitácora del Almirante</h3>
+                                <div class="s-g" style="margin-bottom:20px">
+                                    <a href="javascript:void(0)" onclick="openResource('privados.html')" class="s-c"><div class="icon">&#128128;</div>Exámenes</a>
+                                    <a href="javascript:void(0)" onclick="openResource('quiz_privado_1.html')" class="s-c"><div class="icon">&#128272;</div>Quiz</a>
+                                </div>
+                                <ul style="list-style:none; padding:0;">${list}</ul>
+                            </div>`;
+                    }
+                } catch (e) { }
             }
         };
     </script>
