@@ -88,16 +88,8 @@
 
         .author-text {
             font-size: 1.4rem; color: #2c3e50; font-weight: 600;
-            margin-top: 10px; margin-bottom: 20px; background-color: #e8eaf6;
+            margin-top: 10px; margin-bottom: 40px; background-color: #e8eaf6;
             padding: 8px 24px; border-radius: 50px; text-align: center;
-        }
-        
-        /* Estilo para el contador */
-        .user-stats {
-            font-size: 1rem; color: #7f8c8d; font-weight: bold;
-            margin-bottom: 40px; background-color: #fff; border: 1px solid #ddd;
-            padding: 5px 20px; border-radius: 20px; text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
         .course-section { width: 100%; margin-bottom: 60px; }
@@ -131,6 +123,21 @@
 
         .disabled { opacity: 0.6; cursor: not-allowed; background-color: #f9f9f9; }
         .disabled:hover { transform: none; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+
+        /* Estilos para el panel de estadísticas del Admin */
+        .admin-stats-panel {
+            margin-top: 30px; background: #fff; padding: 20px; 
+            border-radius: 12px; border: 2px solid var(--privado-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .admin-stats-panel h3 { color: var(--privado-color); margin-top: 0; }
+        .admin-stats-panel ul { list-style: none; padding: 0; margin: 0; }
+        .admin-stats-panel li {
+            padding: 8px 0; border-bottom: 1px solid #eee; font-size: 1.1rem;
+            display: flex; justify-content: space-between;
+        }
+        .admin-stats-panel li:last-child { border-bottom: none; }
+        .admin-note { font-size: 0.85rem; color: #7f8c8d; margin-top: 15px; font-style: italic; }
 
     </style>
 </head>
@@ -209,38 +216,39 @@
             document.getElementById("login-screen").style.display = "none";
             
             if (!document.getElementById("main-content")) {
-                // 1. Inyectamos el contenido general
+                // 1. Inyectamos el contenido general para todos
                 const payload = _c.join('');
                 document.body.insertAdjacentHTML('beforeend', payload);
                 
                 const mainContent = document.getElementById("main-content");
                 const currentUser = sessionStorage.getItem("_auth_user");
                 
-                // 2. Lógica del Contador de Visitas por Usuario
-                // Usamos localStorage para que persista al cerrar el navegador
+                // 2. Lógica OCULTA de registro de visitas para cualquier usuario
                 let userVisits = localStorage.getItem('visits_' + currentUser) || 0;
-                
-                // Evitamos sumar si solo pulsa F5 usando una variable de sessionStorage
+                // Sumamos 1 visita solo si es una nueva sesión (evita sumar por pulsar F5)
                 if (!sessionStorage.getItem('session_counted_for_' + currentUser)) {
                     userVisits = parseInt(userVisits) + 1;
                     localStorage.setItem('visits_' + currentUser, userVisits);
                     sessionStorage.setItem('session_counted_for_' + currentUser, "true");
                 }
 
-                // Creamos e insertamos la barra de estadísticas (contador)
-                const statsDiv = document.createElement('div');
-                statsDiv.className = 'user-stats';
-                statsDiv.innerHTML = `👤 Usuario: ${currentUser} | 👁️ Accesos totales: ${userVisits}`;
-                const authorText = document.querySelector('.author-text');
-                authorText.parentNode.insertBefore(statsDiv, authorText.nextSibling);
-
-                // 3. Lógica de la Zona Privada EXCLUSIVA para 91143
+                // 3. Lógica EXCLUSIVA para el usuario 91143 (Quizz y Contadores)
                 if (currentUser === "91143") {
+                    
+                    // Generamos la lista de estadísticas recorriendo todos los usuarios
+                    let listaContadores = '';
+                    _u.forEach(usuario => {
+                        let visitas = localStorage.getItem('visits_' + usuario) || 0;
+                        listaContadores += `<li><strong>${usuario}</strong> <span>${visitas} visitas</span></li>`;
+                    });
+
+                    // Construimos el bloque HTML de la zona privada
                     const privateHTML = `
                     <div class="course-section">
                         <div class="course-title" style="border-color: var(--privado-color); color: var(--privado-color);">
                             Zona Privada (Admin)
                         </div>
+                        
                         <div class="semester-grid">
                             <a href="quiz_privado_1.html" class="semester-card">
                                 <div class="icon">&#128272;</div>
@@ -253,8 +261,20 @@
                                 <span>Acceso Exclusivo</span>
                             </a>
                         </div>
+
+                        <div class="admin-stats-panel">
+                            <h3>👁️ Registro de Visitas Global</h3>
+                            <ul>
+                                ${listaContadores}
+                            </ul>
+                            <div class="admin-note">
+                                *Nota: Al ser un sistema local, estas estadísticas reflejan únicamente los accesos realizados desde este mismo navegador o dispositivo.
+                            </div>
+                        </div>
+
                     </div>`;
-                    // Añadimos la zona privada al final del contenedor principal
+                    
+                    // Inyectamos la zona privada al final
                     mainContent.insertAdjacentHTML('beforeend', privateHTML);
                 }
             }
