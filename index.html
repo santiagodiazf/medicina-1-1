@@ -8,7 +8,7 @@
         :root {
             --p-dark: #2c3e50; --p-gold: #c0a16b; --c-blue: #0077be;
             --c-sand: #fdfbf7; --o-stone: #d2b48c;
-            --c1: #34495e; --c-off: #95a5a6; --pv: #c0392b;
+            --c1: #34495e; --pv: #c0392b;
         }
 
         body, html {
@@ -41,7 +41,7 @@
             width: 100%; font-weight: bold; text-transform: uppercase;
         }
 
-        /* --- LAYOUT PRINCIPAL --- */
+        /* --- ESTRUCTURA --- */
         .main-layout { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
 
         .h-b {
@@ -54,12 +54,12 @@
         .user-bar {
             position: absolute; bottom: 10px; right: 20px;
             background: rgba(44, 62, 80, 0.85); color: white;
-            padding: 8px 20px; border-radius: 50px;
-            display: flex; align-items: center; gap: 15px;
+            padding: 8px 18px; border-radius: 50px;
+            display: flex; align-items: center; gap: 12px;
             border: 1px solid var(--p-gold); backdrop-filter: blur(5px); font-size: 0.85rem;
         }
 
-        .logout-btn { background: var(--pv); color: white; border: none; padding: 5px 12px; border-radius: 20px; cursor: pointer; font-weight: bold; }
+        .logout-btn { background: var(--pv); color: white; border: none; padding: 4px 10px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.75rem; }
 
         #content-area { flex-grow: 1; position: relative; width: 100%; overflow-y: auto; background: var(--c-sand); }
 
@@ -68,36 +68,35 @@
         #back-nav {
             position: absolute; top: 15px; left: 15px; z-index: 100;
             background: var(--p-gold); color: var(--p-dark); border: none;
-            padding: 10px 20px; border-radius: 8px; font-weight: bold;
+            padding: 10px 18px; border-radius: 8px; font-weight: bold;
             cursor: pointer; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        /* Menú de Cursos */
+        /* Menú */
         #menu-grid { padding: 30px 20px; max-width: 1100px; margin: 0 auto; }
-        h1 { font-size: 2.5rem; text-align: center; border-bottom: 4px solid var(--p-gold); padding-bottom: 10px; margin-bottom: 10px; letter-spacing: 3px; }
-        .a-t { text-align: center; margin-bottom: 40px; font-weight: 500; color: var(--p-dark); font-size: 1.2rem; }
+        h1 { font-size: 2.2rem; text-align: center; border-bottom: 4px solid var(--p-gold); padding-bottom: 10px; margin-bottom: 5px; letter-spacing: 2px; }
+        .a-t { text-align: center; margin-bottom: 40px; font-weight: 500; color: #555; }
 
-        .course-title { font-size: 1.6rem; margin: 40px 0 20px 0; padding-left: 15px; border-left: 6px solid var(--p-gold); text-transform: uppercase; color: var(--p-dark); font-weight: 700; }
+        .course-title { font-size: 1.4rem; margin: 35px 0 15px 0; padding-left: 12px; border-left: 6px solid var(--p-gold); text-transform: uppercase; color: var(--p-dark); font-weight: 700; }
 
-        .s-g { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 50px; }
-        .s-c { background: #fff; border-radius: 15px; padding: 35px; text-align: center; cursor: pointer; color: inherit; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; border-bottom: 5px solid var(--p-gold); }
-        .s-c:hover:not(.disabled) { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
-        .icon { font-size: 3rem; margin-bottom: 15px; }
+        .s-g { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .s-c { background: #fff; border-radius: 12px; padding: 30px; text-align: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: 0.3s; border-bottom: 5px solid var(--p-gold); }
+        .s-c:hover:not(.disabled) { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .icon { font-size: 2.5rem; margin-bottom: 12px; }
         
-        .disabled { background: #f2f2f2; border-bottom-color: #ccc; cursor: not-allowed; opacity: 0.6; }
+        .disabled { background: #f0f0f0; border-bottom-color: #ccc; cursor: not-allowed; opacity: 0.6; }
 
-        .a-p { background: #fff; padding: 30px; border-radius: 15px; border: 4px solid var(--pv); margin-top: 50px; }
-        .a-p li { padding: 8px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-family: monospace; }
+        .a-p { background: #fff; padding: 25px; border-radius: 12px; border: 3px solid var(--pv); margin-top: 40px; }
     </style>
 </head>
 <body>
 
     <div id="l-s">
         <div class="l-b">
-            <h2 style="letter-spacing:2px; margin-top:0;">MÉDICO PIRATA</h2>
-            <p>Tripulación: Identifícate</p>
-            <input type="password" id="u-i" placeholder="Código de acceso" onkeypress="if(event.key==='Enter')hL()">
-            <button onclick="hL()">Embarcar</button>
+            <h2 style="margin-top:0;">MÉDICO PIRATA</h2>
+            <p>Tripulación: Identifícate para navegar</p>
+            <input type="password" id="u-i" placeholder="Código de acceso" onkeypress="if(event.key==='Enter')window.hL()">
+            <button onclick="window.hL()">Embarcar</button>
             <div id="e-m" style="color:red; display:none; margin-top:15px; font-weight:bold;">Clave incorrecta.</div>
         </div>
     </div>
@@ -106,12 +105,12 @@
         <div class="h-b">
             <div class="user-bar">
                 <span>⚓ Capitán: <strong id="display-user"></strong></span>
-                <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+                <button class="logout-btn" onclick="window.logout()">Salir</button>
             </div>
         </div>
 
         <div id="content-area">
-            <button id="back-nav" onclick="closeResource()">⚓ Volver al Mapa</button>
+            <button id="back-nav" onclick="window.closeResource()">⚓ Volver al Mapa</button>
 
             <div id="menu-grid">
                 <h1>MÉDICO PIRATA</h1>
@@ -119,12 +118,12 @@
                 
                 <div class="course-title">Primer Curso</div>
                 <div class="s-g">
-                    <div onclick="openResource('index primero primer cuatrimestre.html')" class="s-c">
+                    <div onclick="window.openResource('index primero primer cuatrimestre.html')" class="s-c">
                         <div class="icon">&#128218;</div>
                         <h3>1er Cuatrimestre</h3>
                         <span>Anatomía I, Biología, Física...</span>
                     </div>
-                    <div onclick="openResource('indice segundo cuatri de preimero.html')" class="s-c">
+                    <div onclick="window.openResource('indice segundo cuatri de preimero.html')" class="s-c">
                         <div class="icon">&#128128;</div>
                         <h3>2do Cuatrimestre</h3>
                         <span>Anatomía II, Histología...</span>
@@ -133,11 +132,11 @@
 
                 <div class="course-title" style="opacity:0.5">Próximas Travesías (Pendientes)</div>
                 <div class="s-g">
-                    <div class="s-c disabled"><div class="icon">🔒</div><h3>Segundo</h3></div>
-                    <div class="s-c disabled"><div class="icon">🔒</div><h3>Tercero</h3></div>
-                    <div class="s-c disabled"><div class="icon">🔒</div><h3>Cuarto</h3></div>
-                    <div class="s-c disabled"><div class="icon">🔒</div><h3>Quinto</h3></div>
-                    <div class="s-c disabled"><div class="icon">🔒</div><h3>Sexto</h3></div>
+                    <div class="s-c disabled"><div class="icon">🔒</div><h3>Segundo Curso</h3></div>
+                    <div class="s-c disabled"><div class="icon">🔒</div><h3>Tercer Curso</h3></div>
+                    <div class="s-c disabled"><div class="icon">🔒</div><h3>Cuarto Curso</h3></div>
+                    <div class="s-c disabled"><div class="icon">🔒</div><h3>Quinto Curso</h3></div>
+                    <div class="s-c disabled"><div class="icon">🔒</div><h3>Sexto Curso</h3></div>
                 </div>
 
                 <div id="admin-zone"></div>
@@ -164,10 +163,10 @@
         const app = initializeApp(fC);
         const db = getDatabase(app);
 
-        // Seguridad Ofuscada
+        // Seguridad: Hashes
         const _T = ["OTExNDM=", "bWFyaWFwZXJleg==", "bWFydGFqaW1lbmV6", "bWFydGFsb3Bleg==", "YWxiYWxhaW5leg==", "QnVjaGk="];
 
-        // --- FUNCIONES GLOBALES ---
+        // --- FUNCIONES ASIGNADAS AL WINDOW PARA EVITAR ERRORES DE SCOPE ---
         window.hL = function() {
             const val = document.getElementById("u-i").value;
             const encoded = btoa(val);
@@ -186,14 +185,10 @@
         };
 
         window.openResource = function(url) {
-            const menu = document.getElementById("menu-grid");
-            const frame = document.getElementById("work-frame");
-            const btn = document.getElementById("back-nav");
-            
-            menu.style.display = "none";
-            frame.src = url;
-            frame.style.display = "block";
-            btn.style.display = "block";
+            document.getElementById("menu-grid").style.display = "none";
+            document.getElementById("work-frame").style.display = "block";
+            document.getElementById("back-nav").style.display = "block";
+            document.getElementById("work-frame").src = url;
         };
 
         window.closeResource = function() {
@@ -203,7 +198,7 @@
             document.getElementById("back-nav").style.display = "none";
         };
 
-        // --- CARGA INICIAL ---
+        // --- INICIO ---
         window.onload = async function() {
             if (sessionStorage.getItem("_a_t") === "1") {
                 const cU = sessionStorage.getItem("_a_u");
@@ -216,15 +211,15 @@
                     if (cU === "91143") {
                         const snap = await get(ref(db, 'visitas'));
                         const data = snap.val() || {};
-                        let list = Object.keys(data).map(k => `<li><span>${k}</span> <strong>${data[k].total}</strong></li>`).join('');
+                        let list = Object.keys(data).map(k => `<li style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #eee;"><span>${k}</span> <strong>${data[k].total}</strong></li>`).join('');
                         document.getElementById("admin-zone").innerHTML = `
                             <div class="a-p">
-                                <h3 style="color:var(--pv)">Bitácora del Almirante (Admin)</h3>
-                                <div class="s-g" style="margin-bottom:20px">
-                                    <div onclick="openResource('privados.html')" class="s-c"><div class="icon">&#128128;</div><h3>Exámenes</h3></div>
-                                    <div onclick="openResource('quiz_privado_1.html')" class="s-c"><div class="icon">&#128272;</div><h3>Quiz</h3></div>
+                                <h3 style="color:var(--pv); margin-top:0;">Bitácora Admin</h3>
+                                <div class="s-g" style="margin-bottom:20px;">
+                                    <div onclick="window.openResource('privados.html')" class="s-c"><div class="icon">&#128128;</div><h3>Exámenes</h3></div>
+                                    <div onclick="window.openResource('quiz_privado_1.html')" class="s-c"><div class="icon">&#128272;</div><h3>Quiz</h3></div>
                                 </div>
-                                <ul style="list-style:none; padding:0;">${list}</ul>
+                                <ul style="list-style:none; padding:0; margin:0; font-family:monospace;">${list}</ul>
                             </div>`;
                     }
                 } catch (e) { }
