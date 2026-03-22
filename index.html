@@ -1,625 +1,1062 @@
 <!DOCTYPE html>
-
 <html lang="es">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>PORTAL GENERAL - MEDICINA</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Médico Pirata | Bitácora de Estudio</title>
 
     <style>
-
         :root {
+            --bg-deep: #0f2f3f;
+            --bg-sea: #144d63;
+            --bg-sand: #f5efe2;
+            --bg-card: rgba(255,255,255,0.92);
+            --text-main: #173140;
+            --text-soft: #5c6f78;
+            --gold: #c99952;
+            --gold-dark: #8e6230;
+            --accent-coral: #b64b42;
+            --line: rgba(23, 49, 64, 0.12);
 
-            --bg-color: #fdfbf7;
+            --curso1-color: #244e66;
+            --curso2-color: #cf6a1c;
+            --curso3-color: #7a4ba5;
+            --curso4-color: #25885f;
+            --privado-color: #b43e36;
 
-            --text-color: #2c3e50;
-
-            
-
-            /* Colores identificativos por Curso */
-
-            --curso1-color: #34495e; 
-
-            --curso2-color: #d35400; 
-
-            --curso3-color: #8e44ad; 
-
-            --curso4-color: #27ae60; 
-
-            --privado-color: #c0392b; /* Color para la zona privada */
-
+            --header-height: 210px;
+            --subbar-height: 68px;
+            --radius-xl: 24px;
+            --radius-lg: 18px;
+            --shadow-soft: 0 12px 30px rgba(0,0,0,0.10);
+            --shadow-strong: 0 18px 40px rgba(0,0,0,0.18);
         }
 
+        * { box-sizing: border-box; }
 
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(circle at top right, rgba(201,153,82,0.15), transparent 25%),
+                linear-gradient(180deg, #f9f4e9 0%, #f3ecdf 100%);
+            color: var(--text-main);
+        }
 
         body {
-
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-
-            background-color: var(--bg-color);
-
-            color: var(--text-color);
-
-            margin: 0;
-
-            padding: 0;
-
-            display: flex;
-
-            flex-direction: column;
-
-            align-items: center;
-
-            min-height: 100vh;
-
+            overflow-x: hidden;
         }
 
-
-
-        /* --- PANTALLA DE ACCESO POR USUARIO --- */
-
+        /* LOGIN */
         #login-screen {
-
             position: fixed;
-
-            top: 0; left: 0; width: 100%; height: 100%;
-
-            background-color: var(--bg-color);
-
-            display: flex;
-
-            justify-content: center;
-
-            align-items: center;
-
+            inset: 0;
             z-index: 9999;
-
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            background:
+                linear-gradient(rgba(8, 28, 39, 0.80), rgba(8, 28, 39, 0.88)),
+                url("portada.png") center/cover no-repeat;
+            backdrop-filter: blur(2px);
         }
-
-        
 
         .login-box {
-
-            background: #fff;
-
-            padding: 40px;
-
-            border-radius: 12px;
-
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-
+            width: 100%;
+            max-width: 460px;
+            background: rgba(255,255,255,0.97);
+            border: 1px solid rgba(255,255,255,0.55);
+            border-radius: 24px;
+            box-shadow: var(--shadow-strong);
+            padding: 34px 30px 28px;
             text-align: center;
-
-            max-width: 400px;
-
-            width: 90%;
-
         }
 
+        .login-kicker {
+            display: inline-block;
+            font-size: 0.78rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold-dark);
+            font-weight: 700;
+            background: #f7ead3;
+            padding: 8px 14px;
+            border-radius: 999px;
+            margin-bottom: 14px;
+        }
 
+        .login-box h2 {
+            margin: 0 0 8px;
+            font-size: 2rem;
+            color: var(--text-main);
+        }
 
-        .login-box h2 { margin-top: 0; color: var(--text-color); }
-
-
+        .login-box p {
+            margin: 0 0 20px;
+            color: var(--text-soft);
+            line-height: 1.5;
+        }
 
         .login-box input {
-
-            width: 100%; padding: 12px; margin: 20px 0;
-
-            border: 2px solid #ddd; border-radius: 6px;
-
-            font-size: 16px; box-sizing: border-box; outline: none;
-
+            width: 100%;
+            padding: 14px 16px;
+            margin: 8px 0 16px;
+            border: 2px solid #d9dfdf;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.25s ease;
+            background: #fffdf9;
         }
 
-        
-
-        .login-box input:focus { border-color: var(--curso1-color); }
-
-
+        .login-box input:focus {
+            border-color: var(--curso1-color);
+            box-shadow: 0 0 0 4px rgba(36,78,102,0.10);
+        }
 
         .login-box button {
-
-            background-color: var(--curso1-color); color: white;
-
-            border: none; padding: 12px 24px; font-size: 16px;
-
-            border-radius: 6px; cursor: pointer; width: 100%;
-
-            transition: background 0.3s; font-weight: bold;
-
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            color: #fff;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--curso1-color), var(--bg-sea));
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+            box-shadow: 0 10px 20px rgba(20,77,99,0.28);
         }
 
-
-
-        .login-box button:hover { background-color: #2c3e50; }
-
-
+        .login-box button:hover {
+            transform: translateY(-2px);
+        }
 
         .error-msg {
-
-            color: #e74c3c; margin-top: 10px; font-size: 0.9rem; display: none;
-
+            display: none;
+            margin-top: 12px;
+            color: #b43e36;
+            font-size: 0.92rem;
+            font-weight: 600;
         }
 
-
-
-        /* --- CLASES DEL CONTENIDO PRINCIPAL --- */
-
-        #main-content {
-
-            width: 100%; max-width: 1000px; padding: 40px 20px;
-
-            box-sizing: border-box; display: flex;
-
-            flex-direction: column; align-items: center;
-
+        /* APP */
+        #app-shell {
+            display: none;
+            min-height: 100vh;
         }
 
-
-
-        h1 {
-
-            font-size: 3rem; margin-bottom: 10px; text-transform: uppercase;
-
-            letter-spacing: 3px; text-align: center; color: #2c3e50;
-
-            border-bottom: 5px solid #2c3e50; padding-bottom: 15px; width: 100%;
-
+        .top-banner {
+            position: relative;
+            height: var(--header-height);
+            z-index: 10;
+            background:
+                linear-gradient(rgba(8, 28, 39, 0.18), rgba(8, 28, 39, 0.18)),
+                url("barner.png") center center / cover no-repeat;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+            overflow: hidden;
         }
 
-
-
-        .author-text {
-
-            font-size: 1.4rem; color: #2c3e50; font-weight: 600;
-
-            margin-top: 10px; margin-bottom: 40px; background-color: #e8eaf6;
-
-            padding: 8px 24px; border-radius: 50px; text-align: center;
-
+        .top-banner::after {
+            content: "";
+            position: absolute;
+            inset: auto 0 0 0;
+            height: 70px;
+            background: linear-gradient(to top, rgba(9,31,43,0.55), transparent);
         }
 
+        .top-banner-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(7,25,35,0.58), rgba(7,25,35,0.18) 55%, rgba(7,25,35,0.35));
+        }
 
+        .top-banner-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            width: min(1400px, calc(100% - 32px));
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            color: white;
+        }
 
-        .course-section { width: 100%; margin-bottom: 60px; }
+        .brand-line {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.14);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255,255,255,0.18);
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
 
+        .hero-title {
+            margin: 0;
+            font-size: clamp(2rem, 4vw, 3.6rem);
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.28);
+        }
 
+        .hero-subtitle {
+            margin: 8px 0 0;
+            max-width: 760px;
+            font-size: 1rem;
+            line-height: 1.55;
+            color: rgba(255,255,255,0.92);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.20);
+        }
+
+        .user-subbar {
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--subbar-height);
+            z-index: 1001;
+            background: rgba(12, 38, 52, 0.94);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255,255,255,0.12);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.14);
+        }
+
+        .user-subbar-inner {
+            width: min(1400px, calc(100% - 32px));
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .crew-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .crew-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f1c17a, #c99952);
+            color: #1b3442;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.35);
+        }
+
+        .crew-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+
+        .crew-info small {
+            color: rgba(255,255,255,0.72);
+            font-weight: 600;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .crew-info strong {
+            font-size: 1rem;
+            letter-spacing: 0.3px;
+        }
+
+        .subbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            border: none;
+            border-radius: 999px;
+            padding: 11px 18px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .nav-btn.primary {
+            background: linear-gradient(135deg, #f0c987, #c99952);
+            color: #143140;
+        }
+
+        .nav-btn.primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(201,153,82,0.30);
+        }
+
+        .nav-btn.ghost {
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.18);
+        }
+
+        .nav-btn.ghost:hover {
+            background: rgba(255,255,255,0.18);
+        }
+
+        .app-body {
+            padding-top: 26px;
+            width: min(1400px, calc(100% - 24px));
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 22px;
+            padding-bottom: 28px;
+        }
+
+        /* MENU */
+        #main-menu-view {
+            display: block;
+        }
+
+        .deck-panel {
+            background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(255,255,255,0.88));
+            border: 1px solid rgba(255,255,255,0.65);
+            border-radius: 28px;
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+        }
+
+        .deck-header {
+            padding: 26px 28px 20px;
+            border-bottom: 1px solid var(--line);
+            background:
+                radial-gradient(circle at top right, rgba(201,153,82,0.14), transparent 28%),
+                linear-gradient(180deg, rgba(20,77,99,0.03), transparent);
+        }
+
+        .deck-kicker {
+            display: inline-block;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold-dark);
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .deck-header h2 {
+            margin: 0 0 8px;
+            font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+            color: var(--text-main);
+        }
+
+        .deck-header p {
+            margin: 0;
+            color: var(--text-soft);
+            max-width: 900px;
+            line-height: 1.6;
+        }
+
+        .quick-links {
+            margin-top: 16px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .main-content {
+            padding: 28px;
+        }
+
+        .course-section {
+            margin-bottom: 34px;
+        }
 
         .course-title {
-
-            font-size: 1.8rem; color: var(--text-color); margin-bottom: 20px;
-
-            padding-left: 15px; border-left: 5px solid; text-transform: uppercase; font-weight: 700;
-
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.25rem;
+            margin: 0 0 18px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.72);
+            border: 1px solid var(--line);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
         }
 
-
+        .course-title::before {
+            content: "⚓";
+            font-size: 1.15rem;
+        }
 
         .semester-grid {
-
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px;
-
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
         }
-
-
 
         .semester-card {
-
-            background-color: #ffffff; border-radius: 15px; padding: 30px;
-
-            text-align: center; text-decoration: none; color: var(--text-color);
-
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;
-
-            border: 1px solid rgba(0,0,0,0.05); display: flex;
-
-            flex-direction: column; justify-content: center; align-items: center;
-
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-card);
+            border: 1px solid rgba(23,49,64,0.08);
+            border-radius: 22px;
+            padding: 24px 22px;
+            text-decoration: none;
+            color: var(--text-main);
+            box-shadow: 0 10px 22px rgba(0,0,0,0.05);
+            transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-height: 170px;
         }
 
+        .semester-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 auto auto 0;
+            width: 100%;
+            height: 6px;
+            background: currentColor;
+            opacity: 0.9;
+        }
 
+        .semester-card::after {
+            content: "";
+            position: absolute;
+            right: -32px;
+            bottom: -32px;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(201,153,82,0.18), transparent 70%);
+        }
 
         .semester-card:hover {
-
-            transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-
+            transform: translateY(-5px);
+            box-shadow: 0 18px 32px rgba(0,0,0,0.10);
+            border-color: rgba(23,49,64,0.16);
         }
 
+        .card-topline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
 
+        .icon {
+            font-size: 2rem;
+            line-height: 1;
+        }
 
-        .icon { font-size: 3rem; margin-bottom: 15px; }
+        .nav-label {
+            font-size: 0.76rem;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--gold-dark);
+            background: #f6ead1;
+            padding: 7px 10px;
+            border-radius: 999px;
+        }
 
+        .semester-card h3 {
+            margin: 4px 0 0;
+            font-size: 1.28rem;
+            font-weight: 800;
+        }
 
+        .semester-card p {
+            margin: 0;
+            color: var(--text-soft);
+            line-height: 1.5;
+            font-size: 0.96rem;
+        }
 
-        .semester-card h3 { margin: 0; font-size: 1.4rem; font-weight: 600; }
+        .semester-card .enter-text {
+            margin-top: auto;
+            font-weight: 800;
+            font-size: 0.92rem;
+            opacity: 0.85;
+        }
 
+        .disabled {
+            opacity: 0.62;
+            cursor: not-allowed;
+            background: rgba(245,245,245,0.9);
+        }
 
-
-        .semester-card span { font-size: 0.9rem; color: #95a5a6; margin-top: 8px; }
-
-
-
-        .disabled { opacity: 0.6; cursor: not-allowed; background-color: #f9f9f9; }
-
-        .disabled:hover { transform: none; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-
-
-
-        /* Estilos para el panel de estadísticas del Admin */
+        .disabled:hover {
+            transform: none;
+            box-shadow: 0 10px 22px rgba(0,0,0,0.05);
+        }
 
         .admin-stats-panel {
-
-            margin-top: 30px; background: #fff; padding: 20px; 
-
-            border-radius: 12px; border: 2px solid var(--privado-color);
-
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-
+            margin-top: 20px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 18px;
+            border: 2px solid var(--privado-color);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.05);
         }
 
-        .admin-stats-panel h3 { color: var(--privado-color); margin-top: 0; }
+        .admin-stats-panel h3 {
+            margin-top: 0;
+            color: var(--privado-color);
+        }
 
-        .admin-stats-panel ul { list-style: none; padding: 0; margin: 0; }
+        .admin-stats-panel ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
 
         .admin-stats-panel li {
-
-            padding: 8px 0; border-bottom: 1px solid #eee; font-size: 1.1rem;
-
-            display: flex; justify-content: space-between;
-
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
         }
 
-        .admin-stats-panel li:last-child { border-bottom: none; }
+        .admin-stats-panel li:last-child {
+            border-bottom: none;
+        }
 
-        .admin-note { font-size: 0.85rem; color: #7f8c8d; margin-top: 15px; font-style: italic; }
+        .admin-note {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-top: 15px;
+            font-style: italic;
+        }
 
+        /* WORKSPACE */
+        #workspace-view {
+            display: none;
+        }
 
+        .workspace-shell {
+            background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.88));
+            border-radius: 28px;
+            border: 1px solid rgba(255,255,255,0.65);
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+        }
 
+        .workspace-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--line);
+            background:
+                linear-gradient(135deg, rgba(20,77,99,0.05), rgba(201,153,82,0.08));
+        }
+
+        .workspace-title {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .workspace-title small {
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+            color: var(--gold-dark);
+            font-weight: 800;
+        }
+
+        .workspace-title strong {
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .workspace-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .workspace-frame-wrap {
+            padding: 16px;
+            background:
+                linear-gradient(180deg, rgba(20,77,99,0.04), transparent 25%),
+                linear-gradient(180deg, #f9f6ef, #f4eee2);
+        }
+
+        #workspace-frame {
+            width: 100%;
+            height: calc(100vh - var(--subbar-height) - 140px);
+            min-height: 620px;
+            border: 0;
+            border-radius: 20px;
+            background: #fff;
+            box-shadow: inset 0 0 0 1px rgba(23,49,64,0.08);
+        }
+
+        .empty-state {
+            display: grid;
+            place-items: center;
+            min-height: 360px;
+            text-align: center;
+            color: var(--text-soft);
+            padding: 30px;
+        }
+
+        .empty-state strong {
+            display: block;
+            color: var(--text-main);
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 900px) {
+            :root {
+                --header-height: 180px;
+                --subbar-height: 88px;
+            }
+
+            .hero-subtitle {
+                font-size: 0.92rem;
+            }
+
+            .user-subbar-inner {
+                align-items: flex-start;
+                justify-content: space-between;
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+
+            .crew-badge {
+                align-items: flex-start;
+            }
+
+            #workspace-frame {
+                height: calc(100vh - var(--subbar-height) - 160px);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .top-banner-content,
+            .user-subbar-inner,
+            .app-body {
+                width: calc(100% - 18px);
+            }
+
+            .main-content {
+                padding: 18px;
+            }
+
+            .deck-header {
+                padding: 22px 18px 12px;
+            }
+
+            .hero-title {
+                letter-spacing: 1px;
+            }
+
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .subbar-actions,
+            .quick-links {
+                width: 100%;
+            }
+
+            .workspace-topbar {
+                padding: 16px;
+            }
+        }
     </style>
-
 </head>
-
 <body>
 
-
-
     <div id="login-screen">
-
         <div class="login-box">
-
-            <h2>Acceso al Portal</h2>
-
-            <p>Introduce tu nombre de usuario para acceder.</p>
-
-            <input type="text" id="username-input" placeholder="Nombre de usuario" onkeypress="handleKeyPress(event)">
-
-            <button onclick="checkUser()">Acceder</button>
-
-            <div class="error-msg" id="error-msg">Usuario no reconocido. Inténtalo de nuevo.</div>
-
+            <div class="login-kicker">⚓ Acceso a la bitácora</div>
+            <h2>Médico Pirata</h2>
+            <p>Identifícate para subir a bordo del portal de estudio y piratear.</p>
+            <input
+                type="text"
+                id="username-input"
+                placeholder="Nombre de usuario"
+                onkeypress="handleKeyPress(event)"
+            />
+            <button onclick="checkUser()">Subir a bordo</button>
+            <div class="error-msg" id="error-msg">Usuario no reconocido. Revisa tu clave de acceso.</div>
         </div>
-
     </div>
 
-
-
-    <script type="module">
-
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-
-        import { getDatabase, ref, get, update, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-
-
-
-        const firebaseConfig = {
-
-            apiKey: "AIzaSyAKughV5w2XAKRm3rWuUmhVldwU2bjj0zY",
-
-            authDomain: "portal-estudio-medicina.firebaseapp.com",
-
-            databaseURL: "https://portal-estudio-medicina-default-rtdb.europe-west1.firebasedatabase.app",
-
-            projectId: "portal-estudio-medicina",
-
-            storageBucket: "portal-estudio-medicina.firebasestorage.app",
-
-            messagingSenderId: "536326985694",
-
-            appId: "1:536326985694:web:ee2428d39421653be26f4f",
-
-            measurementId: "G-52KKQDCFXD"
-
-        };
-
-
-
-        const app = initializeApp(firebaseConfig);
-
-        const db = getDatabase(app);
-
-
-
-        const _u = [
-
-            "\x39\x31\x31\x34\x33",                            // 91143
-
-            "\x6d\x61\x72\x69\x61\x70\x65\x72\x65\x7a",        // mariaperez
-
-            "\x6d\x61\x72\x74\x61\x6a\x69\x6d\x65\x6e\x65\x7a", // martajimenez
-
-            "\x6d\x61\x72\x74\x61\x6c\x6f\x70\x65\x7a",        // martalopez
-
-            "\x61\x6c\x62\x61\x6c\x61\x69\x6e\x65\x7a",        // albalainez
-
-            "\x42\x75\x63\x68\x69"                              // Buchi
-
-        ];
-
-
-
-        const _c = [
-
-            '<div id="main-content">',
-
-            '<h1>Grado en Medicina</h1>',
-
-            '<div class="author-text">Recursos de estudio de Santi Díaz</div>',
-
-            '<div class="course-section">',
-
-            '<div class="course-title" style="border-color: var(--curso1-color); color: var(--curso1-color);">Primero</div>',
-
-            '<div class="semester-grid" id="grid-primero">',
-
-            '<a href="index primero primer cuatrimestre.html" class="semester-card">',
-
-            '<div class="icon">&#128218;</div>',
-
-            '<h3 style="color: var(--curso1-color)">1er Cuatrimestre</h3>',
-
-            '<span>Anatomía I, Biología, Física...</span></a>',
-
-            '<a href="indice segundo cuatri de preimero.html" class="semester-card">',
-
-            '<div class="icon">&#128128;</div>',
-
-            '<h3 style="color: var(--curso1-color)">2do Cuatrimestre</h3>',
-
-            '<span>Anatomía II, Histología...</span></a>',
-
-            '</div></div>',
-
-            '<div class="course-section">',
-
-            '<div class="course-title" style="border-color: var(--curso2-color); color: var(--curso2-color);">Segundo</div>',
-
-            '<div class="semester-grid">',
-
-            '<a href="#" class="semester-card disabled">',
-
-            '<div class="icon">&#128274;</div>',
-
-            '<h3 style="color: var(--curso2-color)">1er Cuatrimestre</h3>',
-
-            '<span>No disponible aún</span></a>',
-
-            '<a href="#" class="semester-card disabled">',
-
-            '<div class="icon">&#128274;</div>',
-
-            '<h3 style="color: var(--curso2-color)">2do Cuatrimestre</h3>',
-
-            '<span>No disponible aún</span></a>',
-
-            '</div></div></div>'
-
-        ];
-
-
-
-        window.checkUser = function() {
-
-            const input = document.getElementById("username-input").value;
-
-            const errorMsg = document.getElementById("error-msg");
-
-
-
-            if (_u.includes(input)) {
-
-                sessionStorage.setItem("_auth_tkn_882", "1");
-
-                sessionStorage.setItem("_auth_user", input); 
-
-                unlockContent();
-
-            } else {
-
-                errorMsg.style.display = "block";
-
-                document.getElementById("username-input").value = "";
-
-                document.getElementById("username-input").focus();
-
-            }
-
-        };
-
-
-
-        window.handleKeyPress = function(event) {
-
-            if (event.key === "Enter") {
-
-                checkUser();
-
-            }
-
-        };
-
-
-
-        async function unlockContent() {
-
-            document.getElementById("login-screen").style.display = "none";
-
-            
-
-            if (!document.getElementById("main-content")) {
-
-                const payload = _c.join('');
-
-                document.body.insertAdjacentHTML('beforeend', payload);
-
-                
-
-                const mainContent = document.getElementById("main-content");
-
-                const currentUser = sessionStorage.getItem("_auth_user");
-
-                
-
-                try {
-
-                    if (!sessionStorage.getItem('session_counted_for_' + currentUser)) {
-
-                        const userRef = ref(db, 'visitas/' + currentUser);
-
-                        update(userRef, { total: increment(1) });
-
-                        sessionStorage.setItem('session_counted_for_' + currentUser, "true");
-
-                    }
-
-                } catch (error) {
-
-                    console.log("Error de conexión con Firebase.");
-
-                }
-
-
-
-                // Lógica EXCLUSIVA para el usuario 91143
-
-                if (currentUser === "91143") {
-
-                    let listaContadores = '<li>Cargando datos...</li>';
-
-                    
-
-                    try {
-
-                        const snapshot = await get(ref(db, 'visitas'));
-
-                        const datosVisitas = snapshot.exists() ? snapshot.val() : {};
-
-                        listaContadores = '';
-
-                        _u.forEach(usuario => {
-
-                            let visitas = datosVisitas[usuario] ? datosVisitas[usuario].total : 0;
-
-                            listaContadores += `<li><strong>${usuario}</strong> <span>${visitas} visitas</span></li>`;
-
-                        });
-
-                    } catch (error) {
-
-                        listaContadores = '<li><em>Error al cargar estadísticas</em></li>';
-
-                    }
-
-
-
-                    const privateHTML = `
+    <div id="app-shell">
+        <header class="top-banner">
+            <div class="top-banner-overlay"></div>
+            <div class="top-banner-content">
+                <div class="brand-line">⚓ Bitácora académica · Bahía de Cádiz</div>
+                <h1 class="hero-title">Médico Pirata</h1>
+                <p class="hero-subtitle">
+                    Cuaderno de navegación para estudiar Medicina entre mareas, guardias y mucho café.
+                    Una cubierta llena de recursos piratas.
+                </p>
+            </div>
+        </header>
+
+        <div class="user-subbar">
+            <div class="user-subbar-inner">
+                <div class="crew-badge">
+                    <div class="crew-avatar" id="crew-avatar">M</div>
+                    <div class="crew-info">
+                        <small>Tripulación activa</small>
+                        <strong id="display-username">Tripulante</strong>
+                    </div>
+                </div>
+
+                <div class="subbar-actions">
+                    <button class="nav-btn primary" id="btn-home" onclick="goToMainMenu()" style="display:none;">
+                        ⚓ Volver a cubierta principal
+                    </button>
+                    <button class="nav-btn ghost" onclick="logout()">⛵ Cerrar sesión</button>
+                </div>
+            </div>
+        </div>
+
+        <main class="app-body">
+            <section id="main-menu-view" class="deck-panel">
+                <div class="deck-header">
+                    <div class="deck-kicker">Puerto base</div>
+                    <h2>Menú principal de navegación</h2>
+                    <p>
+                        Desde aquí puedes poner rumbo a cada cuatrimestre, abrir recursos dentro del puente
+                        de trabajo y volver a cubierta cuando quieras.
+                    </p>
+
+                    <div class="quick-links">
+                        <a
+                            href="https://medicina.uca.es/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="nav-btn primary"
+                            style="display:inline-flex; text-decoration:none;"
+                        >
+                            🌐 Web Facultad de Medicina de Cádiz
+                        </a>
+
+                        <a
+                            href="https://oficinadelestudiante.uca.es/notas-y-actas/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="nav-btn primary"
+                            style="display:inline-flex; text-decoration:none;"
+                        >
+                            📄 Tu expediente
+                        </a>
+                    </div>
+                </div>
+
+                <div class="main-content">
+                    <div class="course-section">
+                        <div class="course-title" style="color: var(--curso1-color); border-left: 6px solid var(--curso1-color);">
+                            Primero
+                        </div>
+
+                        <div class="semester-grid" id="grid-primero">
+                            <a href="#" class="semester-card" style="color: var(--curso1-color);"
+                               onclick="openInWorkspace('index primero primer cuatrimestre.html','Primero · 1er Cuatrimestre'); return false;">
+                                <div class="card-topline">
+                                    <div class="icon">📚</div>
+                                    <div class="nav-label">Abrir derrota</div>
+                                </div>
+                                <h3>1er Cuatrimestre</h3>
+                                <p>Anatomía I, Biología, Física y demás cartas de navegación inicial.</p>
+                                <div class="enter-text">Entrar al cuaderno →</div>
+                            </a>
+
+                            <a href="#" class="semester-card" style="color: var(--curso1-color);"
+                               onclick="openInWorkspace('indice segundo cuatri de preimero.html','Primero · 2do Cuatrimestre'); return false;">
+                                <div class="card-topline">
+                                    <div class="icon">🦴</div>
+                                    <div class="nav-label">Abrir derrota</div>
+                                </div>
+                                <h3>2do Cuatrimestre</h3>
+                                <p>Anatomía II, Histología y recursos del segundo tramo de travesía.</p>
+                                <div class="enter-text">Entrar al cuaderno →</div>
+                            </a>
+                        </div>
+                    </div>
 
                     <div class="course-section">
-
-                        <div class="course-title" style="border-color: var(--privado-color); color: var(--privado-color);">
-
-                            Zona Privada (Admin)
-
+                        <div class="course-title" style="color: var(--curso2-color); border-left: 6px solid var(--curso2-color);">
+                            Segundo
                         </div>
-
-                        
 
                         <div class="semester-grid">
-
-                            <a href="privados.html" class="semester-card">
-
-                                <div class="icon">&#128128;</div>
-
-                                <h3 style="color: var(--privado-color)">Exámenes 24 y 25</h3>
-
-                                <span>Anatomía II - Bloques 1 a 4</span>
-
+                            <a href="#" class="semester-card disabled" style="color: var(--curso2-color);">
+                                <div class="card-topline">
+                                    <div class="icon">🔒</div>
+                                    <div class="nav-label">En dique seco</div>
+                                </div>
+                                <h3>1er Cuatrimestre</h3>
+                                <p>No disponible aún. Esta ruta sigue en preparación.</p>
+                                <div class="enter-text">Próximamente</div>
                             </a>
 
-
-
-                            <a href="quiz_privado_1.html" class="semester-card">
-
-                                <div class="icon">&#128272;</div>
-
-                                <h3 style="color: var(--privado-color)">Quizz Privado 1</h3>
-
-                                <span>Acceso Exclusivo</span>
-
+                            <a href="#" class="semester-card disabled" style="color: var(--curso2-color);">
+                                <div class="card-topline">
+                                    <div class="icon">🔒</div>
+                                    <div class="nav-label">En dique seco</div>
+                                </div>
+                                <h3>2do Cuatrimestre</h3>
+                                <p>No disponible aún. Se habilitará cuando la travesía esté lista.</p>
+                                <div class="enter-text">Próximamente</div>
                             </a>
-
                         </div>
+                    </div>
 
+                    <div id="admin-zone-anchor"></div>
+                </div>
+            </section>
 
+            <section id="workspace-view" class="workspace-shell">
+                <div class="workspace-topbar">
+                    <div class="workspace-title">
+                        <small>Puente de navegación</small>
+                        <strong id="workspace-title">Zona de trabajo</strong>
+                    </div>
 
-                        <div class="admin-stats-panel">
+                    <div class="workspace-actions">
+                        <button class="nav-btn primary" onclick="goToMainMenu()">⚓ Salir al menú principal</button>
+                        <button class="nav-btn ghost" onclick="reloadWorkspace()">↻ Refrescar contenido</button>
+                    </div>
+                </div>
 
-                            <h3>☁️ Registro Global en la Nube</h3>
-
-                            <ul id="lista-visitas">
-
-                                ${listaContadores}
-
-                            </ul>
-
-                            <div class="admin-note">
-
-                                *Nota: Estas estadísticas se actualizan en tiempo real.
-
-                            </div>
-
+                <div class="workspace-frame-wrap">
+                    <div class="empty-state" id="workspace-empty">
+                        <div>
+                            <strong>Sin ruta cargada</strong>
+                            Selecciona un destino desde la cubierta principal para abrirlo aquí dentro.
                         </div>
+                    </div>
 
-                    </div>`;
+                    <iframe id="workspace-frame" title="Zona de trabajo" style="display:none;"></iframe>
+                </div>
+            </section>
+        </main>
+    </div>
 
-                    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getDatabase, ref, get, update, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-                    mainContent.insertAdjacentHTML('beforeend', privateHTML);
-
-                }
-
-            }
-
-        }
-
-
-
-        window.onload = function() {
-
-            if (sessionStorage.getItem("_auth_tkn_882") === "1") {
-
-                unlockContent();
-
-            }
-
+        const firebaseConfig = {
+            apiKey: "AIzaSyAKughV5w2XAKRm3rWuUmhVldwU2bjj0zY",
+            authDomain: "portal-estudio-medicina.firebaseapp.com",
+            databaseURL: "https://portal-estudio-medicina-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "portal-estudio-medicina",
+            storageBucket: "portal-estudio-medicina.firebasestorage.app",
+            messagingSenderId: "536326985694",
+            appId: "1:536326985694:web:ee2428d39421653be26f4f",
+            measurementId: "G-52KKQDCFXD"
         };
 
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const _u = [
+            "\x39\x31\x31\x34\x33",
+            "\x6d\x61\x72\x69\x61\x70\x65\x72\x65\x7a",
+            "\x6d\x61\x72\x74\x61\x6a\x69\x6d\x65\x6e\x65\x7a",
+            "\x6d\x61\x72\x74\x61\x6c\x6f\x70\x65\x7a",
+            "\x61\x6c\x62\x61\x6c\x61\x69\x6e\x65\x7a",
+            "\x42\x75\x63\x68\x69"
+        ];
+
+        function getSafeDisplayName(username) {
+            if (!username) return "Tripulante";
+            if (username === "91143") return "Capitán";
+            return "Tripulante · " + username;
+        }
+
+        function getAvatarText(username) {
+            if (!username) return "M";
+            return username.charAt(0).toUpperCase();
+        }
+
+        window.checkUser = function () {
+            const input = document.getElementById("username-input").value.trim();
+            const errorMsg = document.getElementById("error-msg");
+
+            if (_u.includes(input)) {
+                sessionStorage.setItem("_auth_tkn_882", "1");
+                sessionStorage.setItem("_auth_user", input);
+                unlockContent();
+            } else {
+                errorMsg.style.display = "block";
+                document.getElementById("username-input").value = "";
+                document.getElementById("username-input").focus();
+            }
+        };
+
+        window.handleKeyPress = function (event) {
+            if (event.key === "Enter") checkUser();
+        };
+
+        window.logout = function () {
+            const currentUser = sessionStorage.getItem("_auth_user");
+            sessionStorage.removeItem("_auth_tkn_882");
+            sessionStorage.removeItem("_auth_user");
+            if (currentUser) {
+                sessionStorage.removeItem('session_counted_for_' + currentUser);
+            }
+            location.reload();
+        };
+
+        window.goToMainMenu = function () {
+            document.getElementById("main-menu-view").style.display = "block";
+            document.getElementById("workspace-view").style.display = "none";
+            document.getElementById("btn-home").style.display = "none";
+        };
+
+        window.openInWorkspace = function (url, title = "Zona de trabajo") {
+            const frame = document.getElementById("workspace-frame");
+            const empty = document.getElementById("workspace-empty");
+
+            document.getElementById("workspace-title").textContent = title;
+            frame.src = url;
+            frame.style.display = "block";
+            empty.style.display = "none";
+
+            document.getElementById("main-menu-view").style.display = "none";
+            document.getElementById("workspace-view").style.display = "block";
+            document.getElementById("btn-home").style.display = "inline-flex";
+
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        };
+
+        window.reloadWorkspace = function () {
+            const frame = document.getElementById("workspace-frame");
+            if (frame && frame.src) {
+                frame.src = frame.src;
+            }
+        };
+
+        async function injectAdminZone(currentUser) {
+            if (currentUser !== "91143") return;
+
+            let listaContadores = '<li>Cargando datos...</li>';
+
+            try {
+                const snapshot = await get(ref(db, 'visitas'));
+                const datosVisitas = snapshot.exists() ? snapshot.val() : {};
+                listaContadores = '';
+
+                _u.forEach(usuario => {
+                    let visitas = datosVisitas[usuario] ? datosVisitas[usuario].total : 0;
+                    listaContadores += `<li><strong>${usuario}</strong> <span>${visitas} visitas</span></li>`;
+                });
+            } catch (error) {
+                listaContadores = '<li><em>Error al cargar estadísticas</em></li>';
+            }
+
+            const privateHTML = `
+                <div class="course-section">
+                    <div class="course-title" style="color: var(--privado-color); border-left: 6px solid var(--privado-color);">
+                        Zona del capitán
+                    </div>
+
+                    <div class="semester-grid">
+                        <a href="#" class="semester-card" style="color: var(--privado-color);"
+                           onclick="openInWorkspace('privados.html','Zona del capitán · Exámenes 24 y 25'); return false;">
+                            <div class="card-topline">
+                                <div class="icon">🗂️</div>
+                                <div class="nav-label">Acceso reservado</div>
+                            </div>
+                            <h3>Exámenes 24 y 25</h3>
+                            <p>Anatomía II · Bloques 1 a 4 en zona privada.</p>
+                            <div class="enter-text">Abrir archivo →</div>
+                        </a>
+
+                        <a href="#" class="semester-card" style="color: var(--privado-color);"
+                           onclick="openInWorkspace('quiz_privado_1.html','Zona del capitán · Quizz Privado 1'); return false;">
+                            <div class="card-topline">
+                                <div class="icon">🔐</div>
+                                <div class="nav-label">Acceso reservado</div>
+                            </div>
+                            <h3>Quizz Privado 1</h3>
+                            <p>Ruta exclusiva con acceso restringido.</p>
+                            <div class="enter-text">Abrir archivo →</div>
+                        </a>
+                    </div>
+
+                    <div class="admin-stats-panel">
+                        <h3>☁️ Registro global en la nube</h3>
+                        <ul id="lista-visitas">
+                            ${listaContadores}
+                        </ul>
+                        <div class="admin-note">
+                            *Estas estadísticas se actualizan por sesión contabilizada.
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById("admin-zone-anchor").insertAdjacentHTML("beforebegin", privateHTML);
+        }
+
+        async function unlockContent() {
+            document.getElementById("login-screen").style.display = "none";
+            document.getElementById("app-shell").style.display = "block";
+
+            const currentUser = sessionStorage.getItem("_auth_user") || "";
+            document.getElementById("display-username").textContent = getSafeDisplayName(currentUser);
+            document.getElementById("crew-avatar").textContent = getAvatarText(currentUser);
+
+            try {
+                if (!sessionStorage.getItem('session_counted_for_' + currentUser)) {
+                    const userRef = ref(db, 'visitas/' + currentUser);
+                    update(userRef, { total: increment(1) });
+                    sessionStorage.setItem('session_counted_for_' + currentUser, "true");
+                }
+            } catch (error) {
+                console.log("Error de conexión con Firebase.");
+            }
+
+            await injectAdminZone(currentUser);
+        }
+
+        window.onload = function () {
+            if (sessionStorage.getItem("_auth_tkn_882") === "1") {
+                unlockContent();
+            }
+        };
     </script>
-
 </body>
-
 </html>
