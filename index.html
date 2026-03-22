@@ -14,6 +14,7 @@
             --curso2-color: #d35400; 
             --curso3-color: #8e44ad; 
             --curso4-color: #27ae60; 
+            --privado-color: #c0392b; /* Color para la zona privada */
         }
 
         body {
@@ -87,8 +88,16 @@
 
         .author-text {
             font-size: 1.4rem; color: #2c3e50; font-weight: 600;
-            margin-top: 10px; margin-bottom: 40px; background-color: #e8eaf6;
+            margin-top: 10px; margin-bottom: 20px; background-color: #e8eaf6;
             padding: 8px 24px; border-radius: 50px; text-align: center;
+        }
+        
+        /* Estilo para el contador */
+        .user-stats {
+            font-size: 1rem; color: #7f8c8d; font-weight: bold;
+            margin-bottom: 40px; background-color: #fff; border: 1px solid #ddd;
+            padding: 5px 20px; border-radius: 20px; text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
         .course-section { width: 100%; margin-bottom: 60px; }
@@ -140,15 +149,15 @@
     <script>
         // Listado de usuarios autorizados (incluyendo "Buchi")
         const _u = [
-            "\x39\x31\x31\x34\x33",                           // 91143
-            "\x6d\x61\x72\x69\x61\x70\x65\x72\x65\x7a",         // mariaperez
+            "\x39\x31\x31\x34\x33",                            // 91143
+            "\x6d\x61\x72\x69\x61\x70\x65\x72\x65\x7a",        // mariaperez
             "\x6d\x61\x72\x74\x61\x6a\x69\x6d\x65\x6e\x65\x7a", // martajimenez
-            "\x6d\x61\x72\x74\x61\x6c\x6f\x70\x65\x7a",         // martalopez
-            "\x61\x6c\x62\x61\x6c\x61\x69\x6e\x65\x7a",         // albalainez
+            "\x6d\x61\x72\x74\x61\x6c\x6f\x70\x65\x7a",        // martalopez
+            "\x61\x6c\x62\x61\x6c\x61\x69\x6e\x65\x7a",        // albalainez
             "\x42\x75\x63\x68\x69"                              // Buchi
         ];
 
-        // Contenido HTML fraccionado
+        // Contenido HTML fraccionado principal
         const _c = [
             '<div id="main-content">',
             '<h', '1>G', 'rado e', 'n Me', 'dicin', 'a</h', '1>',
@@ -185,7 +194,6 @@
             const input = document.getElementById("username-input").value;
             const errorMsg = document.getElementById("error-msg");
 
-            // Comparamos el nombre de usuario (sensible a mayúsculas/minúsculas)
             if (_u.includes(input)) {
                 sessionStorage.setItem("_auth_tkn_882", "1");
                 sessionStorage.setItem("_auth_user", input); 
@@ -199,9 +207,56 @@
 
         function unlockContent() {
             document.getElementById("login-screen").style.display = "none";
+            
             if (!document.getElementById("main-content")) {
+                // 1. Inyectamos el contenido general
                 const payload = _c.join('');
                 document.body.insertAdjacentHTML('beforeend', payload);
+                
+                const mainContent = document.getElementById("main-content");
+                const currentUser = sessionStorage.getItem("_auth_user");
+                
+                // 2. Lógica del Contador de Visitas por Usuario
+                // Usamos localStorage para que persista al cerrar el navegador
+                let userVisits = localStorage.getItem('visits_' + currentUser) || 0;
+                
+                // Evitamos sumar si solo pulsa F5 usando una variable de sessionStorage
+                if (!sessionStorage.getItem('session_counted_for_' + currentUser)) {
+                    userVisits = parseInt(userVisits) + 1;
+                    localStorage.setItem('visits_' + currentUser, userVisits);
+                    sessionStorage.setItem('session_counted_for_' + currentUser, "true");
+                }
+
+                // Creamos e insertamos la barra de estadísticas (contador)
+                const statsDiv = document.createElement('div');
+                statsDiv.className = 'user-stats';
+                statsDiv.innerHTML = `👤 Usuario: ${currentUser} | 👁️ Accesos totales: ${userVisits}`;
+                const authorText = document.querySelector('.author-text');
+                authorText.parentNode.insertBefore(statsDiv, authorText.nextSibling);
+
+                // 3. Lógica de la Zona Privada EXCLUSIVA para 91143
+                if (currentUser === "91143") {
+                    const privateHTML = `
+                    <div class="course-section">
+                        <div class="course-title" style="border-color: var(--privado-color); color: var(--privado-color);">
+                            Zona Privada (Admin)
+                        </div>
+                        <div class="semester-grid">
+                            <a href="quiz_privado_1.html" class="semester-card">
+                                <div class="icon">&#128272;</div>
+                                <h3 style="color: var(--privado-color)">Quizz Privado 1</h3>
+                                <span>Acceso Exclusivo</span>
+                            </a>
+                            <a href="quiz_privado_2.html" class="semester-card">
+                                <div class="icon">&#128273;</div>
+                                <h3 style="color: var(--privado-color)">Quizz Privado 2</h3>
+                                <span>Acceso Exclusivo</span>
+                            </a>
+                        </div>
+                    </div>`;
+                    // Añadimos la zona privada al final del contenedor principal
+                    mainContent.insertAdjacentHTML('beforeend', privateHTML);
+                }
             }
         }
 
