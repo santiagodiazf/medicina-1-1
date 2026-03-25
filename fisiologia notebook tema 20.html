@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Receptores Sensoriales y Transducción</title>
+<script>
+    // Comprobamos si NO existe la llave de acceso
+    if (sessionStorage.getItem("_auth_tkn_882") !== "1") {
+        // Expulsamos al usuario a la página principal
+        // IMPORTANTE: Cambia "index.html" por el nombre exacto de tu archivo principal si se llama distinto
+        window.location.replace("index.html");
+    }
+</script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #d35400;
+            --success: #27ae60;
+            --error: #e74c3c;
+            --bg: #fdfdfd;
+            --sidebar-width: 270px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- Pantallas de Interfaz --- */
+        #overlay-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.98);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            margin: 8px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            background: var(--primary);
+            color: white;
+            transition: 0.3s;
+        }
+
+        .btn:hover { background: var(--secondary); transform: translateY(-2px); }
+        .btn-accent { background: var(--accent); }
+
+        /* --- Estructura Principal --- */
+        #app-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* --- Barra Lateral (Navegación) --- */
+        aside {
+            width: var(--sidebar-width);
+            background: var(--primary);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            border-right: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: #1a252f;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .nav-scroll {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px;
+            scrollbar-width: thin;
+            scrollbar-color: #455a64 #2c3e50;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .nav-item {
+            aspect-ratio: 1;
+            background: #455a64;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .nav-item.correct { background: var(--success); }
+        .nav-item.wrong { background: var(--error); }
+        .nav-item.marked { border: 3px solid #f1c40f; color: #f1c40f; }
+
+        .sidebar-footer {
+            padding: 15px;
+            background: #1a252f;
+        }
+
+        /* --- Área de Preguntas --- */
+        main {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 40px 20px;
+            scroll-behavior: smooth;
+        }
+
+        .question-card {
+            max-width: 800px;
+            margin: 0 auto 60px auto;
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            position: relative;
+            scroll-margin-top: 40px;
+            border: 1px solid #eee;
+        }
+
+        .mark-flag {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8f9fa;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            border: 1px solid #ddd;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .option-btn {
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border: 2px solid #edf2f7;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: block;
+            width: 100%;
+            text-align: left;
+            background: white;
+            font-size: 1rem;
+        }
+
+        .option-btn:hover:not(.disabled) { border-color: #3498db; background: #f7fbff; }
+        .option-btn.correct { background: #d4edda; border-color: var(--success); color: #155724; font-weight: bold; }
+        .option-btn.wrong { background: #f8d7da; border-color: var(--error); color: #721c24; }
+        .option-btn.disabled { pointer-events: none; }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background: #eef7fd;
+            border-left: 5px solid #3498db;
+            border-radius: 4px;
+            display: none;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="overlay-screen">
+        <div id="setup-content">
+            <h1 style="color: var(--primary)">Receptores Sensoriales</h1>
+            <p>Selecciona el modo de estudio:</p>
+            <button class="btn" onclick="startQuiz(false)">Orden de Clase (1-15)</button>
+            <button class="btn" onclick="startQuiz(true)">Orden Aleatorio</button>
+        </div>
+
+        <div id="results-content" style="display:none;">
+            <h2 id="final-score"></h2>
+            <p>¿Qué quieres hacer ahora?</p>
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; max-width: 500px;">
+                <button class="btn" onclick="resetQuiz('all')">Repetir Todo</button>
+                <button class="btn" onclick="resetQuiz('failed')">Repetir Falladas</button>
+                <button class="btn" onclick="resetQuiz('marked')">Repetir Marcadas</button>
+                <button class="btn" onclick="resetQuiz('failed-marked')">Falladas + Marcadas</button>
+            </div>
+            <button class="btn btn-accent" style="margin-top:20px" onclick="location.reload()">Cambiar Configuración</button>
+        </div>
+    </div>
+
+    <div id="app-container" style="display:none;">
+        <aside>
+            <div class="sidebar-header">Índice Navegable</div>
+            <div class="nav-scroll">
+                <div class="nav-grid" id="nav-grid">
+                    </div>
+            </div>
+            <div class="sidebar-footer">
+                <button class="btn btn-accent" style="width:100%; margin:0" onclick="showResults()">Finalizar Cuestionario</button>
+            </div>
+        </aside>
+
+        <main id="quiz-container">
+            </main>
+    </div>
+
+<script>
+    const questionsRaw = [
+        {
+            id: 1,
+            q: "1. La función biológica principal de cualquier receptor sensorial es:",
+            options: ["A) Absorber los estímulos físicos para que no dañen la piel.", "B) Transducir un tipo específico de energía (mecánica, térmica, química) en una señal eléctrica comprensible para el sistema nervioso.", "C) Sintetizar proteínas motoras.", "D) Generar una respuesta motora directa sin pasar por el SNC."],
+            correct: "B) Transducir un tipo específico de energía (mecánica, térmica, química) en una señal eléctrica comprensible para el sistema nervioso.",
+            exp: "Literal de la definición de clase. El receptor \"traduce\" el estímulo del mundo real al idioma del cerebro (electricidad)."
+        },
+        {
+            id: 2,
+            q: "2. (Pregunta del Audio). Un mosquito se posa muy suavemente en nuestro brazo. El peso del mosquito deforma levemente los mecanorreceptores de la piel induciendo una pequeñísima señal eléctrica local, pero nosotros no nos damos cuenta de que el mosquito está ahí. Fisiológicamente, ¿qué ha ocurrido?",
+            options: ["A) Se ha alcanzado el umbral perceptivo pero no el del receptor.", "B) La vía aferente está seccionada.", "C) Se ha alcanzado el umbral del receptor (hubo transducción local mínima), pero no se ha alcanzado el umbral perceptivo necesario para que la señal se procese de forma consciente en la corteza.", "D) Los receptores del tacto son exclusivos para presiones de más de 1 kg."],
+            correct: "C) Se ha alcanzado el umbral del receptor (hubo transducción local mínima), pero no se ha alcanzado el umbral perceptivo necesario para que la señal se procese de forma consciente en la corteza.",
+            exp: "El profesor explicó que el receptor sí responde (umbral del receptor), pero si no llega al umbral perceptivo, la mente consciente no se entera."
+        },
+        {
+            id: 3,
+            q: "3. Muchos procesos sensoriales ocurren de forma completamente subconsciente, sin que nos demos cuenta. Un ejemplo mencionado en clase responsable de monitorizar nuestra presión arterial interna y ajustarla constantemente frente a la gravedad es mediado por:",
+            options: ["A) Los quimiorreceptores del gusto.", "B) Los propioceptores musculares.", "C) Los barorreceptores (un tipo de interoceptor).", "D) Las células ciliadas de la cóclea."],
+            correct: "C) Los barorreceptores (un tipo de interoceptor).",
+            exp: "Los barorreceptores monitorizan los cambios internos de presión y su información rara vez llega a ser consciente."
+        },
+        {
+            id: 4,
+            q: "4. ¿Qué tipo de receptor sensorial nos permite saber exactamente en qué posición se encuentra nuestra mano o poder tocarnos la punta de la nariz aun teniendo los ojos completamente cerrados?",
+            options: ["A) Interoceptores gástricos.", "B) Propioceptores (ubicados en músculos, tendones y articulaciones).", "C) Nociceptores térmicos.", "D) Fotorreceptores."],
+            correct: "B) Propioceptores (ubicados en músculos, tendones y articulaciones).",
+            exp: "El profesor usó exactamente este ejemplo. Los propioceptores nos dan consciencia de nuestra postura y previenen daños articulares o desgarros."
+        },
+        {
+            id: 5,
+            q: "5. (Aplicación práctica de clase). Cuando nos vestimos por la mañana sentimos el tacto de la ropa, pero a los pocos minutos dejamos de percibirla por completo. Lo mismo ocurre cuando entramos en una cafetería y, tras 10 minutos, dejamos de percibir el fuerte olor a café. Este fenómeno fisiológico vital se denomina:",
+            options: ["A) Anosmia patológica aguda.", "B) Inhibición lateral divergente.", "C) Adaptación rápida, por la cual el receptor deja de responder ante un estímulo que se mantiene constante en el tiempo para no saturar al cerebro.", "D) Destrucción transitoria de la vía aferente."],
+            correct: "C) Adaptación rápida, por la cual el receptor deja de responder ante un estímulo que se mantiene constante en el tiempo para no saturar al cerebro.",
+            exp: "Los receptores de adaptación rápida son excelentes para detectar cambios, pero se \"apagan\" si el estímulo no cambia, filtrando información innecesaria."
+        },
+        {
+            id: 6,
+            q: "6. Por el contrario, los receptores implicados en monitorizar el daño tisular (dolor crónico) o parámetros vitales internos (como la presión de la sangre) no deben apagarse nunca. Estos receptores presentan:",
+            options: ["A) Una adaptación rápida.", "B) Una adaptación lenta o nula, manteniendo su disparo de potenciales de acción de forma continua mientras dure el estímulo.", "C) Canales ionotrópicos que se bloquean en milisegundos.", "D) Un umbral perceptivo inalcanzable."],
+            correct: "B) Una adaptación lenta o nula, manteniendo su disparo de potenciales de acción de forma continua mientras dure el estímulo.",
+            exp: "Para sobrevivir, el cuerpo no puede \"olvidar\" que le duele una herida o que la presión arterial está por los suelos."
+        },
+        {
+            id: 7,
+            q: "7. Si estudiamos el mecanismo de transducción de los receptores sensoriales, encontraremos vías muy diferentes. ¿Qué receptores utilizan vías metabotrópicas complejas (segundos mensajeros) para transducr la señal?",
+            options: ["A) Los corpúsculos de Pacini de presión mecánica.", "B) Las células ciliadas del oído interno.", "C) Los receptores de la visión (fototransducción) y los del olfato.", "D) Todos los nociceptores de la piel."],
+            correct: "C) Los receptores de la visión (fototransducción) y los del olfato.",
+            exp: "Mientras que el tacto o el sonido abren canales mecánicamente (ionotrópicos), la luz y los olores activan proteínas G en la membrana."
+        },
+        {
+            id: 8,
+            q: "8. En cuanto al sentido del gusto, existen células especializadas en las papilas que emplean distintos mecanismos. Según lo detallado en el audio, los receptores para los sabores DULCE, AMARGO y UMAMI son:",
+            options: ["A) Receptores Ionotrópicos directos.", "B) Receptores Metabotrópicos (usan segundos mensajeros).", "C) Mecanorreceptores de presión en la lengua.", "D) Propioceptores sublinguales."],
+            correct: "B) Receptores Metabotrópicos (usan segundos mensajeros).",
+            exp: "El profesor hizo la distinción: Dulce, Amargo y Umami usan vías metabotrópicas."
+        },
+        {
+            id: 9,
+            q: "9. En contraposición a la pregunta anterior, los sabores SALADO y ÁCIDO activan a las células gustativas abriendo directamente canales iónicos (ej. entrada directa de Sodio). Por lo tanto, estos receptores son:",
+            options: ["A) Metabotrópicos acoplados a proteína G.", "B) Receptores intracelulares lipofílicos.", "C) Receptores Ionotrópicos.", "D) Receptores de estiramiento."],
+            correct: "C) Receptores Ionotrópicos.",
+            exp: "El salado y el ácido actúan rápidamente mediante canales ionotrópicos de membrana."
+        },
+        {
+            id: 10,
+            q: "10. (Pregunta deducida de la práctica y del audio). Durante el \"test de discriminación de dos puntos\" con un compás, un paciente siente las dos puntas separadas por 20 mm como un SOLO pinchazo cuando se le aplica en la ESPALDA. Fisiológicamente, ¿a qué se debe la escasa resolución espacial de la espalda?",
+            options: ["A) A que en la espalda no hay mecanorreceptores.", "B) Al fenómeno de CONVERGENCIA: los receptores de la espalda tienen campos receptivos grandes y múltiples neuronas primarias convergen en una sola secundaria, enviando una señal única y mezclada al cerebro.", "C) Al fenómeno de divergencia.", "D) A la ausencia de adaptación lenta."],
+            correct: "B) Al fenómeno de CONVERGENCIA: los receptores de la espalda tienen campos receptivos grandes y múltiples neuronas primarias convergen en una sola secundaria, enviando una señal única y mezclada al cerebro.",
+            exp: "Al converger muchas terminales en un solo \"cable\" secundario, el cerebro pierde la capacidad de saber de qué milímetro exacto provino el pinchazo."
+        },
+        {
+            id: 11,
+            q: "11. Si le aplicamos el mismo compás con los mismos 20 mm de separación en la yema del DEDO ÍNDICE, el paciente nota perfectamente los DOS puntos distintos. La alta capacidad discriminativa de nuestras yemas se debe a que la información viaja mediante:",
+            options: ["A) Convergencia masiva hacia la médula.", "B) Receptores de adaptación extraordinariamente rápida.", "C) Campos receptivos pequeños y vías en paralelo (con escasa o nula convergencia), donde cada punto estimula neuronas secundarias distintas manteniendo las señales separadas.", "D) Receptores metabotrópicos exclusivamente."],
+            correct: "C) Campos receptivos pequeños y vías en paralelo (con escasa o nula convergencia), donde cada punto estimula neuronas secundarias distintas manteniendo las señales separadas.",
+            exp: "Como se explicó, en los dedos la señal no se mezcla, viaja por \"carriles\" individuales, permitiendo la lectura táctil fina (como el Braille)."
+        },
+        {
+            id: 12,
+            q: "12. En el procesamiento sensorial, existe un mecanismo fundamental llamado \"Inhibición Lateral\" que tiene lugar en los relevos sinápticos. ¿Cuál es la función biológica primordial de este mecanismo cuando nos pinchan en la piel?",
+            options: ["A) Extender el dolor por todo el cuerpo.", "B) Apagar inmediatamente todos los receptores sensoriales del organismo.", "C) Aumentar drásticamente el CONTRASTE: la vía central más estimulada bloquea o inhibe a las neuronas sensitivas colaterales menos estimuladas, permitiendo que el cerebro \"limpie\" el ruido y localice el punto exacto del estímulo con gran precisión.", "D) Transformar un receptor de adaptación rápida en uno lento."],
+            correct: "C) Aumentar drásticamente el CONTRASTE: la vía central más estimulada bloquea o inhibe a las neuronas sensitivas colaterales menos estimuladas, permitiendo que el cerebro \"limpie\" el ruido y localice el punto exacto del estímulo con gran precisión.",
+            exp: "Literal de la explicación del profesor: a mayor inhibición lateral, mayor contraste, lo que evita que sintamos un estímulo difuso y nos centra en la punta del daño."
+        },
+        {
+            id: 13,
+            q: "13. A lo largo del nervio periférico, el Potencial de Acción tiene siempre la misma amplitud (es Todo o Nada). Por tanto, si un estímulo se hace más INTENSO (ej. nos aprietan la mano más fuerte), el sistema nervioso no puede codificarlo haciendo el potencial \"más grande\". ¿Cómo se codifica entonces el aumento de intensidad del estímulo?",
+            options: ["A) Liberando toxina botulínica en el ganglio.", "B) Disminuyendo la constante de longitud del axón.", "C) Mediante el Código de Frecuencia (aumentando el número de potenciales de acción disparados por segundo) y el Código Poblacional (reclutando mayor número de receptores de la zona).", "D) Transformando los estímulos en señales químicas en el exterior."],
+            correct: "C) Mediante el Código de Frecuencia (aumentando el número de potenciales de acción disparados por segundo) y el Código Poblacional (reclutando mayor número de receptores de la zona).",
+            exp: "Al no obedecer la Ley de Ohm, la intensidad se transmite disparando más rápido (frecuencia) y activando a más vecinos (población)."
+        },
+        {
+            id: 14,
+            q: "14. A diferencia de las neuronas, ciertas células sensoriales especializadas no poseen largos axones sino que transducen la energía liberando neurotransmisores directamente hacia neuronas aferentes tras despolarizarse. Un ejemplo clásico citado son las células que captan la vibración del sonido en el oído interno. ¿Qué energía transducen y qué tipo de receptores presentan?",
+            options: ["A) Transducen energía lumínica mediante canales metabotrópicos.", "B) Transducen energía mecánica (inclinación de los cilios) mediante canales ionotrópicos que abren compuertas permitiendo la entrada de calcio y potasio.", "C) Transducen energía térmica mediante receptores intracelulares.", "D) Transducen energía química usando proteína Gs."],
+            correct: "B) Transducen energía mecánica (inclinación de los cilios) mediante canales ionotrópicos que abren compuertas permitiendo la entrada de calcio y potasio.",
+            exp: "Las células del oído (y los propioceptores) son el clásico ejemplo de canales iónicos que se abren por tracción o fuerza mecánica (mecanorreceptores)."
+        },
+        {
+            id: 15,
+            q: "15. Las personas invidentes que leen en el sistema Braille utilizan una extraordinaria sensibilidad somática para diferenciar pequeños puntos en relieve. Atendiendo al tipo de receptor necesario para detectar esta deformación de la piel, su clasificación principal es:",
+            options: ["A) Quimiorreceptores.", "B) Nociceptores térmicos.", "C) Exteroceptores de tipo mecanorreceptor.", "D) Propioceptores tendinosos."],
+            correct: "C) Exteroceptores de tipo mecanorreceptor.",
+            exp: "El Braille deforma físicamente la superficie de la yema del dedo, estimulando mecanorreceptores que, por ser externos, pertenecen al grupo de los exteroceptores"
+        }
+    ];
+
+    let currentQuestions = [];
+    let state = { answered: {}, marked: {}, results: {} };
+
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function startQuiz(randomize) {
+        currentQuestions = [...questionsRaw];
+        if (randomize) shuffle(currentQuestions);
+        
+        document.getElementById('overlay-screen').style.display = 'none';
+        document.getElementById('app-container').style.display = 'flex';
+        renderQuiz();
+    }
+
+    function renderQuiz() {
+        const container = document.getElementById('quiz-container');
+        const nav = document.getElementById('nav-grid');
+        container.innerHTML = '';
+        nav.innerHTML = '';
+
+        currentQuestions.forEach((item) => {
+            // Generar Navegación
+            const navBtn = document.createElement('button');
+            navBtn.className = `nav-item ${state.marked[item.id] ? 'marked' : ''}`;
+            if(state.results[item.id] === true) navBtn.classList.add('correct');
+            if(state.results[item.id] === false) navBtn.classList.add('wrong');
+            
+            navBtn.id = `nav-${item.id}`;
+            navBtn.innerText = item.id;
+            navBtn.onclick = () => document.getElementById(`card-${item.id}`).scrollIntoView();
+            nav.appendChild(navBtn);
+
+            // Generar Carta de Pregunta
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = `card-${item.id}`;
+
+            let opts = [...item.options];
+            shuffle(opts);
+
+            let optionsHtml = opts.map(o => `
+                <button class="option-btn ${state.answered[item.id] ? 'disabled' : ''}" 
+                        onclick="checkAnswer(this, ${item.id}, '${o.replace(/'/g, "\\'")}', '${item.correct.replace(/'/g, "\\")}')">
+                    ${o}
+                </button>
+            `).join('');
+
+            card.innerHTML = `
+                <div class="mark-flag" onclick="toggleMark(${item.id})">
+                    <input type="checkbox" id="chk-${item.id}" ${state.marked[item.id] ? 'checked' : ''}>
+                    <label style="cursor:pointer">Marcar</label>
+                </div>
+                <div class="question-text">${item.q}</div>
+                <div class="options-list">${optionsHtml}</div>
+                <div class="explanation" id="exp-${item.id}" style="${state.answered[item.id] ? 'display:block' : ''}">
+                    ${item.exp}
+                </div>
+            `;
+            container.appendChild(card);
+
+            if(state.answered[item.id]) {
+                const btns = card.querySelectorAll('.option-btn');
+                btns.forEach(b => {
+                    if(b.innerText === item.correct) b.classList.add('correct');
+                    if(b.innerText === state.answered[item.id] && b.innerText !== item.correct) b.classList.add('wrong');
+                });
+            }
+        });
+    }
+
+    function checkAnswer(el, id, selected, correct) {
+        if (state.answered[id]) return;
+        state.answered[id] = selected;
+        
+        const parent = el.parentElement;
+        const btns = parent.querySelectorAll('.option-btn');
+        const navBtn = document.getElementById(`nav-${id}`);
+
+        btns.forEach(b => {
+            b.classList.add('disabled');
+            if(b.innerText === correct) b.classList.add('correct');
+        });
+
+        if (selected === correct) {
+            state.results[id] = true;
+            navBtn.classList.add('correct');
+        } else {
+            el.classList.add('wrong');
+            state.results[id] = false;
+            navBtn.classList.add('wrong');
+        }
+
+        document.getElementById(`exp-${id}`).style.display = 'block';
+    }
+
+    function toggleMark(id) {
+        state.marked[id] = !state.marked[id];
+        const btn = document.getElementById(`nav-${id}`);
+        const chk = document.getElementById(`chk-${id}`);
+        if(state.marked[id]) {
+            btn.classList.add('marked');
+            if(chk) chk.checked = true;
+        } else {
+            btn.classList.remove('marked');
+            if(chk) chk.checked = false;
+        }
+    }
+
+    function showResults() {
+        const total = 15;
+        const correct = Object.values(state.results).filter(v => v === true).length;
+        
+        document.getElementById('final-score').innerText = `Resultado: ${correct} de ${total} correctas`;
+        document.getElementById('setup-content').style.display = 'none';
+        document.getElementById('results-content').style.display = 'block';
+        document.getElementById('overlay-screen').style.display = 'flex';
+    }
+
+    function resetQuiz(mode) {
+        let nextSet = [];
+        
+        if (mode === 'all') {
+            nextSet = [...questionsRaw];
+            state.answered = {}; state.results = {}; state.marked = {};
+        } else if (mode === 'failed') {
+            nextSet = questionsRaw.filter(q => state.results[q.id] === false);
+        } else if (mode === 'marked') {
+            nextSet = questionsRaw.filter(q => state.marked[q.id] === true);
+        } else if (mode === 'failed-marked') {
+            nextSet = questionsRaw.filter(q => state.results[q.id] === false || state.marked[q.id] === true);
+        }
+
+        if(nextSet.length === 0) {
+            alert("No hay preguntas para esta selección.");
+            return;
+        }
+
+        nextSet.forEach(q => {
+            delete state.answered[q.id];
+            delete state.results[q.id];
+        });
+
+        currentQuestions = nextSet;
+        document.getElementById('overlay-screen').style.display = 'none';
+        renderQuiz();
+        document.getElementById('quiz-container').scrollTop = 0;
+    }
+</script>
+</body>
+</html>

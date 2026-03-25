@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizz: Sistema Nervioso y Embriología</title>
+<script>
+    // Comprobamos si NO existe la llave de acceso
+    if (sessionStorage.getItem("_auth_tkn_882") !== "1") {
+        // Expulsamos al usuario a la página principal
+        // IMPORTANTE: Cambia "index.html" por el nombre exacto de tu archivo principal si se llama distinto
+        window.location.replace("index.html");
+    }
+</script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #c0392b;
+            --success: #27ae60;
+            --info: #2980b9;
+            --bg: #f9f9f9;
+            --sidebar-width: 260px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- Pantallas de Inicio y Fin --- */
+        #setup-screen, #results-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.98);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            margin: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            background: var(--primary);
+            color: white;
+            transition: 0.2s;
+        }
+
+        .btn:hover { background: var(--secondary); transform: scale(1.02); }
+        .btn-accent { background: var(--accent); }
+
+        /* --- Estructura Principal --- */
+        #main-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* --- Barra Lateral (Índice) --- */
+        aside {
+            width: var(--sidebar-width);
+            background: var(--primary);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: #1a252f;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .nav-scroll-area {
+            flex-grow: 1;
+            overflow-y: auto; /* Scroll independiente para el índice */
+            padding: 15px;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .nav-btn {
+            aspect-ratio: 1;
+            background: #455a64;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn.answered { background: var(--success); }
+        .nav-btn.marked { border: 2px solid #f1c40f; color: #f1c40f; box-shadow: inset 0 0 5px rgba(241, 196, 15, 0.5); }
+
+        .sidebar-footer {
+            padding: 15px;
+            background: #1a252f;
+        }
+
+        /* --- Área de Contenido --- */
+        main {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 40px 20px;
+            scroll-behavior: smooth;
+        }
+
+        .question-card {
+            max-width: 800px;
+            margin: 0 auto 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: relative;
+            scroll-margin-top: 30px;
+        }
+
+        .mark-check {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+        .question-title {
+            font-weight: bold;
+            font-size: 1.15rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.4;
+        }
+
+        .options-container {
+            list-style: none;
+            padding: 0;
+        }
+
+        .option-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .option-item:hover { background: #fcfcfc; border-color: #ddd; }
+        .option-item.correct { background: #d4edda; border-color: var(--success); color: #155724; font-weight: bold; }
+        .option-item.wrong { background: #f8d7da; border-color: var(--accent); color: #721c24; }
+        .option-item.disabled { pointer-events: none; }
+
+        .explanation-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #eef7fd;
+            border-left: 5px solid var(--info);
+            border-radius: 4px;
+            display: none;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="setup-screen">
+        <h1 style="color: var(--primary)">Cuestionario: Sistema Nervioso</h1>
+        <p>Selecciona el modo de inicio:</p>
+        <button class="btn" onclick="startQuiz(false)">Orden Literal (1-15)</button>
+        <button class="btn" onclick="startQuiz(true)">Orden Aleatorio</button>
+    </div>
+
+    <div id="results-screen" style="display:none;">
+        <h2 id="final-score"></h2>
+        <div style="display:flex; flex-wrap: wrap; justify-content: center; max-width: 600px;">
+            <button class="btn" onclick="retry('all')">Repetir Todo</button>
+            <button class="btn" onclick="retry('failed')">Repetir Falladas</button>
+            <button class="btn" onclick="retry('marked')">Repetir Marcadas</button>
+            <button class="btn" onclick="retry('failed-marked')">Falladas + Marcadas</button>
+        </div>
+        <button class="btn btn-accent" style="margin-top: 20px;" onclick="location.reload()">Configuración Inicial</button>
+    </div>
+
+    <div id="main-container" style="display:none;">
+        <aside>
+            <div class="sidebar-header">Navegación</div>
+            <div class="nav-scroll-area">
+                <div class="nav-grid" id="nav-grid"></div>
+            </div>
+            <div class="sidebar-footer">
+                <button class="btn btn-accent" style="width:100%; margin:0;" onclick="finishQuiz()">Finalizar Test</button>
+            </div>
+        </aside>
+
+        <main id="quiz-content">
+            </main>
+    </div>
+
+<script>
+    const questionsData = [
+        { id: 1, q: "1. A nivel anatómico y de organización general humana, el Sistema Nervioso Central (SNC) está constituido exclusivamente por:", options: ["A) Los ganglios y nervios aferentes sensitivos.", "B) El encéfalo (cerebro) y la médula espinal.", "C) Los nervios autónomos y las células de Schwann.", "D) El tejido mesodérmico embrionario."], correct: "B) El encéfalo (cerebro) y la médula espinal.", exp: "Como indicó el profesor al inicio de la clase, el SNC abarca el encéfalo y la médula espinal, todo lo demás compone el SNP." },
+        { id: 2, q: "2. ¿Qué estructura anatómica del Sistema Nervioso Periférico (SNP) definió el profesor como un punto o mecanismo donde se produce la conexión y transmisión de la información a nivel de neurotransmisores o vía eléctrica?", options: ["A) El ventrículo cerebral.", "B) El tubo neural.", "C) El ganglio nervioso.", "D) El macrófago tisular."], correct: "C) El ganglio nervioso.", exp: "El profesor hizo referencia a los ganglios como estaciones de relevo e inervación en el SNP." },
+        { id: 3, q: "3. (PREGUNTA CLAVE DE AUDIO). Durante el desarrollo embrionario, existe una clara diferencia en el origen germinal de las estirpes celulares del sistema nervioso. De las siguientes células de la glía, ¿cuál es la ÚNICA que NO deriva del ectodermo, sino que proviene del mesodermo?", options: ["A) Oligodendrocitos.", "B) Astrocitos.", "C) Células Ependimarias.", "D) Microglía."], correct: "D) Microglía.", exp: "Advertencia literal del profesor. Mientras la mayoría vienen del ectodermo, la microglía (vinculada al sistema inmunológico) tiene un origen embrionario distinto: el mesodermo." },
+        { id: 4, q: "4. ¿Qué función principal desempeña fisiológicamente esta Microglía en el Sistema Nervioso Central?", options: ["A) Producir la vaina de mielina para aumentar la velocidad de conducción.", "B) Generar y contener el Líquido Cefalorraquídeo.", "C) Relacionarse con la inmunidad, actuando en la respuesta inflamatoria y de defensa ante agresiones o daños.", "D) Actuar como célula madre totipotente en el cerebro adulto."], correct: "C) Relacionarse con la inmunidad, actuando en la respuesta inflamatoria y de defensa ante agresiones o daños.", exp: "La microglía es el equivalente a los macrófagos en el cerebro, encargada de la inmunidad y las respuestas inflamatorias." },
+        { id: 5, q: "5. En el Sistema Nervioso Central, la mielina es fundamental para que la información eléctrica viaje de forma rápida y saltatoria. ¿Qué tipo de célula glial es la encargada de envolver los axones para formar esta vaina de mielina?", options: ["A) Microglía.", "B) Oligodendrocitos.", "C) Células ependimarias.", "D) Neuronas piramidales."], correct: "B) Oligodendrocitos.", exp: "El profesor repasó la función del oligodendrocito como la célula que crea la mielina en el SNC." },
+        { id: 6, q: "6. Anatómica y funcionalmente, ¿dónde se ubican las denominadas \"células ependimarias\" y cuál es el entorno directo con el que interactúan?", options: ["A) En los ganglios del Sistema Nervioso Periférico.", "B) En las uniones neuromusculares.", "C) Están ubicadas tapizando los ventrículos cerebrales, relacionándose directamente con el líquido cefalorraquídeo (LCR).", "D) En el espesor de las meninges superficiales."], correct: "C) Están ubicadas tapizando los ventrículos cerebrales, relacionándose directamente con el líquido cefalorraquídeo (LCR).", exp: "Son las células del neuroepitelio que recubren las cavidades ventriculares." },
+        { id: 7, q: "7. Durante la ontogenia (desarrollo embrionario), todas las células del SNC derivan primigeniamente de una estructura tubular formada tras la neurulación. En dicha estructura encontramos las denominadas \"células madre neurales\". Estas células se caracterizan en esa etapa por:", options: ["A) Estar en un estado senescente (no dividirse).", "B) Tener una inmensa capacidad de proliferación y posterior diferenciación celular o migración hacia su destino final.", "C) Ser exclusivamente productoras de mesodermo.", "D) Destruirse en la primera semana de gestación."], correct: "B) Tener una inmensa capacidad de proliferación y posterior diferenciación celular o migración hacia su destino final.", exp: "El tubo neural contiene estas stem cells (células madre) que proliferan activamente y originan todas las células nerviosas futuras (salvo la microglía)." },
+        { id: 8, q: "8. Según la explicación del profesor, la estrategia que sigue el embrión durante la fase de neurogénesis en la etapa embrionaria se basa en el principio de \"mejor que sobre que falte\". Esto significa biológicamente que:", options: ["A) Se producen exactamente el mismo número de neuronas que sinapsis necesarias.", "B) Se inhibe completamente la división celular.", "C) Se produce una proliferación masiva y desproporcionada de neuronas a partir de células madre de manera descontrolada, generando muchas más células de las necesarias.", "D) Las neuronas se reproducen únicamente por clonación fuera del tubo neural."], correct: "C) Se produce una proliferación masiva y desproporcionada de neuronas a partir de células madre de manera descontrolada, generando muchas más células de las necesarias.", exp: "La neurogénesis genera un exceso de neuronas \"a lo bestia\", creando un colchón de seguridad antes de establecer las conexiones." },
+        { id: 9, q: "9. Una vez generada esta inmensa superpoblación de neuronas que migran a sus destinos, ¿cuál es el mecanismo fisiológico por el que el organismo \"poda\" o elimina el excedente neuronal para afinar y estabilizar los circuitos definitivos?", options: ["A) Generando una isquemia masiva.", "B) A través de un proceso de Apoptosis (muerte celular programada), el cual presenta un pico notorio en torno a la semana 16 de desarrollo.", "C) Transformando las neuronas sobrantes en hueso craneal.", "D) A través de una infección mediada por la microglía."], correct: "B) A través de un proceso de Apoptosis (muerte celular programada), el cual presenta un pico notorio en torno a la semana 16 de desarrollo.", exp: "El profesor mostró una gráfica destacando que la poda se hace mediante el mecanismo ordenado de la apoptosis." },
+        { id: 10, q: "10. Los factores neurotróficos (como el NGF) son proteínas esenciales sintetizadas en cantidades muy limitadas en los tejidos durante el desarrollo. ¿Qué papel juegan en la estabilización de los circuitos y la apoptosis?", options: ["A) Matan directamente a la neurona en cuanto esta las absorbe.", "B) Son segregadas por la célula diana y determinan la supervivencia de las neuronas que logran inervarla; si la neurona no logra conectarse con la diana y obtener este factor, sufrirá apoptosis.", "C) Aceleran la división simétrica de las células ependimarias.", "D) Impiden la liberación de glutamato."], correct: "B) Son segregadas por la célula diana y determinan la supervivencia de las neuronas que logran inervarla; si la neurona no logra conectarse con la diana y obtener este factor, sufrirá apoptosis.", exp: "El éxito de la neurona depende de llegar a su diana y \"ganarse\" el limitado factor de supervivencia para evitar la muerte celular." },
+        { id: 11, q: "11. Ciertos estudios experimentales intentan aislar y utilizar células madre para terapias regenerativas (ej. tras un ictus cerebral). En la biología del desarrollo, ¿cómo se catalogan las células madre según su grado de especialización o potencialidad?", options: ["A) Como inmortales e infinitas.", "B) En función de en qué pueden convertirse, habiendo células totipotentes (pueden dar lugar a todo) y multipotentes (restringidas a un linaje o tejido específico).", "C) Sólo existen células madre embrionarias unipotentes.", "D) Todas las células de nuestro cuerpo adulto son células madre totipotentes."], correct: "B) En función de en qué pueden convertirse, habiendo células totipotentes (pueden dar lugar a todo) y multipotentes (restringidas a un linaje o tejido específico).", exp: "El profesor repasó la diferencia en potencialidad entre unas células madre y otras." },
+        { id: 12, q: "12. (Aplicación práctica/Investigación). El profesor comentó en clase la dificultad existente a la hora de encontrar curas neurológicas (como la del Ictus isquémico). ¿Por qué existen tantas falsas esperanzas cuando salen noticias de nuevos tratamientos?", options: ["A) Porque el Ictus en realidad no causa daño cerebral.", "B) Porque se extrapolan directamente los éxitos obtenidos en modelos animales pequeños (como ratas o ratones) a humanos, cuando en la práctica clínica humana la efectividad y el comportamiento biológico pueden ser radicalmente diferentes e infructuosos.", "C) Porque los humanos carecen de sistema nervioso.", "D) Porque es imposible causar ictus en el laboratorio."], correct: "B) Porque se extrapolan directamente los éxitos obtenidos en modelos animales pequeños (como ratas o ratones) a humanos, cuando en la práctica clínica humana la efectividad y el comportamiento biológico pueden ser radicalmente diferentes e infructuosos.", exp: "Reflexión del profesor en audio. \"Extrapolamos lo de los ratones a lo humano porque no nos queda otra... pero no funciona en humanos [igual]\"." },
+        { id: 13, q: "13. A tenor del proyecto de investigación sobre Ictus mencionado en clase por el profesor, una de las terapias más modernas y prometedoras que están desplazando a la terapia directa con células madre mesenquimales enteras es la utilización de:", options: ["A) Inyecciones masivas de toxina botulínica.", "B) Exosomas (vesículas liberadas) derivados de esas células mesenquimales, que parecen lograr resultados similares o mejores frenando la inflamación y modulando la regeneración celular tras el infarto.", "C) La extracción quirúrgica del área tegmental ventral.", "D) Dosis letales de glutamato monosódico."], correct: "B) Exosomas (vesículas liberadas) derivados de esas células mesenquimales, que parecen lograr resultados similares o mejores frenando la inflamación y modulando la regeneración celular tras el infarto.", exp: "Detalle puramente extraído del audio, donde relató que en su proyecto actual están utilizando los exosomas que liberan estas células para intentar revertir el daño." },
+        { id: 14, q: "14. Tras un evento isquémico en el cerebro (Ictus), el núcleo del tejido muere e induce a su alrededor una fuerte reacción. Uno de los mayores problemas que el profesor mencionó que buscan combatir en el laboratorio tras el infarto es:", options: ["A) La falta absoluta de actividad eléctrica en la médula espinal.", "B) La regeneración excesiva y tumoral de los oligodendrocitos.", "C) La brutal respuesta inflamatoria (mediada por la glía) que se instaura en la zona colindante y que resulta súper dañina (\"superdañina\") para el tejido sano remanente.", "D) La generación espontánea de nuevas extremidades."], correct: "C) La brutal respuesta inflamatoria (mediada por la glía) que se instaura en la zona colindante y que resulta súper dañina (\"superdañina\") para el tejido sano remanente.", exp: "\"La idea es bloquear esta respuesta inflamatoria porque es superdañina\" y reorientar a la glía hacia la regeneración." },
+        { id: 15, q: "15. Si lográsemos realizar un experimento hipotético reduciendo al 50% el tamaño físico del tejido \"diana\" periférico al que debe inervar una población embrionaria de motoneuronas, el principal proceso ontogénico de las neuronas que se vería dramáticamente alterado (disminuido) sería:", options: ["A) La proliferación primaria en el tubo neural.", "B) La neurulación inicial.", "C) La supervivencia neuronal, provocando una masiva poda (apoptosis) de las neuronas de origen al haber ahora menos cantidad total de factores neurotróficos disponibles en la diana reducida.", "D) La síntesis de líquido cefalorraquídeo."], correct: "C) La supervivencia neuronal, provocando una masiva poda (apoptosis) de las neuronas de origen al haber ahora menos cantidad total de factores neurotróficos disponibles en la diana reducida.", exp: "Relacionado con los problemas planteados en los apuntes, la supervivencia depende del tamaño del \"campo de la diana\". Menos diana = Menos factor de supervivencia = Más apoptosis en la población origen." }
+    ];
+
+    let currentQuestions = [];
+    let state = { answered: {}, marked: {}, results: {} };
+
+    function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+    }
+
+    function startQuiz(isRandom) {
+        currentQuestions = [...questionsData];
+        if (isRandom) shuffle(currentQuestions);
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('main-container').style.display = 'flex';
+        renderQuiz();
+    }
+
+    function renderQuiz() {
+        const quizWrapper = document.getElementById('quiz-content');
+        const navGrid = document.getElementById('nav-grid');
+        quizWrapper.innerHTML = '';
+        navGrid.innerHTML = '';
+
+        currentQuestions.forEach((item) => {
+            // Navegación lateral
+            const navBtn = document.createElement('button');
+            navBtn.className = `nav-btn ${state.marked[item.id] ? 'marked' : ''} ${state.answered[item.id] ? 'answered' : ''}`;
+            navBtn.id = `nav-btn-${item.id}`;
+            navBtn.innerText = item.id;
+            navBtn.onclick = () => document.getElementById(`q-${item.id}`).scrollIntoView();
+            navGrid.appendChild(navBtn);
+
+            // Bloque Pregunta
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = `q-${item.id}`;
+
+            let opts = [...item.options];
+            shuffle(opts);
+
+            let optsHtml = opts.map(o => `
+                <li class="option-item ${state.answered[item.id] ? 'disabled' : ''}" 
+                    onclick="checkAnswer(this, ${item.id}, '${o.replace(/'/g, "\\'")}', '${item.correct.replace(/'/g, "\\'")}')">
+                    ${o}
+                </li>`).join('');
+
+            card.innerHTML = `
+                <div class="mark-check" onclick="toggleMark(${item.id})">
+                    <input type="checkbox" id="check-${item.id}" ${state.marked[item.id] ? 'checked' : ''}>
+                    <label style="cursor:pointer">Marcar</label>
+                </div>
+                <div class="question-title">${item.q}</div>
+                <ul class="options-container">${optsHtml}</ul>
+                <div class="explanation-box" id="exp-${item.id}" style="${state.answered[item.id] ? 'display:block' : ''}">
+                    <strong>Respuesta:</strong> ${item.exp}
+                </div>
+            `;
+            quizWrapper.appendChild(card);
+
+            if(state.answered[item.id]) {
+                const selected = state.answered[item.id];
+                const lis = card.querySelectorAll('.option-item');
+                lis.forEach(li => {
+                    if(li.innerText === item.correct) li.classList.add('correct');
+                    if(li.innerText === selected && selected !== item.correct) li.classList.add('wrong');
+                });
+            }
+        });
+    }
+
+    function checkAnswer(el, id, selected, correct) {
+        if (state.answered[id]) return;
+        state.answered[id] = selected;
+        
+        const card = el.parentElement;
+        const options = card.querySelectorAll('.option-item');
+        
+        options.forEach(o => {
+            o.classList.add('disabled');
+            if(o.innerText === correct) o.classList.add('correct');
+        });
+
+        if(selected !== correct) {
+            el.classList.add('wrong');
+            state.results[id] = false;
+        } else {
+            state.results[id] = true;
+        }
+
+        document.getElementById(`exp-${id}`).style.display = 'block';
+        document.getElementById(`nav-btn-${id}`).classList.add('answered');
+    }
+
+    function toggleMark(id) {
+        state.marked[id] = !state.marked[id];
+        const btn = document.getElementById(`nav-btn-${id}`);
+        const chk = document.getElementById(`check-${id}`);
+        if(state.marked[id]) {
+            btn.classList.add('marked');
+            if(chk) chk.checked = true;
+        } else {
+            btn.classList.remove('marked');
+            if(chk) chk.checked = false;
+        }
+    }
+
+    function finishQuiz() {
+        const correctas = Object.values(state.results).filter(v => v === true).length;
+        document.getElementById('final-score').innerText = `Has acertado ${correctas} de ${currentQuestions.length}`;
+        document.getElementById('results-screen').style.display = 'flex';
+    }
+
+    function retry(mode) {
+        let nextList = [];
+        if (mode === 'all') {
+            nextList = [...questionsData];
+            state.answered = {}; state.results = {}; state.marked = {};
+        } else if (mode === 'failed') {
+            nextList = questionsData.filter(q => state.results[q.id] === false);
+        } else if (mode === 'marked') {
+            nextList = questionsData.filter(q => state.marked[q.id] === true);
+        } else if (mode === 'failed-marked') {
+            nextList = questionsData.filter(q => state.results[q.id] === false || state.marked[q.id] === true);
+        }
+
+        if (nextList.length === 0) return alert("No hay preguntas en esta categoría.");
+
+        nextList.forEach(q => { delete state.answered[q.id]; delete state.results[q.id]; });
+        currentQuestions = nextList;
+        document.getElementById('results-screen').style.display = 'none';
+        renderQuiz();
+        document.getElementById('quiz-content').scrollTop = 0;
+    }
+</script>
+</body>
+</html>
