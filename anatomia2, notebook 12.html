@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quizz de Anatomía del Corazón</title>
+    <title>Quizz de Anatomía: El Corazón</title>
     <script>
     // Comprobamos si NO existe la llave de acceso
     if (sessionStorage.getItem("_auth_tkn_882") !== "1") {
@@ -14,121 +14,155 @@
 </script>
     <style>
         :root {
-            --primary: #2c3e50;
-            --secondary: #34495e;
+            --primary: #1a252f;
+            --secondary: #2c3e50;
             --accent: #e74c3c;
             --success: #27ae60;
-            --bg: #f4f7f6;
+            --bg: #fdfdfd;
             --text: #333;
+            --sidebar-width: 260px;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
             display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        /* --- Pantalla de Inicio --- */
-        #setup-screen, #results-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.95);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            text-align: center;
-        }
-
-        .btn {
-            padding: 15px 30px;
-            margin: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            background: var(--primary);
-            color: white;
-            transition: 0.3s;
-        }
-
-        .btn:hover { background: var(--secondary); }
-        .btn-accent { background: var(--accent); }
-
-        /* --- Layout Principal --- */
-        #main-container {
-            display: grid;
-            grid-template-columns: 280px 1fr;
             height: 100vh;
             overflow: hidden;
         }
 
-        /* --- Sidebar --- */
-        aside {
-            background: var(--primary);
-            color: white;
-            padding: 15px;
+        /* --- Pantallas de Estado --- */
+        #setup-screen, #results-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: white;
             display: flex;
             flex-direction: column;
-            border-right: 2px solid #ddd;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            margin: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            background: var(--secondary);
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .btn-accent { background: var(--accent); }
+
+        /* --- Layout Principal --- */
+        #main-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* --- Sidebar de Navegación (CORREGIDO) --- */
+        aside {
+            width: var(--sidebar-width);
+            background: var(--primary);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: #111;
+            text-align: center;
+        }
+
+        .nav-scroll-area {
+            flex-grow: 1;
+            overflow-y: auto; /* Permite mover el índice */
+            padding: 15px;
+            scrollbar-width: thin;
+            scrollbar-color: #444 #1a252f;
         }
 
         .nav-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 5px;
-            overflow-y: auto;
-            padding-bottom: 20px;
+            grid-template-columns: repeat(3, 1fr); /* 3 columnas estrictas */
+            gap: 8px;
         }
 
         .nav-btn {
-            padding: 8px 2px;
-            background: #455a64;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #34495e;
             color: white;
-            border: 1px solid #546e7a;
+            border: none;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 12px;
-            text-align: center;
+            font-size: 13px;
+            font-weight: bold;
         }
 
+        .nav-btn:hover { background: #456789; }
         .nav-btn.answered { background: var(--success); }
-        .nav-btn.marked { border: 2px solid gold; box-shadow: inset 0 0 5px gold; }
+        .nav-btn.marked { border: 2px solid #f1c40f; color: #f1c40f; }
 
-        /* --- Contenido de Preguntas --- */
+        .sidebar-footer {
+            padding: 15px;
+            border-top: 1px solid #333;
+        }
+
+        /* --- Área de Preguntas --- */
         main {
+            flex-grow: 1;
             overflow-y: auto;
-            padding: 30px;
+            padding: 40px;
             scroll-behavior: smooth;
         }
 
         .question-block {
+            max-width: 800px;
+            margin: 0 auto 60px auto;
             background: white;
-            padding: 25px;
-            margin-bottom: 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            scroll-margin-top: 40px; /* Evita que el índice tape la pregunta */
             position: relative;
+            border: 1px solid #eee;
         }
 
-        .mark-container {
+        .mark-tab {
             position: absolute;
             top: 20px;
             right: 20px;
+            font-size: 14px;
             display: flex;
             align-items: center;
-            font-size: 14px;
+            gap: 5px;
+            cursor: pointer;
+            padding: 5px 10px;
+            background: #f8f9fa;
+            border-radius: 20px;
         }
 
         .question-text {
-            font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 20px;
-            display: block;
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            color: #2c3e50;
         }
 
         .options-list {
@@ -137,59 +171,65 @@
         }
 
         .option-item {
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
         }
 
-        .option-item:hover { background: #f9f9f9; }
-        .option-item.correct { background: #d4edda; border-color: #c3e6cb; font-weight: bold; }
-        .option-item.wrong { background: #f8d7da; border-color: #f5c6cb; }
+        .option-item:hover { background: #f8f9fa; border-color: #bdc3c7; }
+        .option-item.correct { background: #d4edda; border-color: #27ae60; color: #155724; font-weight: 600; }
+        .option-item.wrong { background: #f8d7da; border-color: #e74c3c; color: #721c24; }
         .option-item.disabled { pointer-events: none; }
 
         .explanation {
-            margin-top: 15px;
+            margin-top: 20px;
             padding: 15px;
-            background: #eef;
-            border-left: 5px solid #3f51b5;
+            background: #ebf5fb;
+            border-left: 4px solid #3498db;
+            font-size: 0.95rem;
             display: none;
+            border-radius: 0 4px 4px 0;
         }
 
-        .sticky-footer {
-            padding: 15px;
-            background: #eee;
-            text-align: center;
-            border-top: 1px solid #ccc;
-        }
     </style>
 </head>
 <body>
 
     <div id="setup-screen">
-        <h1>Cuestionario: Anatomía del Corazón</h1>
-        <p>Seleccione el orden de las preguntas:</p>
-        <button class="btn" onclick="startQuiz(false)">Orden Preestablecido</button>
-        <button class="btn" onclick="startQuiz(true)">Mezclar Aleatoriamente</button>
+        <h1 style="color: var(--primary)">Anatomía del Corazón</h1>
+        <p>¿Cómo prefieres realizar el cuestionario?</p>
+        <button class="btn" onclick="startQuiz(false)">Orden Preestablecido (1-80)</button>
+        <button class="btn" onclick="startQuiz(true)">Mezclar Preguntas Aleatoriamente</button>
     </div>
 
     <div id="results-screen" style="display:none;">
         <h2 id="score-text"></h2>
-        <p>¿Qué desea hacer ahora?</p>
-        <button class="btn" onclick="retry('all')">Repetir Todo</button>
-        <button class="btn" onclick="retry('failed')">Repetir solo falladas</button>
-        <button class="btn" onclick="retry('marked')">Repetir solo marcadas</button>
-        <button class="btn" onclick="retry('failed-marked')">Repetir falladas + marcadas</button>
-        <button class="btn btn-accent" onclick="location.reload()">Cambiar Configuración</button>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; max-width: 600px;">
+            <button class="btn" onclick="retry('all')">Reiniciar Todo</button>
+            <button class="btn" onclick="retry('failed')">Repetir Falladas</button>
+            <button class="btn" onclick="retry('marked')">Repetir Marcadas</button>
+            <button class="btn" onclick="retry('failed-marked')">Falladas + Marcadas</button>
+        </div>
+        <button class="btn btn-accent" style="margin-top: 30px;" onclick="location.reload()">Cambiar Configuración Inicial</button>
     </div>
 
     <div id="main-container" style="display:none;">
         <aside>
-            <h3 style="margin-top:0">Índice</h3>
-            <div class="nav-grid" id="nav-grid"></div>
-            <button class="btn btn-accent" onclick="finishQuiz()">Finalizar Cuestionario</button>
+            <div class="sidebar-header">
+                <h3 style="margin:0">Preguntas</h3>
+            </div>
+            <div class="nav-scroll-area">
+                <div class="nav-grid" id="nav-grid">
+                    </div>
+            </div>
+            <div class="sidebar-footer">
+                <button class="btn btn-accent" style="width:100%; margin:0" onclick="finishQuiz()">Finalizar y Corregir</button>
+            </div>
         </aside>
 
         <main id="questions-wrapper">
@@ -240,7 +280,7 @@
         { id:40, q: "40. Si un individuo tiene \"predominancia izquierda\" en su circulación coronaria, significa que:", options: ["a) Su corazón está posicionado en el hemitórax derecho.", "b) La arteria interventricular posterior nace de la arteria circunfleja (rama de la coronaria izquierda).", "c) No tiene arteria coronaria derecha.", "d) El retorno venoso va a la aurícula izquierda."], correct: "b) La arteria interventricular posterior nace de la arteria circunfleja (rama de la coronaria izquierda).", exp: "La predominancia se define por qué arteria irriga la cruz posterior (dando la IV posterior)." },
         { id:41, q: "41. El drenaje venoso del corazón desemboca en un 95% en el Seno Coronario. ¿Dónde drena este gran vaso?", options: ["a) En la Vena Cava Inferior.", "b) En el ventrículo izquierdo.", "c) Directamente en la Aurícula Derecha.", "d) En la aurícula izquierda, junto a las pulmonares."], correct: "c) Directamente en la Aurícula Derecha.", exp: "Toda la sangre desoxigenada del cuerpo (y del propio corazón) termina en la Aurícula Derecha." },
         { id:42, q: "42. ¿Qué vena cardíaca acompaña a la arteria interventricular anterior (descendente anterior) y luego se curva para formar el inicio del seno coronario?", options: ["a) Vena Cardíaca Mayor.", "b) Vena Cardíaca Media.", "c) Vena Cardíaca Menor.", "d) Vena Oblicua."], correct: "a) Vena Cardíaca Mayor.", exp: "La Vena Cardíaca Mayor asciende por el surco IV anterior." },
-        { id:43, q: "43. En la conducción cardíaca, ¿dónde se localiza el Nódulo Sinusal (Sinoauricular), considerado el marcapasos primario (60-90 ppm)?", options: ["a) En el tabique interventricular membranoso.", "b) En la unión de la Vena Cava Superior con la Aurícula Derecha, cerca de la cresta terminal.", "c) En la orejuela izquierda.", "d) En el vértice del ventrículo derecho."], correct: "b) En la unión de la Vena Cava Superior con la Aurícula Derecha, cerca de la cresta terminal.", exp: "Es el \"cuartel general\", subepicárdico cranealmente y subendocárdico caudalmente, en la entrada de la VCS." },
+        { id:43, q: "43. En la conducción cardíaca, ¿dwónde se localiza el Nódulo Sinusal (Sinoauricular), considerado el marcapasos primario (60-90 ppm)?", options: ["a) En el tabique interventricular membranoso.", "b) En la unión de la Vena Cava Superior con la Aurícula Derecha, cerca de la cresta terminal.", "c) En la orejuela izquierda.", "d) En el vértice del ventrículo derecho."], correct: "b) En la unión de la Vena Cava Superior con la Aurícula Derecha, cerca de la cresta terminal.", exp: "Es el \"cuartel general\", subepicárdico cranealmente y subendocárdico caudalmente, en la entrada de la VCS." },
         { id:44, q: "44. Si el Nódulo Sinusal falla, ¿qué estructura asume el mando del ritmo cardíaco (a una frecuencia menor, 40-60 ppm)?", options: ["a) Las Fibras de Purkinje directamente.", "b) El Nódulo Auriculoventricular (AV).", "c) El cayado aórtico.", "d) El plexo cardíaco simpático."], correct: "b) El Nódulo Auriculoventricular (AV).", exp: "El segundo al mando toma el control para mantener el latido vital, aunque más lento." },
         { id:45, q: "45. Tras pasar el Nódulo AV, el estímulo viaja por el Haz de His. ¿Dónde se ramifica finalmente este haz para iniciar la contracción desde la base de los músculos papilares?", options: ["a) En el sistema parasimpático del Vago.", "b) En la red de Fibras de Purkinje por el ventrículo.", "c) En los nódulos de Valsalva.", "d) En los trígonos fibrosos."], correct: "b) En la red de Fibras de Purkinje por el ventrículo.", exp: "Las ramas de His se deshilachan en la red subendocárdica de Purkinje." },
         { id:46, q: "46. ¿Cuál de estas afirmaciones sobre las Fibras de Purkinje es correcta histológica y funcionalmente, según explicó el profesor?", options: ["a) Son nervios idénticos a los del sistema somático.", "b) Son tejido conectivo inerte.", "c) Son fibras musculares estriadas cardíacas (cardiomiocitos) especializadas en conducción rápida, no neuronas.", "d) Son músculo liso controlado por la voluntad."], correct: "c) Son fibras musculares estriadas cardíacas (cardiomiocitos) especializadas en conducción rápida, no neuronas.", exp: "A pesar de conducir impulsos velozmente, son células musculares modificadas, no verdaderos axones nerviosos." },
@@ -283,7 +323,7 @@
     let currentQuestions = [];
     let state = { answered: {}, marked: {}, results: {} };
 
-    function shuffleArray(array) {
+    function shuffle(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
@@ -292,10 +332,9 @@
 
     function startQuiz(randomize) {
         currentQuestions = [...allQuestions];
-        if (randomize) shuffleArray(currentQuestions);
-        
+        if (randomize) shuffle(currentQuestions);
         document.getElementById('setup-screen').style.display = 'none';
-        document.getElementById('main-container').style.display = 'grid';
+        document.getElementById('main-container').style.display = 'flex';
         renderQuiz();
     }
 
@@ -305,45 +344,47 @@
         wrapper.innerHTML = '';
         nav.innerHTML = '';
 
-        currentQuestions.forEach((item, index) => {
-            // Sidebar Nav
+        currentQuestions.forEach((item) => {
+            // Navegación lateral
             const navBtn = document.createElement('button');
             navBtn.className = `nav-btn ${state.marked[item.id] ? 'marked' : ''} ${state.answered[item.id] ? 'answered' : ''}`;
+            navBtn.id = `nav-btn-${item.id}`;
             navBtn.innerText = item.id;
             navBtn.onclick = () => document.getElementById(`q-block-${item.id}`).scrollIntoView();
             nav.appendChild(navBtn);
 
-            // Question Block
+            // Bloque de pregunta
             const block = document.createElement('div');
             block.className = 'question-block';
             block.id = `q-block-${item.id}`;
 
-            // Shuffling options for each render
             let opts = [...item.options];
-            shuffleArray(opts);
+            shuffle(opts); // Mezcla de respuestas siempre
 
-            let optionsHtml = opts.map(o => `<li class="option-item ${state.answered[item.id] ? 'disabled' : ''}" onclick="checkAnswer(this, ${item.id}, '${o.replace(/'/g, "\\'")}', '${item.correct.replace(/'/g, "\\'")}')">${o}</li>`).join('');
+            let optionsHtml = opts.map(o => `
+                <li class="option-item ${state.answered[item.id] ? 'disabled' : ''}" 
+                    onclick="checkAnswer(this, ${item.id}, '${o.replace(/'/g, "\\'")}', '${item.correct.replace(/'/g, "\\'")}')">
+                    ${o}
+                </li>`).join('');
 
             block.innerHTML = `
-                <div class="mark-container">
-                    <label><input type="checkbox" onchange="toggleMark(${item.id})" ${state.marked[item.id] ? 'checked' : ''}> Marcar pregunta</label>
+                <div class="mark-tab" onclick="toggleMark(${item.id})">
+                    <input type="checkbox" id="check-${item.id}" ${state.marked[item.id] ? 'checked' : ''}>
+                    <label>Marcar</label>
                 </div>
-                <span class="question-text">${item.q}</span>
+                <div class="question-text">${item.q}</div>
                 <ul class="options-list">${optionsHtml}</ul>
-                <div class="explanation" id="exp-${item.id}">${item.exp}</div>
+                <div class="explanation" id="exp-${item.id}" style="${state.answered[item.id] ? 'display:block' : ''}">${item.exp}</div>
             `;
             wrapper.appendChild(block);
-            
-            // Re-apply styles if already answered (for retries)
+
             if(state.answered[item.id]) {
                 const selected = state.answered[item.id];
                 const items = block.querySelectorAll('.option-item');
                 items.forEach(li => {
                     if(li.innerText === item.correct) li.classList.add('correct');
                     if(li.innerText === selected && selected !== item.correct) li.classList.add('wrong');
-                    li.classList.add('disabled');
                 });
-                block.querySelector('.explanation').style.display = 'block';
             }
         });
     }
@@ -368,38 +409,34 @@
         }
 
         document.getElementById(`exp-${qId}`).style.display = 'block';
-        updateNav();
+        document.getElementById(`nav-btn-${qId}`).classList.add('answered');
     }
 
     function toggleMark(id) {
         state.marked[id] = !state.marked[id];
-        updateNav();
-    }
-
-    function updateNav() {
-        const buttons = document.querySelectorAll('.nav-btn');
-        buttons.forEach(btn => {
-            const id = parseInt(btn.innerText);
-            btn.className = 'nav-btn';
-            if (state.answered[id]) btn.classList.add('answered');
-            if (state.marked[id]) btn.classList.add('marked');
-        });
+        const btn = document.getElementById(`nav-btn-${id}`);
+        const chk = document.getElementById(`check-${id}`);
+        if(state.marked[id]) {
+            btn.classList.add('marked');
+            if(chk) chk.checked = true;
+        } else {
+            btn.classList.remove('marked');
+            if(chk) chk.checked = false;
+        }
     }
 
     function finishQuiz() {
         const total = currentQuestions.length;
         const correctCount = Object.values(state.results).filter(v => v === true).length;
-        
-        document.getElementById('score-text').innerText = `Resultado: ${correctCount} de ${total} correctas`;
+        document.getElementById('score-text').innerText = `Puntuación: ${correctCount} de ${total}`;
         document.getElementById('results-screen').style.display = 'flex';
     }
 
     function retry(mode) {
         let nextBatch = [];
-        
         if (mode === 'all') {
             nextBatch = [...allQuestions];
-            state.answered = {}; state.results = {}; // Reset answers for fresh start
+            state.answered = {}; state.results = {}; state.marked = {};
         } else if (mode === 'failed') {
             nextBatch = allQuestions.filter(q => state.results[q.id] === false);
         } else if (mode === 'marked') {
@@ -408,20 +445,13 @@
             nextBatch = allQuestions.filter(q => state.results[q.id] === false || state.marked[q.id] === true);
         }
 
-        if (nextBatch.length === 0) {
-            alert("No hay preguntas que coincidan con esta selección.");
-            return;
-        }
+        if (nextBatch.length === 0) return alert("No hay preguntas en esta categoría.");
 
-        // Limpiar estados solo para las preguntas que se van a repetir
-        nextBatch.forEach(q => {
-            delete state.answered[q.id];
-            delete state.results[q.id];
-        });
-
+        nextBatch.forEach(q => { delete state.answered[q.id]; delete state.results[q.id]; });
         currentQuestions = nextBatch;
         document.getElementById('results-screen').style.display = 'none';
         renderQuiz();
+        document.getElementById('questions-wrapper').scrollTop = 0;
     }
 </script>
 </body>
