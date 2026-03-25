@@ -4,14 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>1º Medicina - 2º Cuatrimestre</title>
+
     <script>
-    // Comprobamos si NO existe la llave de acceso
-    if (sessionStorage.getItem("_auth_tkn_882") !== "1") {
-        // Expulsamos al usuario a la página principal
-        // IMPORTANTE: Cambia "index.html" por el nombre exacto de tu archivo principal si se llama distinto
-        window.location.replace("index.html");
-    }
-</script>
+        if (sessionStorage.getItem("_auth_tkn_882") !== "1") {
+            window.location.replace("index.html");
+        }
+    </script>
+
     <style>
         :root {
             --primary: #2c3e50;
@@ -28,16 +27,44 @@
             background-color: var(--bg);
             color: var(--primary);
             margin: 0;
-            padding: 40px 20px;
+            padding: 32px 20px 40px;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
         }
 
+        .top-strip {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .user-chip {
+            background: #ffffff;
+            border-radius: 999px;
+            padding: 10px 16px;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .crumb {
+            background: rgba(44,62,80,0.08);
+            border-radius: 999px;
+            padding: 10px 16px;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
         header {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 50px;
         }
 
         h1 {
@@ -55,7 +82,6 @@
             font-weight: 300;
         }
 
-        /* Contenedor de asignaturas */
         .subjects-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -64,7 +90,6 @@
             max-width: 1200px;
         }
 
-        /* Tarjeta de Asignatura */
         .subject-card {
             background: var(--white);
             border-radius: 20px;
@@ -118,7 +143,6 @@
             transform: translateX(0);
         }
 
-        /* Variaciones de color */
         .card-red { border-bottom-color: #e74c3c; }
         .card-red .icon-container, .card-red .arrow-indicator { color: #e74c3c; }
 
@@ -131,9 +155,28 @@
         .card-orange { border-bottom-color: #e67e22; }
         .card-orange .icon-container, .card-orange .arrow-indicator { color: #e67e22; }
 
+        @media (max-width: 680px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .top-strip {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .user-chip, .crumb {
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
+
+    <div class="top-strip">
+        <div class="crumb">1º Medicina · 2º Cuatrimestre</div>
+        <div class="user-chip" id="user-chip">Tripulante activo</div>
+    </div>
 
     <header>
         <h1>1º Medicina</h1>
@@ -142,42 +185,48 @@
 
     <div class="subjects-grid">
 
-        <a href="indice fisiologia.html" class="subject-card card-red">
+        <a href="indice fisiologia.html" class="subject-card card-red"
+           data-subject-id="fisiologia" data-subject-name="Fisiología">
             <div class="icon-container">🫀</div>
             <div class="subject-title">Fisiología</div>
             <div class="subject-desc">Funciones e integración de sistemas</div>
             <div class="arrow-indicator">Entrar ➜</div>
         </a>
 
-        <a href="indice anatomia 2.html" class="subject-card">
+        <a href="indice anatomia 2.html" class="subject-card"
+           data-subject-id="anatomia_ii" data-subject-name="Anatomía II">
             <div class="icon-container">💀</div>
             <div class="subject-title">Anatomía II</div>
             <div class="subject-desc">Esplacnología, Cabeza y Cuello</div>
             <div class="arrow-indicator">Entrar ➜</div>
         </a>
 
-        <a href="indice histo y embrio 1.html" class="subject-card card-orange">
+        <a href="indice histo y embrio 1.html" class="subject-card card-orange"
+           data-subject-id="histo_embrio_i" data-subject-name="Histología y Embriología I">
             <div class="icon-container">🔬</div>
             <div class="subject-title">Histología y Embriología I</div>
             <div class="subject-desc">Teoría, Embriología Visual e Histología Visual</div>
             <div class="arrow-indicator">Entrar ➜</div>
         </a>
 
-        <a href="indice bioquimica medica.html" class="subject-card card-green">
+        <a href="indice bioquimica medica.html" class="subject-card card-green"
+           data-subject-id="bioquimica_medica" data-subject-name="Bioquímica Médica">
             <div class="icon-container">🧬</div>
             <div class="subject-title">Bioquímica Médica</div>
             <div class="subject-desc">Metabolismo y Biología Molecular</div>
             <div class="arrow-indicator">Entrar ➜</div>
         </a>
 
-        <a href="indice comunicacionmedica.html" class="subject-card card-purple">
+        <a href="indice comunicacionmedica.html" class="subject-card card-purple"
+           data-subject-id="comunicacion_medica" data-subject-name="Com. Médica">
             <div class="icon-container">🗣️</div>
             <div class="subject-title">Com. Médica</div>
             <div class="subject-desc">Relación Médico-Paciente y Ética</div>
             <div class="arrow-indicator">Entrar ➜</div>
         </a>
 
-        <a href="indice rellenar.html" class="subject-card">
+        <a href="indice rellenar.html" class="subject-card"
+           data-subject-id="fichas_rellenar" data-subject-name="Fichas para rellenar">
             <div class="icon-container">📝</div>
             <div class="subject-title">Fichas para rellenar</div>
             <div class="subject-desc">Ejercicios y material práctico</div>
@@ -186,5 +235,128 @@
 
     </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getDatabase, ref, update, increment, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAKughV5w2XAKRm3rWuUmhVldwU2bjj0zY",
+            authDomain: "portal-estudio-medicina.firebaseapp.com",
+            databaseURL: "https://portal-estudio-medicina-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "portal-estudio-medicina",
+            storageBucket: "portal-estudio-medicina.firebasestorage.app",
+            messagingSenderId: "536326985694",
+            appId: "1:536326985694:web:ee2428d39421653be26f4f",
+            measurementId: "G-52KKQDCFXD"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const USERS = [
+            {
+                hash: "26f23fc6cb9d53db0d5041fd0c3b1a09b03c3359f01ab4f9b99a2b3063b8e603",
+                alias: "Comodoro Supremo",
+                admin: true
+            },
+            {
+                hash: "0aaf6107f7ad50f68c7fdd9e43e25d22a6bc026080aff0f1013c322babe65cc5",
+                alias: "Tripulante",
+                admin: false
+            },
+            {
+                hash: "e1357c6a116c33525352fee3d57b090847e027bac164b873b410eac234e3ef27",
+                alias: "Tripulante",
+                admin: false
+            },
+            {
+                hash: "7a1d5d03f970ac38d2080c6ac040902bd30d8d59b4c5cc374c30445d2b690778",
+                alias: "Tripulante",
+                admin: false
+            },
+            {
+                hash: "7e153005924bb1c6049581649bd1310e60ff18c58bb5033f0433e42efbd76c26",
+                alias: "Tripulante",
+                admin: false
+            },
+            {
+                hash: "835288e0a626d18f9ca168a38570afcb81a5b79f7f7570007191a409870fbcd0",
+                alias: "Tripulante",
+                admin: false
+            }
+        ];
+
+        const QUAD_ID = "primero_segundo_cuatrimestre";
+        const QUAD_NAME = "1º Medicina · 2º Cuatrimestre";
+
+        function findUserByHash(hash) {
+            return USERS.find(u => u.hash === hash) || null;
+        }
+
+        function getSafeDisplayName(userObj) {
+            if (!userObj) return "Tripulante";
+            return userObj.alias || "Tripulante";
+        }
+
+        async function registerQuarterAccess(userHash) {
+            const accessKey = `quarter_counted_${QUAD_ID}_${userHash}`;
+            if (sessionStorage.getItem(accessKey)) return;
+
+            const updates = {};
+            updates[`navegacion/cuatrimestres/${QUAD_ID}/totalEntradas`] = increment(1);
+            updates[`navegacion/cuatrimestres/${QUAD_ID}/usuarios/${userHash}/entradas`] = increment(1);
+            updates[`navegacion/cuatrimestres/${QUAD_ID}/usuarios/${userHash}/nombre`] = getSafeDisplayName(findUserByHash(userHash));
+            updates[`navegacion/cuatrimestres/${QUAD_ID}/meta/nombre`] = QUAD_NAME;
+
+            await update(ref(db), updates);
+            sessionStorage.setItem(accessKey, "1");
+        }
+
+        async function registerSubjectClick(userHash, subjectId, subjectName) {
+            const updates = {};
+            updates[`navegacion/cuatrimestres/${QUAD_ID}/asignaturas/${subjectId}/clics`] = increment(1);
+            updates[`navegacion/cuatrimestres/${QUAD_ID}/asignaturas/${subjectId}/nombre`] = subjectName;
+            updates[`navegacion/cuatrimestres/${QUAD_ID}/asignaturas/${subjectId}/usuarios/${userHash}`] = increment(1);
+
+            updates[`navegacion/asignaturas/${subjectId}/totalEntradas`] = increment(1);
+            updates[`navegacion/asignaturas/${subjectId}/nombre`] = subjectName;
+            updates[`navegacion/asignaturas/${subjectId}/usuarios/${userHash}/entradas`] = increment(1);
+
+            await update(ref(db), updates);
+        }
+
+        async function initPage() {
+            const currentHash = sessionStorage.getItem("_auth_hash") || "";
+            const currentUser = findUserByHash(currentHash);
+
+            if (!currentHash || !currentUser) {
+                window.location.replace("index.html");
+                return;
+            }
+
+            document.getElementById("user-chip").textContent = `${getSafeDisplayName(currentUser)} · acceso activo`;
+
+            try {
+                await registerQuarterAccess(currentHash);
+            } catch (error) {
+                console.log("No se pudo registrar el acceso al cuatrimestre.");
+            }
+
+            document.querySelectorAll(".subject-card").forEach(card => {
+                card.addEventListener("click", async function () {
+                    const subjectId = this.dataset.subjectId || "";
+                    const subjectName = this.dataset.subjectName || "Asignatura";
+
+                    try {
+                        await registerSubjectClick(currentHash, subjectId, subjectName);
+                    } catch (error) {
+                        console.log("No se pudo registrar el acceso a la asignatura.");
+                    }
+                });
+            });
+        }
+
+        initPage();
+    </script>
 </body>
 </html>
