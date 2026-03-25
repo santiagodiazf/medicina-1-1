@@ -25,9 +25,7 @@
             --privado-color: #b43e36;
 
             --header-height: 210px;
-            --subbar-height: 68px;
-            --radius-xl: 24px;
-            --radius-lg: 18px;
+            --subbar-height: 78px;
             --shadow-soft: 0 12px 30px rgba(0,0,0,0.10);
             --shadow-strong: 0 18px 40px rgba(0,0,0,0.18);
         }
@@ -49,7 +47,6 @@
             overflow-x: hidden;
         }
 
-        /* LOGIN */
         #login-screen {
             position: fixed;
             inset: 0;
@@ -144,7 +141,6 @@
             font-weight: 600;
         }
 
-        /* APP */
         #app-shell {
             display: none;
             min-height: 100vh;
@@ -227,7 +223,7 @@
             top: 0;
             left: 0;
             right: 0;
-            height: var(--subbar-height);
+            min-height: var(--subbar-height);
             z-index: 1001;
             background: rgba(12, 38, 52, 0.94);
             backdrop-filter: blur(10px);
@@ -238,12 +234,13 @@
 
         .user-subbar-inner {
             width: min(1400px, calc(100% - 32px));
-            height: 100%;
+            min-height: var(--subbar-height);
             margin: 0 auto;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 16px;
+            padding: 10px 0;
         }
 
         .crew-badge {
@@ -265,6 +262,7 @@
             justify-content: center;
             font-weight: 900;
             box-shadow: inset 0 0 0 2px rgba(255,255,255,0.35);
+            flex-shrink: 0;
         }
 
         .crew-info {
@@ -284,6 +282,13 @@
         .crew-info strong {
             font-size: 1rem;
             letter-spacing: 0.3px;
+        }
+
+        #rank-info {
+            color: rgba(255,255,255,0.78);
+            font-size: 0.86rem;
+            margin-top: 4px;
+            line-height: 1.35;
         }
 
         .subbar-actions {
@@ -323,6 +328,16 @@
             background: rgba(255,255,255,0.18);
         }
 
+        .nav-btn.dark-text {
+            color: #173140 !important;
+            background: rgba(255,255,255,0.90) !important;
+            border: 1px solid rgba(23,49,64,0.16) !important;
+        }
+
+        .nav-btn.dark-text:hover {
+            background: rgba(255,255,255,0.98) !important;
+        }
+
         .app-body {
             padding-top: 26px;
             width: min(1400px, calc(100% - 24px));
@@ -333,7 +348,6 @@
             padding-bottom: 28px;
         }
 
-        /* MENU */
         #main-menu-view {
             display: block;
         }
@@ -556,7 +570,6 @@
             font-style: italic;
         }
 
-        /* WORKSPACE */
         #workspace-view {
             display: none;
         }
@@ -641,7 +654,7 @@
         @media (max-width: 900px) {
             :root {
                 --header-height: 180px;
-                --subbar-height: 88px;
+                --subbar-height: 98px;
             }
 
             .hero-subtitle {
@@ -660,7 +673,7 @@
             }
 
             #workspace-frame {
-                height: calc(100vh - var(--subbar-height) - 160px);
+                height: calc(100vh - var(--subbar-height) - 170px);
             }
         }
 
@@ -689,7 +702,8 @@
             }
 
             .subbar-actions,
-            .quick-links {
+            .quick-links,
+            .workspace-actions {
                 width: 100%;
             }
 
@@ -711,6 +725,7 @@
                 id="username-input"
                 placeholder="Nombre de usuario"
                 onkeypress="handleKeyPress(event)"
+                autocomplete="off"
             />
             <button onclick="checkUser()">Subir a bordo</button>
             <div class="error-msg" id="error-msg">Usuario no reconocido. Revisa tu clave de acceso.</div>
@@ -737,6 +752,7 @@
                     <div class="crew-info">
                         <small>Tripulación activa</small>
                         <strong id="display-username">Tripulante</strong>
+                        <span id="rank-info"></span>
                     </div>
                 </div>
 
@@ -853,8 +869,9 @@
                     </div>
 
                     <div class="workspace-actions">
+                        <button class="nav-btn ghost dark-text" onclick="goBackWorkspace()">← Volver atrás</button>
+                        <button class="nav-btn ghost dark-text" onclick="reloadWorkspace()">↻ Recargar contenido</button>
                         <button class="nav-btn primary" onclick="goToMainMenu()">⚓ Salir al menú principal</button>
-                        <button class="nav-btn ghost" onclick="reloadWorkspace()">↻ Refrescar contenido</button>
                     </div>
                 </div>
 
@@ -890,36 +907,179 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        const _u = [
-            "\x39\x31\x31\x34\x33",
-            "\x6d\x61\x72\x69\x61\x70\x65\x72\x65\x7a",
-            "\x6d\x61\x72\x74\x61\x6a\x69\x6d\x65\x6e\x65\x7a",
-            "\x6d\x61\x72\x74\x61\x6c\x6f\x70\x65\x7a",
-            "\x61\x6c\x62\x61\x6c\x61\x69\x6e\x65\x7a",
-            "\x42\x75\x63\x68\x69"
+        const USERS = [
+            {
+                hash: "26f23fc6cb9d53db0d5041fd0c3b1a09b03c3359f01ab4f9b99a2b3063b8e603",
+                alias: "Comodoro Supremo",
+                admin: true
+            },
+            {
+                hash: "0aaf6107f7ad50f68c7fdd9e43e25d22a6bc026080aff0f1013c322babe65cc5",
+                alias: "Tripulante",
+                admin: false
+            },
+            {
+                hash: "e1357c6a116c33525352fee3d57b090847e027bac164b873b410eac234e3ef27",
+                alias: "Tripulante",
+                admin: false
+            },
+            {
+                hash: "7a1d5d03f970ac38d2080c6ac040902bd30d8d59b4c5cc374c30445d2b690778",
+                alias: "Tripulante",
+                admin: false
+            },
+            {
+                hash: "7e153005924bb1c6049581649bd1310e60ff18c58bb5033f0433e42efbd76c26",
+                alias: "Tripulante",
+                admin: false
+            },
+            {
+                hash: "835288e0a626d18f9ca168a38570afcb81a5b79f7f7570007191a409870fbcd0",
+                alias: "Tripulante",
+                admin: false
+            }
         ];
 
-        function getSafeDisplayName(username) {
-            if (!username) return "Tripulante";
-            if (username === "91143") return "Capitán";
-            return "Tripulante · " + username;
+        const RANKS = [
+            "Grumete",
+            "Marinero Raso",
+            "Marinero",
+            "Cabo de Mar",
+            "Contramaestre",
+            "Timonel",
+            "Guardiamarina",
+            "Alférez de Fragata",
+            "Alférez de Navío",
+            "Teniente de Corbeta",
+            "Teniente de Fragata",
+            "Teniente de Navío",
+            "Capitán de Corbeta",
+            "Capitán de Fragata",
+            "Capitán de Navío",
+            "Comandante",
+            "Comodoro",
+            "Contraalmirante",
+            "Vicealmirante",
+            "Almirante de Escuadra",
+            "Almirante de Flota",
+            "Gran Almirante",
+            "Almirante"
+        ];
+
+        const PUBLIC_RANKS = RANKS.slice(0, -1);
+
+        function buildThresholds(rankCount, maxVisits) {
+            const arr = [];
+            for (let i = 0; i < rankCount; i++) {
+                const value = Math.round(Math.pow(maxVisits, i / (rankCount - 1)));
+                arr.push(Math.max(1, value));
+            }
+            arr[0] = 1;
+            arr[arr.length - 1] = maxVisits;
+            return arr;
         }
 
-        function getAvatarText(username) {
-            if (!username) return "M";
-            return username.charAt(0).toUpperCase();
+        const RANK_THRESHOLDS = buildThresholds(PUBLIC_RANKS.length, 500000);
+
+        async function sha256(text) {
+            const enc = new TextEncoder().encode(text);
+            const digest = await crypto.subtle.digest("SHA-256", enc);
+            return [...new Uint8Array(digest)]
+                .map(b => b.toString(16).padStart(2, "0"))
+                .join("");
         }
 
-        window.checkUser = function () {
+        function findUserByHash(hash) {
+            return USERS.find(u => u.hash === hash) || null;
+        }
+
+        function formatNumber(n) {
+            return new Intl.NumberFormat("es-ES").format(n || 0);
+        }
+
+        function getSafeDisplayName(userObj) {
+            if (!userObj) return "Tripulante";
+            return userObj.alias || "Tripulante";
+        }
+
+        function getAvatarText(userObj) {
+            if (!userObj || !userObj.alias) return "M";
+            return userObj.alias.charAt(0).toUpperCase();
+        }
+
+        function getRankData(visits, isAdmin = false) {
+            if (isAdmin) {
+                return {
+                    rank: "Almirante",
+                    nextRank: null,
+                    remaining: 0
+                };
+            }
+
+            let idx = 0;
+
+            for (let i = 0; i < RANK_THRESHOLDS.length; i++) {
+                if (visits >= RANK_THRESHOLDS[i]) {
+                    idx = i;
+                } else {
+                    break;
+                }
+            }
+
+            const rank = PUBLIC_RANKS[idx];
+            const nextThreshold = RANK_THRESHOLDS[idx + 1] ?? null;
+            const nextRank = PUBLIC_RANKS[idx + 1] ?? null;
+            const remaining = nextThreshold ? Math.max(0, nextThreshold - visits) : 0;
+
+            return {
+                rank,
+                nextRank,
+                remaining
+            };
+        }
+
+        function updateRankInfoUI(userObj, visits) {
+            const rankInfo = document.getElementById("rank-info");
+            if (!rankInfo) return;
+
+            const rankData = getRankData(visits, !!userObj?.admin);
+
+            if (userObj?.admin) {
+                rankInfo.textContent = "Rango: Almirante · Acceso exclusivo";
+                return;
+            }
+
+            if (!rankData.nextRank) {
+                rankInfo.textContent = `Rango: ${rankData.rank} · Máximo rango público alcanzado`;
+                return;
+            }
+
+            rankInfo.textContent =
+                `Rango: ${rankData.rank} · Te faltan ${formatNumber(rankData.remaining)} visitas para ascender a ${rankData.nextRank}`;
+        }
+
+        window.checkUser = async function () {
             const input = document.getElementById("username-input").value.trim();
             const errorMsg = document.getElementById("error-msg");
 
-            if (_u.includes(input)) {
+            if (!input) {
+                errorMsg.style.display = "block";
+                errorMsg.textContent = "Introduce tu usuario.";
+                return;
+            }
+
+            const inputHash = await sha256(input);
+            const matchedUser = findUserByHash(inputHash);
+
+            if (matchedUser) {
                 sessionStorage.setItem("_auth_tkn_882", "1");
-                sessionStorage.setItem("_auth_user", input);
+                sessionStorage.setItem("_auth_hash", inputHash);
+                sessionStorage.setItem("_auth_alias", matchedUser.alias);
+                sessionStorage.setItem("_auth_admin", matchedUser.admin ? "1" : "0");
                 unlockContent();
             } else {
                 errorMsg.style.display = "block";
+                errorMsg.textContent = "Usuario no reconocido. Revisa tu clave de acceso.";
                 document.getElementById("username-input").value = "";
                 document.getElementById("username-input").focus();
             }
@@ -930,12 +1090,16 @@
         };
 
         window.logout = function () {
-            const currentUser = sessionStorage.getItem("_auth_user");
+            const currentHash = sessionStorage.getItem("_auth_hash");
             sessionStorage.removeItem("_auth_tkn_882");
-            sessionStorage.removeItem("_auth_user");
-            if (currentUser) {
-                sessionStorage.removeItem('session_counted_for_' + currentUser);
+            sessionStorage.removeItem("_auth_hash");
+            sessionStorage.removeItem("_auth_alias");
+            sessionStorage.removeItem("_auth_admin");
+
+            if (currentHash) {
+                sessionStorage.removeItem("session_counted_for_" + currentHash);
             }
+
             location.reload();
         };
 
@@ -964,26 +1128,68 @@
         window.reloadWorkspace = function () {
             const frame = document.getElementById("workspace-frame");
             if (frame && frame.src) {
-                frame.src = frame.src;
+                try {
+                    frame.contentWindow.location.reload();
+                } catch (e) {
+                    frame.src = frame.src;
+                }
             }
         };
 
-        async function injectAdminZone(currentUser) {
-            if (currentUser !== "91143") return;
-
-            let listaContadores = '<li>Cargando datos...</li>';
+        window.goBackWorkspace = function () {
+            const frame = document.getElementById("workspace-frame");
+            if (!frame || !frame.src) return;
 
             try {
-                const snapshot = await get(ref(db, 'visitas'));
-                const datosVisitas = snapshot.exists() ? snapshot.val() : {};
-                listaContadores = '';
+                frame.contentWindow.history.back();
+            } catch (e) {
+                console.warn("No se pudo navegar atrás dentro del iframe.");
+            }
+        };
 
-                _u.forEach(usuario => {
-                    let visitas = datosVisitas[usuario] ? datosVisitas[usuario].total : 0;
-                    listaContadores += `<li><strong>${usuario}</strong> <span>${visitas} visitas</span></li>`;
+        async function getUserVisitCount(hash) {
+            try {
+                const snapshot = await get(ref(db, "visitas/" + hash));
+                if (snapshot.exists()) {
+                    return snapshot.val()?.total || 0;
+                }
+                return 0;
+            } catch {
+                return 0;
+            }
+        }
+
+        async function countSessionVisit(hash) {
+            try {
+                const key = "session_counted_for_" + hash;
+                if (!sessionStorage.getItem(key)) {
+                    const userRef = ref(db, "visitas/" + hash);
+                    await update(userRef, { total: increment(1) });
+                    sessionStorage.setItem(key, "true");
+                }
+            } catch (error) {
+                console.log("Error de conexión con Firebase.");
+            }
+        }
+
+        async function injectAdminZone(currentUserObj) {
+            if (!currentUserObj || !currentUserObj.admin) return;
+            if (document.getElementById("lista-visitas")) return;
+
+            let listaContadores = "<li>Cargando datos...</li>";
+
+            try {
+                const snapshot = await get(ref(db, "visitas"));
+                const datosVisitas = snapshot.exists() ? snapshot.val() : {};
+                listaContadores = "";
+
+                USERS.forEach(usuario => {
+                    const visitas = datosVisitas?.[usuario.hash]?.total || 0;
+                    const aliasSeguro = usuario.admin ? "Almirante" : usuario.alias;
+                    listaContadores += `<li><strong>${aliasSeguro}</strong> <span>${formatNumber(visitas)} visitas</span></li>`;
                 });
             } catch (error) {
-                listaContadores = '<li><em>Error al cargar estadísticas</em></li>';
+                listaContadores = "<li><em>Error al cargar estadísticas</em></li>";
             }
 
             const privateHTML = `
@@ -1022,7 +1228,7 @@
                             ${listaContadores}
                         </ul>
                         <div class="admin-note">
-                            *Estas estadísticas se actualizan por sesión contabilizada.
+                            *Estas estadísticas se actualizan una vez por sesión iniciada.
                         </div>
                     </div>
                 </div>
@@ -1035,19 +1241,20 @@
             document.getElementById("login-screen").style.display = "none";
             document.getElementById("app-shell").style.display = "block";
 
-            const currentUser = sessionStorage.getItem("_auth_user") || "";
+            const currentHash = sessionStorage.getItem("_auth_hash") || "";
+            const currentUser = findUserByHash(currentHash);
+
+            if (!currentUser) {
+                logout();
+                return;
+            }
+
             document.getElementById("display-username").textContent = getSafeDisplayName(currentUser);
             document.getElementById("crew-avatar").textContent = getAvatarText(currentUser);
 
-            try {
-                if (!sessionStorage.getItem('session_counted_for_' + currentUser)) {
-                    const userRef = ref(db, 'visitas/' + currentUser);
-                    update(userRef, { total: increment(1) });
-                    sessionStorage.setItem('session_counted_for_' + currentUser, "true");
-                }
-            } catch (error) {
-                console.log("Error de conexión con Firebase.");
-            }
+            await countSessionVisit(currentHash);
+            const currentVisits = await getUserVisitCount(currentHash);
+            updateRankInfoUI(currentUser, currentVisits);
 
             await injectAdminZone(currentUser);
         }
