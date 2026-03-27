@@ -336,6 +336,19 @@
                 <div class="tag">80 Preguntas</div>
             </div>
         </a>
+
+        <a href="Histologia , notebook 3.html" class="card card-notebook"
+           data-resource-id="histologia_iii"
+           data-resource-name="Histología III"
+           data-resource-type="notebook_test">
+            <div class="card-header"></div>
+            <div class="card-body">
+                <div class="icon">📓</div>
+                <div class="card-title">Histología III</div>
+                <div class="card-desc">Tejido Conjuntivo y Cartilaginoso. Profundización en células, fibras y matriz sólida.</div>
+                <div class="tag">80 Preguntas</div>
+            </div>
+        </a>
     </div>
 
     <div class="section-title">Kahoots de Clase</div>
@@ -377,36 +390,12 @@
         const db = getDatabase(app);
 
         const USERS = [
-            {
-                hash: "26f23fc6cb9d53db0d5041fd0c3b1a09b03c3359f01ab4f9b99a2b3063b8e603",
-                alias: "Comodoro Supremo",
-                admin: true
-            },
-            {
-                hash: "0aaf6107f7ad50f68c7fdd9e43e25d22a6bc026080aff0f1013c322babe65cc5",
-                alias: "Tripulante",
-                admin: false
-            },
-            {
-                hash: "e1357c6a116c33525352fee3d57b090847e027bac164b873b410eac234e3ef27",
-                alias: "Tripulante",
-                admin: false
-            },
-            {
-                hash: "7a1d5d03f970ac38d2080c6ac040902bd30d8d59b4c5cc374c30445d2b690778",
-                alias: "Tripulante",
-                admin: false
-            },
-            {
-                hash: "7e153005924bb1c6049581649bd1310e60ff18c58bb5033f0433e42efbd76c26",
-                alias: "Tripulante",
-                admin: false
-            },
-            {
-                hash: "835288e0a626d18f9ca168a38570afcb81a5b79f7f7570007191a409870fbcd0",
-                alias: "Tripulante",
-                admin: false
-            }
+            { hash: "26f23fc6cb9d53db0d5041fd0c3b1a09b03c3359f01ab4f9b99a2b3063b8e603", alias: "Comodoro Supremo", admin: true },
+            { hash: "0aaf6107f7ad50f68c7fdd9e43e25d22a6bc026080aff0f1013c322babe65cc5", alias: "Tripulante", admin: false },
+            { hash: "e1357c6a116c33525352fee3d57b090847e027bac164b873b410eac234e3ef27", alias: "Tripulante", admin: false },
+            { hash: "7a1d5d03f970ac38d2080c6ac040902bd30d8d59b4c5cc374c30445d2b690778", alias: "Tripulante", admin: false },
+            { hash: "7e153005924bb1c6049581649bd1310e60ff18c58bb5033f0433e42efbd76c26", alias: "Tripulante", admin: false },
+            { hash: "835288e0a626d18f9ca168a38570afcb81a5b79f7f7570007191a409870fbcd0", alias: "Tripulante", admin: false }
         ];
 
         const SUBJECT_ID = "histo_embrio_i";
@@ -441,7 +430,6 @@
 
         async function registerResourceClick(userHash, resourceId, resourceName, resourceType) {
             const updates = {};
-
             updates[`navegacion/asignaturas/${SUBJECT_ID}/recursos/${resourceId}/nombre`] = resourceName;
             updates[`navegacion/asignaturas/${SUBJECT_ID}/recursos/${resourceId}/tipo`] = resourceType;
             updates[`navegacion/asignaturas/${SUBJECT_ID}/recursos/${resourceId}/clics`] = increment(1);
