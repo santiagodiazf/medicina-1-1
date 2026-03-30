@@ -90,8 +90,6 @@
     }
 
     .login-box input,
-    .login-box textarea,
-    .login-box select,
     .panel-input,
     .panel-select,
     .panel-textarea{
@@ -108,8 +106,6 @@
     }
 
     .login-box input:focus,
-    .login-box textarea:focus,
-    .login-box select:focus,
     .panel-input:focus,
     .panel-select:focus,
     .panel-textarea:focus{
@@ -117,11 +113,15 @@
       box-shadow:0 0 0 4px rgba(36,78,102,.10);
     }
 
-    .panel-textarea{min-height:110px; resize:vertical}
+    .panel-textarea{
+      min-height:110px;
+      resize:vertical;
+    }
 
     .main-btn,
     .mini-btn,
-    .nav-btn{
+    .nav-btn,
+    .notif-link{
       border:none;
       border-radius:12px;
       padding:14px 18px;
@@ -133,11 +133,19 @@
       background:linear-gradient(135deg, var(--curso1-color), var(--bg-sea));
       transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease;
       box-shadow:0 10px 20px rgba(20,77,99,.28);
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
     }
 
     .main-btn:hover,
     .mini-btn:hover,
-    .nav-btn:hover{transform:translateY(-2px)}
+    .nav-btn:hover,
+    .notif-link:hover{
+      transform:translateY(-2px);
+    }
 
     .mini-btn{
       padding:8px 12px;
@@ -181,11 +189,7 @@
     }
 
     #confirm-password-wrap{display:none}
-
-    #app-shell{
-      display:none;
-      min-height:100vh;
-    }
+    #app-shell{display:none;min-height:100vh}
 
     .top-banner{
       position:relative;
@@ -352,9 +356,7 @@
       border:1px solid rgba(255,255,255,.18);
     }
 
-    .nav-btn.ghost:hover{
-      background:rgba(255,255,255,.18);
-    }
+    .nav-btn.ghost:hover{background:rgba(255,255,255,.18)}
 
     .nav-btn.dark-text{
       color:#173140!important;
@@ -362,18 +364,73 @@
       border:1px solid rgba(23,49,64,.16)!important;
     }
 
-    .nav-btn.dark-text:hover{
-      background:rgba(255,255,255,.98)!important;
-    }
+    .nav-btn.dark-text:hover{background:rgba(255,255,255,.98)!important}
 
     .app-body{
-      padding-top:26px;
+      padding-top:18px;
       width:min(1400px, calc(100% - 24px));
       margin:0 auto;
       display:grid;
       grid-template-columns:1fr;
-      gap:22px;
+      gap:18px;
       padding-bottom:28px;
+    }
+
+    .notification-strip{
+      display:none;
+      background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.92));
+      border:1px solid rgba(255,255,255,.65);
+      border-radius:22px;
+      box-shadow:var(--shadow-soft);
+      padding:18px;
+    }
+
+    .notification-strip h3{
+      margin:0 0 12px;
+      font-size:1.05rem;
+      color:var(--text-main);
+    }
+
+    .notification-list{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .notification-card{
+      flex:1 1 280px;
+      background:#fff;
+      border:1px solid #e8edef;
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .notification-card strong{
+      display:block;
+      margin-bottom:8px;
+      color:var(--text-main);
+    }
+
+    .notification-card p{
+      margin:0 0 12px;
+      color:var(--text-soft);
+      line-height:1.45;
+      font-size:.95rem;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:26px;
+      height:26px;
+      padding:0 8px;
+      border-radius:999px;
+      background:#b43e36;
+      color:#fff;
+      font-size:.82rem;
+      font-weight:800;
+      margin-left:6px;
     }
 
     #main-menu-view{display:block}
@@ -456,8 +513,7 @@
       font-size:1.15rem;
     }
 
-    .semester-grid,
-    .panel-grid{
+    .semester-grid{
       display:grid;
       grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
       gap:20px;
@@ -808,7 +864,8 @@
       .subbar-actions,
       .quick-links,
       .workspace-actions,
-      .modal-actions{width:100%}
+      .modal-actions,
+      .notification-list{width:100%}
       .workspace-topbar{padding:16px}
     }
   </style>
@@ -887,6 +944,11 @@
     </div>
 
     <main class="app-body">
+      <section id="notification-strip" class="notification-strip">
+        <h3>Notificaciones</h3>
+        <div class="notification-list" id="notification-list"></div>
+      </section>
+
       <section id="main-menu-view" class="deck-panel">
         <div class="deck-header">
           <div class="deck-kicker">Puerto base</div>
@@ -1041,7 +1103,7 @@
         <div class="panel-header">
           <div class="panel-kicker">Sala común</div>
           <h3>Taberna de la tripulación</h3>
-          <p>Mensajes visibles para todos los usuarios.</p>
+          <p>Mensajes visibles para todos los usuarios. Se actualiza automáticamente cada 10 segundos mientras estás dentro.</p>
         </div>
         <div class="panel-body">
           <div class="message-list" id="common-room-messages"></div>
@@ -1099,13 +1161,9 @@
       getDatabase,
       ref,
       get,
-      set,
       update,
       increment,
-      push,
-      query,
-      orderByChild,
-      limitToLast
+      push
     } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
     const firebaseConfig = {
@@ -1170,6 +1228,10 @@
     ];
 
     const PUBLIC_RANKS = RANKS.slice(0, -1);
+    const RANK_THRESHOLDS = buildThresholds(PUBLIC_RANKS.length, 500000);
+
+    let commonRoomInterval = null;
+    let notificationInterval = null;
 
     function buildThresholds(rankCount, maxVisits) {
       const arr = [];
@@ -1182,8 +1244,6 @@
       return arr;
     }
 
-    const RANK_THRESHOLDS = buildThresholds(PUBLIC_RANKS.length, 500000);
-
     async function sha256(text) {
       const enc = new TextEncoder().encode(text);
       const digest = await crypto.subtle.digest("SHA-256", enc);
@@ -1192,12 +1252,25 @@
         .join("");
     }
 
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
     function findUserByHash(hash) {
       return USERS.find(u => u.hash === hash) || null;
     }
 
     function findUserLabel(hash) {
       return USERS.find(u => u.hash === hash)?.label || "Tripulante";
+    }
+
+    function getCurrentHash() {
+      return sessionStorage.getItem("_auth_hash") || "";
     }
 
     function formatNumber(n) {
@@ -1229,6 +1302,10 @@
       const m = String(now.getMonth() + 1).padStart(2, "0");
       const d = String(now.getDate()).padStart(2, "0");
       return `${y}-${m}-${d}`;
+    }
+
+    function getConversationId(hashA, hashB) {
+      return [hashA, hashB].sort().join("__");
     }
 
     function getRankData(visits, isAdmin = false) {
@@ -1328,11 +1405,6 @@
       } catch {
         return {};
       }
-    }
-
-    async function getStoredPasswordHash(userHash) {
-      const data = await getStoredPasswordData(userHash);
-      return data.passwordHash || "";
     }
 
     async function saveNewPassword(userHash, plainPassword, changedBy = "self") {
@@ -1463,7 +1535,41 @@
       if (event.key === "Enter") checkUser();
     };
 
+    function stopCommonRoomAutoRefresh() {
+      if (commonRoomInterval) {
+        clearInterval(commonRoomInterval);
+        commonRoomInterval = null;
+      }
+    }
+
+    function startCommonRoomAutoRefresh() {
+      stopCommonRoomAutoRefresh();
+      commonRoomInterval = setInterval(async () => {
+        if (!document.getElementById("common-room-view").classList.contains("hidden")) {
+          await loadCommonRoomMessages(false);
+        }
+      }, 10000);
+    }
+
+    function stopNotificationPolling() {
+      if (notificationInterval) {
+        clearInterval(notificationInterval);
+        notificationInterval = null;
+      }
+    }
+
+    function startNotificationPolling() {
+      stopNotificationPolling();
+      notificationInterval = setInterval(async () => {
+        if (sessionStorage.getItem("_auth_tkn_882") === "1") {
+          await renderNotifications();
+        }
+      }, 15000);
+    }
+
     window.logout = function () {
+      stopCommonRoomAutoRefresh();
+      stopNotificationPolling();
       sessionStorage.removeItem("_auth_tkn_882");
       sessionStorage.removeItem("_auth_hash");
       sessionStorage.removeItem("_auth_alias");
@@ -1472,6 +1578,7 @@
     };
 
     function hideAllPanels() {
+      stopCommonRoomAutoRefresh();
       document.getElementById("main-menu-view").style.display = "none";
       document.getElementById("workspace-view").style.display = "none";
       document.getElementById("common-room-view").classList.add("hidden");
@@ -1479,20 +1586,26 @@
       document.getElementById("btn-home").style.display = "inline-flex";
     }
 
-    window.goToMainMenu = function () {
+    window.goToMainMenu = async function () {
+      stopCommonRoomAutoRefresh();
       document.getElementById("main-menu-view").style.display = "block";
       document.getElementById("workspace-view").style.display = "none";
       document.getElementById("common-room-view").classList.add("hidden");
       document.getElementById("private-chat-view").classList.add("hidden");
       document.getElementById("btn-home").style.display = "none";
+      await renderNotifications();
     };
 
     window.openPanel = async function (panelId) {
       hideAllPanels();
-      document.getElementById(panelId).classList.remove("hidden");
+      const panel = document.getElementById(panelId);
+      if (!panel) return;
+
+      panel.classList.remove("hidden");
 
       if (panelId === "common-room-view") {
-        await loadCommonRoomMessages();
+        await loadCommonRoomMessages(true);
+        startCommonRoomAutoRefresh();
       }
 
       if (panelId === "private-chat-view") {
@@ -1504,10 +1617,10 @@
     };
 
     window.openInWorkspace = function (url, title = "Zona de trabajo") {
+      hideAllPanels();
+
       const frame = document.getElementById("workspace-frame");
       const empty = document.getElementById("workspace-empty");
-
-      hideAllPanels();
 
       document.getElementById("workspace-title").textContent = title;
       frame.src = url;
@@ -1532,12 +1645,9 @@
     window.goBackWorkspace = function () {
       const frame = document.getElementById("workspace-frame");
       if (!frame || !frame.src) return;
-
       try {
         frame.contentWindow.history.back();
-      } catch {
-        console.warn("No se pudo navegar atrás dentro del iframe.");
-      }
+      } catch {}
     };
 
     async function getUserVisitCount(hash) {
@@ -1571,48 +1681,199 @@
       }
     }
 
-    function getConversationId(hashA, hashB) {
-      return [hashA, hashB].sort().join("__");
+    async function getUserState() {
+      const myHash = getCurrentHash();
+      if (!myHash) return {};
+      try {
+        const snapshot = await get(ref(db, "userState/" + myHash));
+        return snapshot.exists() ? (snapshot.val() || {}) : {};
+      } catch {
+        return {};
+      }
     }
 
-    async function loadCommonRoomMessages() {
-      const box = document.getElementById("common-room-messages");
-      box.innerHTML = "<div class='message-item'><div class='message-meta'>Cargando...</div></div>";
+    async function markCommonRoomAsRead(lastTimestamp = 0) {
+      try {
+        const myHash = getCurrentHash();
+        if (!myHash) return;
+        await update(ref(db, "userState/" + myHash), {
+          commonRoomLastRead: Number(lastTimestamp || 0)
+        });
+      } catch {}
+    }
+
+    async function markPrivateConversationAsRead(otherHash, lastTimestamp = 0) {
+      try {
+        const myHash = getCurrentHash();
+        if (!myHash || !otherHash) return;
+        await update(ref(db, "userState/" + myHash + "/privateLastRead"), {
+          [otherHash]: Number(lastTimestamp || 0)
+        });
+      } catch {}
+    }
+
+    async function getCommonRoomUnreadCount() {
+      try {
+        const state = await getUserState();
+        const lastRead = Number(state.commonRoomLastRead || 0);
+
+        const snapshot = await get(ref(db, "commonRoom"));
+        const data = snapshot.exists() ? snapshot.val() : {};
+        const arr = Object.values(data || {});
+
+        return arr.filter(msg =>
+          Number(msg.timestamp || 0) > lastRead &&
+          msg.fromHash !== getCurrentHash()
+        ).length;
+      } catch {
+        return 0;
+      }
+    }
+
+    async function getPrivateUnreadCount() {
+      try {
+        const myHash = getCurrentHash();
+        const state = await getUserState();
+        const privateLastRead = state.privateLastRead || {};
+
+        const snapshot = await get(ref(db, "privateMessages"));
+        const allConversations = snapshot.exists() ? snapshot.val() : {};
+        let totalUnread = 0;
+
+        Object.entries(allConversations).forEach(([convoId, convoMessages]) => {
+          if (!convoId.includes(myHash)) return;
+
+          const otherHash = convoId.split("__").find(h => h !== myHash);
+          const lastRead = Number(privateLastRead?.[otherHash] || 0);
+
+          Object.values(convoMessages || {}).forEach(msg => {
+            if (msg.toHash === myHash && Number(msg.timestamp || 0) > lastRead) {
+              totalUnread++;
+            }
+          });
+        });
+
+        return totalUnread;
+      } catch {
+        return 0;
+      }
+    }
+
+    async function renderNotifications() {
+      const strip = document.getElementById("notification-strip");
+      const list = document.getElementById("notification-list");
+      if (!strip || !list) return;
 
       try {
-        const q = query(ref(db, "commonRoom"), orderByChild("timestamp"), limitToLast(100));
-        const snapshot = await get(q);
-        const data = snapshot.exists() ? snapshot.val() : {};
+        const [commonUnread, privateUnread] = await Promise.all([
+          getCommonRoomUnreadCount(),
+          getPrivateUnreadCount()
+        ]);
 
-        const arr = Object.entries(data).map(([id, val]) => ({ id, ...val }));
-        arr.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+        const cards = [];
 
-        if (!arr.length) {
-          box.innerHTML = "<div class='message-item'><div class='message-meta'>Aún no hay mensajes</div><div class='message-text'>Sé el primero en escribir en la sala común.</div></div>";
+        if (privateUnread > 0) {
+          cards.push(`
+            <div class="notification-card">
+              <strong>Mensajes privados <span class="badge">${privateUnread}</span></strong>
+              <p>Tienes mensajes privados sin leer.</p>
+              <a href="#" class="notif-link" onclick="openPanel('private-chat-view'); return false;">Abrir mensajes privados</a>
+            </div>
+          `);
+        }
+
+        if (commonUnread > 0) {
+          cards.push(`
+            <div class="notification-card">
+              <strong>Sala común <span class="badge">${commonUnread}</span></strong>
+              <p>Hay mensajes nuevos sin leer en la sala común.</p>
+              <a href="#" class="notif-link gold-btn" onclick="openPanel('common-room-view'); return false;">Ir a la sala común</a>
+            </div>
+          `);
+        }
+
+        if (!cards.length) {
+          strip.style.display = "none";
+          list.innerHTML = "";
           return;
         }
 
-        const myHash = sessionStorage.getItem("_auth_hash") || "";
-        box.innerHTML = arr.map(msg => {
+        list.innerHTML = cards.join("");
+        strip.style.display = "block";
+      } catch {
+        strip.style.display = "none";
+        list.innerHTML = "";
+      }
+    }
+
+    window.loadCommonRoomMessages = async function (markAsReadAfterLoad = true) {
+      const box = document.getElementById("common-room-messages");
+      if (!box) return;
+
+      const shouldStickBottom = box.scrollTop + box.clientHeight >= box.scrollHeight - 120;
+
+      if (!box.innerHTML.trim()) {
+        box.innerHTML = "<div class='message-item'><div class='message-meta'>Cargando...</div></div>";
+      }
+
+      try {
+        const snapshot = await get(ref(db, "commonRoom"));
+        const data = snapshot.exists() ? snapshot.val() : {};
+
+        const arr = Object.entries(data).map(([id, val]) => ({ id, ...val }));
+        arr.sort((a, b) => Number(a.timestamp || 0) - Number(b.timestamp || 0));
+
+        const lastMessages = arr.slice(-100);
+        const myHash = getCurrentHash();
+
+        if (!lastMessages.length) {
+          box.innerHTML = `
+            <div class="message-item">
+              <div class="message-meta">Aún no hay mensajes</div>
+              <div class="message-text">Sé el primero en escribir en la sala común.</div>
+            </div>
+          `;
+          if (markAsReadAfterLoad) {
+            await markCommonRoomAsRead(0);
+            await renderNotifications();
+          }
+          return;
+        }
+
+        box.innerHTML = lastMessages.map(msg => {
           const mine = msg.fromHash === myHash ? "mine" : "";
           return `
             <div class="message-item ${mine}">
-              <div class="message-meta">${escapeHtml(msg.fromLabel || "Tripulante")} · ${formatDateTime(msg.createdAt)}</div>
+              <div class="message-meta">${escapeHtml(msg.fromLabel || "Tripulante")} · ${escapeHtml(formatDateTime(msg.createdAt))}</div>
               <div class="message-text">${escapeHtml(msg.text || "")}</div>
             </div>
           `;
         }).join("");
 
-        box.scrollTop = box.scrollHeight;
-      } catch {
-        box.innerHTML = "<div class='message-item'><div class='message-meta'>Error</div><div class='message-text'>No se pudieron cargar los mensajes.</div></div>";
+        if (shouldStickBottom || markAsReadAfterLoad) {
+          box.scrollTop = box.scrollHeight;
+        }
+
+        if (markAsReadAfterLoad) {
+          const latestTimestamp = Number(lastMessages[lastMessages.length - 1]?.timestamp || 0);
+          await markCommonRoomAsRead(latestTimestamp);
+          await renderNotifications();
+        }
+      } catch (error) {
+        console.error("Error sala común:", error);
+        box.innerHTML = `
+          <div class="message-item">
+            <div class="message-meta">Error</div>
+            <div class="message-text">No se pudieron cargar los mensajes. Revisa la consola del navegador.</div>
+          </div>
+        `;
       }
-    }
+    };
 
     window.sendCommonRoomMessage = async function () {
       const input = document.getElementById("common-room-input");
       const text = input.value.trim();
-      const myHash = sessionStorage.getItem("_auth_hash") || "";
+      const myHash = getCurrentHash();
 
       if (!text) {
         alert("Escribe un mensaje.");
@@ -1627,34 +1888,53 @@
           createdAt: new Date().toISOString(),
           timestamp: Date.now()
         };
+
         await push(ref(db, "commonRoom"), payload);
         input.value = "";
-        await loadCommonRoomMessages();
-      } catch {
+        await loadCommonRoomMessages(true);
+      } catch (error) {
+        console.error("Error enviando sala común:", error);
         alert("No se pudo enviar el mensaje.");
       }
     };
 
-    function populatePrivateUserSelect() {
+    window.populatePrivateUserSelect = function () {
       const select = document.getElementById("private-chat-user-select");
-      const myHash = sessionStorage.getItem("_auth_hash") || "";
+      if (!select) return;
 
-      const options = USERS
-        .filter(u => u.hash !== myHash)
-        .map(u => `<option value="${u.hash}">${escapeHtml(u.label)}</option>`)
-        .join("");
+      const myHash = getCurrentHash();
+      const users = USERS.filter(u => u.hash !== myHash);
 
-      select.innerHTML = options || `<option value="">No hay otros usuarios</option>`;
-    }
+      if (!users.length) {
+        select.innerHTML = `<option value="">No hay otros usuarios</option>`;
+        return;
+      }
+
+      const previous = select.value;
+      select.innerHTML = users.map(u =>
+        `<option value="${u.hash}">${escapeHtml(u.label)}</option>`
+      ).join("");
+
+      if (users.some(u => u.hash === previous)) {
+        select.value = previous;
+      }
+    };
 
     window.loadPrivateConversation = async function () {
       const select = document.getElementById("private-chat-user-select");
-      const targetHash = select.value;
-      const myHash = sessionStorage.getItem("_auth_hash") || "";
       const box = document.getElementById("private-chat-messages");
+      if (!select || !box) return;
+
+      const targetHash = select.value;
+      const myHash = getCurrentHash();
 
       if (!targetHash) {
-        box.innerHTML = "<div class='message-item'><div class='message-meta'>Sin destinatario</div><div class='message-text'>No hay otro usuario disponible.</div></div>";
+        box.innerHTML = `
+          <div class="message-item">
+            <div class="message-meta">Sin destinatario</div>
+            <div class="message-text">No hay otro usuario disponible.</div>
+          </div>
+        `;
         return;
       }
 
@@ -1662,39 +1942,60 @@
 
       try {
         const convoId = getConversationId(myHash, targetHash);
-        const q = query(ref(db, "privateMessages/" + convoId), orderByChild("timestamp"), limitToLast(100));
-        const snapshot = await get(q);
+        const snapshot = await get(ref(db, "privateMessages/" + convoId));
         const data = snapshot.exists() ? snapshot.val() : {};
-        const arr = Object.entries(data).map(([id, val]) => ({ id, ...val }));
-        arr.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
 
-        if (!arr.length) {
-          box.innerHTML = "<div class='message-item'><div class='message-meta'>Sin mensajes</div><div class='message-text'>Todavía no hay conversación con este usuario.</div></div>";
+        const arr = Object.entries(data).map(([id, val]) => ({ id, ...val }));
+        arr.sort((a, b) => Number(a.timestamp || 0) - Number(b.timestamp || 0));
+
+        const lastMessages = arr.slice(-100);
+
+        if (!lastMessages.length) {
+          box.innerHTML = `
+            <div class="message-item">
+              <div class="message-meta">Sin mensajes</div>
+              <div class="message-text">Todavía no hay conversación con este usuario.</div>
+            </div>
+          `;
+          await markPrivateConversationAsRead(targetHash, 0);
+          await renderNotifications();
           return;
         }
 
-        box.innerHTML = arr.map(msg => {
+        box.innerHTML = lastMessages.map(msg => {
           const mine = msg.fromHash === myHash ? "mine" : "";
           return `
             <div class="message-item ${mine}">
-              <div class="message-meta">${escapeHtml(msg.fromLabel || "Tripulante")} · ${formatDateTime(msg.createdAt)}</div>
+              <div class="message-meta">${escapeHtml(msg.fromLabel || "Tripulante")} · ${escapeHtml(formatDateTime(msg.createdAt))}</div>
               <div class="message-text">${escapeHtml(msg.text || "")}</div>
             </div>
           `;
         }).join("");
 
         box.scrollTop = box.scrollHeight;
-      } catch {
-        box.innerHTML = "<div class='message-item'><div class='message-meta'>Error</div><div class='message-text'>No se pudo cargar la conversación.</div></div>";
+
+        const latestTimestamp = Number(lastMessages[lastMessages.length - 1]?.timestamp || 0);
+        await markPrivateConversationAsRead(targetHash, latestTimestamp);
+        await renderNotifications();
+      } catch (error) {
+        console.error("Error conversación privada:", error);
+        box.innerHTML = `
+          <div class="message-item">
+            <div class="message-meta">Error</div>
+            <div class="message-text">No se pudo cargar la conversación privada. Revisa la consola.</div>
+          </div>
+        `;
       }
     };
 
     window.sendPrivateMessage = async function () {
       const select = document.getElementById("private-chat-user-select");
-      const targetHash = select.value;
       const input = document.getElementById("private-chat-input");
+      if (!select || !input) return;
+
+      const targetHash = select.value;
       const text = input.value.trim();
-      const myHash = sessionStorage.getItem("_auth_hash") || "";
+      const myHash = getCurrentHash();
 
       if (!targetHash) {
         alert("Selecciona un destinatario.");
@@ -1721,7 +2022,8 @@
         await push(ref(db, "privateMessages/" + convoId), payload);
         input.value = "";
         await loadPrivateConversation();
-      } catch {
+      } catch (error) {
+        console.error("Error enviando privado:", error);
         alert("No se pudo enviar el mensaje privado.");
       }
     };
@@ -1744,7 +2046,7 @@
       const currentPassword = document.getElementById("current-password-change").value;
       const newPassword = document.getElementById("new-password-change").value;
       const confirmNewPassword = document.getElementById("confirm-new-password-change").value;
-      const myHash = sessionStorage.getItem("_auth_hash") || "";
+      const myHash = getCurrentHash();
 
       if (!currentPassword || !newPassword || !confirmNewPassword) {
         showChangePasswordError("Completa todos los campos.");
@@ -1774,7 +2076,7 @@
         await saveNewPassword(myHash, newPassword, "self");
         showChangePasswordHelper("Contraseña cambiada correctamente.");
         setTimeout(() => closeChangePasswordModal(), 900);
-        if (typeof injectAdminZone === "function") await injectAdminZone(findUserByHash(myHash));
+        await injectAdminZone(findUserByHash(myHash));
       } catch {
         showChangePasswordError("No se pudo cambiar la contraseña.");
       }
@@ -1782,7 +2084,6 @@
 
     async function buildAdminUsersHtml() {
       let result = "";
-
       const visitsSnapshot = await get(ref(db, "visitas"));
       const visitsData = visitsSnapshot.exists() ? visitsSnapshot.val() : {};
 
@@ -1830,7 +2131,7 @@
       try {
         await setTemporaryPasswordByAdmin(userHash, tempPassword.trim());
         alert(`Contraseña temporal asignada a ${user.label}. Se le forzará a cambiarla en el próximo acceso.`);
-        await injectAdminZone(findUserByHash(sessionStorage.getItem("_auth_hash") || ""));
+        await injectAdminZone(findUserByHash(getCurrentHash()));
       } catch {
         alert("No se pudo asignar la contraseña temporal.");
       }
@@ -1846,7 +2147,7 @@
       try {
         await clearPasswordForUser(userHash);
         alert(`Contraseña borrada para ${user.label}.`);
-        await injectAdminZone(findUserByHash(sessionStorage.getItem("_auth_hash") || ""));
+        await injectAdminZone(findUserByHash(getCurrentHash()));
       } catch {
         alert("No se pudo borrar la contraseña.");
       }
@@ -1908,20 +2209,11 @@
       document.getElementById("admin-zone-anchor").insertAdjacentHTML("beforebegin", privateHTML);
     }
 
-    function escapeHtml(str) {
-      return String(str ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#39;");
-    }
-
     async function unlockContent() {
       document.getElementById("login-screen").style.display = "none";
       document.getElementById("app-shell").style.display = "block";
 
-      const currentHash = sessionStorage.getItem("_auth_hash") || "";
+      const currentHash = getCurrentHash();
       const currentUser = findUserByHash(currentHash);
 
       if (!currentUser) {
@@ -1937,6 +2229,8 @@
       updateRankInfoUI(currentUser, currentVisits);
 
       await injectAdminZone(currentUser);
+      await renderNotifications();
+      startNotificationPolling();
     }
 
     window.onload = function () {
