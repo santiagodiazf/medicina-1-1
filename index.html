@@ -85,15 +85,13 @@
       background:#fffdf9;
       outline:none;
       transition:.2s ease;
-      margin:0;
+      margin:10px 0;
     }
 
     input:focus,textarea:focus,select:focus{
       border-color:var(--navy2);
       box-shadow:0 0 0 4px rgba(36,78,102,.08);
     }
-
-    textarea{min-height:100px;resize:vertical}
 
     .btn{
       border:none;
@@ -102,7 +100,6 @@
       font-weight:800;
       cursor:pointer;
       transition:.2s ease;
-      text-decoration:none;
       display:inline-flex;
       align-items:center;
       justify-content:center;
@@ -113,10 +110,8 @@
     .btn-primary{color:#143140;background:linear-gradient(135deg,var(--gold2),var(--gold));box-shadow:0 10px 20px rgba(201,153,82,.26)}
     .btn-dark{color:#fff;background:linear-gradient(135deg,var(--navy2),var(--navy));box-shadow:0 10px 20px rgba(20,77,99,.24)}
     .btn-soft{color:#fff;background:linear-gradient(135deg,#6b7b84,#52626c)}
-    .btn-danger{color:#fff;background:linear-gradient(135deg,#b43e36,#8b2f2a)}
-    .btn-ok{color:#fff;background:linear-gradient(135deg,#37956c,#2d7b57)}
 
-    .auth-actions,.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 
     .msg{
       display:none;
@@ -144,14 +139,6 @@
       padding:24px 0 26px;
     }
 
-    .hero-title{
-      font-size:clamp(2rem,4vw,3.5rem);
-      font-weight:900;
-      text-transform:uppercase;
-      letter-spacing:2px;
-      margin-top:10px;
-    }
-
     .topbar{
       position:sticky;top:0;z-index:1000;
       background:rgba(12,38,52,.95);
@@ -163,27 +150,16 @@
       width:min(1380px,calc(100% - 24px));
       margin:0 auto;
       display:flex;
-      gap:14px;
       justify-content:space-between;
       align-items:center;
       padding:10px 0;
     }
 
-    .user-badge{display:flex;align-items:center;gap:12px;color:#fff;min-width:0;}
-    .avatar,.mini-avatar,.profile-big{
-      border-radius:50%;
-      overflow:hidden;
+    .avatar{
+      width:48px;height:48px; border-radius:50%;
       background:linear-gradient(135deg,#f1c17a,#c99952);
-      display:grid;
-      place-items:center;
-      font-weight:900;
-      color:#143140;
-      flex:0 0 auto;
+      display:grid; place-items:center; font-weight:900; color:#143140;
     }
-
-    .avatar{width:48px;height:48px}
-    .mini-avatar{width:56px;height:56px}
-    .profile-big{width:90px;height:90px;font-size:2rem}
 
     .app{
       width:min(1380px,calc(100% - 24px));
@@ -193,38 +169,23 @@
       gap:18px;
     }
 
-    .side,.panel{
+    .side, .panel{
       background:rgba(255,255,255,.96);
-      border:1px solid rgba(0,0,0,.05);
       border-radius:24px;
+      padding:20px;
       box-shadow:var(--shadow);
     }
 
-    .side{padding:16px;position:sticky;top:76px;align-self:start;}
-    .nav-list{display:grid;gap:10px}
     .nav-btn{
       width:100%; border:none; border-radius:16px; padding:14px 16px;
-      text-align:left; font-weight:800; cursor:pointer; color:var(--ink);
-      background:#fff; border:1px solid #e8edef; transition:.2s ease;
-    }
-    .nav-btn.active{
-      color:#143140; background:linear-gradient(135deg,var(--gold2),var(--gold)); border-color:transparent;
+      text-align:left; font-weight:800; cursor:pointer; margin-bottom:8px;
+      background:#fff; border:1px solid #e8edef;
     }
 
-    .panel-header{padding:22px 24px 18px; border-bottom:1px solid var(--line);}
-    .panel-body{padding:22px 24px 24px}
-
-    .modal-backdrop{
-      display:none; position:fixed; inset:0; z-index:3000;
-      background:rgba(0,0,0,.55); backdrop-filter:blur(3px);
-      justify-content:center; align-items:center; padding:20px;
-    }
-
-    .modal{ width:min(820px,100%); max-height:90vh; overflow:auto; background:#fff; border-radius:26px; padding:24px;}
+    .nav-btn.active{ background:linear-gradient(135deg,var(--gold2),var(--gold)); border-color:transparent; }
 
     @media (max-width:980px){
       .app{grid-template-columns:1fr}
-      .side{position:static}
     }
   </style>
 </head>
@@ -234,7 +195,7 @@
     <div class="auth-card">
       <div class="kicker">⚓ Acceso a la comunidad</div>
       <h2>Médico Pirata</h2>
-      <p id="auth-subtitle">Inicia sesión con tu correo y contraseña.</p>
+      <p id="auth-subtitle">Inicia sesión con tu correo o nombre de usuario.</p>
 
       <div class="row" style="margin-bottom:16px;">
         <button class="btn btn-primary" onclick="showAuthMode('login')">Entrar</button>
@@ -242,26 +203,26 @@
       </div>
 
       <div id="login-form">
-        <input id="login-email" type="email" placeholder="Correo electrónico" style="margin-bottom:10px" />
-        <input id="login-password" type="password" placeholder="Contraseña" style="margin-bottom:10px" />
+        <input id="login-identifier" type="text" placeholder="Correo o nombre de usuario" />
+        <input id="login-password" type="password" placeholder="Contraseña" />
         <div class="auth-actions">
           <button class="btn btn-primary" onclick="login()">Entrar ahora</button>
-          <button class="btn btn-soft" onclick="sendReset()">Olvidé mi contraseña</button>
+          <button class="btn btn-soft" onclick="sendReset()">Recuperar contraseña</button>
         </div>
       </div>
 
       <div id="register-form" class="hidden">
         <div class="field-grid">
-          <input id="reg-username" placeholder="Usuario (ej: pirata91)" />
-          <input id="reg-curso" placeholder="Curso/Año" />
+          <input id="reg-username" placeholder="Nombre de usuario (ej: 91143)" />
+          <input id="reg-curso" placeholder="Curso" />
           <input id="reg-nombre" placeholder="Nombre" />
           <input id="reg-apellidos" placeholder="Apellidos" />
           <input id="reg-email" class="field-full" type="email" placeholder="Correo electrónico" />
           <input id="reg-telefono" placeholder="Teléfono" />
-          <input id="reg-password" type="password" placeholder="Contraseña (mín. 6 caracteres)" />
-          <textarea id="reg-bio" class="field-full" placeholder="Sobre ti..."></textarea>
+          <input id="reg-password" type="password" placeholder="Contraseña (mín. 6)" />
+          <textarea id="reg-bio" class="field-full" placeholder="Breve descripción..."></textarea>
         </div>
-        <div class="auth-actions" style="margin-top:15px">
+        <div class="auth-actions" style="margin-top:10px">
           <button class="btn btn-primary" onclick="register()">Registrarme</button>
         </div>
       </div>
@@ -275,50 +236,43 @@
     <header class="hero">
       <div class="hero-inner">
         <div class="hero-title">Médico Pirata</div>
-        <p>Panel de control de la tripulación.</p>
+        <p>Tripulación académica bajo el mando de Santiago Díaz.</p>
       </div>
     </header>
 
     <div class="topbar">
       <div class="topbar-inner">
-        <div class="user-badge">
-          <div class="avatar" id="top-avatar">U</div>
-          <div class="user-meta">
-            <strong id="top-name">Cargando...</strong>
-            <span id="top-line">Sesión iniciada</span>
+        <div class="row">
+          <div class="avatar" id="top-avatar">?</div>
+          <div>
+            <strong id="top-name">Usuario</strong><br>
+            <small id="top-line">Conectado</small>
           </div>
         </div>
-        <div class="top-actions">
-          <button class="btn btn-soft" onclick="signOutUser()">Cerrar sesión</button>
-        </div>
+        <button class="btn btn-soft" onclick="signOutUser()">Cerrar sesión</button>
       </div>
     </div>
 
     <div class="app">
       <aside class="side">
-        <div class="nav-list">
-          <button class="nav-btn active" data-view="home" onclick="openView('home')">🏠 Inicio</button>
-          <button class="nav-btn" data-view="profile" onclick="openView('profile')">👤 Mi perfil</button>
-          <button class="nav-btn" id="nav-profiles" data-view="profiles" onclick="openView('profiles')">🌍 Perfiles</button>
-          <button class="nav-btn" id="nav-common" data-view="common" onclick="openView('common')">💬 Sala común</button>
-          <button class="nav-btn hidden" id="admin-nav-btn" data-view="admin" onclick="openView('admin')">🛡️ Admin</button>
-        </div>
+        <button class="nav-btn active" onclick="openView('home')">🏠 Inicio</button>
+        <button class="nav-btn" onclick="openView('profile')">👤 Mi Perfil</button>
+        <button id="admin-nav-btn" class="nav-btn hidden" onclick="openView('admin')">🛡️ Panel Admin</button>
       </aside>
 
       <section class="panel">
         <div id="view-blank" class="hidden"></div>
 
         <div id="view-home">
-          <div class="panel-header"><h3>Panel de Inicio</h3></div>
-          <div class="panel-body"><p>Bienvenido de nuevo a la plataforma.</p></div>
+          <h3>Bienvenido de nuevo</h3>
+          <p>Has accedido correctamente a la plataforma.</p>
         </div>
 
         <div id="view-admin" class="hidden">
-          <div class="panel-header"><h3>🛡️ Administración</h3></div>
-          <div class="panel-body"><div id="admin-users-list"></div></div>
+          <h3>🛡️ Panel de Administración</h3>
+          <p>Gestiona aquí los accesos y archivos de la tripulación.</p>
         </div>
-        
-        </section>
+      </section>
     </div>
   </div>
 
@@ -329,7 +283,7 @@
       signInWithEmailAndPassword, signOut, sendPasswordResetEmail
     } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import {
-      getDatabase, ref as dbRef, get, set, update, push, remove
+      getDatabase, ref as dbRef, get, set, update
     } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
     const firebaseConfig = {
@@ -346,35 +300,89 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    // CONFIGURACIÓN DE ADMINS
+    // CONFIGURACIÓN DE TU PERFIL ADMIN
     const ADMIN_EMAILS = ["santiagodiazf@gmail.com"];
 
     let currentUser = null;
     let currentProfile = null;
     let justRegistered = false;
 
-    // --- FUNCIONES AUXILIARES ---
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
+    // --- LÓGICA DE LOGIN MEJORADA (Correo o Usuario) ---
+    async function login() {
+      clearAuthMsgs();
+      const identifier = document.getElementById("login-identifier").value.trim();
+      const password = document.getElementById("login-password").value;
 
-    function formatDateTime(iso) {
-      if (!iso) return "";
-      const d = new Date(iso);
-      return d.toLocaleString();
-    }
+      if (!identifier || !password) {
+        setAuthError("Faltan datos de acceso.");
+        return;
+      }
 
-    function getConversationId(uid1, uid2) {
-      return uid1 < uid2 ? `${uid1}__${uid2}` : `${uid2}__${uid1}`;
-    }
+      try {
+        let emailToAuth = identifier;
 
-    function slugifyUsername(str) {
-      return String(str || "").trim().toLowerCase().replace(/[^a-z0-9]/g, "");
-    }
+        // Si NO tiene una @, asumimos que es un nombre de usuario
+        if (!identifier.includes("@")) {
+          const slug = identifier.toLowerCase().replace(/[^a-z0-9]/g, "");
+          const userSnap = await get(dbRef(db, "usernames/" + slug));
+          
+          if (!userSnap.exists()) {
+            setAuthError("El nombre de usuario '" + identifier + "' no existe.");
+            return;
+          }
 
-    // --- LÓGICA DE INTERFAZ ---
+          const uid = userSnap.val();
+          const profileSnap = await get(dbRef(db, "profiles/" + uid));
+          
+          if (!profileSnap.exists()) {
+            setAuthError("No se pudo recuperar el correo asociado.");
+            return;
+          }
+          
+          emailToAuth = profileSnap.val().email;
+        }
+
+        // Una vez tenemos el correo, autenticamos en Firebase
+        await signInWithEmailAndPassword(auth, emailToAuth, password);
+      } catch (e) {
+        setAuthError("Error: Credenciales incorrectas.");
+      }
+    }
+    window.login = login;
+
+    async function register() {
+      const username = document.getElementById("reg-username").value.trim();
+      const email = document.getElementById("reg-email").value.trim();
+      const password = document.getElementById("reg-password").value;
+      const slug = username.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+      if(!username || !email || password.length < 6) {
+        setAuthError("Datos insuficientes.");
+        return;
+      }
+
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        const isAdmin = ADMIN_EMAILS.includes(email);
+        
+        const profile = {
+          uid: cred.user.uid,
+          username,
+          usernameSlug: slug,
+          email,
+          role: isAdmin ? "admin" : "user",
+          createdAt: new Date().toISOString()
+        };
+
+        await set(dbRef(db, "profiles/" + cred.user.uid), profile);
+        await set(dbRef(db, "usernames/" + slug), cred.user.uid);
+        
+        justRegistered = true; 
+      } catch (e) { setAuthError("Error en registro: " + e.message); }
+    }
+    window.register = register;
+
+    // --- INTERFAZ ---
     function showAuthMode(mode) {
       document.getElementById("login-form").classList.toggle("hidden", mode !== "login");
       document.getElementById("register-form").classList.toggle("hidden", mode !== "register");
@@ -393,62 +401,15 @@
       document.getElementById("auth-ok").style.display = "none";
     }
 
-    // --- ACCIONES ---
-    async function login() {
-      const email = document.getElementById("login-email").value.trim();
-      const pass = document.getElementById("login-password").value;
-      try {
-        await signInWithEmailAndPassword(auth, email, pass);
-      } catch (e) { setAuthError("Error: Credenciales incorrectas."); }
-    }
-    window.login = login;
-
-    async function register() {
-      const username = document.getElementById("reg-username").value.trim();
-      const email = document.getElementById("reg-email").value.trim();
-      const pass = document.getElementById("reg-password").value;
-      const slug = slugifyUsername(username);
-
-      if(!username || !email || pass.length < 6) {
-        setAuthError("Datos incompletos o contraseña muy corta.");
-        return;
-      }
-
-      try {
-        const cred = await createUserWithEmailAndPassword(auth, email, pass);
-        const isAdmin = ADMIN_EMAILS.includes(email);
-        
-        const profile = {
-          uid: cred.user.uid,
-          username,
-          usernameSlug: slug,
-          email,
-          approved: isAdmin,
-          role: isAdmin ? "admin" : "user",
-          createdAt: new Date().toISOString()
-        };
-
-        await set(dbRef(db, "profiles/" + cred.user.uid), profile);
-        justRegistered = true; // Marcamos que acaba de registrarse
-      } catch (e) { setAuthError("Error en el registro: " + e.message); }
-    }
-    window.register = register;
-
-    async function signOutUser() {
-      await signOut(auth);
-      location.reload();
-    }
-    window.signOutUser = signOutUser;
-
     function openView(name) {
-      const views = ["home", "profile", "profiles", "common", "admin", "blank"];
-      views.forEach(v => {
-        const el = document.getElementById("view-" + v);
-        if(el) el.classList.add("hidden");
-      });
+      const vs = ["home", "profile", "admin", "blank"];
+      vs.forEach(v => document.getElementById("view-" + v)?.classList.add("hidden"));
       document.getElementById("view-" + name).classList.remove("hidden");
     }
     window.openView = openView;
+
+    async function signOutUser() { await signOut(auth); location.reload(); }
+    window.signOutUser = signOutUser;
 
     // --- OBSERVADOR DE ESTADO ---
     onAuthStateChanged(auth, async (user) => {
@@ -459,13 +420,14 @@
         document.getElementById("auth-screen").classList.add("hidden");
         document.getElementById("app-shell").style.display = "block";
         document.getElementById("top-name").textContent = currentProfile.username;
-        
+        document.getElementById("top-avatar").textContent = currentProfile.username.charAt(0).toUpperCase();
+
         if (currentProfile.role === "admin") {
           document.getElementById("admin-nav-btn").classList.remove("hidden");
         }
 
         if (justRegistered) {
-          openView("blank"); // Si acaba de registrarse, mostramos la página vacía
+          openView("blank");
         } else {
           openView("home");
         }
