@@ -1033,7 +1033,9 @@
 
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         const uid = cred.user.uid;
-        const admin = ADMIN_EMAILS.includes(email.toLowerCase());
+        const ADMIN_EMAILS = [
+  "santiagodiaz@gmail.com"
+];
 
         const profile = {
           uid,
