@@ -1,1296 +1,1951 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Médico Pirata | Bitácora de Estudio</title>
-
-    <style>
-        :root {
-            --bg-deep: #0f2f3f;
-            --bg-sea: #144d63;
-            --bg-sand: #f5efe2;
-            --bg-card: rgba(255,255,255,0.92);
-            --text-main: #173140;
-            --text-soft: #5c6f78;
-            --gold: #c99952;
-            --gold-dark: #8e6230;
-            --accent-coral: #b64b42;
-            --line: rgba(23, 49, 64, 0.12);
-
-            --curso1-color: #244e66;
-            --curso2-color: #cf6a1c;
-            --curso3-color: #7a4ba5;
-            --curso4-color: #25885f;
-            --privado-color: #b43e36;
-
-            --header-height: 210px;
-            --subbar-height: 78px;
-            --shadow-soft: 0 12px 30px rgba(0,0,0,0.10);
-            --shadow-strong: 0 18px 40px rgba(0,0,0,0.18);
-        }
-
-        * { box-sizing: border-box; }
-
-        html, body {
-            margin: 0;
-            padding: 0;
-            min-height: 100%;
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            background:
-                radial-gradient(circle at top right, rgba(201,153,82,0.15), transparent 25%),
-                linear-gradient(180deg, #f9f4e9 0%, #f3ecdf 100%);
-            color: var(--text-main);
-        }
-
-        body {
-            overflow-x: hidden;
-        }
-
-        #login-screen {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 24px;
-            background:
-                linear-gradient(rgba(8, 28, 39, 0.80), rgba(8, 28, 39, 0.88)),
-                url("portada.png") center/cover no-repeat;
-            backdrop-filter: blur(2px);
-        }
-
-        .login-box {
-            width: 100%;
-            max-width: 460px;
-            background: rgba(255,255,255,0.97);
-            border: 1px solid rgba(255,255,255,0.55);
-            border-radius: 24px;
-            box-shadow: var(--shadow-strong);
-            padding: 34px 30px 28px;
-            text-align: center;
-        }
-
-        .login-kicker {
-            display: inline-block;
-            font-size: 0.78rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--gold-dark);
-            font-weight: 700;
-            background: #f7ead3;
-            padding: 8px 14px;
-            border-radius: 999px;
-            margin-bottom: 14px;
-        }
-
-        .login-box h2 {
-            margin: 0 0 8px;
-            font-size: 2rem;
-            color: var(--text-main);
-        }
-
-        .login-box p {
-            margin: 0 0 20px;
-            color: var(--text-soft);
-            line-height: 1.5;
-        }
-
-        .login-box input {
-            width: 100%;
-            padding: 14px 16px;
-            margin: 8px 0 16px;
-            border: 2px solid #d9dfdf;
-            border-radius: 12px;
-            font-size: 16px;
-            outline: none;
-            transition: 0.25s ease;
-            background: #fffdf9;
-        }
-
-        .login-box input:focus {
-            border-color: var(--curso1-color);
-            box-shadow: 0 0 0 4px rgba(36,78,102,0.10);
-        }
-
-        .login-box button {
-            width: 100%;
-            border: none;
-            border-radius: 12px;
-            padding: 14px 18px;
-            font-size: 1rem;
-            font-weight: 800;
-            letter-spacing: 0.4px;
-            color: #fff;
-            cursor: pointer;
-            background: linear-gradient(135deg, var(--curso1-color), var(--bg-sea));
-            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-            box-shadow: 0 10px 20px rgba(20,77,99,0.28);
-        }
-
-        .login-box button:hover {
-            transform: translateY(-2px);
-        }
-
-        .error-msg {
-            display: none;
-            margin-top: 12px;
-            color: #b43e36;
-            font-size: 0.92rem;
-            font-weight: 600;
-        }
-
-        #app-shell {
-            display: none;
-            min-height: 100vh;
-        }
-
-        .top-banner {
-            position: relative;
-            height: var(--header-height);
-            z-index: 10;
-            background:
-                linear-gradient(rgba(8, 28, 39, 0.18), rgba(8, 28, 39, 0.18)),
-                url("barner.png") center center / cover no-repeat;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
-            overflow: hidden;
-        }
-
-        .top-banner::after {
-            content: "";
-            position: absolute;
-            inset: auto 0 0 0;
-            height: 70px;
-            background: linear-gradient(to top, rgba(9,31,43,0.55), transparent);
-        }
-
-        .top-banner-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(90deg, rgba(7,25,35,0.58), rgba(7,25,35,0.18) 55%, rgba(7,25,35,0.35));
-        }
-
-        .top-banner-content {
-            position: relative;
-            z-index: 2;
-            height: 100%;
-            width: min(1400px, calc(100% - 32px));
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-            color: white;
-        }
-
-        .brand-line {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 14px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.14);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255,255,255,0.18);
-            font-size: 0.82rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 14px;
-        }
-
-        .hero-title {
-            margin: 0;
-            font-size: clamp(2rem, 4vw, 3.6rem);
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            text-shadow: 0 4px 12px rgba(0,0,0,0.28);
-        }
-
-        .hero-subtitle {
-            margin: 8px 0 0;
-            max-width: 760px;
-            font-size: 1rem;
-            line-height: 1.55;
-            color: rgba(255,255,255,0.92);
-            text-shadow: 0 2px 8px rgba(0,0,0,0.20);
-        }
-
-        .user-subbar {
-            position: sticky;
-            top: 0;
-            left: 0;
-            right: 0;
-            min-height: var(--subbar-height);
-            z-index: 1001;
-            background: rgba(12, 38, 52, 0.94);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255,255,255,0.12);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            box-shadow: 0 6px 18px rgba(0,0,0,0.14);
-        }
-
-        .user-subbar-inner {
-            width: min(1400px, calc(100% - 32px));
-            min-height: var(--subbar-height);
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            padding: 10px 0;
-        }
-
-        .crew-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            color: #fff;
-            font-weight: 700;
-        }
-
-        .crew-avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #f1c17a, #c99952);
-            color: #1b3442;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.35);
-            flex-shrink: 0;
-        }
-
-        .crew-info {
-            display: flex;
-            flex-direction: column;
-            line-height: 1.1;
-        }
-
-        .crew-info small {
-            color: rgba(255,255,255,0.72);
-            font-weight: 600;
-            margin-bottom: 4px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .crew-info strong {
-            font-size: 1rem;
-            letter-spacing: 0.3px;
-        }
-
-        #rank-info {
-            color: rgba(255,255,255,0.78);
-            font-size: 0.86rem;
-            margin-top: 4px;
-            line-height: 1.35;
-        }
-
-        .subbar-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .nav-btn {
-            border: none;
-            border-radius: 999px;
-            padding: 11px 18px;
-            font-size: 0.95rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: 0.2s ease;
-        }
-
-        .nav-btn.primary {
-            background: linear-gradient(135deg, #f0c987, #c99952);
-            color: #143140;
-        }
-
-        .nav-btn.primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 18px rgba(201,153,82,0.30);
-        }
-
-        .nav-btn.ghost {
-            background: rgba(255,255,255,0.12);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.18);
-        }
-
-        .nav-btn.ghost:hover {
-            background: rgba(255,255,255,0.18);
-        }
-
-        .nav-btn.dark-text {
-            color: #173140 !important;
-            background: rgba(255,255,255,0.90) !important;
-            border: 1px solid rgba(23,49,64,0.16) !important;
-        }
-
-        .nav-btn.dark-text:hover {
-            background: rgba(255,255,255,0.98) !important;
-        }
-
-        .app-body {
-            padding-top: 26px;
-            width: min(1400px, calc(100% - 24px));
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 22px;
-            padding-bottom: 28px;
-        }
-
-        #main-menu-view {
-            display: block;
-        }
-
-        .deck-panel {
-            background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(255,255,255,0.88));
-            border: 1px solid rgba(255,255,255,0.65);
-            border-radius: 28px;
-            box-shadow: var(--shadow-soft);
-            overflow: hidden;
-        }
-
-        .deck-header {
-            padding: 26px 28px 20px;
-            border-bottom: 1px solid var(--line);
-            background:
-                radial-gradient(circle at top right, rgba(201,153,82,0.14), transparent 28%),
-                linear-gradient(180deg, rgba(20,77,99,0.03), transparent);
-        }
-
-        .deck-kicker {
-            display: inline-block;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--gold-dark);
-            font-weight: 800;
-            margin-bottom: 10px;
-        }
-
-        .deck-header h2 {
-            margin: 0 0 8px;
-            font-size: clamp(1.6rem, 2.4vw, 2.2rem);
-            color: var(--text-main);
-        }
-
-        .deck-header p {
-            margin: 0;
-            color: var(--text-soft);
-            max-width: 900px;
-            line-height: 1.6;
-        }
-
-        .quick-links {
-            margin-top: 16px;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .main-content {
-            padding: 28px;
-        }
-
-        .course-section {
-            margin-bottom: 34px;
-        }
-
-        .course-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.25rem;
-            margin: 0 0 18px;
-            padding: 14px 16px;
-            border-radius: 16px;
-            background: rgba(255,255,255,0.72);
-            border: 1px solid var(--line);
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-        }
-
-        .course-title::before {
-            content: "⚓";
-            font-size: 1.15rem;
-        }
-
-        .semester-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .semester-card {
-            position: relative;
-            overflow: hidden;
-            background: var(--bg-card);
-            border: 1px solid rgba(23,49,64,0.08);
-            border-radius: 22px;
-            padding: 24px 22px;
-            text-decoration: none;
-            color: var(--text-main);
-            box-shadow: 0 10px 22px rgba(0,0,0,0.05);
-            transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            min-height: 170px;
-        }
-
-        .semester-card::before {
-            content: "";
-            position: absolute;
-            inset: 0 auto auto 0;
-            width: 100%;
-            height: 6px;
-            background: currentColor;
-            opacity: 0.9;
-        }
-
-        .semester-card::after {
-            content: "";
-            position: absolute;
-            right: -32px;
-            bottom: -32px;
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(201,153,82,0.18), transparent 70%);
-        }
-
-        .semester-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 18px 32px rgba(0,0,0,0.10);
-            border-color: rgba(23,49,64,0.16);
-        }
-
-        .card-topline {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .icon {
-            font-size: 2rem;
-            line-height: 1;
-        }
-
-        .nav-label {
-            font-size: 0.76rem;
-            font-weight: 800;
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-            color: var(--gold-dark);
-            background: #f6ead1;
-            padding: 7px 10px;
-            border-radius: 999px;
-        }
-
-        .semester-card h3 {
-            margin: 4px 0 0;
-            font-size: 1.28rem;
-            font-weight: 800;
-        }
-
-        .semester-card p {
-            margin: 0;
-            color: var(--text-soft);
-            line-height: 1.5;
-            font-size: 0.96rem;
-        }
-
-        .semester-card .enter-text {
-            margin-top: auto;
-            font-weight: 800;
-            font-size: 0.92rem;
-            opacity: 0.85;
-        }
-
-        .disabled {
-            opacity: 0.62;
-            cursor: not-allowed;
-            background: rgba(245,245,245,0.9);
-        }
-
-        .disabled:hover {
-            transform: none;
-            box-shadow: 0 10px 22px rgba(0,0,0,0.05);
-        }
-
-        .admin-stats-panel {
-            margin-top: 20px;
-            background: #fff;
-            padding: 20px;
-            border-radius: 18px;
-            border: 2px solid var(--privado-color);
-            box-shadow: 0 10px 24px rgba(0,0,0,0.05);
-        }
-
-        .admin-stats-panel h3 {
-            margin-top: 0;
-            color: var(--privado-color);
-        }
-
-        .admin-stats-panel ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .admin-stats-panel li {
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-            font-size: 1rem;
-            display: flex;
-            justify-content: space-between;
-            gap: 16px;
-        }
-
-        .admin-stats-panel li:last-child {
-            border-bottom: none;
-        }
-
-        .admin-note {
-            font-size: 0.85rem;
-            color: #7f8c8d;
-            margin-top: 15px;
-            font-style: italic;
-        }
-
-        #workspace-view {
-            display: none;
-        }
-
-        .workspace-shell {
-            background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.88));
-            border-radius: 28px;
-            border: 1px solid rgba(255,255,255,0.65);
-            box-shadow: var(--shadow-soft);
-            overflow: hidden;
-        }
-
-        .workspace-topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-            padding: 18px 20px;
-            border-bottom: 1px solid var(--line);
-            background:
-                linear-gradient(135deg, rgba(20,77,99,0.05), rgba(201,153,82,0.08));
-        }
-
-        .workspace-title {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .workspace-title small {
-            text-transform: uppercase;
-            letter-spacing: 1.8px;
-            color: var(--gold-dark);
-            font-weight: 800;
-        }
-
-        .workspace-title strong {
-            font-size: 1.1rem;
-            color: var(--text-main);
-        }
-
-        .workspace-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .workspace-frame-wrap {
-            padding: 16px;
-            background:
-                linear-gradient(180deg, rgba(20,77,99,0.04), transparent 25%),
-                linear-gradient(180deg, #f9f6ef, #f4eee2);
-        }
-
-        #workspace-frame {
-            width: 100%;
-            height: calc(100vh - var(--subbar-height) - 140px);
-            min-height: 620px;
-            border: 0;
-            border-radius: 20px;
-            background: #fff;
-            box-shadow: inset 0 0 0 1px rgba(23,49,64,0.08);
-        }
-
-        .empty-state {
-            display: grid;
-            place-items: center;
-            min-height: 360px;
-            text-align: center;
-            color: var(--text-soft);
-            padding: 30px;
-        }
-
-        .empty-state strong {
-            display: block;
-            color: var(--text-main);
-            font-size: 1.25rem;
-            margin-bottom: 8px;
-        }
-
-        @media (max-width: 900px) {
-            :root {
-                --header-height: 180px;
-                --subbar-height: 98px;
-            }
-
-            .hero-subtitle {
-                font-size: 0.92rem;
-            }
-
-            .user-subbar-inner {
-                align-items: flex-start;
-                justify-content: space-between;
-                padding-top: 10px;
-                padding-bottom: 10px;
-            }
-
-            .crew-badge {
-                align-items: flex-start;
-            }
-
-            #workspace-frame {
-                height: calc(100vh - var(--subbar-height) - 170px);
-            }
-        }
-
-        @media (max-width: 640px) {
-            .top-banner-content,
-            .user-subbar-inner,
-            .app-body {
-                width: calc(100% - 18px);
-            }
-
-            .main-content {
-                padding: 18px;
-            }
-
-            .deck-header {
-                padding: 22px 18px 12px;
-            }
-
-            .hero-title {
-                letter-spacing: 1px;
-            }
-
-            .nav-btn {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .subbar-actions,
-            .quick-links,
-            .workspace-actions {
-                width: 100%;
-            }
-
-            .workspace-topbar {
-                padding: 16px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Médico Pirata | Bitácora de Estudio</title>
+
+  <style>
+    :root{
+      --bg-deep:#0f2f3f;
+      --bg-sea:#144d63;
+      --bg-sand:#f5efe2;
+      --bg-card:rgba(255,255,255,0.94);
+      --text-main:#173140;
+      --text-soft:#5c6f78;
+      --gold:#c99952;
+      --gold-dark:#8e6230;
+      --accent-coral:#b64b42;
+      --line:rgba(23,49,64,0.12);
+      --curso1-color:#244e66;
+      --curso2-color:#cf6a1c;
+      --privado-color:#b43e36;
+      --header-height:210px;
+      --subbar-height:78px;
+      --shadow-soft:0 12px 30px rgba(0,0,0,.10);
+      --shadow-strong:0 18px 40px rgba(0,0,0,.18);
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      min-height:100%;
+      font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(201,153,82,.15), transparent 25%),
+        linear-gradient(180deg, #f9f4e9 0%, #f3ecdf 100%);
+      color:var(--text-main);
+    }
+    body{overflow-x:hidden}
+
+    #login-screen{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:24px;
+      background:
+        linear-gradient(rgba(8,28,39,.80), rgba(8,28,39,.88)),
+        url("portada.png") center/cover no-repeat;
+      backdrop-filter:blur(2px);
+    }
+
+    .login-box{
+      width:100%;
+      max-width:480px;
+      background:rgba(255,255,255,.97);
+      border:1px solid rgba(255,255,255,.55);
+      border-radius:24px;
+      box-shadow:var(--shadow-strong);
+      padding:34px 30px 28px;
+      text-align:center;
+    }
+
+    .login-kicker{
+      display:inline-block;
+      font-size:.78rem;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      color:var(--gold-dark);
+      font-weight:700;
+      background:#f7ead3;
+      padding:8px 14px;
+      border-radius:999px;
+      margin-bottom:14px;
+    }
+
+    .login-box h2{
+      margin:0 0 8px;
+      font-size:2rem;
+      color:var(--text-main);
+    }
+
+    .login-box p{
+      margin:0 0 20px;
+      color:var(--text-soft);
+      line-height:1.5;
+    }
+
+    .login-box input,
+    .login-box textarea,
+    .login-box select,
+    .panel-input,
+    .panel-select,
+    .panel-textarea{
+      width:100%;
+      padding:14px 16px;
+      margin:8px 0 16px;
+      border:2px solid #d9dfdf;
+      border-radius:12px;
+      font-size:16px;
+      outline:none;
+      transition:.25s ease;
+      background:#fffdf9;
+      font-family:inherit;
+    }
+
+    .login-box input:focus,
+    .login-box textarea:focus,
+    .login-box select:focus,
+    .panel-input:focus,
+    .panel-select:focus,
+    .panel-textarea:focus{
+      border-color:var(--curso1-color);
+      box-shadow:0 0 0 4px rgba(36,78,102,.10);
+    }
+
+    .panel-textarea{min-height:110px; resize:vertical}
+
+    .main-btn,
+    .mini-btn,
+    .nav-btn{
+      border:none;
+      border-radius:12px;
+      padding:14px 18px;
+      font-size:1rem;
+      font-weight:800;
+      letter-spacing:.4px;
+      color:#fff;
+      cursor:pointer;
+      background:linear-gradient(135deg, var(--curso1-color), var(--bg-sea));
+      transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+      box-shadow:0 10px 20px rgba(20,77,99,.28);
+    }
+
+    .main-btn:hover,
+    .mini-btn:hover,
+    .nav-btn:hover{transform:translateY(-2px)}
+
+    .mini-btn{
+      padding:8px 12px;
+      border-radius:10px;
+      font-size:.85rem;
+      box-shadow:none;
+    }
+
+    .secondary-btn{
+      background:linear-gradient(135deg, #697a84, #4f6069)!important;
+    }
+
+    .danger-btn{
+      background:linear-gradient(135deg, #b43e36, #8d2d28)!important;
+    }
+
+    .gold-btn{
+      background:linear-gradient(135deg, #f0c987, #c99952)!important;
+      color:#143140!important;
+    }
+
+    .error-msg{
+      display:none;
+      margin-top:12px;
+      color:#b43e36;
+      font-size:.92rem;
+      font-weight:600;
+    }
+
+    .helper-msg{
+      display:none;
+      margin-top:10px;
+      color:#244e66;
+      font-size:.92rem;
+      font-weight:600;
+      background:#eef5f8;
+      border:1px solid #d7e6ee;
+      border-radius:10px;
+      padding:10px 12px;
+      text-align:left;
+    }
+
+    #confirm-password-wrap{display:none}
+
+    #app-shell{
+      display:none;
+      min-height:100vh;
+    }
+
+    .top-banner{
+      position:relative;
+      height:var(--header-height);
+      z-index:10;
+      background:
+        linear-gradient(rgba(8,28,39,.18), rgba(8,28,39,.18)),
+        url("barner.png") center center / cover no-repeat;
+      box-shadow:0 8px 24px rgba(0,0,0,.18);
+      overflow:hidden;
+    }
+
+    .top-banner::after{
+      content:"";
+      position:absolute;
+      inset:auto 0 0 0;
+      height:70px;
+      background:linear-gradient(to top, rgba(9,31,43,.55), transparent);
+    }
+
+    .top-banner-overlay{
+      position:absolute;
+      inset:0;
+      background:linear-gradient(90deg, rgba(7,25,35,.58), rgba(7,25,35,.18) 55%, rgba(7,25,35,.35));
+    }
+
+    .top-banner-content{
+      position:relative;
+      z-index:2;
+      height:100%;
+      width:min(1400px, calc(100% - 32px));
+      margin:0 auto;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:flex-start;
+      color:white;
+    }
+
+    .brand-line{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.14);
+      backdrop-filter:blur(6px);
+      border:1px solid rgba(255,255,255,.18);
+      font-size:.82rem;
+      font-weight:700;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      margin-bottom:14px;
+    }
+
+    .hero-title{
+      margin:0;
+      font-size:clamp(2rem, 4vw, 3.6rem);
+      font-weight:900;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      text-shadow:0 4px 12px rgba(0,0,0,.28);
+    }
+
+    .hero-subtitle{
+      margin:8px 0 0;
+      max-width:760px;
+      font-size:1rem;
+      line-height:1.55;
+      color:rgba(255,255,255,.92);
+      text-shadow:0 2px 8px rgba(0,0,0,.20);
+    }
+
+    .user-subbar{
+      position:sticky;
+      top:0;
+      left:0;
+      right:0;
+      min-height:var(--subbar-height);
+      z-index:1001;
+      background:rgba(12,38,52,.94);
+      backdrop-filter:blur(10px);
+      border-top:1px solid rgba(255,255,255,.12);
+      border-bottom:1px solid rgba(255,255,255,.08);
+      box-shadow:0 6px 18px rgba(0,0,0,.14);
+    }
+
+    .user-subbar-inner{
+      width:min(1400px, calc(100% - 32px));
+      min-height:var(--subbar-height);
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:10px 0;
+    }
+
+    .crew-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:12px;
+      color:#fff;
+      font-weight:700;
+    }
+
+    .crew-avatar{
+      width:42px;
+      height:42px;
+      border-radius:50%;
+      background:linear-gradient(135deg, #f1c17a, #c99952);
+      color:#1b3442;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);
+      flex-shrink:0;
+    }
+
+    .crew-info{
+      display:flex;
+      flex-direction:column;
+      line-height:1.1;
+    }
+
+    .crew-info small{
+      color:rgba(255,255,255,.72);
+      font-weight:600;
+      margin-bottom:4px;
+      letter-spacing:1px;
+      text-transform:uppercase;
+    }
+
+    .crew-info strong{
+      font-size:1rem;
+      letter-spacing:.3px;
+    }
+
+    #rank-info{
+      color:rgba(255,255,255,.78);
+      font-size:.86rem;
+      margin-top:4px;
+      line-height:1.35;
+    }
+
+    .subbar-actions{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .nav-btn{
+      border-radius:999px;
+      padding:11px 18px;
+      font-size:.95rem;
+      box-shadow:none;
+    }
+
+    .nav-btn.ghost{
+      background:rgba(255,255,255,.12);
+      color:#fff;
+      border:1px solid rgba(255,255,255,.18);
+    }
+
+    .nav-btn.ghost:hover{
+      background:rgba(255,255,255,.18);
+    }
+
+    .nav-btn.dark-text{
+      color:#173140!important;
+      background:rgba(255,255,255,.90)!important;
+      border:1px solid rgba(23,49,64,.16)!important;
+    }
+
+    .nav-btn.dark-text:hover{
+      background:rgba(255,255,255,.98)!important;
+    }
+
+    .app-body{
+      padding-top:26px;
+      width:min(1400px, calc(100% - 24px));
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:1fr;
+      gap:22px;
+      padding-bottom:28px;
+    }
+
+    #main-menu-view{display:block}
+    #workspace-view{display:none}
+
+    .deck-panel,
+    .workspace-shell,
+    .panel-shell{
+      background:linear-gradient(180deg, rgba(255,255,255,.94), rgba(255,255,255,.88));
+      border:1px solid rgba(255,255,255,.65);
+      border-radius:28px;
+      box-shadow:var(--shadow-soft);
+      overflow:hidden;
+    }
+
+    .deck-header,
+    .panel-header{
+      padding:26px 28px 20px;
+      border-bottom:1px solid var(--line);
+      background:
+        radial-gradient(circle at top right, rgba(201,153,82,.14), transparent 28%),
+        linear-gradient(180deg, rgba(20,77,99,.03), transparent);
+    }
+
+    .deck-kicker,
+    .panel-kicker{
+      display:inline-block;
+      font-size:.8rem;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      color:var(--gold-dark);
+      font-weight:800;
+      margin-bottom:10px;
+    }
+
+    .deck-header h2,
+    .panel-header h3{
+      margin:0 0 8px;
+      font-size:clamp(1.4rem, 2.4vw, 2.2rem);
+      color:var(--text-main);
+    }
+
+    .deck-header p,
+    .panel-header p{
+      margin:0;
+      color:var(--text-soft);
+      max-width:900px;
+      line-height:1.6;
+    }
+
+    .quick-links{
+      margin-top:16px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .main-content,
+    .panel-body{padding:28px}
+
+    .course-section{margin-bottom:34px}
+
+    .course-title{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-size:1.25rem;
+      margin:0 0 18px;
+      padding:14px 16px;
+      border-radius:16px;
+      background:rgba(255,255,255,.72);
+      border:1px solid var(--line);
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:1.2px;
+    }
+
+    .course-title::before{
+      content:"⚓";
+      font-size:1.15rem;
+    }
+
+    .semester-grid,
+    .panel-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+      gap:20px;
+    }
+
+    .semester-card{
+      position:relative;
+      overflow:hidden;
+      background:var(--bg-card);
+      border:1px solid rgba(23,49,64,.08);
+      border-radius:22px;
+      padding:24px 22px;
+      text-decoration:none;
+      color:var(--text-main);
+      box-shadow:0 10px 22px rgba(0,0,0,.05);
+      transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height:170px;
+      cursor:pointer;
+    }
+
+    .semester-card::before{
+      content:"";
+      position:absolute;
+      inset:0 auto auto 0;
+      width:100%;
+      height:6px;
+      background:currentColor;
+      opacity:.9;
+    }
+
+    .semester-card::after{
+      content:"";
+      position:absolute;
+      right:-32px;
+      bottom:-32px;
+      width:110px;
+      height:110px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(201,153,82,.18), transparent 70%);
+    }
+
+    .semester-card:hover{
+      transform:translateY(-5px);
+      box-shadow:0 18px 32px rgba(0,0,0,.10);
+      border-color:rgba(23,49,64,.16);
+    }
+
+    .card-topline{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+
+    .icon{
+      font-size:2rem;
+      line-height:1;
+    }
+
+    .nav-label{
+      font-size:.76rem;
+      font-weight:800;
+      letter-spacing:1.2px;
+      text-transform:uppercase;
+      color:var(--gold-dark);
+      background:#f6ead1;
+      padding:7px 10px;
+      border-radius:999px;
+    }
+
+    .semester-card h3{
+      margin:4px 0 0;
+      font-size:1.28rem;
+      font-weight:800;
+    }
+
+    .semester-card p{
+      margin:0;
+      color:var(--text-soft);
+      line-height:1.5;
+      font-size:.96rem;
+    }
+
+    .semester-card .enter-text{
+      margin-top:auto;
+      font-weight:800;
+      font-size:.92rem;
+      opacity:.85;
+    }
+
+    .disabled{
+      opacity:.62;
+      cursor:not-allowed;
+      background:rgba(245,245,245,.9);
+    }
+
+    .disabled:hover{
+      transform:none;
+      box-shadow:0 10px 22px rgba(0,0,0,.05);
+    }
+
+    .workspace-topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      flex-wrap:wrap;
+      padding:18px 20px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(135deg, rgba(20,77,99,.05), rgba(201,153,82,.08));
+    }
+
+    .workspace-title{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+
+    .workspace-title small{
+      text-transform:uppercase;
+      letter-spacing:1.8px;
+      color:var(--gold-dark);
+      font-weight:800;
+    }
+
+    .workspace-title strong{
+      font-size:1.1rem;
+      color:var(--text-main);
+    }
+
+    .workspace-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .workspace-frame-wrap{
+      padding:16px;
+      background:
+        linear-gradient(180deg, rgba(20,77,99,.04), transparent 25%),
+        linear-gradient(180deg, #f9f6ef, #f4eee2);
+    }
+
+    #workspace-frame{
+      width:100%;
+      height:calc(100vh - var(--subbar-height) - 140px);
+      min-height:620px;
+      border:0;
+      border-radius:20px;
+      background:#fff;
+      box-shadow:inset 0 0 0 1px rgba(23,49,64,.08);
+    }
+
+    .empty-state{
+      display:grid;
+      place-items:center;
+      min-height:360px;
+      text-align:center;
+      color:var(--text-soft);
+      padding:30px;
+    }
+
+    .empty-state strong{
+      display:block;
+      color:var(--text-main);
+      font-size:1.25rem;
+      margin-bottom:8px;
+    }
+
+    .hidden{display:none!important}
+
+    .message-list{
+      background:#fff;
+      border:1px solid #e3e8eb;
+      border-radius:16px;
+      padding:14px;
+      min-height:260px;
+      max-height:420px;
+      overflow-y:auto;
+    }
+
+    .message-item{
+      padding:10px 12px;
+      border-radius:14px;
+      margin-bottom:10px;
+      background:#f8fbfc;
+      border:1px solid #e4edf0;
+    }
+
+    .message-item.mine{
+      background:#edf7fb;
+      border-color:#cfe5ef;
+    }
+
+    .message-meta{
+      font-size:.8rem;
+      color:var(--text-soft);
+      margin-bottom:6px;
+      font-weight:700;
+    }
+
+    .message-text{
+      white-space:pre-wrap;
+      line-height:1.5;
+    }
+
+    .row-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .admin-stats-panel{
+      margin-top:20px;
+      background:#fff;
+      padding:20px;
+      border-radius:18px;
+      border:2px solid var(--privado-color);
+      box-shadow:0 10px 24px rgba(0,0,0,.05);
+    }
+
+    .admin-stats-panel h3{
+      margin-top:0;
+      color:var(--privado-color);
+    }
+
+    .admin-user-card{
+      border:1px solid #eee;
+      border-radius:14px;
+      padding:14px;
+      margin-bottom:12px;
+      background:#fcfcfc;
+    }
+
+    .admin-user-top{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:8px;
+    }
+
+    .admin-user-meta{
+      color:var(--text-soft);
+      font-size:.92rem;
+      line-height:1.5;
+    }
+
+    .admin-note{
+      font-size:.85rem;
+      color:#7f8c8d;
+      margin-top:15px;
+      font-style:italic;
+    }
+
+    .status-pill{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:.75rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      background:#edf5f7;
+      color:#244e66;
+    }
+
+    .status-pill.warn{
+      background:#fff1ef;
+      color:#b43e36;
+    }
+
+    .modal-backdrop{
+      display:none;
+      position:fixed;
+      inset:0;
+      z-index:12000;
+      background:rgba(0,0,0,.55);
+      backdrop-filter:blur(3px);
+      justify-content:center;
+      align-items:center;
+      padding:20px;
+    }
+
+    .modal-box{
+      width:100%;
+      max-width:520px;
+      background:#fff;
+      border-radius:24px;
+      box-shadow:var(--shadow-strong);
+      padding:24px;
+    }
+
+    .modal-box h3{
+      margin:0 0 10px;
+      font-size:1.5rem;
+    }
+
+    .modal-box p{
+      margin:0 0 16px;
+      color:var(--text-soft);
+      line-height:1.5;
+    }
+
+    .modal-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    @media (max-width:900px){
+      :root{
+        --header-height:180px;
+        --subbar-height:110px;
+      }
+      .hero-subtitle{font-size:.92rem}
+      .user-subbar-inner{
+        align-items:flex-start;
+        justify-content:space-between;
+        padding-top:10px;
+        padding-bottom:10px;
+      }
+      .crew-badge{align-items:flex-start}
+      #workspace-frame{
+        height:calc(100vh - var(--subbar-height) - 170px);
+      }
+    }
+
+    @media (max-width:640px){
+      .top-banner-content,
+      .user-subbar-inner,
+      .app-body{
+        width:calc(100% - 18px);
+      }
+      .main-content,
+      .panel-body{padding:18px}
+      .deck-header,
+      .panel-header{padding:22px 18px 12px}
+      .hero-title{letter-spacing:1px}
+      .nav-btn,
+      .main-btn,
+      .row-actions > *{width:100%}
+      .subbar-actions,
+      .quick-links,
+      .workspace-actions,
+      .modal-actions{width:100%}
+      .workspace-topbar{padding:16px}
+    }
+  </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        <div class="login-box">
-            <div class="login-kicker">⚓ Acceso a la bitácora</div>
-            <h2>Médico Pirata</h2>
-            <p>Identifícate para subir a bordo del portal de estudio y piratear.</p>
-            <input
-                type="text"
-                id="username-input"
-                placeholder="Nombre de usuario"
-                onkeypress="handleKeyPress(event)"
-                autocomplete="off"
-            />
-            <button onclick="checkUser()">Subir a bordo</button>
-            <div class="error-msg" id="error-msg">Usuario no reconocido. Revisa tu clave de acceso.</div>
+  <div id="login-screen">
+    <div class="login-box">
+      <div class="login-kicker">⚓ Acceso a la bitácora</div>
+      <h2>Médico Pirata</h2>
+      <p>Identifícate para subir a bordo del portal de estudio.</p>
+
+      <input
+        type="text"
+        id="username-input"
+        placeholder="Nombre de usuario"
+        onkeypress="handleKeyPress(event)"
+        autocomplete="off"
+      />
+
+      <input
+        type="password"
+        id="password-input"
+        placeholder="Contraseña"
+        onkeypress="handleKeyPress(event)"
+        autocomplete="off"
+      />
+
+      <div id="confirm-password-wrap">
+        <input
+          type="password"
+          id="confirm-password-input"
+          placeholder="Repite la contraseña"
+          onkeypress="handleKeyPress(event)"
+          autocomplete="off"
+        />
+      </div>
+
+      <button class="main-btn" id="login-button" onclick="checkUser()">Subir a bordo</button>
+
+      <div class="helper-msg" id="helper-msg"></div>
+      <div class="error-msg" id="error-msg">Usuario no reconocido.</div>
+    </div>
+  </div>
+
+  <div id="app-shell">
+    <header class="top-banner">
+      <div class="top-banner-overlay"></div>
+      <div class="top-banner-content">
+        <div class="brand-line">⚓ Bitácora académica · Bahía de Cádiz</div>
+        <h1 class="hero-title">Médico Pirata</h1>
+        <p class="hero-subtitle">
+          Cuaderno de navegación para estudiar Medicina entre mareas, guardias y mucho café.
+          Una cubierta llena de recursos piratas.
+        </p>
+      </div>
+    </header>
+
+    <div class="user-subbar">
+      <div class="user-subbar-inner">
+        <div class="crew-badge">
+          <div class="crew-avatar" id="crew-avatar">M</div>
+          <div class="crew-info">
+            <small>Tripulación activa</small>
+            <strong id="display-username">Tripulante</strong>
+            <span id="rank-info"></span>
+          </div>
         </div>
+
+        <div class="subbar-actions">
+          <button class="nav-btn gold-btn" id="btn-home" onclick="goToMainMenu()" style="display:none;">⚓ Volver a cubierta principal</button>
+          <button class="nav-btn ghost" onclick="openChangePasswordModal()">🔑 Cambiar contraseña</button>
+          <button class="nav-btn ghost" onclick="logout()">⛵ Cerrar sesión</button>
+        </div>
+      </div>
     </div>
 
-    <div id="app-shell">
-        <header class="top-banner">
-            <div class="top-banner-overlay"></div>
-            <div class="top-banner-content">
-                <div class="brand-line">⚓ Bitácora académica · Bahía de Cádiz</div>
-                <h1 class="hero-title">Médico Pirata</h1>
-                <p class="hero-subtitle">
-                    Cuaderno de navegación para estudiar Medicina entre mareas, guardias y mucho café.
-                    Una cubierta llena de recursos piratas.
-                </p>
-            </div>
-        </header>
+    <main class="app-body">
+      <section id="main-menu-view" class="deck-panel">
+        <div class="deck-header">
+          <div class="deck-kicker">Puerto base</div>
+          <h2>Menú principal de navegación</h2>
+          <p>
+            Desde aquí puedes poner rumbo a cada cuatrimestre, abrir recursos dentro del puente
+            de trabajo, revisar mensajes y volver a cubierta cuando quieras.
+          </p>
 
-        <div class="user-subbar">
-            <div class="user-subbar-inner">
-                <div class="crew-badge">
-                    <div class="crew-avatar" id="crew-avatar">M</div>
-                    <div class="crew-info">
-                        <small>Tripulación activa</small>
-                        <strong id="display-username">Tripulante</strong>
-                        <span id="rank-info"></span>
-                    </div>
-                </div>
+          <div class="quick-links">
+            <a
+              href="https://medicina.uca.es/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="nav-btn gold-btn"
+              style="display:inline-flex; text-decoration:none;"
+            >
+              🌐 Web Facultad de Medicina de Cádiz
+            </a>
 
-                <div class="subbar-actions">
-                    <button class="nav-btn primary" id="btn-home" onclick="goToMainMenu()" style="display:none;">
-                        ⚓ Volver a cubierta principal
-                    </button>
-                    <button class="nav-btn ghost" onclick="logout()">⛵ Cerrar sesión</button>
-                </div>
-            </div>
+            <a
+              href="https://oficinadelestudiante.uca.es/notas-y-actas/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="nav-btn gold-btn"
+              style="display:inline-flex; text-decoration:none;"
+            >
+              📄 Tu expediente
+            </a>
+          </div>
         </div>
 
-        <main class="app-body">
-            <section id="main-menu-view" class="deck-panel">
-                <div class="deck-header">
-                    <div class="deck-kicker">Puerto base</div>
-                    <h2>Menú principal de navegación</h2>
-                    <p>
-                        Desde aquí puedes poner rumbo a cada cuatrimestre, abrir recursos dentro del puente
-                        de trabajo y volver a cubierta cuando quieras.
-                    </p>
+        <div class="main-content">
+          <div class="course-section">
+            <div class="course-title" style="color: var(--curso1-color); border-left: 6px solid var(--curso1-color);">
+              Primero
+            </div>
 
-                    <div class="quick-links">
-                        <a
-                            href="https://medicina.uca.es/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="nav-btn primary"
-                            style="display:inline-flex; text-decoration:none;"
-                        >
-                            🌐 Web Facultad de Medicina de Cádiz
-                        </a>
-
-                        <a
-                            href="https://oficinadelestudiante.uca.es/notas-y-actas/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="nav-btn primary"
-                            style="display:inline-flex; text-decoration:none;"
-                        >
-                            📄 Tu expediente
-                        </a>
-                    </div>
+            <div class="semester-grid" id="grid-primero">
+              <a href="#" class="semester-card" style="color: var(--curso1-color);"
+                 onclick="openInWorkspace('index primero primer cuatrimestre.html','Primero · 1er Cuatrimestre'); return false;">
+                <div class="card-topline">
+                  <div class="icon">📚</div>
+                  <div class="nav-label">Abrir derrota</div>
                 </div>
+                <h3>1er Cuatrimestre</h3>
+                <p>Anatomía I, Biología, Física y demás cartas de navegación inicial.</p>
+                <div class="enter-text">Entrar al cuaderno →</div>
+              </a>
 
-                <div class="main-content">
-                    <div class="course-section">
-                        <div class="course-title" style="color: var(--curso1-color); border-left: 6px solid var(--curso1-color);">
-                            Primero
-                        </div>
-
-                        <div class="semester-grid" id="grid-primero">
-                            <a href="#" class="semester-card" style="color: var(--curso1-color);"
-                               onclick="openInWorkspace('index primero primer cuatrimestre.html','Primero · 1er Cuatrimestre'); return false;">
-                                <div class="card-topline">
-                                    <div class="icon">📚</div>
-                                    <div class="nav-label">Abrir derrota</div>
-                                </div>
-                                <h3>1er Cuatrimestre</h3>
-                                <p>Anatomía I, Biología, Física y demás cartas de navegación inicial.</p>
-                                <div class="enter-text">Entrar al cuaderno →</div>
-                            </a>
-
-                            <a href="#" class="semester-card" style="color: var(--curso1-color);"
-                               onclick="openInWorkspace('indice segundo cuatri de preimero.html','Primero · 2do Cuatrimestre'); return false;">
-                                <div class="card-topline">
-                                    <div class="icon">🦴</div>
-                                    <div class="nav-label">Abrir derrota</div>
-                                </div>
-                                <h3>2do Cuatrimestre</h3>
-                                <p>Anatomía II, Histología y recursos del segundo tramo de travesía.</p>
-                                <div class="enter-text">Entrar al cuaderno →</div>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="course-section">
-                        <div class="course-title" style="color: var(--curso2-color); border-left: 6px solid var(--curso2-color);">
-                            Segundo
-                        </div>
-
-                        <div class="semester-grid">
-                            <a href="#" class="semester-card disabled" style="color: var(--curso2-color);">
-                                <div class="card-topline">
-                                    <div class="icon">🔒</div>
-                                    <div class="nav-label">En dique seco</div>
-                                </div>
-                                <h3>1er Cuatrimestre</h3>
-                                <p>No disponible aún. Esta ruta sigue en preparación.</p>
-                                <div class="enter-text">Próximamente</div>
-                            </a>
-
-                            <a href="#" class="semester-card disabled" style="color: var(--curso2-color);">
-                                <div class="card-topline">
-                                    <div class="icon">🔒</div>
-                                    <div class="nav-label">En dique seco</div>
-                                </div>
-                                <h3>2do Cuatrimestre</h3>
-                                <p>No disponible aún. Se habilitará cuando la travesía esté lista.</p>
-                                <div class="enter-text">Próximamente</div>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div id="admin-zone-anchor"></div>
+              <a href="#" class="semester-card" style="color: var(--curso1-color);"
+                 onclick="openInWorkspace('indice segundo cuatri de preimero.html','Primero · 2do Cuatrimestre'); return false;">
+                <div class="card-topline">
+                  <div class="icon">🦴</div>
+                  <div class="nav-label">Abrir derrota</div>
                 </div>
-            </section>
+                <h3>2do Cuatrimestre</h3>
+                <p>Anatomía II, Histología y recursos del segundo tramo de travesía.</p>
+                <div class="enter-text">Entrar al cuaderno →</div>
+              </a>
+            </div>
+          </div>
 
-            <section id="workspace-view" class="workspace-shell">
-                <div class="workspace-topbar">
-                    <div class="workspace-title">
-                        <small>Puente de navegación</small>
-                        <strong id="workspace-title">Zona de trabajo</strong>
-                    </div>
+          <div class="course-section">
+            <div class="course-title" style="color: var(--curso2-color); border-left: 6px solid var(--curso2-color);">
+              Segundo
+            </div>
 
-                    <div class="workspace-actions">
-                        <button class="nav-btn ghost dark-text" onclick="goBackWorkspace()">← Volver atrás</button>
-                        <button class="nav-btn ghost dark-text" onclick="reloadWorkspace()">↻ Recargar contenido</button>
-                        <button class="nav-btn primary" onclick="goToMainMenu()">⚓ Salir al menú principal</button>
-                    </div>
+            <div class="semester-grid">
+              <a href="#" class="semester-card disabled" style="color: var(--curso2-color);">
+                <div class="card-topline">
+                  <div class="icon">🔒</div>
+                  <div class="nav-label">En dique seco</div>
                 </div>
+                <h3>1er Cuatrimestre</h3>
+                <p>No disponible aún. Esta ruta sigue en preparación.</p>
+                <div class="enter-text">Próximamente</div>
+              </a>
 
-                <div class="workspace-frame-wrap">
-                    <div class="empty-state" id="workspace-empty">
-                        <div>
-                            <strong>Sin ruta cargada</strong>
-                            Selecciona un destino desde la cubierta principal para abrirlo aquí dentro.
-                        </div>
-                    </div>
-
-                    <iframe id="workspace-frame" title="Zona de trabajo" style="display:none;"></iframe>
+              <a href="#" class="semester-card disabled" style="color: var(--curso2-color);">
+                <div class="card-topline">
+                  <div class="icon">🔒</div>
+                  <div class="nav-label">En dique seco</div>
                 </div>
-            </section>
-        </main>
+                <h3>2do Cuatrimestre</h3>
+                <p>No disponible aún. Se habilitará cuando la travesía esté lista.</p>
+                <div class="enter-text">Próximamente</div>
+              </a>
+            </div>
+          </div>
+
+          <div class="course-section">
+            <div class="course-title" style="color: #7a4ba5; border-left: 6px solid #7a4ba5;">
+              Comunicación
+            </div>
+
+            <div class="semester-grid">
+              <a href="#" class="semester-card" style="color: #7a4ba5;"
+                 onclick="openPanel('common-room-view'); return false;">
+                <div class="card-topline">
+                  <div class="icon">💬</div>
+                  <div class="nav-label">Sala común</div>
+                </div>
+                <h3>Taberna común</h3>
+                <p>Mensajes abiertos para toda la tripulación.</p>
+                <div class="enter-text">Entrar a la sala →</div>
+              </a>
+
+              <a href="#" class="semester-card" style="color: #7a4ba5;"
+                 onclick="openPanel('private-chat-view'); return false;">
+                <div class="card-topline">
+                  <div class="icon">✉️</div>
+                  <div class="nav-label">Privado</div>
+                </div>
+                <h3>Mensajes privados</h3>
+                <p>Envía y recibe mensajes directos entre usuarios.</p>
+                <div class="enter-text">Abrir mensajes →</div>
+              </a>
+            </div>
+          </div>
+
+          <div id="admin-zone-anchor"></div>
+        </div>
+      </section>
+
+      <section id="workspace-view" class="workspace-shell">
+        <div class="workspace-topbar">
+          <div class="workspace-title">
+            <small>Puente de navegación</small>
+            <strong id="workspace-title">Zona de trabajo</strong>
+          </div>
+
+          <div class="workspace-actions">
+            <button class="nav-btn ghost dark-text" onclick="goBackWorkspace()">← Volver atrás</button>
+            <button class="nav-btn ghost dark-text" onclick="reloadWorkspace()">↻ Recargar contenido</button>
+            <button class="nav-btn gold-btn" onclick="goToMainMenu()">⚓ Salir al menú principal</button>
+          </div>
+        </div>
+
+        <div class="workspace-frame-wrap">
+          <div class="empty-state" id="workspace-empty">
+            <div>
+              <strong>Sin ruta cargada</strong>
+              Selecciona un destino desde la cubierta principal para abrirlo aquí dentro.
+            </div>
+          </div>
+          <iframe id="workspace-frame" title="Zona de trabajo" style="display:none;"></iframe>
+        </div>
+      </section>
+
+      <section id="common-room-view" class="panel-shell hidden">
+        <div class="panel-header">
+          <div class="panel-kicker">Sala común</div>
+          <h3>Taberna de la tripulación</h3>
+          <p>Mensajes visibles para todos los usuarios.</p>
+        </div>
+        <div class="panel-body">
+          <div class="message-list" id="common-room-messages"></div>
+          <textarea class="panel-textarea" id="common-room-input" placeholder="Escribe tu mensaje para la sala común..."></textarea>
+          <div class="row-actions">
+            <button class="main-btn" onclick="sendCommonRoomMessage()">Enviar a sala común</button>
+            <button class="main-btn secondary-btn" onclick="loadCommonRoomMessages()">Recargar mensajes</button>
+            <button class="main-btn gold-btn" onclick="goToMainMenu()">Volver</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="private-chat-view" class="panel-shell hidden">
+        <div class="panel-header">
+          <div class="panel-kicker">Mensajería privada</div>
+          <h3>Mensajes entre usuarios</h3>
+          <p>Selecciona destinatario, escribe y consulta tu conversación.</p>
+        </div>
+        <div class="panel-body">
+          <select class="panel-select" id="private-chat-user-select" onchange="loadPrivateConversation()"></select>
+          <div class="message-list" id="private-chat-messages"></div>
+          <textarea class="panel-textarea" id="private-chat-input" placeholder="Escribe tu mensaje privado..."></textarea>
+          <div class="row-actions">
+            <button class="main-btn" onclick="sendPrivateMessage()">Enviar mensaje privado</button>
+            <button class="main-btn secondary-btn" onclick="loadPrivateConversation()">Recargar conversación</button>
+            <button class="main-btn gold-btn" onclick="goToMainMenu()">Volver</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="password-modal">
+    <div class="modal-box">
+      <h3>Cambiar contraseña</h3>
+      <p>Introduce tu contraseña actual y la nueva clave.</p>
+
+      <input class="panel-input" type="password" id="current-password-change" placeholder="Contraseña actual" />
+      <input class="panel-input" type="password" id="new-password-change" placeholder="Nueva contraseña" />
+      <input class="panel-input" type="password" id="confirm-new-password-change" placeholder="Repite la nueva contraseña" />
+
+      <div class="error-msg" id="change-password-error" style="display:none;"></div>
+      <div class="helper-msg" id="change-password-helper" style="display:none;"></div>
+
+      <div class="modal-actions">
+        <button class="main-btn" onclick="changeOwnPassword()">Guardar nueva contraseña</button>
+        <button class="main-btn secondary-btn" onclick="closeChangePasswordModal()">Cancelar</button>
+      </div>
     </div>
+  </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getDatabase, ref, get, update, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import {
+      getDatabase,
+      ref,
+      get,
+      set,
+      update,
+      increment,
+      push,
+      query,
+      orderByChild,
+      limitToLast
+    } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAKughV5w2XAKRm3rWuUmhVldwU2bjj0zY",
-            authDomain: "portal-estudio-medicina.firebaseapp.com",
-            databaseURL: "https://portal-estudio-medicina-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "portal-estudio-medicina",
-            storageBucket: "portal-estudio-medicina.firebasestorage.app",
-            messagingSenderId: "536326985694",
-            appId: "1:536326985694:web:ee2428d39421653be26f4f",
-            measurementId: "G-52KKQDCFXD"
+    const firebaseConfig = {
+      apiKey: "AIzaSyAKughV5w2XAKRm3rWuUmhVldwU2bjj0zY",
+      authDomain: "portal-estudio-medicina.firebaseapp.com",
+      databaseURL: "https://portal-estudio-medicina-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "portal-estudio-medicina",
+      storageBucket: "portal-estudio-medicina.firebasestorage.app",
+      messagingSenderId: "536326985694",
+      appId: "1:536326985694:web:ee2428d39421653be26f4f",
+      measurementId: "G-52KKQDCFXD"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const USERS = [
+      {
+        hash: "26f23fc6cb9d53db0d5041fd0c3b1a09b03c3359f01ab4f9b99a2b3063b8e603",
+        alias: "Médico Pirata",
+        label: "Médico Pirata",
+        admin: true
+      },
+      {
+        hash: "0aaf6107f7ad50f68c7fdd9e43e25d22a6bc026080aff0f1013c322babe65cc5",
+        alias: "Tripulante",
+        label: "Tripulante 1",
+        admin: false
+      },
+      {
+        hash: "e1357c6a116c33525352fee3d57b090847e027bac164b873b410eac234e3ef27",
+        alias: "Tripulante",
+        label: "Tripulante 2",
+        admin: false
+      },
+      {
+        hash: "7a1d5d03f970ac38d2080c6ac040902bd30d8d59b4c5cc374c30445d2b690778",
+        alias: "Tripulante",
+        label: "Tripulante 3",
+        admin: false
+      },
+      {
+        hash: "7e153005924bb1c6049581649bd1310e60ff18c58bb5033f0433e42efbd76c26",
+        alias: "Tripulante",
+        label: "Tripulante 4",
+        admin: false
+      },
+      {
+        hash: "835288e0a626d18f9ca168a38570afcb81a5b79f7f7570007191a409870fbcd0",
+        alias: "Tripulante",
+        label: "Tripulante 5",
+        admin: false
+      }
+    ];
+
+    const RANKS = [
+      "Grumete","Marinero Raso","Marinero","Cabo de Mar","Contramaestre","Timonel",
+      "Guardiamarina","Alférez de Fragata","Alférez de Navío","Teniente de Corbeta",
+      "Teniente de Fragata","Teniente de Navío","Capitán de Corbeta","Capitán de Fragata",
+      "Capitán de Navío","Comandante","Comodoro","Contraalmirante","Vicealmirante",
+      "Almirante de Escuadra","Almirante de Flota","Gran Almirante","Almirante"
+    ];
+
+    const PUBLIC_RANKS = RANKS.slice(0, -1);
+
+    function buildThresholds(rankCount, maxVisits) {
+      const arr = [];
+      for (let i = 0; i < rankCount; i++) {
+        const value = Math.round(Math.pow(maxVisits, i / (rankCount - 1)));
+        arr.push(Math.max(1, value));
+      }
+      arr[0] = 1;
+      arr[arr.length - 1] = maxVisits;
+      return arr;
+    }
+
+    const RANK_THRESHOLDS = buildThresholds(PUBLIC_RANKS.length, 500000);
+
+    async function sha256(text) {
+      const enc = new TextEncoder().encode(text);
+      const digest = await crypto.subtle.digest("SHA-256", enc);
+      return [...new Uint8Array(digest)]
+        .map(b => b.toString(16).padStart(2, "0"))
+        .join("");
+    }
+
+    function findUserByHash(hash) {
+      return USERS.find(u => u.hash === hash) || null;
+    }
+
+    function findUserLabel(hash) {
+      return USERS.find(u => u.hash === hash)?.label || "Tripulante";
+    }
+
+    function formatNumber(n) {
+      return new Intl.NumberFormat("es-ES").format(Number(n || 0));
+    }
+
+    function formatDateTime(iso) {
+      if (!iso) return "—";
+      try {
+        return new Date(iso).toLocaleString("es-ES");
+      } catch {
+        return iso;
+      }
+    }
+
+    function getSafeDisplayName(userObj) {
+      if (!userObj) return "Tripulante";
+      return userObj.alias || "Tripulante";
+    }
+
+    function getAvatarText(userObj) {
+      if (!userObj || !userObj.alias) return "M";
+      return userObj.alias.charAt(0).toUpperCase();
+    }
+
+    function getTodayKey() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function getRankData(visits, isAdmin = false) {
+      if (isAdmin) {
+        return { rank: "Médico Pirata", nextRank: null, remaining: 0 };
+      }
+
+      let idx = 0;
+      for (let i = 0; i < RANK_THRESHOLDS.length; i++) {
+        if (visits >= RANK_THRESHOLDS[i]) idx = i;
+        else break;
+      }
+
+      const rank = PUBLIC_RANKS[idx];
+      const nextThreshold = RANK_THRESHOLDS[idx + 1] ?? null;
+      const nextRank = PUBLIC_RANKS[idx + 1] ?? null;
+      const remaining = nextThreshold ? Math.max(0, nextThreshold - visits) : 0;
+
+      return { rank, nextRank, remaining };
+    }
+
+    function updateRankInfoUI(userObj, visits) {
+      const rankInfo = document.getElementById("rank-info");
+      if (!rankInfo) return;
+
+      const rankData = getRankData(visits, !!userObj?.admin);
+
+      if (userObj?.admin) {
+        rankInfo.textContent = "Rango: Médico Pirata · Acceso exclusivo";
+        return;
+      }
+
+      if (!rankData.nextRank) {
+        rankInfo.textContent = `Rango: ${rankData.rank} · Máximo rango público alcanzado`;
+        return;
+      }
+
+      rankInfo.textContent =
+        `Rango: ${rankData.rank} · Te faltan ${formatNumber(rankData.remaining)} visitas para ascender a ${rankData.nextRank}`;
+    }
+
+    function showError(message) {
+      const errorMsg = document.getElementById("error-msg");
+      const helperMsg = document.getElementById("helper-msg");
+      helperMsg.style.display = "none";
+      errorMsg.style.display = "block";
+      errorMsg.textContent = message;
+    }
+
+    function showHelper(message) {
+      const errorMsg = document.getElementById("error-msg");
+      const helperMsg = document.getElementById("helper-msg");
+      errorMsg.style.display = "none";
+      helperMsg.style.display = "block";
+      helperMsg.textContent = message;
+    }
+
+    function hideMessages() {
+      document.getElementById("error-msg").style.display = "none";
+      document.getElementById("helper-msg").style.display = "none";
+    }
+
+    function showChangePasswordError(message) {
+      const el = document.getElementById("change-password-error");
+      const ok = document.getElementById("change-password-helper");
+      ok.style.display = "none";
+      el.style.display = "block";
+      el.textContent = message;
+    }
+
+    function showChangePasswordHelper(message) {
+      const el = document.getElementById("change-password-error");
+      const ok = document.getElementById("change-password-helper");
+      el.style.display = "none";
+      ok.style.display = "block";
+      ok.textContent = message;
+    }
+
+    function clearChangePasswordMessages() {
+      document.getElementById("change-password-error").style.display = "none";
+      document.getElementById("change-password-helper").style.display = "none";
+    }
+
+    function setFirstAccessMode(enabled) {
+      const wrap = document.getElementById("confirm-password-wrap");
+      const button = document.getElementById("login-button");
+      wrap.style.display = enabled ? "block" : "none";
+      button.textContent = enabled ? "Guardar contraseña y entrar" : "Subir a bordo";
+      if (!enabled) document.getElementById("confirm-password-input").value = "";
+    }
+
+    async function getStoredPasswordData(userHash) {
+      try {
+        const snapshot = await get(ref(db, "access/" + userHash));
+        if (!snapshot.exists()) return {};
+        return snapshot.val() || {};
+      } catch {
+        return {};
+      }
+    }
+
+    async function getStoredPasswordHash(userHash) {
+      const data = await getStoredPasswordData(userHash);
+      return data.passwordHash || "";
+    }
+
+    async function saveNewPassword(userHash, plainPassword, changedBy = "self") {
+      const passwordHash = await sha256(plainPassword);
+      const now = new Date().toISOString();
+      await update(ref(db, "access/" + userHash), {
+        passwordHash,
+        passwordCreatedAt: now,
+        passwordChangedAt: now,
+        passwordResetRequired: false,
+        passwordChangedBy: changedBy
+      });
+    }
+
+    async function setTemporaryPasswordByAdmin(userHash, plainPassword) {
+      const passwordHash = await sha256(plainPassword);
+      const now = new Date().toISOString();
+      await update(ref(db, "access/" + userHash), {
+        passwordHash,
+        passwordChangedAt: now,
+        passwordResetRequired: true,
+        passwordChangedBy: "admin"
+      });
+    }
+
+    async function clearPasswordForUser(userHash) {
+      await update(ref(db, "access/" + userHash), {
+        passwordHash: "",
+        passwordResetRequired: true,
+        passwordChangedBy: "admin-reset-empty",
+        passwordChangedAt: new Date().toISOString()
+      });
+    }
+
+    function completeLogin(matchedUser, inputHash) {
+      sessionStorage.setItem("_auth_tkn_882", "1");
+      sessionStorage.setItem("_auth_hash", inputHash);
+      sessionStorage.setItem("_auth_alias", matchedUser.alias);
+      sessionStorage.setItem("_auth_admin", matchedUser.admin ? "1" : "0");
+      setFirstAccessMode(false);
+      hideMessages();
+      unlockContent();
+    }
+
+    window.checkUser = async function () {
+      hideMessages();
+
+      const username = document.getElementById("username-input").value.trim();
+      const password = document.getElementById("password-input").value;
+      const confirmPassword = document.getElementById("confirm-password-input").value;
+      const confirmVisible = document.getElementById("confirm-password-wrap").style.display === "block";
+
+      if (!username) {
+        showError("Introduce tu nombre de usuario.");
+        return;
+      }
+
+      if (!password) {
+        showError("Introduce tu contraseña.");
+        return;
+      }
+
+      const inputHash = await sha256(username);
+      const matchedUser = findUserByHash(inputHash);
+
+      if (!matchedUser) {
+        setFirstAccessMode(false);
+        showError("Usuario no reconocido. Revisa tu clave de acceso.");
+        document.getElementById("username-input").value = "";
+        document.getElementById("password-input").value = "";
+        document.getElementById("confirm-password-input").value = "";
+        document.getElementById("username-input").focus();
+        return;
+      }
+
+      const passwordData = await getStoredPasswordData(inputHash);
+      const storedPasswordHash = passwordData.passwordHash || "";
+
+      if (!storedPasswordHash) {
+        if (!confirmVisible) {
+          setFirstAccessMode(true);
+          showHelper("Primer acceso detectado. Crea tu contraseña y repítela para guardar el acceso.");
+          document.getElementById("confirm-password-input").focus();
+          return;
+        }
+
+        if (password.length < 4) {
+          showError("La contraseña debe tener al menos 4 caracteres.");
+          return;
+        }
+
+        if (password !== confirmPassword) {
+          showError("Las contraseñas no coinciden.");
+          return;
+        }
+
+        try {
+          await saveNewPassword(inputHash, password, "first-access");
+          completeLogin(matchedUser, inputHash);
+        } catch {
+          showError("No se pudo guardar la contraseña. Inténtalo de nuevo.");
+        }
+        return;
+      }
+
+      const enteredPasswordHash = await sha256(password);
+
+      if (enteredPasswordHash !== storedPasswordHash) {
+        setFirstAccessMode(false);
+        showError("Contraseña incorrecta.");
+        document.getElementById("password-input").value = "";
+        document.getElementById("confirm-password-input").value = "";
+        document.getElementById("password-input").focus();
+        return;
+      }
+
+      completeLogin(matchedUser, inputHash);
+
+      if (passwordData.passwordResetRequired) {
+        setTimeout(() => {
+          openChangePasswordModal();
+          showChangePasswordHelper("Tu contraseña temporal debe cambiarse ahora.");
+        }, 250);
+      }
+    };
+
+    window.handleKeyPress = function (event) {
+      if (event.key === "Enter") checkUser();
+    };
+
+    window.logout = function () {
+      sessionStorage.removeItem("_auth_tkn_882");
+      sessionStorage.removeItem("_auth_hash");
+      sessionStorage.removeItem("_auth_alias");
+      sessionStorage.removeItem("_auth_admin");
+      location.reload();
+    };
+
+    function hideAllPanels() {
+      document.getElementById("main-menu-view").style.display = "none";
+      document.getElementById("workspace-view").style.display = "none";
+      document.getElementById("common-room-view").classList.add("hidden");
+      document.getElementById("private-chat-view").classList.add("hidden");
+      document.getElementById("btn-home").style.display = "inline-flex";
+    }
+
+    window.goToMainMenu = function () {
+      document.getElementById("main-menu-view").style.display = "block";
+      document.getElementById("workspace-view").style.display = "none";
+      document.getElementById("common-room-view").classList.add("hidden");
+      document.getElementById("private-chat-view").classList.add("hidden");
+      document.getElementById("btn-home").style.display = "none";
+    };
+
+    window.openPanel = async function (panelId) {
+      hideAllPanels();
+      document.getElementById(panelId).classList.remove("hidden");
+
+      if (panelId === "common-room-view") {
+        await loadCommonRoomMessages();
+      }
+
+      if (panelId === "private-chat-view") {
+        populatePrivateUserSelect();
+        await loadPrivateConversation();
+      }
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    window.openInWorkspace = function (url, title = "Zona de trabajo") {
+      const frame = document.getElementById("workspace-frame");
+      const empty = document.getElementById("workspace-empty");
+
+      hideAllPanels();
+
+      document.getElementById("workspace-title").textContent = title;
+      frame.src = url;
+      frame.style.display = "block";
+      empty.style.display = "none";
+      document.getElementById("workspace-view").style.display = "block";
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    window.reloadWorkspace = function () {
+      const frame = document.getElementById("workspace-frame");
+      if (frame && frame.src) {
+        try {
+          frame.contentWindow.location.reload();
+        } catch {
+          frame.src = frame.src;
+        }
+      }
+    };
+
+    window.goBackWorkspace = function () {
+      const frame = document.getElementById("workspace-frame");
+      if (!frame || !frame.src) return;
+
+      try {
+        frame.contentWindow.history.back();
+      } catch {
+        console.warn("No se pudo navegar atrás dentro del iframe.");
+      }
+    };
+
+    async function getUserVisitCount(hash) {
+      try {
+        const snapshot = await get(ref(db, "visitas/" + hash));
+        if (!snapshot.exists()) return 0;
+        const data = snapshot.val();
+        return Number(data?.total || 0);
+      } catch {
+        return 0;
+      }
+    }
+
+    async function countSessionVisit(hash) {
+      try {
+        const today = getTodayKey();
+        const key = "visit_counted_" + hash + "_" + today;
+
+        if (localStorage.getItem(key)) return false;
+
+        const userRef = ref(db, "visitas/" + hash);
+        await update(userRef, {
+          total: increment(1),
+          lastVisit: new Date().toISOString()
+        });
+
+        localStorage.setItem(key, "true");
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    function getConversationId(hashA, hashB) {
+      return [hashA, hashB].sort().join("__");
+    }
+
+    async function loadCommonRoomMessages() {
+      const box = document.getElementById("common-room-messages");
+      box.innerHTML = "<div class='message-item'><div class='message-meta'>Cargando...</div></div>";
+
+      try {
+        const q = query(ref(db, "commonRoom"), orderByChild("timestamp"), limitToLast(100));
+        const snapshot = await get(q);
+        const data = snapshot.exists() ? snapshot.val() : {};
+
+        const arr = Object.entries(data).map(([id, val]) => ({ id, ...val }));
+        arr.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+
+        if (!arr.length) {
+          box.innerHTML = "<div class='message-item'><div class='message-meta'>Aún no hay mensajes</div><div class='message-text'>Sé el primero en escribir en la sala común.</div></div>";
+          return;
+        }
+
+        const myHash = sessionStorage.getItem("_auth_hash") || "";
+        box.innerHTML = arr.map(msg => {
+          const mine = msg.fromHash === myHash ? "mine" : "";
+          return `
+            <div class="message-item ${mine}">
+              <div class="message-meta">${escapeHtml(msg.fromLabel || "Tripulante")} · ${formatDateTime(msg.createdAt)}</div>
+              <div class="message-text">${escapeHtml(msg.text || "")}</div>
+            </div>
+          `;
+        }).join("");
+
+        box.scrollTop = box.scrollHeight;
+      } catch {
+        box.innerHTML = "<div class='message-item'><div class='message-meta'>Error</div><div class='message-text'>No se pudieron cargar los mensajes.</div></div>";
+      }
+    }
+
+    window.sendCommonRoomMessage = async function () {
+      const input = document.getElementById("common-room-input");
+      const text = input.value.trim();
+      const myHash = sessionStorage.getItem("_auth_hash") || "";
+
+      if (!text) {
+        alert("Escribe un mensaje.");
+        return;
+      }
+
+      try {
+        const payload = {
+          fromHash: myHash,
+          fromLabel: findUserLabel(myHash),
+          text,
+          createdAt: new Date().toISOString(),
+          timestamp: Date.now()
+        };
+        await push(ref(db, "commonRoom"), payload);
+        input.value = "";
+        await loadCommonRoomMessages();
+      } catch {
+        alert("No se pudo enviar el mensaje.");
+      }
+    };
+
+    function populatePrivateUserSelect() {
+      const select = document.getElementById("private-chat-user-select");
+      const myHash = sessionStorage.getItem("_auth_hash") || "";
+
+      const options = USERS
+        .filter(u => u.hash !== myHash)
+        .map(u => `<option value="${u.hash}">${escapeHtml(u.label)}</option>`)
+        .join("");
+
+      select.innerHTML = options || `<option value="">No hay otros usuarios</option>`;
+    }
+
+    window.loadPrivateConversation = async function () {
+      const select = document.getElementById("private-chat-user-select");
+      const targetHash = select.value;
+      const myHash = sessionStorage.getItem("_auth_hash") || "";
+      const box = document.getElementById("private-chat-messages");
+
+      if (!targetHash) {
+        box.innerHTML = "<div class='message-item'><div class='message-meta'>Sin destinatario</div><div class='message-text'>No hay otro usuario disponible.</div></div>";
+        return;
+      }
+
+      box.innerHTML = "<div class='message-item'><div class='message-meta'>Cargando...</div></div>";
+
+      try {
+        const convoId = getConversationId(myHash, targetHash);
+        const q = query(ref(db, "privateMessages/" + convoId), orderByChild("timestamp"), limitToLast(100));
+        const snapshot = await get(q);
+        const data = snapshot.exists() ? snapshot.val() : {};
+        const arr = Object.entries(data).map(([id, val]) => ({ id, ...val }));
+        arr.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+
+        if (!arr.length) {
+          box.innerHTML = "<div class='message-item'><div class='message-meta'>Sin mensajes</div><div class='message-text'>Todavía no hay conversación con este usuario.</div></div>";
+          return;
+        }
+
+        box.innerHTML = arr.map(msg => {
+          const mine = msg.fromHash === myHash ? "mine" : "";
+          return `
+            <div class="message-item ${mine}">
+              <div class="message-meta">${escapeHtml(msg.fromLabel || "Tripulante")} · ${formatDateTime(msg.createdAt)}</div>
+              <div class="message-text">${escapeHtml(msg.text || "")}</div>
+            </div>
+          `;
+        }).join("");
+
+        box.scrollTop = box.scrollHeight;
+      } catch {
+        box.innerHTML = "<div class='message-item'><div class='message-meta'>Error</div><div class='message-text'>No se pudo cargar la conversación.</div></div>";
+      }
+    };
+
+    window.sendPrivateMessage = async function () {
+      const select = document.getElementById("private-chat-user-select");
+      const targetHash = select.value;
+      const input = document.getElementById("private-chat-input");
+      const text = input.value.trim();
+      const myHash = sessionStorage.getItem("_auth_hash") || "";
+
+      if (!targetHash) {
+        alert("Selecciona un destinatario.");
+        return;
+      }
+
+      if (!text) {
+        alert("Escribe un mensaje.");
+        return;
+      }
+
+      try {
+        const convoId = getConversationId(myHash, targetHash);
+        const payload = {
+          fromHash: myHash,
+          fromLabel: findUserLabel(myHash),
+          toHash: targetHash,
+          toLabel: findUserLabel(targetHash),
+          text,
+          createdAt: new Date().toISOString(),
+          timestamp: Date.now()
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        await push(ref(db, "privateMessages/" + convoId), payload);
+        input.value = "";
+        await loadPrivateConversation();
+      } catch {
+        alert("No se pudo enviar el mensaje privado.");
+      }
+    };
 
-        const USERS = [
-            {
-                hash: "26f23fc6cb9d53db0d5041fd0c3b1a09b03c3359f01ab4f9b99a2b3063b8e603",
-                alias: "Comodoro Supremo",
-                label: "Administrador",
-                admin: true
-            },
-            {
-                hash: "0aaf6107f7ad50f68c7fdd9e43e25d22a6bc026080aff0f1013c322babe65cc5",
-                alias: "Tripulante",
-                label: "Tripulante 1",
-                admin: false
-            },
-            {
-                hash: "e1357c6a116c33525352fee3d57b090847e027bac164b873b410eac234e3ef27",
-                alias: "Tripulante",
-                label: "Tripulante 2",
-                admin: false
-            },
-            {
-                hash: "7a1d5d03f970ac38d2080c6ac040902bd30d8d59b4c5cc374c30445d2b690778",
-                alias: "Tripulante",
-                label: "Tripulante 3",
-                admin: false
-            },
-            {
-                hash: "7e153005924bb1c6049581649bd1310e60ff18c58bb5033f0433e42efbd76c26",
-                alias: "Tripulante",
-                label: "Tripulante 4",
-                admin: false
-            },
-            {
-                hash: "835288e0a626d18f9ca168a38570afcb81a5b79f7f7570007191a409870fbcd0",
-                alias: "Tripulante",
-                label: "Tripulante 5",
-                admin: false
-            }
-        ];
+    window.openChangePasswordModal = function () {
+      clearChangePasswordMessages();
+      document.getElementById("current-password-change").value = "";
+      document.getElementById("new-password-change").value = "";
+      document.getElementById("confirm-new-password-change").value = "";
+      document.getElementById("password-modal").style.display = "flex";
+    };
 
-        const RANKS = [
-            "Grumete",
-            "Marinero Raso",
-            "Marinero",
-            "Cabo de Mar",
-            "Contramaestre",
-            "Timonel",
-            "Guardiamarina",
-            "Alférez de Fragata",
-            "Alférez de Navío",
-            "Teniente de Corbeta",
-            "Teniente de Fragata",
-            "Teniente de Navío",
-            "Capitán de Corbeta",
-            "Capitán de Fragata",
-            "Capitán de Navío",
-            "Comandante",
-            "Comodoro",
-            "Contraalmirante",
-            "Vicealmirante",
-            "Almirante de Escuadra",
-            "Almirante de Flota",
-            "Gran Almirante",
-            "Almirante"
-        ];
+    window.closeChangePasswordModal = function () {
+      document.getElementById("password-modal").style.display = "none";
+    };
 
-        const PUBLIC_RANKS = RANKS.slice(0, -1);
+    window.changeOwnPassword = async function () {
+      clearChangePasswordMessages();
 
-        function buildThresholds(rankCount, maxVisits) {
-            const arr = [];
-            for (let i = 0; i < rankCount; i++) {
-                const value = Math.round(Math.pow(maxVisits, i / (rankCount - 1)));
-                arr.push(Math.max(1, value));
-            }
-            arr[0] = 1;
-            arr[arr.length - 1] = maxVisits;
-            return arr;
+      const currentPassword = document.getElementById("current-password-change").value;
+      const newPassword = document.getElementById("new-password-change").value;
+      const confirmNewPassword = document.getElementById("confirm-new-password-change").value;
+      const myHash = sessionStorage.getItem("_auth_hash") || "";
+
+      if (!currentPassword || !newPassword || !confirmNewPassword) {
+        showChangePasswordError("Completa todos los campos.");
+        return;
+      }
+
+      if (newPassword.length < 4) {
+        showChangePasswordError("La nueva contraseña debe tener al menos 4 caracteres.");
+        return;
+      }
+
+      if (newPassword !== confirmNewPassword) {
+        showChangePasswordError("La nueva contraseña no coincide.");
+        return;
+      }
+
+      try {
+        const passwordData = await getStoredPasswordData(myHash);
+        const storedHash = passwordData.passwordHash || "";
+        const currentHash = await sha256(currentPassword);
+
+        if (currentHash !== storedHash) {
+          showChangePasswordError("La contraseña actual no es correcta.");
+          return;
         }
 
-        const RANK_THRESHOLDS = buildThresholds(PUBLIC_RANKS.length, 500000);
+        await saveNewPassword(myHash, newPassword, "self");
+        showChangePasswordHelper("Contraseña cambiada correctamente.");
+        setTimeout(() => closeChangePasswordModal(), 900);
+        if (typeof injectAdminZone === "function") await injectAdminZone(findUserByHash(myHash));
+      } catch {
+        showChangePasswordError("No se pudo cambiar la contraseña.");
+      }
+    };
 
-        async function sha256(text) {
-            const enc = new TextEncoder().encode(text);
-            const digest = await crypto.subtle.digest("SHA-256", enc);
-            return [...new Uint8Array(digest)]
-                .map(b => b.toString(16).padStart(2, "0"))
-                .join("");
-        }
+    async function buildAdminUsersHtml() {
+      let result = "";
 
-        function findUserByHash(hash) {
-            return USERS.find(u => u.hash === hash) || null;
-        }
+      const visitsSnapshot = await get(ref(db, "visitas"));
+      const visitsData = visitsSnapshot.exists() ? visitsSnapshot.val() : {};
 
-        function formatNumber(n) {
-            return new Intl.NumberFormat("es-ES").format(Number(n || 0));
-        }
+      for (const usuario of USERS) {
+        const access = await getStoredPasswordData(usuario.hash);
+        const hasPassword = !!access.passwordHash;
+        const visitas = Number(visitsData?.[usuario.hash]?.total || 0);
 
-        function getSafeDisplayName(userObj) {
-            if (!userObj) return "Tripulante";
-            return userObj.alias || "Tripulante";
-        }
+        result += `
+          <div class="admin-user-card">
+            <div class="admin-user-top">
+              <strong>${escapeHtml(usuario.label)}</strong>
+              <span class="status-pill ${hasPassword ? "" : "warn"}">${hasPassword ? "contraseña creada" : "sin contraseña"}</span>
+            </div>
+            <div class="admin-user-meta">
+              <div>Visitas: <strong>${formatNumber(visitas)}</strong></div>
+              <div>Creada: <strong>${escapeHtml(formatDateTime(access.passwordCreatedAt))}</strong></div>
+              <div>Último cambio: <strong>${escapeHtml(formatDateTime(access.passwordChangedAt))}</strong></div>
+              <div>Cambio forzado pendiente: <strong>${access.passwordResetRequired ? "Sí" : "No"}</strong></div>
+              <div>Último origen de cambio: <strong>${escapeHtml(access.passwordChangedBy || "—")}</strong></div>
+            </div>
+            <div class="row-actions" style="margin-top:12px;">
+              <button class="mini-btn" onclick="adminSetTemporaryPassword('${usuario.hash}')">Asignar temporal</button>
+              <button class="mini-btn secondary-btn" onclick="adminClearPassword('${usuario.hash}')">Borrar contraseña</button>
+            </div>
+          </div>
+        `;
+      }
 
-        function getAvatarText(userObj) {
-            if (!userObj || !userObj.alias) return "M";
-            return userObj.alias.charAt(0).toUpperCase();
-        }
+      return result;
+    }
 
-        function getTodayKey() {
-            const now = new Date();
-            const y = now.getFullYear();
-            const m = String(now.getMonth() + 1).padStart(2, "0");
-            const d = String(now.getDate()).padStart(2, "0");
-            return `${y}-${m}-${d}`;
-        }
+    window.adminSetTemporaryPassword = async function (userHash) {
+      const user = findUserByHash(userHash);
+      if (!user) return;
 
-        function getRankData(visits, isAdmin = false) {
-            if (isAdmin) {
-                return {
-                    rank: "Almirante",
-                    nextRank: null,
-                    remaining: 0
-                };
-            }
+      const tempPassword = prompt(`Introduce la contraseña temporal para ${user.label}:`);
+      if (tempPassword === null) return;
 
-            let idx = 0;
+      if (tempPassword.trim().length < 4) {
+        alert("La contraseña temporal debe tener al menos 4 caracteres.");
+        return;
+      }
 
-            for (let i = 0; i < RANK_THRESHOLDS.length; i++) {
-                if (visits >= RANK_THRESHOLDS[i]) {
-                    idx = i;
-                } else {
-                    break;
-                }
-            }
+      try {
+        await setTemporaryPasswordByAdmin(userHash, tempPassword.trim());
+        alert(`Contraseña temporal asignada a ${user.label}. Se le forzará a cambiarla en el próximo acceso.`);
+        await injectAdminZone(findUserByHash(sessionStorage.getItem("_auth_hash") || ""));
+      } catch {
+        alert("No se pudo asignar la contraseña temporal.");
+      }
+    };
 
-            const rank = PUBLIC_RANKS[idx];
-            const nextThreshold = RANK_THRESHOLDS[idx + 1] ?? null;
-            const nextRank = PUBLIC_RANKS[idx + 1] ?? null;
-            const remaining = nextThreshold ? Math.max(0, nextThreshold - visits) : 0;
+    window.adminClearPassword = async function (userHash) {
+      const user = findUserByHash(userHash);
+      if (!user) return;
 
-            return {
-                rank,
-                nextRank,
-                remaining
-            };
-        }
+      const ok = confirm(`¿Seguro que quieres borrar la contraseña de ${user.label}? En el siguiente acceso tendrá que crear una nueva.`);
+      if (!ok) return;
 
-        function updateRankInfoUI(userObj, visits) {
-            const rankInfo = document.getElementById("rank-info");
-            if (!rankInfo) return;
+      try {
+        await clearPasswordForUser(userHash);
+        alert(`Contraseña borrada para ${user.label}.`);
+        await injectAdminZone(findUserByHash(sessionStorage.getItem("_auth_hash") || ""));
+      } catch {
+        alert("No se pudo borrar la contraseña.");
+      }
+    };
 
-            const rankData = getRankData(visits, !!userObj?.admin);
+    async function injectAdminZone(currentUserObj) {
+      const existing = document.getElementById("admin-zone");
+      if (existing) existing.remove();
 
-            if (userObj?.admin) {
-                rankInfo.textContent = "Rango: Almirante · Acceso exclusivo";
-                return;
-            }
+      if (!currentUserObj || !currentUserObj.admin) return;
 
-            if (!rankData.nextRank) {
-                rankInfo.textContent = `Rango: ${rankData.rank} · Máximo rango público alcanzado`;
-                return;
-            }
+      let usersHtml = "<div class='admin-user-card'>Cargando datos...</div>";
+      try {
+        usersHtml = await buildAdminUsersHtml();
+      } catch {
+        usersHtml = "<div class='admin-user-card'>Error al cargar estadísticas y accesos.</div>";
+      }
 
-            rankInfo.textContent =
-                `Rango: ${rankData.rank} · Te faltan ${formatNumber(rankData.remaining)} visitas para ascender a ${rankData.nextRank}`;
-        }
+      const privateHTML = `
+        <div class="course-section" id="admin-zone">
+          <div class="course-title" style="color: var(--privado-color); border-left: 6px solid var(--privado-color);">
+            Zona del Médico Pirata
+          </div>
 
-        window.checkUser = async function () {
-            const input = document.getElementById("username-input").value.trim();
-            const errorMsg = document.getElementById("error-msg");
+          <div class="semester-grid">
+            <a href="#" class="semester-card" style="color: var(--privado-color);"
+               onclick="openInWorkspace('privados.html','Zona del Médico Pirata · Exámenes 24 y 25'); return false;">
+              <div class="card-topline">
+                <div class="icon">🗂️</div>
+                <div class="nav-label">Acceso reservado</div>
+              </div>
+              <h3>Exámenes 24 y 25</h3>
+              <p>Anatomía II · Bloques 1 a 4 en zona privada.</p>
+              <div class="enter-text">Abrir archivo →</div>
+            </a>
 
-            if (!input) {
-                errorMsg.style.display = "block";
-                errorMsg.textContent = "Introduce tu usuario.";
-                return;
-            }
+            <a href="#" class="semester-card" style="color: var(--privado-color);"
+               onclick="openInWorkspace('quiz_privado_1.html','Zona del Médico Pirata · Quizz Privado 1'); return false;">
+              <div class="card-topline">
+                <div class="icon">🔐</div>
+                <div class="nav-label">Acceso reservado</div>
+              </div>
+              <h3>Quizz Privado 1</h3>
+              <p>Ruta exclusiva con acceso restringido.</p>
+              <div class="enter-text">Abrir archivo →</div>
+            </a>
+          </div>
 
-            const inputHash = await sha256(input);
-            const matchedUser = findUserByHash(inputHash);
+          <div class="admin-stats-panel">
+            <h3>☁️ Registro global en la nube</h3>
+            ${usersHtml}
+            <div class="admin-note">
+              *Puedes fijar contraseñas temporales o borrar la contraseña de un usuario para forzar nuevo alta.
+            </div>
+          </div>
+        </div>
+      `;
 
-            if (matchedUser) {
-                sessionStorage.setItem("_auth_tkn_882", "1");
-                sessionStorage.setItem("_auth_hash", inputHash);
-                sessionStorage.setItem("_auth_alias", matchedUser.alias);
-                sessionStorage.setItem("_auth_admin", matchedUser.admin ? "1" : "0");
-                unlockContent();
-            } else {
-                errorMsg.style.display = "block";
-                errorMsg.textContent = "Usuario no reconocido. Revisa tu clave de acceso.";
-                document.getElementById("username-input").value = "";
-                document.getElementById("username-input").focus();
-            }
-        };
+      document.getElementById("admin-zone-anchor").insertAdjacentHTML("beforebegin", privateHTML);
+    }
 
-        window.handleKeyPress = function (event) {
-            if (event.key === "Enter") checkUser();
-        };
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
 
-        window.logout = function () {
-            sessionStorage.removeItem("_auth_tkn_882");
-            sessionStorage.removeItem("_auth_hash");
-            sessionStorage.removeItem("_auth_alias");
-            sessionStorage.removeItem("_auth_admin");
-            location.reload();
-        };
+    async function unlockContent() {
+      document.getElementById("login-screen").style.display = "none";
+      document.getElementById("app-shell").style.display = "block";
 
-        window.goToMainMenu = function () {
-            document.getElementById("main-menu-view").style.display = "block";
-            document.getElementById("workspace-view").style.display = "none";
-            document.getElementById("btn-home").style.display = "none";
-        };
+      const currentHash = sessionStorage.getItem("_auth_hash") || "";
+      const currentUser = findUserByHash(currentHash);
 
-        window.openInWorkspace = function (url, title = "Zona de trabajo") {
-            const frame = document.getElementById("workspace-frame");
-            const empty = document.getElementById("workspace-empty");
+      if (!currentUser) {
+        logout();
+        return;
+      }
 
-            document.getElementById("workspace-title").textContent = title;
-            frame.src = url;
-            frame.style.display = "block";
-            empty.style.display = "none";
+      document.getElementById("display-username").textContent = getSafeDisplayName(currentUser);
+      document.getElementById("crew-avatar").textContent = getAvatarText(currentUser);
 
-            document.getElementById("main-menu-view").style.display = "none";
-            document.getElementById("workspace-view").style.display = "block";
-            document.getElementById("btn-home").style.display = "inline-flex";
+      await countSessionVisit(currentHash);
+      const currentVisits = await getUserVisitCount(currentHash);
+      updateRankInfoUI(currentUser, currentVisits);
 
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        };
+      await injectAdminZone(currentUser);
+    }
 
-        window.reloadWorkspace = function () {
-            const frame = document.getElementById("workspace-frame");
-            if (frame && frame.src) {
-                try {
-                    frame.contentWindow.location.reload();
-                } catch (e) {
-                    frame.src = frame.src;
-                }
-            }
-        };
-
-        window.goBackWorkspace = function () {
-            const frame = document.getElementById("workspace-frame");
-            if (!frame || !frame.src) return;
-
-            try {
-                frame.contentWindow.history.back();
-            } catch (e) {
-                console.warn("No se pudo navegar atrás dentro del iframe.");
-            }
-        };
-
-        async function getUserVisitCount(hash) {
-            try {
-                const snapshot = await get(ref(db, "visitas/" + hash));
-                if (!snapshot.exists()) return 0;
-
-                const data = snapshot.val();
-                return Number(data?.total || 0);
-            } catch (error) {
-                console.log("No se pudo leer el contador.", error);
-                return 0;
-            }
-        }
-
-        async function countSessionVisit(hash) {
-            try {
-                const today = getTodayKey();
-                const key = "visit_counted_" + hash + "_" + today;
-
-                if (localStorage.getItem(key)) {
-                    return false;
-                }
-
-                const userRef = ref(db, "visitas/" + hash);
-                await update(userRef, {
-                    total: increment(1),
-                    lastVisit: new Date().toISOString()
-                });
-
-                localStorage.setItem(key, "true");
-                return true;
-            } catch (error) {
-                console.log("Error de conexión con Firebase.", error);
-                return false;
-            }
-        }
-
-        async function injectAdminZone(currentUserObj) {
-            if (!currentUserObj || !currentUserObj.admin) return;
-            if (document.getElementById("lista-visitas")) return;
-
-            let listaContadores = "<li>Cargando datos...</li>";
-
-            try {
-                const snapshot = await get(ref(db, "visitas"));
-                const datosVisitas = snapshot.exists() ? snapshot.val() : {};
-                listaContadores = "";
-
-                USERS.forEach(usuario => {
-                    const visitas = Number(datosVisitas?.[usuario.hash]?.total || 0);
-                    const nombreMostrar = usuario.admin
-                        ? (usuario.label || "Administrador")
-                        : (usuario.label || usuario.alias || "Tripulante");
-
-                    listaContadores += `
-                        <li>
-                            <strong>${nombreMostrar}</strong>
-                            <span>${formatNumber(visitas)} visitas</span>
-                        </li>
-                    `;
-                });
-            } catch (error) {
-                listaContadores = "<li><em>Error al cargar estadísticas</em></li>";
-            }
-
-            const privateHTML = `
-                <div class="course-section">
-                    <div class="course-title" style="color: var(--privado-color); border-left: 6px solid var(--privado-color);">
-                        Zona del capitán
-                    </div>
-
-                    <div class="semester-grid">
-                        <a href="#" class="semester-card" style="color: var(--privado-color);"
-                           onclick="openInWorkspace('privados.html','Zona del capitán · Exámenes 24 y 25'); return false;">
-                            <div class="card-topline">
-                                <div class="icon">🗂️</div>
-                                <div class="nav-label">Acceso reservado</div>
-                            </div>
-                            <h3>Exámenes 24 y 25</h3>
-                            <p>Anatomía II · Bloques 1 a 4 en zona privada.</p>
-                            <div class="enter-text">Abrir archivo →</div>
-                        </a>
-
-                        <a href="#" class="semester-card" style="color: var(--privado-color);"
-                           onclick="openInWorkspace('quiz_privado_1.html','Zona del capitán · Quizz Privado 1'); return false;">
-                            <div class="card-topline">
-                                <div class="icon">🔐</div>
-                                <div class="nav-label">Acceso reservado</div>
-                            </div>
-                            <h3>Quizz Privado 1</h3>
-                            <p>Ruta exclusiva con acceso restringido.</p>
-                            <div class="enter-text">Abrir archivo →</div>
-                        </a>
-                    </div>
-
-                    <div class="admin-stats-panel">
-                        <h3>☁️ Registro global en la nube</h3>
-                        <ul id="lista-visitas">
-                            ${listaContadores}
-                        </ul>
-                        <div class="admin-note">
-                            *Estas estadísticas se actualizan una vez por usuario y día en este navegador.
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById("admin-zone-anchor").insertAdjacentHTML("beforebegin", privateHTML);
-        }
-
-        async function unlockContent() {
-            document.getElementById("login-screen").style.display = "none";
-            document.getElementById("app-shell").style.display = "block";
-
-            const currentHash = sessionStorage.getItem("_auth_hash") || "";
-            const currentUser = findUserByHash(currentHash);
-
-            if (!currentUser) {
-                logout();
-                return;
-            }
-
-            document.getElementById("display-username").textContent = getSafeDisplayName(currentUser);
-            document.getElementById("crew-avatar").textContent = getAvatarText(currentUser);
-
-            await countSessionVisit(currentHash);
-            const currentVisits = await getUserVisitCount(currentHash);
-            updateRankInfoUI(currentUser, currentVisits);
-
-            await injectAdminZone(currentUser);
-        }
-
-        window.onload = function () {
-            if (sessionStorage.getItem("_auth_tkn_882") === "1") {
-                unlockContent();
-            }
-        };
-    </script>
+    window.onload = function () {
+      if (sessionStorage.getItem("_auth_tkn_882") === "1") {
+        unlockContent();
+      } else {
+        setFirstAccessMode(false);
+      }
+    };
+  </script>
 </body>
 </html>
