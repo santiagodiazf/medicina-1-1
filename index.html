@@ -19,7 +19,6 @@
       --ok:#2d7b57;
       --shadow:0 12px 30px rgba(0,0,0,.09);
       --shadow-2:0 18px 40px rgba(0,0,0,.16);
-      --radius:22px;
     }
 
     *{box-sizing:border-box}
@@ -32,9 +31,9 @@
         linear-gradient(180deg,#fbf7ef 0%,#f4ede0 100%);
     }
 
-    a{color:inherit}
+    body{overflow-x:hidden}
     button,input,textarea,select{font:inherit}
-
+    a{color:inherit}
     .hidden{display:none !important}
 
     .auth-screen{
@@ -48,7 +47,7 @@
     }
 
     .auth-card{
-      width:min(560px,100%);
+      width:min(620px,100%);
       background:rgba(255,255,255,.98);
       border-radius:28px;
       box-shadow:var(--shadow-2);
@@ -105,54 +104,37 @@
       font-weight:800;
       cursor:pointer;
       transition:.2s ease;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
     }
 
     .btn:hover{transform:translateY(-1px)}
-    .btn-primary{
-      color:#143140;
-      background:linear-gradient(135deg,var(--gold2),var(--gold));
-      box-shadow:0 10px 20px rgba(201,153,82,.26);
-    }
-    .btn-dark{
-      color:#fff;
-      background:linear-gradient(135deg,var(--navy2),var(--navy));
-      box-shadow:0 10px 20px rgba(20,77,99,.24);
-    }
-    .btn-soft{
-      color:#fff;
-      background:linear-gradient(135deg,#6b7b84,#52626c);
-    }
-    .btn-danger{
-      color:#fff;
-      background:linear-gradient(135deg,#b43e36,#8b2f2a);
-    }
-    .btn-ok{
-      color:#fff;
-      background:linear-gradient(135deg,#37956c,#2d7b57);
-    }
+    .btn-primary{color:#143140;background:linear-gradient(135deg,var(--gold2),var(--gold));box-shadow:0 10px 20px rgba(201,153,82,.26)}
+    .btn-dark{color:#fff;background:linear-gradient(135deg,var(--navy2),var(--navy));box-shadow:0 10px 20px rgba(20,77,99,.24)}
+    .btn-soft{color:#fff;background:linear-gradient(135deg,#6b7b84,#52626c)}
+    .btn-danger{color:#fff;background:linear-gradient(135deg,#b43e36,#8b2f2a)}
+    .btn-ok{color:#fff;background:linear-gradient(135deg,#37956c,#2d7b57)}
 
-    .auth-actions{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-top:14px;
-    }
+    .auth-actions,.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 
-    .auth-msg{
+    .msg{
       display:none;
       margin-top:10px;
       padding:12px 14px;
       border-radius:12px;
       font-weight:700;
     }
-    .auth-msg.error{background:#fff1ef;color:var(--danger);border:1px solid #f4c8c2}
-    .auth-msg.ok{background:#edf8f1;color:var(--ok);border:1px solid #cbe9d6}
+    .msg.error{background:#fff1ef;color:var(--danger);border:1px solid #f4c8c2}
+    .msg.ok{background:#edf8f1;color:var(--ok);border:1px solid #cbe9d6}
 
     .app-shell{display:none;min-height:100vh}
 
     .hero{
       position:relative;
-      min-height:200px;
+      min-height:190px;
       background:
         linear-gradient(rgba(7,25,35,.35), rgba(7,25,35,.35)),
         url("barner.png") center/cover no-repeat;
@@ -175,15 +157,8 @@
       text-shadow:0 4px 12px rgba(0,0,0,.25);
     }
 
-    .hero-sub{
-      max-width:840px;
-      color:rgba(255,255,255,.92);
-    }
-
     .topbar{
-      position:sticky;
-      top:0;
-      z-index:1000;
+      position:sticky;top:0;z-index:1000;
       background:rgba(12,38,52,.95);
       backdrop-filter:blur(10px);
       border-bottom:1px solid rgba(255,255,255,.08);
@@ -201,36 +176,26 @@
     }
 
     .user-badge{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      color:#fff;
-      min-width:0;
+      display:flex;align-items:center;gap:12px;color:#fff;min-width:0;
     }
 
-    .avatar{
-      width:48px;
-      height:48px;
+    .avatar,.mini-avatar,.profile-big{
       border-radius:50%;
       overflow:hidden;
       background:linear-gradient(135deg,#f1c17a,#c99952);
-      color:#143140;
       display:grid;
       place-items:center;
       font-weight:900;
+      color:#143140;
       flex:0 0 auto;
-      box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);
     }
 
-    .avatar img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    }
+    .avatar{width:48px;height:48px}
+    .mini-avatar{width:56px;height:56px}
+    .profile-big{width:90px;height:90px;font-size:2rem}
 
-    .user-meta{
-      min-width:0;
+    .avatar img,.mini-avatar img,.profile-big img{
+      width:100%;height:100%;object-fit:cover;display:block;
     }
 
     .user-meta small{
@@ -257,28 +222,17 @@
       font-size:.9rem;
     }
 
-    .top-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
-
-    .top-actions .btn{
-      border-radius:999px;
-      padding:11px 16px;
-    }
+    .top-actions{display:flex;gap:10px;flex-wrap:wrap}
 
     .app{
       width:min(1380px,calc(100% - 24px));
       margin:18px auto 30px;
       display:grid;
-      grid-template-columns:280px 1fr;
+      grid-template-columns:300px 1fr;
       gap:18px;
     }
 
-    .side,
-    .panel{
+    .side,.panel{
       background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,255,255,.9));
       border:1px solid rgba(255,255,255,.7);
       border-radius:24px;
@@ -292,11 +246,7 @@
       align-self:start;
     }
 
-    .nav-list{
-      display:grid;
-      gap:10px;
-    }
-
+    .nav-list{display:grid;gap:10px}
     .nav-btn{
       width:100%;
       border:none;
@@ -310,12 +260,7 @@
       border:1px solid #e8edef;
       transition:.2s ease;
     }
-
-    .nav-btn:hover{
-      transform:translateY(-1px);
-      box-shadow:0 10px 18px rgba(0,0,0,.06);
-    }
-
+    .nav-btn:hover{transform:translateY(-1px);box-shadow:0 10px 18px rgba(0,0,0,.06)}
     .nav-btn.active{
       color:#143140;
       background:linear-gradient(135deg,var(--gold2),var(--gold));
@@ -330,19 +275,9 @@
       border:1px solid #e8edef;
     }
 
-    .notif-item{
-      padding:10px 0;
-      border-bottom:1px solid #eef2f4;
-    }
-
+    .notif-item{padding:10px 0;border-bottom:1px solid #eef2f4}
     .notif-item:last-child{border-bottom:none}
-    .notif-item strong{display:block;margin-bottom:6px}
-    .notif-link{
-      margin-top:8px;
-      width:100%;
-    }
 
-    .panel{overflow:hidden}
     .panel-header{
       padding:22px 24px 18px;
       border-bottom:1px solid var(--line);
@@ -365,12 +300,7 @@
     }
 
     .panel-body{padding:22px 24px 24px}
-
-    .grid-2{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:16px;
-    }
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 
     .card{
       background:#fff;
@@ -381,14 +311,6 @@
 
     .muted{color:var(--muted)}
 
-    .wait-box{
-      display:grid;
-      place-items:center;
-      min-height:320px;
-      text-align:center;
-      padding:30px;
-    }
-
     .profile-banner{
       display:flex;
       gap:16px;
@@ -396,33 +318,18 @@
       flex-wrap:wrap;
     }
 
-    .profile-big{
-      width:90px;
-      height:90px;
-      border-radius:50%;
-      overflow:hidden;
-      background:linear-gradient(135deg,#f1c17a,#c99952);
-      display:grid;
-      place-items:center;
-      font-size:2rem;
-      font-weight:900;
-      color:#143140;
-      flex:0 0 auto;
-    }
-    .profile-big img{width:100%;height:100%;object-fit:cover}
-
-    .file-list,.msg-list{
+    .msg-list,.file-list{
       background:#fff;
       border:1px solid #e3e8eb;
       border-radius:16px;
       padding:14px;
-      min-height:180px;
-      max-height:420px;
+      min-height:200px;
+      max-height:430px;
       overflow:auto;
     }
 
     .msg-item,.file-item,.user-item{
-      padding:12px 12px;
+      padding:12px;
       border:1px solid #e8edef;
       border-radius:14px;
       margin-bottom:10px;
@@ -441,14 +348,11 @@
       font-weight:700;
     }
 
-    .msg-text{
-      white-space:pre-wrap;
-      line-height:1.5;
-    }
+    .msg-text{white-space:pre-wrap;line-height:1.5}
 
     .user-grid{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
       gap:14px;
     }
 
@@ -466,21 +370,6 @@
       margin-bottom:10px;
     }
 
-    .mini-avatar{
-      width:56px;
-      height:56px;
-      border-radius:50%;
-      overflow:hidden;
-      background:linear-gradient(135deg,#f1c17a,#c99952);
-      display:grid;
-      place-items:center;
-      font-weight:900;
-      color:#143140;
-      flex:0 0 auto;
-    }
-
-    .mini-avatar img{width:100%;height:100%;object-fit:cover}
-
     .pill{
       display:inline-flex;
       align-items:center;
@@ -494,7 +383,6 @@
       background:#edf5f7;
       color:#244e66;
     }
-
     .pill.off{background:#fff1ef;color:#b43e36}
     .pill.on{background:#edf8f1;color:#2d7b57}
 
@@ -511,20 +399,13 @@
     }
 
     .modal{
-      width:min(760px,100%);
+      width:min(820px,100%);
       max-height:90vh;
       overflow:auto;
       background:#fff;
       border-radius:26px;
-      box-shadow:var(--shadow-2);
+      box-shadow:0 18px 40px rgba(0,0,0,.16);
       padding:24px;
-    }
-
-    .row{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      align-items:center;
     }
 
     .debug{
@@ -537,6 +418,24 @@
       font-size:.9rem;
       display:none;
     }
+
+    .table-wrap{overflow:auto}
+    table{
+      width:100%;
+      border-collapse:collapse;
+      background:#fff;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid #e8edef;
+    }
+    th,td{
+      padding:12px;
+      border-bottom:1px solid #edf1f3;
+      text-align:left;
+      vertical-align:top;
+      font-size:.95rem;
+    }
+    th{background:#f8fbfc}
 
     @media (max-width:980px){
       .app{grid-template-columns:1fr}
@@ -583,8 +482,8 @@
         </div>
       </div>
 
-      <div id="auth-error" class="auth-msg error"></div>
-      <div id="auth-ok" class="auth-msg ok"></div>
+      <div id="auth-error" class="msg error"></div>
+      <div id="auth-ok" class="msg ok"></div>
     </div>
   </section>
 
@@ -593,7 +492,7 @@
       <div class="hero-inner">
         <div class="kicker" style="background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.14);">⚓ Comunidad académica · Bahía de Cádiz</div>
         <div class="hero-title">Médico Pirata</div>
-        <p class="hero-sub">Comunidad con perfiles públicos, sala común, mensajes privados, archivos compartidos y gestión de acceso por aprobación.</p>
+        <p style="max-width:840px;color:rgba(255,255,255,.92);margin-top:10px;">Perfiles públicos, sala común, mensajes privados, archivos compartidos y gestión de acceso por aprobación.</p>
       </div>
     </header>
 
@@ -632,12 +531,12 @@
           <div id="notif-private" class="notif-item hidden">
             <strong>Mensajes privados sin leer</strong>
             <div id="notif-private-text" class="muted"></div>
-            <button class="btn btn-dark notif-link" onclick="openView('private')">Abrir privados</button>
+            <button class="btn btn-dark" style="width:100%;margin-top:8px;" onclick="openView('private')">Abrir privados</button>
           </div>
           <div id="notif-common" class="notif-item hidden">
             <strong>Sala común con mensajes nuevos</strong>
             <div id="notif-common-text" class="muted"></div>
-            <button class="btn btn-primary notif-link" onclick="openView('common')">Ir a sala común</button>
+            <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="openView('common')">Ir a sala común</button>
           </div>
           <div id="notif-none" class="muted">No hay notificaciones nuevas.</div>
         </div>
@@ -708,9 +607,17 @@
           <div class="panel-header">
             <div class="panel-kicker">Perfiles públicos</div>
             <h3>Usuarios de la comunidad</h3>
-            <p>Explora perfiles públicos aprobados y entra en su espacio visible.</p>
+            <p>Busca perfiles públicos aprobados y entra en su espacio visible.</p>
           </div>
           <div class="panel-body">
+            <div class="row" style="margin-bottom:16px;">
+              <input id="profiles-search" style="flex:1 1 240px;" placeholder="Buscar por nombre de usuario o nombre" oninput="loadPublicProfiles()" />
+              <input id="profiles-course-filter" style="flex:1 1 180px;" placeholder="Filtrar por curso" oninput="loadPublicProfiles()" />
+              <select id="profiles-sort" style="flex:0 0 180px;" onchange="loadPublicProfiles()">
+                <option value="alpha">Orden alfabético</option>
+                <option value="recent">Más recientes</option>
+              </select>
+            </div>
             <div id="profiles-list" class="user-grid"></div>
           </div>
         </div>
@@ -754,7 +661,7 @@
           <div class="panel-header">
             <div class="panel-kicker">Compartir archivos</div>
             <h3>Apuntes, documentos y recursos</h3>
-            <p>Sube archivos para compartir con la comunidad aprobada.</p>
+            <p>Sube archivos para compartir con la comunidad aprobada. Los archivos pasan por moderación.</p>
           </div>
           <div class="panel-body">
             <div class="field-grid">
@@ -768,7 +675,18 @@
             </div>
 
             <div style="height:16px"></div>
-            <div id="files-list" class="file-list"></div>
+
+            <div class="grid-2">
+              <div>
+                <h4>Archivos compartidos visibles</h4>
+                <div id="files-list" class="file-list"></div>
+              </div>
+              <div>
+                <h4>Mis archivos</h4>
+                <div id="my-files-list" class="file-list"></div>
+              </div>
+            </div>
+
             <div id="files-debug" class="debug"></div>
           </div>
         </div>
@@ -776,20 +694,41 @@
         <div id="view-admin" class="hidden">
           <div class="panel-header">
             <div class="panel-kicker">Panel privado</div>
-            <h3>Gestión de acceso</h3>
-            <p>Aprueba o bloquea usuarios. Solo lo ve el administrador.</p>
+            <h3>Moderación y gestión</h3>
+            <p>Aprueba o bloquea usuarios, modera archivos, limpia mensajes y revisa conversaciones privadas.</p>
           </div>
           <div class="panel-body">
-            <div id="admin-users-list"></div>
+            <div class="card" style="margin-bottom:16px;">
+              <h4>Usuarios</h4>
+              <div id="admin-users-list"></div>
+            </div>
+
+            <div class="card" style="margin-bottom:16px;">
+              <h4>Moderación de archivos</h4>
+              <div id="admin-files-list"></div>
+            </div>
+
+            <div class="card" style="margin-bottom:16px;">
+              <h4>Moderación de sala común</h4>
+              <div id="admin-common-list"></div>
+            </div>
+
+            <div class="card">
+              <h4>Moderación de mensajes privados</h4>
+              <div class="row" style="margin-bottom:12px;">
+                <select id="admin-private-user-a" class="panel-select" style="flex:1 1 220px;"></select>
+                <select id="admin-private-user-b" class="panel-select" style="flex:1 1 220px;"></select>
+                <button class="btn btn-dark" onclick="loadAdminPrivateConversation()">Cargar conversación</button>
+              </div>
+              <div id="admin-private-list"></div>
+            </div>
           </div>
         </div>
 
         <div id="view-wait" class="hidden">
-          <div class="wait-box">
-            <div>
-              <h3>Tu cuenta está pendiente de aprobación</h3>
-              <p>Puedes editar tu perfil, pero el acceso a la comunidad, perfiles, chats y archivos depende de que el administrador active tu cuenta.</p>
-            </div>
+          <div class="card" style="margin:24px;">
+            <h3>Tu cuenta está pendiente de aprobación</h3>
+            <p>Puedes editar tu perfil, pero el acceso a la comunidad, perfiles, chats y archivos depende de que el administrador active tu cuenta.</p>
           </div>
         </div>
       </section>
@@ -838,8 +777,8 @@
       <input id="pwd-new" class="panel-input" type="password" placeholder="Nueva contraseña" />
       <input id="pwd-confirm" class="panel-input" type="password" placeholder="Repite la nueva contraseña" />
 
-      <div id="pwd-error" class="auth-msg error"></div>
-      <div id="pwd-ok" class="auth-msg ok"></div>
+      <div id="pwd-error" class="msg error"></div>
+      <div id="pwd-ok" class="msg ok"></div>
 
       <div class="row">
         <button class="btn btn-primary" onclick="changePassword()">Guardar nueva contraseña</button>
@@ -868,15 +807,14 @@
       set,
       update,
       push,
-      query,
-      orderByChild,
-      equalTo
+      remove
     } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
     import {
       getStorage,
       ref as storageRef,
       uploadBytes,
-      getDownloadURL
+      getDownloadURL,
+      deleteObject
     } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
     const firebaseConfig = {
@@ -896,7 +834,7 @@
     const storage = getStorage(app);
 
     const ADMIN_EMAILS = [
-      "santiagodiazf@gmail.com"
+      "TU_CORREO_ADMIN@EJEMPLO.COM"
     ];
 
     let currentUser = null;
@@ -911,6 +849,14 @@
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .replace(/[^a-z0-9._-]/g, "");
+    }
+
+    function isApproved() {
+      return !!currentProfile?.approved || currentProfile?.role === "admin";
+    }
+
+    function isAdmin() {
+      return currentProfile?.role === "admin";
     }
 
     function showAuthMode(mode) {
@@ -1021,7 +967,7 @@
 
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         const uid = cred.user.uid;
-        const isAdmin = ADMIN_EMAILS.includes(email);
+        const admin = ADMIN_EMAILS.includes(email);
 
         const profile = {
           uid,
@@ -1034,8 +980,9 @@
           telefono,
           bio,
           photoURL: "",
-          approved: !!isAdmin,
-          role: isAdmin ? "admin" : "user",
+          approved: !!admin,
+          role: admin ? "admin" : "user",
+          canUpload: true,
           createdAt: new Date().toISOString(),
           publicVisible: true
         };
@@ -1057,13 +1004,9 @@
     window.signOutUser = signOutUser;
 
     function setTopUser(profile) {
-      const topName = document.getElementById("top-name");
-      const topLine = document.getElementById("top-line");
+      document.getElementById("top-name").textContent = profile?.username || "Usuario";
+      document.getElementById("top-line").textContent = `${profile?.email || ""} · ${profile?.curso || ""}`;
       const avatar = document.getElementById("top-avatar");
-
-      topName.textContent = profile?.username || "Usuario";
-      topLine.textContent = `${profile?.email || ""} · ${profile?.curso || ""}`;
-
       if (profile?.photoURL) {
         avatar.innerHTML = `<img src="${profile.photoURL}" alt="avatar">`;
       } else {
@@ -1073,27 +1016,19 @@
 
     function setApprovalBox(profile) {
       const box = document.getElementById("approval-box");
-      if (!profile) return;
-
-      const approved = !!profile.approved;
       box.innerHTML = `
         <div class="row" style="justify-content:space-between;align-items:center;">
           <div>
             <h4 style="margin-bottom:6px;">Estado de acceso</h4>
-            <p>${approved ? "Tu cuenta está activa y aprobada." : "Tu cuenta está pendiente de aprobación por el administrador."}</p>
+            <p>${profile.approved ? "Tu cuenta está activa y aprobada." : "Tu cuenta está pendiente de aprobación por el administrador."}</p>
           </div>
-          <span class="pill ${approved ? "on" : "off"}">${approved ? "Acceso activo" : "Pendiente"}</span>
+          <span class="pill ${profile.approved ? "on" : "off"}">${profile.approved ? "Acceso activo" : "Pendiente"}</span>
+        </div>
+        <div class="row" style="margin-top:10px;">
+          <span class="pill ${profile.canUpload ? "on" : "off"}">${profile.canUpload ? "Puede subir archivos" : "Subidas bloqueadas"}</span>
+          <span class="pill ${profile.publicVisible !== false ? "on" : "off"}">${profile.publicVisible !== false ? "Perfil público visible" : "Perfil oculto"}</span>
         </div>
       `;
-    }
-
-    function blockCommunityIfNeeded(profile) {
-      const approved = !!profile?.approved || profile?.role === "admin";
-      document.getElementById("admin-nav-btn").classList.toggle("hidden", profile?.role !== "admin");
-
-      if (!approved) {
-        document.getElementById("view-home").classList.remove("hidden");
-      }
     }
 
     async function loadProfile(uid) {
@@ -1110,13 +1045,11 @@
       document.getElementById("profile-telefono").value = profile?.telefono || "";
       document.getElementById("profile-bio").value = profile?.bio || "";
 
+      document.getElementById("profile-title-name").textContent =
+        `${profile?.nombre || ""} ${profile?.apellidos || ""}`.trim() || "Mi perfil";
+      document.getElementById("profile-title-sub").textContent = "@" + (profile?.username || "usuario");
+
       const preview = document.getElementById("profile-photo-preview");
-      const titleName = document.getElementById("profile-title-name");
-      const titleSub = document.getElementById("profile-title-sub");
-
-      titleName.textContent = `${profile?.nombre || ""} ${profile?.apellidos || ""}`.trim() || "Mi perfil";
-      titleSub.textContent = "@" + (profile?.username || "usuario");
-
       if (profile?.photoURL) {
         preview.innerHTML = `<img src="${profile.photoURL}" alt="foto">`;
       } else {
@@ -1169,7 +1102,7 @@
 
         if (newUsernameSlug !== currentProfile.usernameSlug) {
           await set(dbRef(db, "usernames/" + newUsernameSlug), currentUser.uid);
-          await set(dbRef(db, "usernames/" + currentProfile.usernameSlug), null);
+          await remove(dbRef(db, "usernames/" + currentProfile.usernameSlug));
         }
 
         currentProfile = { ...currentProfile, ...updates };
@@ -1178,7 +1111,7 @@
         debug.style.display = "block";
         debug.textContent = "Perfil guardado correctamente.";
         await loadPublicProfiles();
-        populatePrivateUsers();
+        await populatePrivateUsers();
       } catch (e) {
         console.error(e);
         debug.style.display = "block";
@@ -1232,12 +1165,33 @@
       try {
         const snap = await get(dbRef(db, "profiles"));
         const data = snap.exists() ? snap.val() : {};
-        const users = Object.values(data)
-          .filter(p => p.publicVisible !== false && p.approved)
-          .sort((a,b) => String(a.username || "").localeCompare(String(b.username || ""), "es"));
+        let users = Object.values(data)
+          .filter(p => p.publicVisible !== false && p.approved);
+
+        const search = document.getElementById("profiles-search").value.trim().toLowerCase();
+        const courseFilter = document.getElementById("profiles-course-filter").value.trim().toLowerCase();
+        const sort = document.getElementById("profiles-sort").value;
+
+        if (search) {
+          users = users.filter(u =>
+            String(u.username || "").toLowerCase().includes(search) ||
+            String(u.nombre || "").toLowerCase().includes(search) ||
+            String(u.apellidos || "").toLowerCase().includes(search)
+          );
+        }
+
+        if (courseFilter) {
+          users = users.filter(u => String(u.curso || "").toLowerCase().includes(courseFilter));
+        }
+
+        if (sort === "recent") {
+          users.sort((a,b) => Number(new Date(b.createdAt || 0)) - Number(new Date(a.createdAt || 0)));
+        } else {
+          users.sort((a,b) => String(a.username || "").localeCompare(String(b.username || ""), "es"));
+        }
 
         if (!users.length) {
-          wrap.innerHTML = "<div class='card'>No hay perfiles públicos disponibles.</div>";
+          wrap.innerHTML = "<div class='card'>No hay perfiles públicos disponibles con ese filtro.</div>";
           return;
         }
 
@@ -1285,9 +1239,9 @@
       try {
         const snap = await get(dbRef(db, "sharedFiles"));
         const data = snap.exists() ? snap.val() : {};
-        const files = Object.values(data).filter(f => f.ownerUid === uid);
+        const files = Object.values(data).filter(f => f.ownerUid === uid && f.approved && f.visible !== false);
         if (!files.length) {
-          fileBox.innerHTML = "<p class='muted'>Este usuario no ha compartido archivos todavía.</p>";
+          fileBox.innerHTML = "<p class='muted'>Este usuario no ha compartido archivos visibles todavía.</p>";
         } else {
           fileBox.innerHTML = files.map(f => `
             <div class="file-item">
@@ -1375,10 +1329,7 @@
 
       const previous = select.value;
       select.innerHTML = profiles.map(p => `<option value="${p.uid}">@${escapeHtml(p.username || "")} · ${escapeHtml(p.curso || "")}</option>`).join("");
-
-      if (profiles.some(p => p.uid === previous)) {
-        select.value = previous;
-      }
+      if (profiles.some(p => p.uid === previous)) select.value = previous;
     }
 
     async function getUserState() {
@@ -1446,6 +1397,7 @@
     window.loadCommonMessages = loadCommonMessages;
 
     async function sendCommonMessage() {
+      if (!isApproved()) return;
       const input = document.getElementById("common-input");
       const text = input.value.trim();
       if (!text) return;
@@ -1519,6 +1471,7 @@
     window.loadPrivateMessages = loadPrivateMessages;
 
     async function sendPrivateMessage() {
+      if (!isApproved()) return;
       const select = document.getElementById("private-user-select");
       const otherUid = select.value;
       const input = document.getElementById("private-input");
@@ -1627,7 +1580,7 @@
     }
 
     async function uploadSharedFile() {
-      if (!currentUser || !currentProfile?.approved && currentProfile?.role !== "admin") return;
+      if (!currentUser || !isApproved()) return;
 
       const title = document.getElementById("upload-title").value.trim();
       const description = document.getElementById("upload-description").value.trim();
@@ -1635,6 +1588,12 @@
       const debug = document.getElementById("files-debug");
 
       debug.style.display = "none";
+
+      if (!currentProfile.canUpload) {
+        debug.style.display = "block";
+        debug.textContent = "Tus subidas han sido bloqueadas por el administrador.";
+        return;
+      }
 
       if (!title || !file) {
         debug.style.display = "block";
@@ -1657,15 +1616,18 @@
           description,
           fileName: file.name,
           url,
+          storagePath: path,
           createdAt: new Date().toISOString(),
-          timestamp: Date.now()
+          timestamp: Date.now(),
+          approved: isAdmin(),
+          visible: true
         });
 
         document.getElementById("upload-title").value = "";
         document.getElementById("upload-description").value = "";
         document.getElementById("upload-file").value = "";
         debug.style.display = "block";
-        debug.textContent = "Archivo subido correctamente.";
+        debug.textContent = isAdmin() ? "Archivo subido y visible." : "Archivo subido y pendiente de moderación.";
         await loadSharedFiles();
       } catch (e) {
         console.error(e);
@@ -1675,121 +1637,283 @@
     }
     window.uploadSharedFile = uploadSharedFile;
 
+    async function deleteSharedFile(fileId) {
+      try {
+        const snap = await get(dbRef(db, "sharedFiles/" + fileId));
+        if (!snap.exists()) return;
+        const file = snap.val();
+
+        if (!isAdmin() && file.ownerUid !== currentUser.uid) return;
+
+        if (file.storagePath) {
+          try {
+            await deleteObject(storageRef(storage, file.storagePath));
+          } catch {}
+        }
+        await remove(dbRef(db, "sharedFiles/" + fileId));
+        await loadSharedFiles();
+        if (isAdmin()) await loadAdminFiles();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    window.deleteSharedFile = deleteSharedFile;
+
+    async function setFileModeration(fileId, updates) {
+      await update(dbRef(db, "sharedFiles/" + fileId), updates);
+      await loadSharedFiles();
+      await loadAdminFiles();
+    }
+    window.setFileModeration = setFileModeration;
+
     async function loadSharedFiles() {
       const box = document.getElementById("files-list");
+      const myBox = document.getElementById("my-files-list");
       box.innerHTML = "Cargando archivos...";
+      myBox.innerHTML = "Cargando archivos...";
+
       try {
         const snap = await get(dbRef(db, "sharedFiles"));
         const data = snap.exists() ? snap.val() : {};
         const files = Object.values(data || {}).sort((a,b) => Number(b.timestamp || 0) - Number(a.timestamp || 0));
 
-        if (!files.length) {
-          box.innerHTML = `<div class="file-item"><div class="file-meta">Sin archivos</div><div>No hay archivos compartidos todavía.</div></div>`;
-          return;
-        }
+        const visible = files.filter(f => f.visible !== false && f.approved);
+        const mine = files.filter(f => f.ownerUid === currentUser.uid);
 
-        box.innerHTML = files.map(f => `
+        box.innerHTML = visible.length ? visible.map(f => `
           <div class="file-item">
             <div class="file-meta">@${escapeHtml(f.ownerUsername || "usuario")} · ${escapeHtml(formatDateTime(f.createdAt))}</div>
             <strong>${escapeHtml(f.title || "Archivo")}</strong>
             <div style="margin:8px 0;">${escapeHtml(f.description || "")}</div>
             <a class="btn btn-dark" href="${f.url}" target="_blank" rel="noopener noreferrer">Abrir / descargar</a>
           </div>
-        `).join("");
+        `).join("") : `<div class="file-item"><div class="file-meta">Sin archivos</div><div>No hay archivos visibles todavía.</div></div>`;
+
+        myBox.innerHTML = mine.length ? mine.map(f => `
+          <div class="file-item">
+            <div class="file-meta">${escapeHtml(formatDateTime(f.createdAt))}</div>
+            <strong>${escapeHtml(f.title || "Archivo")}</strong>
+            <div style="margin:8px 0;">${escapeHtml(f.description || "")}</div>
+            <div class="row">
+              <span class="pill ${f.approved ? "on" : "off"}">${f.approved ? "Aprobado" : "Pendiente"}</span>
+              <span class="pill ${f.visible !== false ? "on" : "off"}">${f.visible !== false ? "Visible" : "Oculto"}</span>
+            </div>
+            <div class="row" style="margin-top:10px;">
+              <a class="btn btn-dark" href="${f.url}" target="_blank" rel="noopener noreferrer">Abrir</a>
+              <button class="btn btn-danger" onclick="deleteSharedFile('${f.id}')">Borrar</button>
+            </div>
+          </div>
+        `).join("") : `<div class="file-item"><div class="file-meta">Sin archivos propios</div><div>Todavía no has subido archivos.</div></div>`;
       } catch (e) {
         console.error(e);
         box.innerHTML = "No se pudieron cargar los archivos.";
+        myBox.innerHTML = "No se pudieron cargar tus archivos.";
       }
     }
 
     async function loadAdminUsers() {
       const box = document.getElementById("admin-users-list");
-      box.innerHTML = "Cargando usuarios...";
-      try {
-        const snap = await get(dbRef(db, "profiles"));
-        const data = snap.exists() ? snap.val() : {};
-        const users = Object.values(data || {}).sort((a,b) => Number(a.createdAt < b.createdAt ? 1 : -1));
+      const snap = await get(dbRef(db, "profiles"));
+      const data = snap.exists() ? snap.val() : {};
+      const users = Object.values(data || {}).sort((a,b) => Number(new Date(b.createdAt || 0)) - Number(new Date(a.createdAt || 0)));
 
-        if (!users.length) {
-          box.innerHTML = "<div class='card'>No hay usuarios registrados.</div>";
-          return;
-        }
-
-        box.innerHTML = users.map(user => `
-          <div class="user-item">
-            <div class="row" style="justify-content:space-between;align-items:flex-start;">
-              <div>
-                <strong>@${escapeHtml(user.username || "")}</strong>
-                <div class="muted">${escapeHtml(user.nombre || "")} ${escapeHtml(user.apellidos || "")}</div>
-                <div class="muted">${escapeHtml(user.email || "")}</div>
-                <div class="muted">${escapeHtml(user.curso || "")} · ${escapeHtml(user.telefono || "")}</div>
-              </div>
-              <span class="pill ${user.approved ? "on" : "off"}">${user.approved ? "Aprobado" : "Bloqueado"}</span>
+      box.innerHTML = users.length ? users.map(user => `
+        <div class="user-item">
+          <div class="row" style="justify-content:space-between;align-items:flex-start;">
+            <div>
+              <strong>@${escapeHtml(user.username || "")}</strong>
+              <div class="muted">${escapeHtml(user.nombre || "")} ${escapeHtml(user.apellidos || "")}</div>
+              <div class="muted">${escapeHtml(user.email || "")}</div>
+              <div class="muted">${escapeHtml(user.curso || "")} · ${escapeHtml(user.telefono || "")}</div>
             </div>
-            <div class="row" style="margin-top:12px;">
-              <button class="btn ${user.approved ? "btn-danger" : "btn-ok"}" onclick="toggleAccess('${user.uid}', ${user.approved ? "false" : "true"})">
-                ${user.approved ? "Quitar acceso" : "Dar acceso"}
-              </button>
+            <div class="row">
+              <span class="pill ${user.approved ? "on" : "off"}">${user.approved ? "Aprobado" : "Bloqueado"}</span>
+              <span class="pill ${user.canUpload ? "on" : "off"}">${user.canUpload ? "Puede subir" : "Subida bloqueada"}</span>
             </div>
           </div>
-        `).join("");
-      } catch (e) {
-        console.error(e);
-        box.innerHTML = "<div class='card'>No se pudieron cargar los usuarios.</div>";
-      }
+          <div class="row" style="margin-top:12px;">
+            <button class="btn ${user.approved ? "btn-danger" : "btn-ok"}" onclick="toggleAccess('${user.uid}', ${user.approved ? "false" : "true"})">
+              ${user.approved ? "Quitar acceso" : "Dar acceso"}
+            </button>
+            <button class="btn ${user.canUpload ? "btn-danger" : "btn-ok"}" onclick="toggleUpload('${user.uid}', ${user.canUpload ? "false" : "true"})">
+              ${user.canUpload ? "Bloquear subidas" : "Permitir subidas"}
+            </button>
+            <button class="btn btn-soft" onclick="togglePublicProfile('${user.uid}', ${user.publicVisible !== false ? "false" : "true"})">
+              ${user.publicVisible !== false ? "Ocultar perfil" : "Mostrar perfil"}
+            </button>
+          </div>
+        </div>
+      `).join("") : "<div class='card'>No hay usuarios registrados.</div>";
     }
 
     async function toggleAccess(uid, value) {
-      try {
-        await update(dbRef(db, "profiles/" + uid), {
-          approved: value,
-          reviewedAt: new Date().toISOString(),
-          reviewedBy: currentUser.uid
-        });
-        await loadAdminUsers();
-        if (currentUser?.uid === uid) {
-          currentProfile = await loadProfile(uid);
-        }
-      } catch (e) {
-        console.error(e);
-        alert("No se pudo actualizar el acceso.");
-      }
+      await update(dbRef(db, "profiles/" + uid), {
+        approved: value,
+        reviewedAt: new Date().toISOString(),
+        reviewedBy: currentUser.uid
+      });
+      await loadAdminUsers();
     }
     window.toggleAccess = toggleAccess;
 
+    async function toggleUpload(uid, value) {
+      await update(dbRef(db, "profiles/" + uid), {
+        canUpload: value,
+        uploadReviewedAt: new Date().toISOString()
+      });
+      await loadAdminUsers();
+    }
+    window.toggleUpload = toggleUpload;
+
+    async function togglePublicProfile(uid, value) {
+      await update(dbRef(db, "profiles/" + uid), {
+        publicVisible: value
+      });
+      await loadAdminUsers();
+      await loadPublicProfiles();
+    }
+    window.togglePublicProfile = togglePublicProfile;
+
+    async function loadAdminFiles() {
+      const box = document.getElementById("admin-files-list");
+      const snap = await get(dbRef(db, "sharedFiles"));
+      const data = snap.exists() ? snap.val() : {};
+      const files = Object.values(data || {}).sort((a,b) => Number(b.timestamp || 0) - Number(a.timestamp || 0));
+
+      box.innerHTML = files.length ? files.map(f => `
+        <div class="file-item">
+          <div class="file-meta">@${escapeHtml(f.ownerUsername || "usuario")} · ${escapeHtml(formatDateTime(f.createdAt))}</div>
+          <strong>${escapeHtml(f.title || "Archivo")}</strong>
+          <div style="margin:8px 0;">${escapeHtml(f.description || "")}</div>
+          <div class="row">
+            <span class="pill ${f.approved ? "on" : "off"}">${f.approved ? "Aprobado" : "Pendiente"}</span>
+            <span class="pill ${f.visible !== false ? "on" : "off"}">${f.visible !== false ? "Visible" : "Oculto"}</span>
+          </div>
+          <div class="row" style="margin-top:10px;">
+            <a class="btn btn-dark" href="${f.url}" target="_blank" rel="noopener noreferrer">Abrir</a>
+            <button class="btn ${f.approved ? "btn-soft" : "btn-ok"}" onclick="setFileModeration('${f.id}', { approved: ${f.approved ? "false" : "true"} })">
+              ${f.approved ? "Quitar aprobación" : "Aprobar"}
+            </button>
+            <button class="btn ${f.visible !== false ? "btn-soft" : "btn-ok"}" onclick="setFileModeration('${f.id}', { visible: ${f.visible !== false ? "false" : "true"} })">
+              ${f.visible !== false ? "Ocultar" : "Mostrar"}
+            </button>
+            <button class="btn btn-danger" onclick="deleteSharedFile('${f.id}')">Borrar</button>
+          </div>
+        </div>
+      `).join("") : "<div class='card'>No hay archivos.</div>";
+    }
+
+    async function loadAdminCommonMessages() {
+      const box = document.getElementById("admin-common-list");
+      const snap = await get(dbRef(db, "commonRoom"));
+      const data = snap.exists() ? snap.val() : {};
+      const messages = Object.entries(data || {})
+        .map(([id,val]) => ({ id, ...val }))
+        .sort((a,b) => Number(b.timestamp || 0) - Number(a.timestamp || 0))
+        .slice(0, 100);
+
+      box.innerHTML = messages.length ? messages.map(m => `
+        <div class="msg-item">
+          <div class="msg-meta">@${escapeHtml(m.fromUsername || "usuario")} · ${escapeHtml(formatDateTime(m.createdAt))}</div>
+          <div class="msg-text">${escapeHtml(m.text || "")}</div>
+          <div class="row" style="margin-top:10px;">
+            <button class="btn btn-danger" onclick="deleteCommonMessage('${m.id}')">Borrar mensaje</button>
+          </div>
+        </div>
+      `).join("") : "<div class='card'>No hay mensajes en la sala común.</div>";
+    }
+
+    async function deleteCommonMessage(id) {
+      await remove(dbRef(db, "commonRoom/" + id));
+      await loadAdminCommonMessages();
+      await loadCommonMessages(false);
+    }
+    window.deleteCommonMessage = deleteCommonMessage;
+
+    async function populateAdminPrivateUsers() {
+      const a = document.getElementById("admin-private-user-a");
+      const b = document.getElementById("admin-private-user-b");
+      const snap = await get(dbRef(db, "profiles"));
+      const data = snap.exists() ? snap.val() : {};
+      const users = Object.values(data || {}).sort((x,y) => String(x.username || "").localeCompare(String(y.username || ""), "es"));
+      const html = users.map(u => `<option value="${u.uid}">@${escapeHtml(u.username || "")}</option>`).join("");
+      a.innerHTML = html;
+      b.innerHTML = html;
+    }
+
+    async function loadAdminPrivateConversation() {
+      const a = document.getElementById("admin-private-user-a").value;
+      const b = document.getElementById("admin-private-user-b").value;
+      const box = document.getElementById("admin-private-list");
+      if (!a || !b || a === b) {
+        box.innerHTML = "<div class='card'>Selecciona dos usuarios distintos.</div>";
+        return;
+      }
+
+      const convoId = getConversationId(a, b);
+      const snap = await get(dbRef(db, "privateMessages/" + convoId));
+      const data = snap.exists() ? snap.val() : {};
+      const messages = Object.entries(data || {})
+        .map(([id,val]) => ({ id, ...val }))
+        .sort((x,y) => Number(y.timestamp || 0) - Number(x.timestamp || 0));
+
+      box.innerHTML = messages.length ? messages.map(m => `
+        <div class="msg-item">
+          <div class="msg-meta">@${escapeHtml(m.fromUsername || "usuario")} · ${escapeHtml(formatDateTime(m.createdAt))}</div>
+          <div class="msg-text">${escapeHtml(m.text || "")}</div>
+          <div class="row" style="margin-top:10px;">
+            <button class="btn btn-danger" onclick="deletePrivateMessage('${convoId}','${m.id}')">Borrar mensaje</button>
+          </div>
+        </div>
+      `).join("") : "<div class='card'>No hay mensajes en esa conversación.</div>";
+    }
+    window.loadAdminPrivateConversation = loadAdminPrivateConversation;
+
+    async function deletePrivateMessage(convoId, messageId) {
+      await remove(dbRef(db, "privateMessages/" + convoId + "/" + messageId));
+      await loadAdminPrivateConversation();
+    }
+    window.deletePrivateMessage = deletePrivateMessage;
+
     function hideViews() {
-      [
-        "home","profile","profiles","common","private","files","admin","wait"
-      ].forEach(name => {
+      ["home","profile","profiles","common","private","files","admin","wait"].forEach(name => {
         const el = document.getElementById("view-" + name);
         if (el) el.classList.add("hidden");
       });
-
       document.querySelectorAll(".nav-btn[data-view]").forEach(btn => btn.classList.remove("active"));
       stopCommonAuto();
     }
 
     async function openView(name) {
       hideViews();
+
+      if (!isApproved() && !["home","profile"].includes(name)) {
+        document.getElementById("view-wait").classList.remove("hidden");
+        return;
+      }
+
+      if (name === "admin" && !isAdmin()) {
+        document.getElementById("view-home").classList.remove("hidden");
+        return;
+      }
+
       const target = document.getElementById("view-" + name);
       if (target) target.classList.remove("hidden");
 
       const nav = document.querySelector(`.nav-btn[data-view="${name}"]`);
       if (nav) nav.classList.add("active");
 
-      const approved = !!currentProfile?.approved || currentProfile?.role === "admin";
-
-      if (!approved && !["home","profile"].includes(name)) {
-        hideViews();
-        document.getElementById("view-wait").classList.remove("hidden");
-        return;
-      }
-
       if (name === "profiles") await loadPublicProfiles();
       if (name === "common") { await loadCommonMessages(true); startCommonAuto(); }
       if (name === "private") { await populatePrivateUsers(); await loadPrivateMessages(true); }
       if (name === "files") await loadSharedFiles();
-      if (name === "admin" && currentProfile?.role === "admin") await loadAdminUsers();
+      if (name === "admin") {
+        await loadAdminUsers();
+        await loadAdminFiles();
+        await loadAdminCommonMessages();
+        await populateAdminPrivateUsers();
+        document.getElementById("admin-private-list").innerHTML = "<div class='card'>Selecciona dos usuarios y pulsa cargar conversación.</div>";
+      }
     }
     window.openView = openView;
 
@@ -1808,16 +1932,16 @@
       document.getElementById("app-shell").style.display = "block";
 
       currentProfile = await loadProfile(user.uid);
-
       if (!currentProfile) {
         await signOut(auth);
         return;
       }
 
+      document.getElementById("admin-nav-btn").classList.toggle("hidden", !isAdmin());
+
       setTopUser(currentProfile);
       setApprovalBox(currentProfile);
       fillProfileForm(currentProfile);
-      blockCommunityIfNeeded(currentProfile);
 
       await renderNotifications();
       startNotifAuto();
