@@ -474,7 +474,12 @@
         <div id="view-private" class="hidden"></div>
         <div id="view-files" class="hidden"></div>
         <div id="view-admin" class="hidden"></div>
-        <div id="view-wait" class="hidden"><div class="card" style="margin:24px;"><h3>Tu cuenta está pendiente de aprobación</h3><p>Puedes editar tu perfil y tus datos de cuenta, pero el acceso a la comunidad depende de la activación del administrador. La bitácora básica sigue accesible si tú eres admin.</p></div></div>
+        <div id="view-wait" class="hidden">
+          <div class="card" style="margin:24px;">
+            <h3>Tu cuenta está pendiente de aprobación</h3>
+            <p>Puedes editar tu perfil y tus datos de cuenta, pero el acceso a la comunidad depende de la activación del administrador.</p>
+          </div>
+        </div>
       </section>
     </div>
 
@@ -487,8 +492,44 @@
     </div>
   </div>
 
-  <div id="profile-modal-backdrop" class="modal-backdrop"><div class="modal"><div class="row" style="justify-content:space-between;align-items:flex-start;"><div><div class="panel-kicker">Perfil público</div><h3 id="modal-profile-name">Usuario</h3><p id="modal-profile-sub">@usuario</p></div><button class="btn btn-soft" onclick="closeProfileModal()">Cerrar</button></div><div class="profile-banner card" style="margin:12px 0 16px;"><div class="profile-big" id="modal-profile-photo">M</div><div><div><strong>Curso:</strong> <span id="modal-profile-course"></span></div><div><strong>Nombre:</strong> <span id="modal-profile-fullname"></span></div></div></div><div class="card"><h4>Sobre este usuario</h4><p id="modal-profile-bio"></p></div><div style="height:16px"></div><div class="card"><h4>Archivos compartidos</h4><div id="modal-profile-files"></div></div></div></div>
-  <div id="password-modal-backdrop" class="modal-backdrop"><div class="modal" style="max-width:520px;"><h3>Cambiar contraseña</h3><p>Introduce tu contraseña actual y la nueva.</p><input id="pwd-current" type="password" placeholder="Contraseña actual" /><input id="pwd-new" type="password" placeholder="Nueva contraseña" /><input id="pwd-confirm" type="password" placeholder="Repite la nueva contraseña" /><div id="pwd-error" class="msg error"></div><div id="pwd-ok" class="msg ok"></div><div class="row"><button class="btn btn-primary" onclick="changePassword()">Guardar nueva contraseña</button><button class="btn btn-soft" onclick="closePasswordModal()">Cancelar</button></div></div></div>
+  <div id="profile-modal-backdrop" class="modal-backdrop">
+    <div class="modal">
+      <div class="row" style="justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div class="panel-kicker">Perfil público</div>
+          <h3 id="modal-profile-name">Usuario</h3>
+          <p id="modal-profile-sub">@usuario</p>
+        </div>
+        <button class="btn btn-soft" onclick="closeProfileModal()">Cerrar</button>
+      </div>
+      <div class="profile-banner card" style="margin:12px 0 16px;">
+        <div class="profile-big" id="modal-profile-photo">M</div>
+        <div>
+          <div><strong>Curso:</strong> <span id="modal-profile-course"></span></div>
+          <div><strong>Nombre:</strong> <span id="modal-profile-fullname"></span></div>
+        </div>
+      </div>
+      <div class="card"><h4>Sobre este usuario</h4><p id="modal-profile-bio"></p></div>
+      <div style="height:16px"></div>
+      <div class="card"><h4>Archivos compartidos</h4><div id="modal-profile-files"></div></div>
+    </div>
+  </div>
+
+  <div id="password-modal-backdrop" class="modal-backdrop">
+    <div class="modal" style="max-width:520px;">
+      <h3>Cambiar contraseña</h3>
+      <p>Introduce tu contraseña actual y la nueva.</p>
+      <input id="pwd-current" type="password" placeholder="Contraseña actual" />
+      <input id="pwd-new" type="password" placeholder="Nueva contraseña" />
+      <input id="pwd-confirm" type="password" placeholder="Repite la nueva contraseña" />
+      <div id="pwd-error" class="msg error"></div>
+      <div id="pwd-ok" class="msg ok"></div>
+      <div class="row">
+        <button class="btn btn-primary" onclick="changePassword()">Guardar nueva contraseña</button>
+        <button class="btn btn-soft" onclick="closePasswordModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
@@ -720,32 +761,47 @@
     }
 
     async function usernameAvailable(usernameSlug,currentUid=null){
-      const snap=await get(dbRef(db,"usernames/"+usernameSlug));
+      const snap = await get(dbRef(db,"usernames/"+usernameSlug));
       if(!snap.exists()) return true;
-      return snap.val()===currentUid;
+
+      const val = snap.val();
+
+      if(typeof val === "string") return val === currentUid;
+      if(val && typeof val === "object") return val.uid === currentUid;
+
+      return false;
     }
 
     async function resolveEmailFromIdentifier(identifier){
-      const value=String(identifier||"").trim();
+      const value = String(identifier || "").trim();
       if(!value) return "";
       if(value.includes("@")) return value.toLowerCase();
 
-      const usernameSlug=slugifyUsername(value);
-      const usernameSnap=await get(dbRef(db,"usernames/"+usernameSlug));
+      const usernameSlug = slugifyUsername(value);
+      const usernameSnap = await get(dbRef(db,"usernames/"+usernameSlug));
+
       if(!usernameSnap.exists()) throw new Error("Nombre de usuario no encontrado.");
 
-      const uid=usernameSnap.val();
-      const profileSnap=await get(dbRef(db,"profiles/"+uid));
-      if(!profileSnap.exists()) throw new Error("No se encontró el perfil de ese usuario.");
+      const usernameData = usernameSnap.val();
 
-      const email=String(profileSnap.val()?.email || "").trim().toLowerCase();
-      if(!email) throw new Error("Ese usuario no tiene correo asociado.");
-      return email;
+      if(typeof usernameData === "object" && usernameData?.email){
+        return String(usernameData.email).trim().toLowerCase();
+      }
+
+      if(typeof usernameData === "string"){
+        const uid = usernameData;
+        const profileSnap = await get(dbRef(db,"profiles/"+uid));
+        if(!profileSnap.exists()) throw new Error("No se encontró el perfil de ese usuario.");
+        const email = String(profileSnap.val()?.email || "").trim().toLowerCase();
+        if(!email) throw new Error("Ese usuario no tiene correo asociado.");
+        return email;
+      }
+
+      throw new Error("No se pudo resolver el correo de ese usuario.");
     }
 
     async function login(){
       clearAuthMsgs();
-
       const identifier=String(document.getElementById("login-identifier")?.value||"").trim();
       const password=String(document.getElementById("login-password")?.value||"");
 
@@ -765,8 +821,8 @@
 
     async function sendReset(){
       clearAuthMsgs();
-
       const identifier=String(document.getElementById("login-identifier")?.value||"").trim();
+
       if(!identifier){
         setAuthError("Escribe tu correo o nombre de usuario para restablecer la contraseña.");
         return;
@@ -840,7 +896,7 @@
         };
 
         await set(dbRef(db,"profiles/"+uid),profile);
-        await set(dbRef(db,"usernames/"+usernameSlug),uid);
+        await set(dbRef(db,"usernames/"+usernameSlug), { uid, email });
         await update(dbRef(db,"userState/"+uid),{ commonLastRead: 0 });
         await update(dbRef(db,"visitas/"+uid),{ total: 0 });
 
@@ -850,7 +906,6 @@
         document.getElementById("login-password").value = "";
       }catch(e){
         console.error("ERROR EN REGISTER", e);
-
         if(e?.code === "auth/email-already-in-use") return setAuthError("Ese correo ya está registrado.");
         if(e?.code === "auth/invalid-email") return setAuthError("El correo no es válido.");
         if(e?.code === "auth/weak-password") return setAuthError("La contraseña es demasiado débil.");
@@ -975,8 +1030,16 @@
         await update(dbRef(db,"profiles/"+currentUser.uid),updates);
 
         if(newUsernameSlug!==currentProfile.usernameSlug){
-          await set(dbRef(db,"usernames/"+newUsernameSlug),currentUser.uid);
+          await set(dbRef(db,"usernames/"+newUsernameSlug),{
+            uid: currentUser.uid,
+            email: newEmail
+          });
           await remove(dbRef(db,"usernames/"+currentProfile.usernameSlug));
+        } else {
+          await set(dbRef(db,"usernames/"+newUsernameSlug),{
+            uid: currentUser.uid,
+            email: newEmail
+          });
         }
 
         currentProfile={...currentProfile,...updates};
@@ -1385,7 +1448,7 @@
     }
 
     async function renderNotifications(){
-      if(!currentUser) return;
+      if(!currentUser || !isApproved()) return;
 
       const privateBox=document.getElementById("notif-private");
       const commonBox=document.getElementById("notif-common");
@@ -1614,12 +1677,22 @@
     }
 
     async function toggleAccess(uid,value){
-      await update(dbRef(db,"profiles/"+uid),{ approved:value, reviewedAt:new Date().toISOString(), reviewedBy:currentUser.uid });
+      await update(dbRef(db,"profiles/"+uid),{
+        approved:value,
+        reviewedAt:new Date().toISOString(),
+        reviewedBy:currentUser.uid
+      });
       await loadAdminUsers();
+      if(currentUser?.uid === uid){
+        currentProfile.approved = value;
+      }
     }
 
     async function toggleUpload(uid,value){
-      await update(dbRef(db,"profiles/"+uid),{ canUpload:value, uploadReviewedAt:new Date().toISOString() });
+      await update(dbRef(db,"profiles/"+uid),{
+        canUpload:value,
+        uploadReviewedAt:new Date().toISOString()
+      });
       await loadAdminUsers();
     }
 
@@ -1739,6 +1812,16 @@
       document.querySelectorAll(".mobile-dock .dock-btn[data-view]").forEach(btn=>btn.classList.toggle("active", btn.dataset.view === name));
     }
 
+    function applyPendingNavigationState(){
+      const restricted = ["profiles","common","private","files"];
+      restricted.forEach(name=>{
+        document.querySelectorAll(`[data-view="${name}"]`).forEach(btn=>{
+          btn.classList.toggle("hidden", !isApproved());
+        });
+      });
+      document.getElementById("admin-nav-btn").classList.toggle("hidden", !isAdmin());
+    }
+
     function hideViews(){
       ["home","study","profile","profiles","common","private","files","admin","wait"].forEach(name=>{
         const el=document.getElementById("view-"+name);
@@ -1793,10 +1876,44 @@
       if(studyView && studyView.classList.contains("hidden")) openView("study");
     }
 
+    function sanitizeWorkspaceFrame(){
+      const frame=document.getElementById("workspace-frame");
+      if(!frame) return;
+
+      try{
+        const doc = frame.contentDocument || frame.contentWindow.document;
+        if(!doc) return;
+
+        const selectors = [
+          "header",
+          ".hero",
+          ".topbar",
+          ".site-header",
+          ".main-header",
+          ".page-header",
+          "nav",
+          ".navbar"
+        ];
+
+        selectors.forEach(sel=>{
+          const nodes = doc.querySelectorAll(sel);
+          nodes.forEach((node, index)=>{
+            if(index === 0) node.style.display = "none";
+          });
+        });
+
+        doc.body.style.marginTop = "0";
+        doc.documentElement.style.scrollBehavior = "smooth";
+      }catch(e){
+        console.log("No se pudo sanear el contenido del iframe", e);
+      }
+    }
+
     function openInWorkspace(url,title="Zona de trabajo"){
       const frame=document.getElementById("workspace-frame");
       const empty=document.getElementById("workspace-empty");
       document.getElementById("workspace-title").textContent=title;
+      frame.onload = sanitizeWorkspaceFrame;
       frame.src=url;
       frame.style.display="block";
       empty.style.display="none";
@@ -1880,9 +1997,14 @@
 
           await set(dbRef(db,"profiles/"+user.uid),currentProfile);
 
-          const usernameRef=dbRef(db,"usernames/"+usernameSlug);
-          const usernameSnap=await get(usernameRef);
-          if(!usernameSnap.exists()) await set(usernameRef,user.uid);
+          const usernameRef = dbRef(db,"usernames/"+usernameSlug);
+          const usernameSnap = await get(usernameRef);
+          if(!usernameSnap.exists()){
+            await set(usernameRef,{
+              uid: user.uid,
+              email
+            });
+          }
         }
 
         const authEmail=String(user.email||"").trim().toLowerCase();
@@ -1903,12 +2025,15 @@
         setTopUser(currentProfile);
         fillProfileForm(currentProfile);
         setApprovalBox(currentProfile);
-        document.getElementById("admin-nav-btn").classList.toggle("hidden", !isAdmin());
-
+        applyPendingNavigationState();
         await countSessionVisit(currentUser.uid);
         await updateRankInfoUI();
-        await renderNotifications();
-        startNotifAuto();
+        if(isApproved()){
+          await renderNotifications();
+          startNotifAuto();
+        }else{
+          stopNotifAuto();
+        }
         await renderStudyAdminZone();
         await openView("home");
       }catch(e){
@@ -1917,7 +2042,6 @@
       }
     });
 
-    window.setActiveNavState = setActiveNavState;
     window.showAuthMode = showAuthMode;
     window.login = login;
     window.register = register;
