@@ -47,7 +47,7 @@
     }
 
     .auth-card{
-      width:min(700px,100%);
+      width:min(760px,100%);
       background:rgba(255,255,255,.98);
       border-radius:28px;
       box-shadow:var(--shadow-2);
@@ -76,7 +76,6 @@
       grid-template-columns:1fr 1fr;
       gap:12px;
     }
-
     .field-full{grid-column:1/-1}
 
     input,textarea,select{
@@ -110,7 +109,6 @@
       justify-content:center;
       gap:8px;
     }
-
     .btn:hover{transform:translateY(-1px)}
     .btn-primary{color:#143140;background:linear-gradient(135deg,var(--gold2),var(--gold));box-shadow:0 10px 20px rgba(201,153,82,.26)}
     .btn-dark{color:#fff;background:linear-gradient(135deg,var(--navy2),var(--navy));box-shadow:0 10px 20px rgba(20,77,99,.24)}
@@ -505,7 +503,7 @@
           <button class="nav-btn" data-view="common" onclick="openView('common')">💬 Sala común</button>
           <button class="nav-btn" data-view="private" onclick="openView('private')">✉️ Mensajes privados</button>
           <button class="nav-btn" data-view="files" onclick="openView('files')">📚 Compartir archivos</button>
-          <button class="nav-btn hidden" id="admin-nav-btn" data-view="admin" onclick="openView('admin')">🛡️ Panel privado</button>
+          <button class="nav-btn hidden" id="admin-nav-btn" data-view="admin" onclick="openView('admin')">🛡️ Parte privada</button>
         </div>
 
         <div class="notif-box">
@@ -716,9 +714,9 @@
 
         <div id="view-admin" class="hidden">
           <div class="panel-header">
-            <div class="panel-kicker">Panel privado</div>
-            <h3>Moderación y gestión</h3>
-            <p>Aprueba o bloquea usuarios, modera archivos, limpia mensajes y revisa conversaciones privadas.</p>
+            <div class="panel-kicker">Parte privada</div>
+            <h3>Moderación y control</h3>
+            <p>Aquí el administrador puede controlar usuarios, archivos, sala común y mensajes privados.</p>
           </div>
           <div class="panel-body">
             <div class="card" style="margin-bottom:16px;">
@@ -857,35 +855,12 @@
     const db = getDatabase(app);
     const storage = getStorage(app);
 
-    const ADMIN_EMAILS = [
-      "santiagodiaz@gmail.com"
-    ];
+    const ADMIN_EMAILS = ["santiagodiaz@gmail.com"];
 
     let currentUser = null;
     let currentProfile = null;
     let commonInterval = null;
     let notifInterval = null;
-
-    const SUBJECTS = [
-      "Biología Celular",
-      "Anatomía 1",
-      "Anatomía 2",
-      "Comunicación Médica",
-      "Física Médica",
-      "Sociología Sanitaria",
-      "Bioquímica de los Nutrientes",
-      "Bioquímica Médica",
-      "Bioquímica Humana",
-      "Fisiología Celular y Tisular 1",
-      "Embriología e Histología 1",
-      "Bioestadística"
-    ];
-
-    const FILE_CATEGORIES = [
-      "Apuntes / Resumen / Esquema",
-      "Libro",
-      "Actividades"
-    ];
 
     function slugifyUsername(str) {
       return String(str || "")
@@ -896,12 +871,32 @@
         .replace(/[^a-z0-9._-]/g, "");
     }
 
-    function isApproved() {
-      return !!currentProfile?.approved || currentProfile?.role === "admin";
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function formatDateTime(iso) {
+      if (!iso) return "—";
+      try { return new Date(iso).toLocaleString("es-ES"); }
+      catch { return iso; }
+    }
+
+    function getConversationId(a, b) {
+      return [a, b].sort().join("__");
     }
 
     function isAdmin() {
-      return currentProfile?.role === "admin";
+      return currentProfile?.role === "admin" ||
+             String(currentProfile?.email || "").toLowerCase() === "santiagodiaz@gmail.com";
+    }
+
+    function isApproved() {
+      return !!currentProfile?.approved || isAdmin();
     }
 
     function showAuthMode(mode) {
@@ -945,7 +940,7 @@
     async function resolveEmailFromIdentifier(identifier) {
       const value = identifier.trim();
       if (!value) return "";
-      if (value.includes("@")) return value;
+      if (value.includes("@")) return value.toLowerCase();
 
       const usernameSlug = slugifyUsername(value);
       const snap = await get(dbRef(db, "usernames/" + usernameSlug));
@@ -957,7 +952,7 @@
 
       const profile = profileSnap.val();
       if (!profile.email) throw new Error("Ese usuario no tiene correo asociado.");
-      return profile.email;
+      return String(profile.email).toLowerCase();
     }
 
     async function login() {
@@ -1004,7 +999,7 @@
       const curso = document.getElementById("reg-curso").value.trim();
       const nombre = document.getElementById("reg-nombre").value.trim();
       const apellidos = document.getElementById("reg-apellidos").value.trim();
-      const email = document.getElementById("reg-email").value.trim();
+      const email = document.getElementById("reg-email").value.trim().toLowerCase();
       const telefono = document.getElementById("reg-telefono").value.trim();
       const password = document.getElementById("reg-password").value;
       const bio = document.getElementById("reg-bio").value.trim();
@@ -1033,9 +1028,7 @@
 
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         const uid = cred.user.uid;
-        const ADMIN_EMAILS = [
-  "santiagodiaz@gmail.com"
-];
+        const admin = email === "santiagodiaz@gmail.com";
 
         const profile = {
           uid,
@@ -1088,13 +1081,14 @@
         <div class="row" style="justify-content:space-between;align-items:center;">
           <div>
             <h4 style="margin-bottom:6px;">Estado de acceso</h4>
-            <p>${profile.approved ? "Tu cuenta está activa y aprobada." : "Tu cuenta está pendiente de aprobación por el administrador."}</p>
+            <p>${isApproved() ? "Tu cuenta está activa y aprobada." : "Tu cuenta está pendiente de aprobación por el administrador."}</p>
           </div>
-          <span class="pill ${profile.approved ? "on" : "off"}">${profile.approved ? "Acceso activo" : "Pendiente"}</span>
+          <span class="pill ${isApproved() ? "on" : "off"}">${isApproved() ? "Acceso activo" : "Pendiente"}</span>
         </div>
         <div class="row" style="margin-top:10px;">
           <span class="pill ${profile.canUpload ? "on" : "off"}">${profile.canUpload ? "Puede subir archivos" : "Subidas bloqueadas"}</span>
           <span class="pill ${profile.publicVisible !== false ? "on" : "off"}">${profile.publicVisible !== false ? "Perfil público visible" : "Perfil oculto"}</span>
+          ${isAdmin() ? '<span class="pill on">Administrador</span>' : ''}
         </div>
       `;
     }
@@ -1133,7 +1127,7 @@
       const curso = document.getElementById("profile-curso").value.trim();
       const nombre = document.getElementById("profile-nombre").value.trim();
       const apellidos = document.getElementById("profile-apellidos").value.trim();
-      const newEmail = document.getElementById("profile-email").value.trim();
+      const newEmail = document.getElementById("profile-email").value.trim().toLowerCase();
       const telefono = document.getElementById("profile-telefono").value.trim();
       const bio = document.getElementById("profile-bio").value.trim();
       const debug = document.getElementById("profile-debug");
@@ -1169,6 +1163,11 @@
           updatedAt: new Date().toISOString()
         };
 
+        if (newEmail === "santiagodiaz@gmail.com") {
+          updates.role = "admin";
+          updates.approved = true;
+        }
+
         await update(dbRef(db, "profiles/" + currentUser.uid), updates);
 
         if (newUsernameSlug !== currentProfile.usernameSlug) {
@@ -1180,6 +1179,7 @@
         setTopUser(currentProfile);
         fillProfileForm(currentProfile);
         setApprovalBox(currentProfile);
+        document.getElementById("admin-nav-btn").classList.toggle("hidden", !isAdmin());
         debug.style.display = "block";
         debug.textContent = "Datos de cuenta y perfil guardados correctamente.";
         await loadPublicProfiles();
@@ -1230,28 +1230,6 @@
     }
     window.uploadProfilePhoto = uploadProfilePhoto;
 
-    function formatDateTime(iso) {
-      if (!iso) return "—";
-      try {
-        return new Date(iso).toLocaleString("es-ES");
-      } catch {
-        return iso;
-      }
-    }
-
-    function escapeHtml(str) {
-      return String(str ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#39;");
-    }
-
-    function getConversationId(a, b) {
-      return [a, b].sort().join("__");
-    }
-
     async function loadPublicProfiles() {
       const wrap = document.getElementById("profiles-list");
       wrap.innerHTML = "<div class='card'>Cargando perfiles...</div>";
@@ -1259,8 +1237,7 @@
       try {
         const snap = await get(dbRef(db, "profiles"));
         const data = snap.exists() ? snap.val() : {};
-        let users = Object.values(data)
-          .filter(p => p.publicVisible !== false && p.approved);
+        let users = Object.values(data).filter(p => p.publicVisible !== false && p.approved);
 
         const search = document.getElementById("profiles-search").value.trim().toLowerCase();
         const courseFilter = document.getElementById("profiles-course-filter").value.trim().toLowerCase();
@@ -1758,9 +1735,7 @@
         if (!isAdmin() && file.ownerUid !== currentUser.uid) return;
 
         if (file.storagePath) {
-          try {
-            await deleteObject(storageRef(storage, file.storagePath));
-          } catch {}
+          try { await deleteObject(storageRef(storage, file.storagePath)); } catch {}
         }
         await remove(dbRef(db, "sharedFiles/" + fileId));
         await loadSharedFiles();
@@ -2065,6 +2040,12 @@
       if (!currentProfile) {
         await signOut(auth);
         return;
+      }
+
+      if (String(currentProfile.email || "").toLowerCase() === "santiagodiaz@gmail.com" && currentProfile.role !== "admin") {
+        await update(dbRef(db, "profiles/" + user.uid), { role: "admin", approved: true });
+        currentProfile.role = "admin";
+        currentProfile.approved = true;
       }
 
       document.getElementById("admin-nav-btn").classList.toggle("hidden", !isAdmin());
