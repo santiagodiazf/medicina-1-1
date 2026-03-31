@@ -172,7 +172,8 @@
     .side .nav-btn.active{color:#143140;background:linear-gradient(135deg,var(--gold2),var(--gold));border-color:transparent}
 
     .notif-box{margin-top:16px;padding:14px;border-radius:16px;background:#fff;border:1px solid #e8edef}
-    .notif-item{padding:10px 0;border-bottom:1px solid #eef2f4}.notif-item:last-child{border-bottom:none}
+    .notif-item{padding:10px 0;border-bottom:1px solid #eef2f4}
+    .notif-item:last-child{border-bottom:none}
 
     .panel-header,.deck-header{padding:22px 24px 18px;border-bottom:1px solid var(--line);background:radial-gradient(circle at top right, rgba(201,153,82,.14), transparent 28%), linear-gradient(180deg, rgba(20,77,99,.03), transparent)}
     .panel-body,.main-content{padding:22px 24px 24px}
@@ -190,7 +191,8 @@
     .user-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
     .user-card{background:#fff;border:1px solid #e8edef;border-radius:18px;padding:16px}
     .user-card-top{display:flex;gap:12px;align-items:center;margin-bottom:10px}
-    .pill.off{background:#fff1ef;color:#b43e36}.pill.on{background:#edf8f1;color:#2d7b57}
+    .pill.off{background:#fff1ef;color:#b43e36}
+    .pill.on{background:#edf8f1;color:#2d7b57}
 
     .modal-backdrop{display:none;position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);justify-content:center;align-items:center;padding:20px}
     .modal{width:min(820px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:26px;box-shadow:0 18px 40px rgba(0,0,0,.16);padding:24px}
@@ -207,18 +209,13 @@
     .semester-card:hover{transform:translateY(-5px);box-shadow:0 18px 32px rgba(0,0,0,.10);border-color:rgba(23,49,64,.16)}
     .semester-card:active{transform:translateY(-2px)}
     .card-topline{display:flex;justify-content:space-between;align-items:center;gap:12px}
-    .icon{font-size:2rem;line-height:1}.nav-label{font-size:.76rem;padding:7px 10px}
+    .icon{font-size:2rem;line-height:1}
+    .nav-label{font-size:.76rem;padding:7px 10px}
     .semester-card h3{margin:4px 0 0;font-size:1.28rem;font-weight:800}
     .semester-card p{margin:0;color:var(--muted);line-height:1.5;font-size:.96rem}
     .semester-card .enter-text{margin-top:auto;font-weight:800;font-size:.92rem;opacity:.85}
     .disabled{opacity:.62;cursor:not-allowed;background:rgba(245,245,245,.9)}
     .disabled:hover{transform:none;box-shadow:0 10px 22px rgba(0,0,0,.05)}
-    .admin-stats-panel{margin-top:20px;background:#fff;padding:20px;border-radius:18px;border:2px solid var(--privado-color);box-shadow:0 10px 24px rgba(0,0,0,.05)}
-    .admin-stats-panel h3{margin-top:0;color:var(--privado-color)}
-    .admin-stats-panel ul{list-style:none;padding:0;margin:0}
-    .admin-stats-panel li{padding:10px 0;border-bottom:1px solid #eee;font-size:1rem;display:flex;justify-content:space-between;gap:16px}
-    .admin-stats-panel li:last-child{border-bottom:none}
-    .admin-note{font-size:.85rem;color:#7f8c8d;margin-top:15px;font-style:italic}
 
     .workspace-topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:18px 20px;border-bottom:1px solid var(--line);background:linear-gradient(135deg, rgba(20,77,99,0.05), rgba(201,153,82,0.08))}
     .workspace-title{display:flex;flex-direction:column;gap:4px}
@@ -266,7 +263,6 @@
       .nav-list{grid-template-columns:1fr 1fr;gap:8px}
       .notif-box{margin-top:12px}
       .panel,.side,.deck-panel,.workspace-shell,.card,.semester-card{border-radius:16px}
-      .side{padding:12px;position:sticky;top:8px;z-index:20;background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,255,255,.94))}
       .side{display:none}
       .side .nav-btn,.btn,.nav-btn{min-height:46px}
       .course-title{font-size:1rem;padding:12px 14px}
@@ -562,7 +558,7 @@ Que no cunda el pánico: entre todos, este barco llega a puerto.</p>
             <div class="enter-text">Abrir archivo →</div>
           </a>
         </div>
-        </div>
+      </div>
     `); }
 
     async function renderStudyAdminZone(){ if(!isAdmin()) return; setStudyAdminZoneHtml(""); await loadAdminVisits(); }
@@ -584,25 +580,27 @@ Que no cunda el pánico: entre todos, este barco llega a puerto.</p>
 
     async function signOutUser(){ stopCommonAuto(); stopNotifAuto(); await signOut(auth); }
     function setTopUser(profile){ document.getElementById("top-name").textContent=profile?.username || "Usuario"; document.getElementById("top-line").textContent=`${profile?.email || ""} · ${profile?.curso || ""}`; const avatar=document.getElementById("top-avatar"); if(profile?.photoURL) avatar.innerHTML=`<img src="${profile.photoURL}" alt="avatar">`; else avatar.textContent=getAvatarText(profile); }
-    function setApprovalBox(profile){
-  const box = document.getElementById("approval-box");
-  if (!box) return;
 
-  box.innerHTML = `
-    <div class="row" style="justify-content:space-between;align-items:center;">
-      <div>
-        <h4 style="margin-bottom:6px;">Estado de acceso</h4>
-        <p>${isApproved() ? "Tu cuenta está activa y aprobada." : "Tu cuenta está pendiente de aprobación por el administrador."}</p>
-      </div>
-      <span class="pill ${isApproved() ? "on" : "off"}">${isApproved() ? "Acceso activo" : "Pendiente"}</span>
-    </div>
-    <div class="row" style="margin-top:10px;">
-      <span class="pill ${profile.canUpload ? "on" : "off"}">${profile.canUpload ? "Puede subir archivos" : "Subidas bloqueadas"}</span>
-      <span class="pill ${profile.publicVisible !== false ? "on" : "off"}">${profile.publicVisible !== false ? "Perfil público visible" : "Perfil oculto"}</span>
-      ${isAdmin() ? '<span class="pill on">Administrador</span>' : ''}
-    </div>
-  `;
-}
+    function setApprovalBox(profile){
+      const box = document.getElementById("approval-box");
+      if (!box) return;
+
+      box.innerHTML = `
+        <div class="row" style="justify-content:space-between;align-items:center;">
+          <div>
+            <h4 style="margin-bottom:6px;">Estado de acceso</h4>
+            <p>${isApproved() ? "Tu cuenta está activa y aprobada." : "Tu cuenta está pendiente de aprobación por el administrador."}</p>
+          </div>
+          <span class="pill ${isApproved() ? "on" : "off"}">${isApproved() ? "Acceso activo" : "Pendiente"}</span>
+        </div>
+        <div class="row" style="margin-top:10px;">
+          <span class="pill ${profile.canUpload ? "on" : "off"}">${profile.canUpload ? "Puede subir archivos" : "Subidas bloqueadas"}</span>
+          <span class="pill ${profile.publicVisible !== false ? "on" : "off"}">${profile.publicVisible !== false ? "Perfil público visible" : "Perfil oculto"}</span>
+          ${isAdmin() ? '<span class="pill on">Administrador</span>' : ''}
+        </div>
+      `;
+    }
+
     async function loadProfile(uid){ const snap=await get(dbRef(db,"profiles/"+uid)); return snap.exists()?snap.val():null; }
 
     function ensureBigViewsMarkup(){
@@ -706,6 +704,7 @@ Que no cunda el pánico: entre todos, este barco llega a puerto.</p>
       const studyView = document.getElementById("view-study");
       if(studyView && studyView.classList.contains("hidden")) openView("study");
     }
+
     function openInWorkspace(url,title="Zona de trabajo"){
       const frame=document.getElementById("workspace-frame");
       const empty=document.getElementById("workspace-empty");
@@ -718,6 +717,7 @@ Que no cunda el pánico: entre todos, este barco llega a puerto.</p>
       setActiveNavState("study");
       window.scrollTo({top:0,behavior:"smooth"});
     }
+
     function reloadWorkspace(){ const frame=document.getElementById("workspace-frame"); if(frame&&frame.src){ try{ frame.contentWindow.location.reload(); }catch{ frame.src=frame.src; } } }
     function goBackWorkspace(){ const frame=document.getElementById("workspace-frame"); if(!frame||!frame.src) return; try{ frame.contentWindow.history.back(); }catch{ console.warn("No se pudo navegar atrás dentro del iframe."); } }
 
@@ -726,17 +726,112 @@ Que no cunda el pánico: entre todos, este barco llega a puerto.</p>
     onAuthStateChanged(auth, async (user) => {
       try{
         currentUser=user;
-        if(!user){ stopCommonAuto(); stopNotifAuto(); document.getElementById("auth-screen").classList.remove("hidden"); document.getElementById("app-shell").style.display="none"; return; }
-        document.getElementById("auth-screen").classList.add("hidden"); document.getElementById("app-shell").style.display="block";
+        if(!user){
+          stopCommonAuto();
+          stopNotifAuto();
+          document.getElementById("auth-screen").classList.remove("hidden");
+          document.getElementById("app-shell").style.display="none";
+          return;
+        }
+
+        document.getElementById("auth-screen").classList.add("hidden");
+        document.getElementById("app-shell").style.display="block";
+
         currentProfile=await loadProfile(user.uid);
-        if(!currentProfile){ const email=String(user.email||"").trim().toLowerCase(); const usernameBase=email===ADMIN_EMAIL ? "Medico pirata" : (email.split("@")[0] || "usuario"); const usernameSlug=slugifyUsername(usernameBase); const admin=email===ADMIN_EMAIL; currentProfile={ uid:user.uid, username:usernameBase, usernameSlug, nombre:admin?"Santiago":"", apellidos:admin?"Díaz":"", curso:"", email, telefono:"", bio:"", photoURL:"", approved:admin, role:admin?"admin":"user", canUpload:true, createdAt:new Date().toISOString(), publicVisible:true }; await set(dbRef(db,"profiles/"+user.uid),currentProfile); const usernameRef=dbRef(db,"usernames/"+usernameSlug); const usernameSnap=await get(usernameRef); if(!usernameSnap.exists()) await set(usernameRef,user.uid); }
-        const authEmail=String(user.email||"").trim().toLowerCase(); const profileEmail=String(currentProfile.email||"").trim().toLowerCase(); const shouldBeAdmin=authEmail===ADMIN_EMAIL || profileEmail===ADMIN_EMAIL; if(shouldBeAdmin){ await update(dbRef(db,"profiles/"+user.uid),{ role:"admin", approved:true, email:authEmail || profileEmail }); currentProfile.role="admin"; currentProfile.approved=true; currentProfile.email=authEmail || profileEmail; }
-        setTopUser(currentProfile); setApprovalBox(currentProfile); fillProfileForm(currentProfile); document.getElementById("admin-nav-btn").classList.toggle("hidden", !isAdmin()); await countSessionVisit(currentUser.uid); await updateRankInfoUI(); await renderNotifications(); startNotifAuto(); await renderStudyAdminZone(); await openView("home");
-      }catch(e){ console.error("Error en onAuthStateChanged:",e); alert("Error cargando la sesión. Mira la consola del navegador."); }
+
+        if(!currentProfile){
+          const email=String(user.email||"").trim().toLowerCase();
+          const usernameBase=email===ADMIN_EMAIL ? "Medico pirata" : (email.split("@")[0] || "usuario");
+          const usernameSlug=slugifyUsername(usernameBase);
+          const admin=email===ADMIN_EMAIL;
+
+          currentProfile={
+            uid:user.uid,
+            username:usernameBase,
+            usernameSlug,
+            nombre:admin?"Santiago":"",
+            apellidos:admin?"Díaz":"",
+            curso:"",
+            email,
+            telefono:"",
+            bio:"",
+            photoURL:"",
+            approved:admin,
+            role:admin?"admin":"user",
+            canUpload:true,
+            createdAt:new Date().toISOString(),
+            publicVisible:true
+          };
+
+          await set(dbRef(db,"profiles/"+user.uid),currentProfile);
+          const usernameRef=dbRef(db,"usernames/"+usernameSlug);
+          const usernameSnap=await get(usernameRef);
+          if(!usernameSnap.exists()) await set(usernameRef,user.uid);
+        }
+
+        const authEmail=String(user.email||"").trim().toLowerCase();
+        const profileEmail=String(currentProfile.email||"").trim().toLowerCase();
+        const shouldBeAdmin=authEmail===ADMIN_EMAIL || profileEmail===ADMIN_EMAIL;
+
+        if(shouldBeAdmin){
+          await update(dbRef(db,"profiles/"+user.uid),{ role:"admin", approved:true, email:authEmail || profileEmail });
+          currentProfile.role="admin";
+          currentProfile.approved=true;
+          currentProfile.email=authEmail || profileEmail;
+        }
+
+        setTopUser(currentProfile);
+        fillProfileForm(currentProfile);
+        setApprovalBox(currentProfile);
+        document.getElementById("admin-nav-btn").classList.toggle("hidden", !isAdmin());
+
+        await countSessionVisit(currentUser.uid);
+        await updateRankInfoUI();
+        await renderNotifications();
+        startNotifAuto();
+        await renderStudyAdminZone();
+        await openView("home");
+      }catch(e){
+        console.error("Error en onAuthStateChanged:",e);
+        alert("Error cargando la sesión. Mira la consola del navegador.");
+      }
     });
 
     window.setActiveNavState=setActiveNavState;
-    window.showAuthMode=showAuthMode; window.login=login; window.register=register; window.sendReset=sendReset; window.signOutUser=signOutUser; window.saveProfile=saveProfile; window.uploadProfilePhoto=uploadProfilePhoto; window.loadPublicProfiles=loadPublicProfiles; window.openProfileModal=openProfileModal; window.closeProfileModal=closeProfileModal; window.openPasswordModal=openPasswordModal; window.closePasswordModal=closePasswordModal; window.changePassword=changePassword; window.loadCommonMessages=loadCommonMessages; window.sendCommonMessage=sendCommonMessage; window.loadPrivateMessages=loadPrivateMessages; window.sendPrivateMessage=sendPrivateMessage; window.uploadSharedFile=uploadSharedFile; window.loadSharedFiles=loadSharedFiles; window.deleteSharedFile=deleteSharedFile; window.setFileModeration=setFileModeration; window.toggleAccess=toggleAccess; window.toggleUpload=toggleUpload; window.togglePublicProfile=togglePublicProfile; window.deleteCommonMessage=deleteCommonMessage; window.loadAdminPrivateConversation=loadAdminPrivateConversation; window.deletePrivateMessage=deletePrivateMessage; window.loadAdminVisits=loadAdminVisits; window.openView=openView; window.openInWorkspace=openInWorkspace; window.goToMainMenu=goToMainMenu; window.reloadWorkspace=reloadWorkspace; window.goBackWorkspace=goBackWorkspace;
+    window.showAuthMode=showAuthMode;
+    window.login=login;
+    window.register=register;
+    window.sendReset=sendReset;
+    window.signOutUser=signOutUser;
+    window.saveProfile=saveProfile;
+    window.uploadProfilePhoto=uploadProfilePhoto;
+    window.loadPublicProfiles=loadPublicProfiles;
+    window.openProfileModal=openProfileModal;
+    window.closeProfileModal=closeProfileModal;
+    window.openPasswordModal=openPasswordModal;
+    window.closePasswordModal=closePasswordModal;
+    window.changePassword=changePassword;
+    window.loadCommonMessages=loadCommonMessages;
+    window.sendCommonMessage=sendCommonMessage;
+    window.loadPrivateMessages=loadPrivateMessages;
+    window.sendPrivateMessage=sendPrivateMessage;
+    window.uploadSharedFile=uploadSharedFile;
+    window.loadSharedFiles=loadSharedFiles;
+    window.deleteSharedFile=deleteSharedFile;
+    window.setFileModeration=setFileModeration;
+    window.toggleAccess=toggleAccess;
+    window.toggleUpload=toggleUpload;
+    window.togglePublicProfile=togglePublicProfile;
+    window.deleteCommonMessage=deleteCommonMessage;
+    window.loadAdminPrivateConversation=loadAdminPrivateConversation;
+    window.deletePrivateMessage=deletePrivateMessage;
+    window.loadAdminVisits=loadAdminVisits;
+    window.openView=openView;
+    window.openInWorkspace=openInWorkspace;
+    window.goToMainMenu=goToMainMenu;
+    window.reloadWorkspace=reloadWorkspace;
+    window.goBackWorkspace=goBackWorkspace;
+
     showAuthMode("login");
   </script>
 </body>
