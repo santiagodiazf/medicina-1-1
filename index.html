@@ -2036,11 +2036,41 @@
 
     currentProfile = await loadProfile(user.uid);
 
-    if (!currentProfile) {
-      console.error("No existe perfil para este usuario:", user.uid);
-      await signOut(auth);
-      return;
-    }
+if (!currentProfile) {
+  const email = String(user.email || "").trim().toLowerCase();
+  const usernameBase = email === ADMIN_EMAIL ? "Medico pirata" : (email.split("@")[0] || "usuario");
+  const usernameSlug = slugifyUsername(usernameBase);
+  const admin = email === ADMIN_EMAIL;
+
+  currentProfile = {
+    uid: user.uid,
+    username: usernameBase,
+    usernameSlug,
+    nombre: admin ? "Santiago" : "",
+    apellidos: admin ? "Díaz" : "",
+    curso: "",
+    email,
+    telefono: "",
+    bio: "",
+    photoURL: "",
+    approved: admin,
+    role: admin ? "admin" : "user",
+    canUpload: true,
+    createdAt: new Date().toISOString(),
+    publicVisible: true
+  };
+
+  await set(dbRef(db, "profiles/" + user.uid), currentProfile);
+
+  const usernameRef = dbRef(db, "usernames/" + usernameSlug);
+  const usernameSnap = await get(usernameRef);
+
+  if (!usernameSnap.exists()) {
+    await set(usernameRef, user.uid);
+  }
+
+  console.log("Perfil creado automáticamente para:", user.uid);
+}
 
     const email = String(currentProfile.email || "").trim().toLowerCase();
 
