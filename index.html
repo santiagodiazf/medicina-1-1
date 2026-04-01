@@ -427,13 +427,8 @@
       font-size:1.04rem;
     }
 
-    .hero-badges{
-      display:none;
-    }
-
-    .hero-badge{
-      display:none;
-    }
+    .hero-badges{display:none}
+    .hero-badge{display:none}
 
     .status-hero-card{
       background:rgba(255,255,255,.10);
@@ -1705,7 +1700,7 @@
 
               <div class="card rank-panel">
                 <h4>Prestigio del cargo</h4>
-                <p>Tu rango no es un detalle sin más: las millas virtuales que recorres te acercan a tu objetivo.</p>
+                <p>Tu rango ya no es un detalle sin más: las millas virtuales que recorres te acercan a tu objetivo.</p>
                 <div id="rank-info" style="font-weight:900;color:var(--ink);margin:10px 0 12px;">Calculando rango…</div>
 
                 <div class="progress-shell" style="margin-top:12px;">
@@ -1722,7 +1717,7 @@
 
                 <div class="surprise-shell">
                   <button class="surprise-btn" type="button" onclick="playRankPulse()">✨ Hacer lucir el cargo</button>
-                  <button class="surprise-btn" type="button" onclick="showSurpriseToast()">🌊 Guiño gaditano</button>
+                  <button class="surprise-btn" type="button" onclick="showMotivationToast()">💪 Necesitas motivación</button>
                 </div>
               </div>
             </div>
@@ -1811,7 +1806,7 @@
             </div>
 
             <div class="workspace-frame-wrap">
-              <div class="workspace-hint">Consejo del timonel: la zona de trabajo elimina cabeceras duplicadas para que el contenido se vea limpio también en móvil.</div>
+              <div class="workspace-hint">Consejo del timonel: las grandes cosas se consiguen con trabajo y talento.</div>
               <div class="empty-state" id="workspace-empty">
                 <div>
                   <strong>Sin ruta cargada</strong>
@@ -2137,6 +2132,152 @@
       ];
       const frase = frases[Math.floor(Math.random()*frases.length)];
       showFloatingToast("Guiño de cubierta", frase);
+    }
+
+    const MOTIVATION_PHRASES = [
+      "Hoy no necesitas hacerlo perfecto, solo hacerlo.",
+      "Cada página estudiada te acerca a tu meta.",
+      "Lo difícil también se aprende.",
+      "No vas tarde: vas avanzando.",
+      "Tu esfuerzo de hoy será tranquilidad mañana.",
+      "Una hora buena de estudio cambia el día entero.",
+      "No subestimes lo que puedes lograr en silencio.",
+      "Sigue, aunque no tengas ganas.",
+      "Cada repasito cuenta.",
+      "La constancia gana a la inspiración.",
+      "Hoy sumas, aunque sea poco.",
+      "Tu yo del examen te lo va a agradecer.",
+      "Lo importante no es correr, es no parar.",
+      "Puedes con más de lo que crees.",
+      "Todo tema se vuelve pequeño cuando lo divides.",
+      "Empieza por una sola pregunta.",
+      "Un mal rato estudiando evita muchos peores después.",
+      "Estudiar cansado también cuenta.",
+      "Hazlo incluso sin motivación.",
+      "Tu progreso no siempre se nota al momento, pero existe.",
+      "Cada test fallado también enseña.",
+      "Lo que hoy parece lioso mañana será fácil.",
+      "No estás bloqueado, estás en proceso.",
+      "Un aprobado empieza por sentarte.",
+      "Tu disciplina vale más que tu ánimo.",
+      "Avanza una página más.",
+      "No necesitas sentirte listo para empezar.",
+      "Empieza torpe, pero empieza.",
+      "La presión también puede empujarte.",
+      "No abandones justo antes de entenderlo.",
+      "Si vuelves hoy, sigues en la pelea.",
+      "Estás construyendo algo importante.",
+      "Tu esfuerzo tiene dirección.",
+      "Cada vuelta al temario te hace más fuerte.",
+      "Menos pensar y más empezar.",
+      "No te compares: concéntrate.",
+      "Un día regular también sirve para avanzar.",
+      "El hábito te llevará más lejos que el impulso.",
+      "Respira, céntrate y sigue.",
+      "Hoy toca remar, no rendirse.",
+      "Tu meta merece esta incomodidad.",
+      "Hazlo por la calma que sentirás después.",
+      "Aunque vayas lento, sigues por delante de quien se rinde.",
+      "No busques ganas, busca rutina.",
+      "Tu constancia está haciendo trabajo invisible.",
+      "Las pequeñas victorias también cuentan.",
+      "Una duda resuelta ya es progreso.",
+      "Hoy puede ser el día en que por fin te sale.",
+      "Lo que repites, se queda.",
+      "No pares por no ver resultados inmediatos.",
+      "La mente también se entrena.",
+      "Tu futuro también depende de este rato.",
+      "Lo estás sacando adelante.",
+      "No necesitas un día perfecto para estudiar bien.",
+      "Haz primero lo que más pereza te da.",
+      "Puedes con este bloque.",
+      "La concentración llega trabajando.",
+      "Una sesión más. Solo una más.",
+      "Aprobar también es insistir.",
+      "Tu esfuerzo de hoy tiene valor aunque nadie lo vea.",
+      "Sigue, que esto también pasa.",
+      "Cada tema dominado te da aire.",
+      "La dificultad no significa que no puedas.",
+      "No te pares a medirlo todo. Hazlo.",
+      "Tu versión cansada también vale.",
+      "Lo importante es volver cada vez.",
+      "Estás más cerca que ayer.",
+      "No hace falta hacerlo bonito, hace falta hacerlo.",
+      "Cada minuto útil suma.",
+      "No conviertas una mala hora en un mal día.",
+      "Vuelve al tema. Solo vuelve.",
+      "La clave está en insistir cuando cuesta.",
+      "Puedes con esta parte también.",
+      "No te falta capacidad, te falta seguir un poco más.",
+      "Hoy estudias por tu tranquilidad futura.",
+      "Hazlo incluso con dudas.",
+      "Tu objetivo sigue ahí. Sigue tú también.",
+      "Todo esfuerzo repetido termina notándose.",
+      "No busques sentirte fuerte para actuar.",
+      "Una pregunta más. Luego otra.",
+      "Tu avance merece respeto.",
+      "No estás empezando de cero: estás retomando.",
+      "Poco a poco también es una estrategia.",
+      "No te sabotees en mitad del camino.",
+      "La parte dura también forma parte del logro.",
+      "Confía en lo que estás acumulando.",
+      "Tu trabajo de hoy tiene sentido.",
+      "Hazlo cansado, pero hazlo.",
+      "Nadie te puede quitar las horas ya echadas.",
+      "Si hoy vuelves, hoy ganas.",
+      "No estás solo: estás creciendo.",
+      "La incomodidad también forma médicos.",
+      "Tu paciencia también aprueba exámenes.",
+      "Haz del cansancio una excusa menos.",
+      "Te estás demostrando de qué eres capaz.",
+      "No te rindas en un capítulo que aún no termina.",
+      "Hoy toca cumplir, no discutir con la pereza.",
+      "Sigue aunque el avance sea silencioso.",
+      "Un tema menos también cambia la semana.",
+      "No necesitas magia, necesitas continuidad.",
+      "Lo que hoy repases mañana pesará menos.",
+      "Tu mejor ayuda ahora mismo es sentarte.",
+      "Tú puedes con este rato.",
+      "A veces estudiar bien es simplemente no levantarte.",
+      "Cada esfuerzo deja huella.",
+      "No dejes que un momento malo decida el día.",
+      "Sigue hasta que se vuelva familiar.",
+      "La seguridad se construye repasando.",
+      "No hace falta épica: hace falta constancia.",
+      "Vas mejor de lo que piensas.",
+      "Este rato cuenta de verdad.",
+      "Puedes recuperar el foco ahora mismo.",
+      "Sigue un poco más antes de parar.",
+      "Tu disciplina está abriendo camino.",
+      "No te premies rindiéndote.",
+      "Lo conseguirás trabajando como hoy.",
+      "Una vez más y otra más.",
+      "No pares justo cuando empieza a entrar.",
+      "Hazlo por orgullo propio.",
+      "Tu meta está hecha de días como este.",
+      "Hoy también puedes avanzar.",
+      "No sueltes el timón ahora."
+    ];
+
+    async function showMotivationToast(){
+      if(!currentUser) return;
+
+      try{
+        const stateRef = dbRef(db, "userState/" + currentUser.uid + "/motivationIndex");
+        const snap = await get(stateRef);
+        let index = snap.exists() ? Number(snap.val()) : 0;
+
+        if(Number.isNaN(index) || index < 0) index = 0;
+
+        const frase = MOTIVATION_PHRASES[index % MOTIVATION_PHRASES.length];
+        const nextIndex = (index + 1) % MOTIVATION_PHRASES.length;
+
+        await set(stateRef, nextIndex);
+        showFloatingToast("Necesitas motivación", frase);
+      }catch(e){
+        console.error(e);
+        showFloatingToast("Necesitas motivación", "Sigue. Hoy también cuenta.");
+      }
     }
 
     function playRankPulse(){
@@ -3134,7 +3275,7 @@
       const course = document.getElementById("upload-course").value;
       const semester = document.getElementById("upload-semester").value;
       const subject = document.getElementById("upload-subject").value;
-      const category = document.getElementById("upload-category").value;
+            const category = document.getElementById("upload-category").value;
       const description = document.getElementById("upload-description").value.trim();
       const file = document.getElementById("upload-file").files[0];
       const debug = document.getElementById("files-debug");
@@ -3643,6 +3784,7 @@
     window.reloadWorkspace = reloadWorkspace;
     window.goBackWorkspace = goBackWorkspace;
     window.showSurpriseToast = showSurpriseToast;
+    window.showMotivationToast = showMotivationToast;
     window.playRankPulse = playRankPulse;
 
     wireAuthUI();
