@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control · Médico Pirata</title>
+    <style>
+        :root {
+            --bg: #f0f2f5;
+            --card-bg: #ffffff;
+            --primary: #1a252f;
+            --accent: #3498db;
+            --accent-hover: #2980b9;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --shadow: 0 10px 25px rgba(0,0,0,0.05);
+            --radius: 12px;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .category-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            margin-top: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary);
+        }
+
+        .file-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .file-item {
+            margin-bottom: 12px;
+        }
+
+        .file-link {
+            text-decoration: none;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .file-link:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent-hover);
+        }
+
+        .file-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        .badge {
+            margin-left: auto;
+            font-size: 0.75rem;
+            background: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: var(--text-muted);
+        }
+
+        .file-link:hover .badge {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Iconos simulados con CSS */
+        .icon-quiz::before { content: "📝"; }
+        .icon-atlas::before { content: "📖"; }
+        .icon-doc::before { content: "📄"; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>☠️ Médico Pirata</h1>
+            <p class="subtitle">Repositorio Privado de Anatomía Humana II</p>
+        </header>
+
+        <div class="grid">
+            <div class="category-card">
+                <h2><span class="icon-quiz"></span> Baterías de Tests</h2>
+                <ul class="file-list">
+                    <li class="file-item">
+                        <a href="anato%202,%201,%2024-25.html" class="file-link">
+                            Bloque 1: 160 Preguntas <span class="badge">LITERAL</span>
+                        </a>
+                    </li>
+                    <li class="file-item">
+                        <a href="anato%202,%202,%2024-25.html" class="file-link">
+                            Bloque 2: Repaso Completo <span class="badge">HTML</span>
+                        </a>
+                    </li>
+                    <li class="file-item">
+                        <a href="anato%202,%203,%2024-25.html" class="file-link">
+                            Bloque 3: Anatomía Integral <span class="badge">TEST</span>
+                        </a>
+                    </li>
+                    <li class="file-item">
+                        <a href="anato%202,%204,%2024-25.html" class="file-link">
+                            Bloque 4: Quizz Final <span class="badge">24-25</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="category-card">
+                <h2><span class="icon-atlas"></span> Recursos Interactivos</h2>
+                <ul class="file-list">
+                    <li class="file-item">
+                        <a href="porrero.html" class="file-link">
+                            Atlas y Visor García-Porrero <span class="badge">INTERACTIVO</span>
+                        </a>
+                    </li>
+                </ul>
+                <div style="margin-top: 30px;">
+                    <h2><span class="icon-doc"></span> Documentación</h2>
+                    <ul class="file-list">
+                        <li class="file-item">
+                            <span class="file-link" style="cursor: default; opacity: 0.7;">
+                                Manual PDF (Vinculado en Atlas) <span class="badge">PDF</span>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            &copy; 2026 Médico Pirata · Acceso Restringido para Estudiantes
+        </footer>
+    </div>
+
+</body>
+</html>
