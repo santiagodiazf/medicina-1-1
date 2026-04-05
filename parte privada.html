@@ -10,6 +10,7 @@
             --card-bg: #ffffff;
             --primary: #1a252f;
             --accent: #3498db;
+            --accent-bioq: #e74c3c;
             --accent-hover: #2980b9;
             --text-main: #2c3e50;
             --text-muted: #7f8c8d;
@@ -28,7 +29,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             width: 100%;
         }
 
@@ -50,13 +51,13 @@
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 25px;
         }
 
         .category-card {
             background: var(--card-bg);
-            padding: 30px;
+            padding: 25px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             border: 1px solid rgba(0,0,0,0.05);
@@ -66,6 +67,20 @@
         .category-card:hover {
             transform: translateY(-5px);
         }
+
+        .subject-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .tag-anato { background: #d1ecf1; color: #0c5460; }
+        .tag-bioq { background: #f8d7da; color: #721c24; }
 
         h2 {
             font-size: 1.25rem;
@@ -107,9 +122,9 @@
             border-color: var(--accent-hover);
         }
 
-        .file-link i {
-            margin-right: 10px;
-            font-size: 1.1rem;
+        .bioq-link:hover {
+            background: var(--accent-bioq);
+            border-color: #c0392b;
         }
 
         .badge {
@@ -133,10 +148,9 @@
             font-size: 0.9rem;
         }
 
-        /* Iconos simulados con CSS */
         .icon-quiz::before { content: "📝"; }
         .icon-atlas::before { content: "📖"; }
-        .icon-doc::before { content: "📄"; }
+        .icon-bioq::before { content: "🧪"; }
 
     </style>
 </head>
@@ -145,65 +159,73 @@
     <div class="container">
         <header>
             <h1>☠️ Médico Pirata</h1>
-            <p class="subtitle">Repositorio Privado de Anatomía Humana II y Bioquímica</p>
+            <p class="subtitle">Repositorio Multidisciplinar · Facultad de Medicina</p>
         </header>
 
         <div class="grid">
             <div class="category-card">
+                <span class="subject-tag tag-anato">Anatomía Humana II</span>
                 <h2><span class="icon-quiz"></span> Baterías de Tests</h2>
                 <ul class="file-list">
                     <li class="file-item">
-                        <a href="bioquimica%20medica%20final.html" class="file-link" style="border-left: 3px solid #e74c3c;">
-                            Bioquímica Médica: Batería Extendida <span class="badge">>215 PREGS</span>
-                        </a>
-                    </li>
-                    <li class="file-item">
                         <a href="anato%202,%201,%2024-25.html" class="file-link">
-                            Anatomía Bloque 1: 160 Preguntas <span class="badge">LITERAL</span>
+                            Bloque 1: 160 Preguntas <span class="badge">LITERAL</span>
                         </a>
                     </li>
                     <li class="file-item">
                         <a href="anato%202,%202,%2024-25.html" class="file-link">
-                            Anatomía Bloque 2: Repaso Completo <span class="badge">HTML</span>
+                            Bloque 2: Repaso Completo <span class="badge">HTML</span>
                         </a>
                     </li>
                     <li class="file-item">
                         <a href="anato%202,%203,%2024-25.html" class="file-link">
-                            Anatomía Bloque 3: Anatomía Integral <span class="badge">TEST</span>
+                            Bloque 3: Anatomía Integral <span class="badge">TEST</span>
                         </a>
                     </li>
                     <li class="file-item">
                         <a href="anato%202,%204,%2024-25.html" class="file-link">
-                            Anatomía Bloque 4: Quizz Final <span class="badge">24-25</span>
+                            Bloque 4: Quizz Final <span class="badge">24-25</span>
                         </a>
                     </li>
                 </ul>
             </div>
 
-            <div class="category-card">
-                <h2><span class="icon-atlas"></span> Recursos Interactivos</h2>
+            <div class="category-card" style="border-top: 4px solid var(--accent-bioq);">
+                <span class="subject-tag tag-bioq">Bioquímica Médica</span>
+                <h2><span class="icon-bioq"></span> Exámenes y Preparación</h2>
                 <ul class="file-list">
                     <li class="file-item">
-                        <a href="porrero.html" class="file-link">
-                            Atlas y Visor García-Porrero <span class="badge">INTERACTIVO</span>
+                        <a href="bioquimica%20medica%20final.html" class="file-link bioq-link">
+                            Batería Definitiva Extendida <span class="badge">>215 PREGS</span>
                         </a>
                     </li>
                 </ul>
-                <div style="margin-top: 30px;">
-                    <h2><span class="icon-doc"></span> Documentación</h2>
+                
+                <div style="margin-top: 25px;">
+                    <h2 style="font-size: 1.1rem; opacity: 0.8;">Recursos Adicionales</h2>
                     <ul class="file-list">
                         <li class="file-item">
-                            <span class="file-link" style="cursor: default; opacity: 0.7;">
-                                Manual PDF (Vinculado en Atlas) <span class="badge">PDF</span>
-                            </span>
+                            <a href="porrero.html" class="file-link">
+                                <span class="icon-atlas" style="margin-right: 10px;"></span> Atlas García-Porrero
+                            </a>
                         </li>
                     </ul>
+                </div>
+            </div>
+
+            <div class="category-card">
+                <h2><span class="icon-doc"></span> Estado del Sistema</h2>
+                <p style="font-size: 0.9rem; line-height: 1.5; color: var(--text-muted);">
+                    Todos los archivos están configurados para acceso local. Asegúrate de tener los archivos <strong>.html</strong> en la misma carpeta que este panel.
+                </p>
+                <div style="background: #fff3cd; padding: 10px; border-radius: 8px; font-size: 0.8rem; color: #856404; border: 1px solid #ffeeba;">
+                    ⚠️ <strong>Nota:</strong> Los tests de Bioquímica incluyen desdoblamiento de preguntas para máxima literalidad.
                 </div>
             </div>
         </div>
 
         <footer>
-            &copy; 2026 Médico Pirata · Acceso Restringido para Estudiantes
+            &copy; 2026 Médico Pirata · Repositorio Actualizado
         </footer>
     </div>
 
