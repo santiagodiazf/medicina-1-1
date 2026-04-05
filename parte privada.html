@@ -19,7 +19,7 @@
         }
 
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background-color: var(--bg);
             color: var(--text-main);
             margin: 0;
@@ -42,6 +42,7 @@
             font-size: 2.5rem;
             margin-bottom: 10px;
             letter-spacing: -1px;
+            color: var(--primary);
         }
 
         .subtitle {
@@ -73,14 +74,14 @@
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 0.7rem;
-            font-weight: 800;
+            font-weight: bold;
             text-transform: uppercase;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             letter-spacing: 0.5px;
         }
 
-        .tag-anato { background: #d1ecf1; color: #0c5460; }
-        .tag-bioq { background: #f8d7da; color: #721c24; }
+        .tag-anato { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .tag-bioq { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
         h2 {
             font-size: 1.25rem;
@@ -125,19 +126,21 @@
         .bioq-link:hover {
             background: var(--accent-bioq);
             border-color: #c0392b;
+            color: white;
         }
 
         .badge {
             margin-left: auto;
             font-size: 0.75rem;
             background: #e9ecef;
-            padding: 2px 8px;
+            padding: 3px 8px;
             border-radius: 4px;
             color: var(--text-muted);
+            font-weight: bold;
         }
 
         .file-link:hover .badge {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.25);
             color: white;
         }
 
@@ -148,9 +151,11 @@
             font-size: 0.9rem;
         }
 
+        /* Iconos */
         .icon-quiz::before { content: "📝"; }
         .icon-atlas::before { content: "📖"; }
         .icon-bioq::before { content: "🧪"; }
+        .icon-doc::before { content: "📄"; }
 
     </style>
 </head>
@@ -163,27 +168,27 @@
         </header>
 
         <div class="grid">
-            <div class="category-card">
+            <div class="category-card" style="border-top: 4px solid var(--accent);">
                 <span class="subject-tag tag-anato">Anatomía Humana II</span>
                 <h2><span class="icon-quiz"></span> Baterías de Tests</h2>
                 <ul class="file-list">
                     <li class="file-item">
-                        <a href="anato%202,%201,%2024-25.html" class="file-link">
+                        <a href="anato 2, 1, 24-25.html" class="file-link">
                             Bloque 1: 160 Preguntas <span class="badge">LITERAL</span>
                         </a>
                     </li>
                     <li class="file-item">
-                        <a href="anato%202,%202,%2024-25.html" class="file-link">
+                        <a href="anato 2, 2, 24-25.html" class="file-link">
                             Bloque 2: Repaso Completo <span class="badge">HTML</span>
                         </a>
                     </li>
                     <li class="file-item">
-                        <a href="anato%202,%203,%2024-25.html" class="file-link">
+                        <a href="anato 2, 3, 24-25.html" class="file-link">
                             Bloque 3: Anatomía Integral <span class="badge">TEST</span>
                         </a>
                     </li>
                     <li class="file-item">
-                        <a href="anato%202,%204,%2024-25.html" class="file-link">
+                        <a href="anato 2, 4, 24-25.html" class="file-link">
                             Bloque 4: Quizz Final <span class="badge">24-25</span>
                         </a>
                     </li>
@@ -195,30 +200,30 @@
                 <h2><span class="icon-bioq"></span> Exámenes y Preparación</h2>
                 <ul class="file-list">
                     <li class="file-item">
-                        <a href="bioquimica%20medica%20final.html" class="file-link bioq-link">
+                        <a href="bioquimica medica final.html" class="file-link bioq-link">
                             Batería Definitiva Extendida <span class="badge">>215 PREGS</span>
                         </a>
                     </li>
                 </ul>
                 
                 <div style="margin-top: 25px;">
-                    <h2 style="font-size: 1.1rem; opacity: 0.8;">Recursos Adicionales</h2>
+                    <h2 style="font-size: 1.1rem; opacity: 0.8;"><span class="icon-atlas"></span> Recursos Adicionales</h2>
                     <ul class="file-list">
                         <li class="file-item">
                             <a href="porrero.html" class="file-link">
-                                <span class="icon-atlas" style="margin-right: 10px;"></span> Atlas García-Porrero
+                                Atlas García-Porrero
                             </a>
                         </li>
                     </ul>
                 </div>
             </div>
 
-            <div class="category-card">
+            <div class="category-card" style="border-top: 4px solid #f39c12;">
                 <h2><span class="icon-doc"></span> Estado del Sistema</h2>
-                <p style="font-size: 0.9rem; line-height: 1.5; color: var(--text-muted);">
-                    Todos los archivos están configurados para acceso local. Asegúrate de tener los archivos <strong>.html</strong> en la misma carpeta que este panel.
+                <p style="font-size: 0.95rem; line-height: 1.5; color: var(--text-muted);">
+                    Todos los archivos están configurados para acceso local. Asegúrate de tener los archivos <strong>.html</strong> en la misma carpeta que este panel para que los enlaces funcionen.
                 </p>
-                <div style="background: #fff3cd; padding: 10px; border-radius: 8px; font-size: 0.8rem; color: #856404; border: 1px solid #ffeeba;">
+                <div style="background: #fff3cd; padding: 12px; border-radius: 8px; font-size: 0.85rem; color: #856404; border: 1px solid #ffeeba; margin-top: 15px;">
                     ⚠️ <strong>Nota:</strong> Los tests de Bioquímica incluyen desdoblamiento de preguntas para máxima literalidad.
                 </div>
             </div>
