@@ -15,6 +15,11 @@
             --text-muted: #7f8c8d;
             --shadow: 0 10px 25px rgba(0,0,0,0.05);
             --radius: 12px;
+            
+            /* Colores por asignatura */
+            --color-anato: #3498db;
+            --color-bioq: #e74c3c;
+            --color-fisio: #f39c12;
         }
 
         body {
@@ -28,7 +33,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             width: 100%;
         }
 
@@ -50,21 +55,18 @@
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 25px;
         }
 
         .category-card {
             background: var(--card-bg);
-            padding: 30px;
+            padding: 25px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             border: 1px solid rgba(0,0,0,0.05);
-            transition: transform 0.2s ease;
-        }
-
-        .category-card:hover {
-            transform: translateY(-5px);
+            display: flex;
+            flex-direction: column;
         }
 
         h2 {
@@ -75,6 +77,8 @@
             align-items: center;
             gap: 10px;
             color: var(--primary);
+            border-bottom: 2px solid #f0f2f5;
+            padding-bottom: 10px;
         }
 
         .file-list {
@@ -96,25 +100,24 @@
             background: #f8f9fa;
             border-radius: 8px;
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             transition: all 0.2s;
             border: 1px solid transparent;
         }
 
         .file-link:hover {
-            background: var(--accent);
             color: white;
-            border-color: var(--accent-hover);
+            transform: translateX(5px);
         }
 
-        .file-link i {
-            margin-right: 10px;
-            font-size: 1.1rem;
-        }
+        /* Estilos hover específicos por asignatura */
+        .anato-link:hover { background: var(--color-anato); border-color: #2980b9; }
+        .bioq-link:hover { background: var(--color-bioq); border-color: #c0392b; }
+        .fisio-link:hover { background: var(--color-fisio); border-color: #d35400; }
 
         .badge {
             margin-left: auto;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             background: #e9ecef;
             padding: 2px 8px;
             border-radius: 4px;
@@ -133,10 +136,10 @@
             font-size: 0.9rem;
         }
 
-        /* Iconos simulados con CSS */
         .icon-quiz::before { content: "📝"; }
+        .icon-bioq::before { content: "🧪"; }
+        .icon-fisio::before { content: "⚡"; }
         .icon-atlas::before { content: "📖"; }
-        .icon-doc::before { content: "📄"; }
 
     </style>
 </head>
@@ -145,65 +148,78 @@
     <div class="container">
         <header>
             <h1>☠️ Médico Pirata</h1>
-            <p class="subtitle">Repositorio Privado de Anatomía Humana II y Bioquímica</p>
+            <p class="subtitle">Repositorio de Anatomía II, Bioquímica y Fisiología Humana</p>
         </header>
 
         <div class="grid">
+            
             <div class="category-card">
-                <h2><span class="icon-quiz"></span> Baterías de Tests</h2>
+                <h2><span class="icon-quiz"></span> Anatomía Humana II</h2>
                 <ul class="file-list">
                     <li class="file-item">
-                        <a href="bioquimica%20medica%20final.html" class="file-link" style="border-left: 3px solid #e74c3c;">
-                            Bioquímica Médica: Batería Extendida <span class="badge">>215 PREGS</span>
+                        <a href="anato%202,%201,%2024-25.html" class="file-link anato-link">
+                            Bloque 1: 160 Preguntas <span class="badge">LITERAL</span>
                         </a>
                     </li>
                     <li class="file-item">
-                        <a href="anato%202,%201,%2024-25.html" class="file-link">
-                            Anatomía Bloque 1: 160 Preguntas <span class="badge">LITERAL</span>
+                        <a href="anato%202,%202,%2024-25.html" class="file-link anato-link">
+                            Bloque 2: Repaso Completo <span class="badge">HTML</span>
                         </a>
                     </li>
                     <li class="file-item">
-                        <a href="anato%202,%202,%2024-25.html" class="file-link">
-                            Anatomía Bloque 2: Repaso Completo <span class="badge">HTML</span>
+                        <a href="anato%202,%203,%2024-25.html" class="file-link anato-link">
+                            Bloque 3: Anatomía Integral <span class="badge">TEST</span>
                         </a>
                     </li>
                     <li class="file-item">
-                        <a href="anato%202,%203,%2024-25.html" class="file-link">
-                            Anatomía Bloque 3: Anatomía Integral <span class="badge">TEST</span>
+                        <a href="anato%202,%204,%2024-25.html" class="file-link anato-link">
+                            Bloque 4: Quizz Final <span class="badge">24-25</span>
                         </a>
                     </li>
-                    <li class="file-item">
-                        <a href="anato%202,%204,%2024-25.html" class="file-link">
-                            Anatomía Bloque 4: Quizz Final <span class="badge">24-25</span>
+                    <li class="file-item" style="margin-top: 15px;">
+                        <a href="porrero.html" class="file-link anato-link">
+                            <span class="icon-atlas"></span> Atlas García-Porrero <span class="badge">INTERACTIVO</span>
                         </a>
                     </li>
                 </ul>
             </div>
 
             <div class="category-card">
-                <h2><span class="icon-atlas"></span> Recursos Interactivos</h2>
+                <h2><span class="icon-bioq"></span> Bioquímica Médica</h2>
                 <ul class="file-list">
                     <li class="file-item">
-                        <a href="porrero.html" class="file-link">
-                            Atlas y Visor García-Porrero <span class="badge">INTERACTIVO</span>
+                        <a href="bioquimica%20medica%20final.html" class="file-link bioq-link" style="border-left: 3px solid var(--color-bioq);">
+                            Batería Extendida <span class="badge">>215 PREGS</span>
                         </a>
                     </li>
+                    <li class="file-item">
+                        <span class="file-link" style="cursor: default; opacity: 0.6;">
+                            Manual PDF Complementario <span class="badge">PRÓXIMAMENTE</span>
+                        </span>
+                    </li>
                 </ul>
-                <div style="margin-top: 30px;">
-                    <h2><span class="icon-doc"></span> Documentación</h2>
-                    <ul class="file-list">
-                        <li class="file-item">
-                            <span class="file-link" style="cursor: default; opacity: 0.7;">
-                                Manual PDF (Vinculado en Atlas) <span class="badge">PDF</span>
-                            </span>
-                        </li>
-                    </ul>
-                </div>
             </div>
+
+            <div class="category-card">
+                <h2><span class="icon-fisio"></span> Fisiología Humana</h2>
+                <ul class="file-list">
+                    <li class="file-item">
+                        <a href="6%20de%20abril%20fisiologia.html" class="file-link fisio-link" style="border-left: 3px solid var(--color-fisio);">
+                            Master Quiz: Fisiología Integral <span class="badge">200 PREGS</span>
+                        </a>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-link" style="cursor: default; opacity: 0.6;">
+                            Guía de Conceptos Bloque 1-11 <span class="badge">INFO</span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+
         </div>
 
         <footer>
-            &copy; 2026 Médico Pirata · Acceso Restringido para Estudiantes
+            &copy; 2026 Médico Pirata · Acceso Restringido para Estudiantes de Medicina
         </footer>
     </div>
 
