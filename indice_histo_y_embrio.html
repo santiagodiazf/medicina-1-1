@@ -5,12 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Índice - Histología y Embriología 1</title>
 
-    <script>
-        if (sessionStorage.getItem("_auth_tkn_882") !== "1") {
-            window.location.replace("index.html");
-        }
-    </script>
-
     <style>
         :root {
             --primary: #2c3e50;
@@ -390,7 +384,7 @@
         import { getDatabase, ref, update, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyAKughV5w2XAKRm3rWuUmhVldwU2bjj0zY",
+            apiKey: "TU_API_KEY",
             authDomain: "portal-estudio-medicina.firebaseapp.com",
             databaseURL: "https://portal-estudio-medicina-default-rtdb.europe-west1.firebasedatabase.app",
             projectId: "portal-estudio-medicina",
@@ -405,11 +399,7 @@
 
         const USERS = [
             { hash: "26f23fc6cb9d53db0d5041fd0c3b1a09b03c3359f01ab4f9b99a2b3063b8e603", alias: "Comodoro Supremo", admin: true },
-            { hash: "0aaf6107f7ad50f68c7fdd9e43e25d22a6bc026080aff0f1013c322babe65cc5", alias: "Tripulante", admin: false },
-            { hash: "e1357c6a116c33525352fee3d57b090847e027bac164b873b410eac234e3ef27", alias: "Tripulante", admin: false },
-            { hash: "7a1d5d03f970ac38d2080c6ac040902bd30d8d59b4c5cc374c30445d2b690778", alias: "Tripulante", admin: false },
-            { hash: "7e153005924bb1c6049581649bd1310e60ff18c58bb5033f0433e42efbd76c26", alias: "Tripulante", admin: false },
-            { hash: "835288e0a626d18f9ca168a38570afcb81a5b79f7f7570007191a409870fbcd0", alias: "Tripulante", admin: false }
+            { hash: "0aaf6107f7ad50f68c7fdd9e43e25d22a6bc026080aff0f1013c322babe65cc5", alias: "Tripulante", admin: false }
         ];
 
         const SUBJECT_ID = "histo_embrio_i";
@@ -438,7 +428,7 @@
             updates[`navegacion/cuatrimestres/${QUAD_ID}/asignaturas/${SUBJECT_ID}/nombre`] = SUBJECT_NAME;
             updates[`navegacion/cuatrimestres/${QUAD_ID}/asignaturas/${SUBJECT_ID}/indiceEntradas`] = increment(1);
 
-            await update(ref(db), updates);
+            await update(ref(db, "/"), updates);
             sessionStorage.setItem(sessionKey, "1");
         }
 
@@ -453,24 +443,28 @@
             updates[`navegacion/usuarios/${userHash}/asignaturas/${SUBJECT_ID}/recursos/${resourceId}/nombre`] = resourceName;
             updates[`navegacion/usuarios/${userHash}/asignaturas/${SUBJECT_ID}/recursos/${resourceId}/tipo`] = resourceType;
 
-            await update(ref(db), updates);
+            await update(ref(db, "/"), updates);
         }
 
         async function initPage() {
+            const tokenOk = sessionStorage.getItem("_auth_tkn_882") === "1";
             const currentHash = sessionStorage.getItem("_auth_hash") || "";
             const currentUser = findUserByHash(currentHash);
 
-            if (!currentHash || !currentUser) {
+            if (!tokenOk || !currentHash || !currentUser) {
                 window.location.replace("index.html");
                 return;
             }
 
-            document.getElementById("user-chip").textContent = `${getSafeDisplayName(currentUser)} · acceso activo`;
+            const chip = document.getElementById("user-chip");
+            if (chip) {
+                chip.textContent = `${getSafeDisplayName(currentUser)} · acceso activo`;
+            }
 
             try {
                 await registerSubjectIndexAccess(currentHash);
             } catch (error) {
-                console.log("No se pudo registrar acceso al índice de asignatura.");
+                console.error("No se pudo registrar acceso al índice:", error);
             }
 
             document.querySelectorAll(".card").forEach(card => {
@@ -482,13 +476,15 @@
                     try {
                         await registerResourceClick(currentHash, resourceId, resourceName, resourceType);
                     } catch (error) {
-                        console.log("No se pudo registrar el clic del recurso.");
+                        console.error("No se pudo registrar el clic:", error);
                     }
                 });
             });
         }
 
-        initPage();
+        initPage().catch(error => {
+            console.error("Error al iniciar la página:", error);
+        });
     </script>
 
 </body>
