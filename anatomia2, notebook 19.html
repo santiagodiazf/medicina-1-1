@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz de Bioquímica: Hemoglobina y Mioglobina</title>
+    <title>Quiz de Anatomía y Embriología: Digestivo y Renal</title>
     <style>
         :root {
             --primary: #2c3e50;
-            --secondary: #3498db;
+            --secondary: #2980b9;
             --success: #27ae60;
-            --error: #e74c3c;
-            --bg: #f4f7f6;
-            --text: #333;
+            --error: #c0392b;
+            --warning: #f1c40f;
+            --bg: #f8f9fa;
+            --text: #2c3e50;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
@@ -24,11 +25,11 @@
             overflow: hidden;
         }
 
-        /* Pantalla de Inicio */
+        /* Pantallas de Control */
         #setup-screen, #result-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.95);
+            background: white;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -42,35 +43,35 @@
             background: var(--secondary);
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 5px;
+            padding: 12px 24px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 1rem;
-            margin: 10px;
-            transition: background 0.3s;
+            margin: 8px;
+            transition: transform 0.1s, background 0.2s;
         }
 
-        .btn:hover { background: var(--primary); }
+        .btn:hover { background: var(--primary); transform: translateY(-2px); }
         .btn-finish { background: var(--error); position: fixed; bottom: 20px; right: 20px; z-index: 100; }
 
         /* Layout Principal */
         #main-container {
-            display: flex;
+            display: none;
             width: 100%;
             height: 100%;
-            display: none;
         }
 
-        /* Índice Lateral */
+        /* Sidebar Numérico */
         #sidebar {
-            width: 80px;
+            width: 70px;
             background: var(--primary);
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 10px 0;
-            gap: 5px;
+            padding: 15px 0;
+            gap: 8px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
         }
 
         .nav-dot {
@@ -81,72 +82,82 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 5px;
+            border-radius: 4px;
             text-decoration: none;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .nav-dot.answered { background: var(--secondary); }
-        .nav-dot.marked { border: 2px solid #f1c40f; }
+        .nav-dot.answered { background: var(--success); }
+        .nav-dot.marked { border: 3px solid var(--warning); box-sizing: border-box; }
+        .nav-dot:hover { background: var(--secondary); }
 
         /* Área de Preguntas */
         #quiz-area {
             flex: 1;
             overflow-y: auto;
-            padding: 40px;
+            padding: 40px 10%;
             scroll-behavior: smooth;
         }
 
         .question-card {
             background: white;
-            border-radius: 8px;
-            padding: 25px;
-            margin-bottom: 40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             position: relative;
+            border-left: 5px solid #ddd;
         }
 
         .question-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
         }
 
-        .mark-container {
+        .mark-label {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
             font-size: 0.9rem;
-            color: #7f8c8d;
+            color: #666;
+            cursor: pointer;
         }
 
-        .options-container {
+        .options-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .option {
-            padding: 12px 15px;
-            border: 2px solid #eee;
-            border-radius: 5px;
+            padding: 15px 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
+            position: relative;
         }
 
-        .option:hover { background: #f9f9f9; border-color: var(--secondary); }
-        .option.correct { background: #d4edda; border-color: var(--success); cursor: default; }
-        .option.wrong { background: #f8d7da; border-color: var(--error); cursor: default; }
-        .option.disabled { pointer-events: none; opacity: 0.7; }
+        .option:hover { background: #f1f7ff; border-color: var(--secondary); }
+        .option.correct { background: #d4edda !important; border-color: var(--success) !important; color: #155724; font-weight: bold; }
+        .option.wrong { background: #f8d7da !important; border-color: var(--error) !important; color: #721c24; }
+        .option.disabled { pointer-events: none; }
 
         .explanation {
-            margin-top: 15px;
+            margin-top: 20px;
             padding: 15px;
-            background: #e8f4fd;
-            border-left: 5px solid var(--secondary);
+            background: #e1f5fe;
+            border-radius: 6px;
+            border-left: 4px solid var(--secondary);
             display: none;
+            font-size: 0.95rem;
+            line-height: 1.5;
         }
 
         .hidden { display: none !important; }
@@ -155,29 +166,32 @@
 <body>
 
     <div id="setup-screen">
-        <h1>Cuestionario de Bioquímica</h1>
-        <p>Seleccione el orden de las preguntas:</p>
+        <h1>Anatomía y Embriología Humana</h1>
+        <h3>Cuestionario de Aparato Digestivo y Renal</h3>
+        <p>Seleccione el modo de visualización:</p>
         <div>
             <input type="radio" id="order-fixed" name="order" value="fixed" checked>
-            <label for="order-fixed">Preestablecido</label>
+            <label for="order-fixed">Orden Preestablecido</label>
+            <span style="margin: 0 15px;"></span>
             <input type="radio" id="order-random" name="order" value="random">
-            <label for="order-random">Aleatorio</label>
+            <label for="order-random">Orden Aleatorio</label>
         </div>
+        <br>
         <button class="btn" onclick="startQuiz()">Comenzar Cuestionario</button>
     </div>
 
     <div id="result-screen" class="hidden">
         <h2>Cuestionario Finalizado</h2>
-        <p id="score-text"></p>
+        <p id="score-text" style="font-size: 1.2rem; margin-bottom: 30px;"></p>
         <div id="retry-options">
-            <button class="btn" onclick="retry('all')">Repetir todo</button>
-            <button class="btn" onclick="retry('failed')">Repetir falladas</button>
-            <button class="btn" onclick="retry('marked')">Repetir marcadas</button>
+            <button class="btn" onclick="retry('all')">Repetir todo completo</button>
+            <button class="btn" onclick="retry('failed')">Repetir solo falladas</button>
+            <button class="btn" onclick="retry('marked')">Repetir solo marcadas</button>
             <button class="btn" onclick="retry('failed-marked')">Repetir falladas + marcadas</button>
         </div>
     </div>
 
-    <button id="finish-btn" class="btn btn-finish hidden" onclick="finishQuiz()">Finalizar y Ver Opciones</button>
+    <button id="finish-btn" class="btn btn-finish hidden" onclick="finishQuiz()">Finalizar Cuestionario</button>
 
     <div id="main-container">
         <div id="sidebar"></div>
@@ -186,63 +200,50 @@
 
     <script>
         const rawData = [
-            // BLOQUE 1
-            { q: "Al inicio de la clase, la profesora hizo un inciso clínico sobre el Síndrome de Gilbert. Si sospechamos de esta patología en un paciente, ¿qué perfil de bilirrubina encontraremos en su analítica?", a: "Elevación exclusiva de la bilirrubina directa, ya que el hígado la conjuga en exceso.", b: "Ausencia total de bilirrubina total.", c: "Elevación de la bilirrubina indirecta, ya que es una afectación genética donde el hígado es incapaz de conjugar bien la bilirrubina.", d: "Elevación de la estercobilina en sangre.", correct: "c", exp: "Chivatazo directo del audio. En el Síndrome de Gilbert falla la conjugación, por lo que se acumula la bilirrubina no conjugada (indirecta), que viaja unida a la albúmina." },
-            { q: "En el mismo repaso inicial, mencionó que los análogos del GLP-1 se están utilizando masivamente para la pérdida de peso. Fisiológicamente, ¿qué efecto tienen estas incretinas?", a: "Destruyen los adipocitos del tejido visceral.", b: "Retrasan el vaciamiento del estómago, generando saciedad.", c: "Aceleran drásticamente la frecuencia cardíaca.", d: "Bloquean la absorción de glucosa en el riñón.", correct: "b", exp: "Según el audio, las incretinas (como el GLP-1) secretadas vía oral retrasan el vaciamiento gástrico, lo que se ha aprovechado farmacológicamente para adelgazar." },
-            { q: "Respecto a la estructura tridimensional de la Mioglobina y la Hemoglobina, ¿cómo se distribuyen los aminoácidos para garantizar su funcionalidad en el torrente sanguíneo?", a: "Los aminoácidos polares hacia el interior para proteger al hierro, y los hidrofóbicos hacia el exterior.", b: "Los aminoácidos polares en la superficie exterior (para dar solubilidad) y los hidrofóbicos orientados hacia el interior (formando un bolsillo para el grupo hemo).", c: "Se distribuyen de forma aleatoria, dependiendo de la presión de oxígeno.", d: "Todos los aminoácidos son polares para evitar la precipitación celular.", correct: "b", exp: "Remarcado en el audio y diapo. Los polares van por fuera para que la proteína sea soluble en sangre/citosol, y los apolares (hidrófobos) hacia dentro para crear el \"bolsillo\" que protege al grupo hemo." },
-            { q: "¿Qué función vital cumple el \"bolsillo hidrofóbico\" creado por la estructura terciaria alrededor del grupo hemo?", a: "Impedir que el hierro se oxide de estado ferroso (Fe2+) a férrico (Fe3+), ya que si se oxida pierde su capacidad de transportar oxígeno.", b: "Evitar que el oxígeno entre demasiado rápido.", c: "Transformar la mioglobina en hemoglobina uniéndola a otras subunidades.", d: "Permitir la entrada de agua para hidratar el anillo de porfirina.", correct: "a", exp: "Audio y diapo. El entorno hidrófobo protege al hierro (que es un metal de transición) de la oxidación irreversible. Solo permite la oxigenación (unión reversible), no la oxidación." },
-            { q: "El átomo de hierro ferroso (Fe2+) del grupo hemo posee seis ligandos o enlaces de coordinación. Cuatro se unen a los nitrógenos de la porfirina, ¿a qué se unen los dos restantes?", a: "Uno a la histidina distal y otro directamente a una molécula de agua.", b: "Uno a la histidina proximal (unión directa al hierro) y el sexto espacio queda libre para el oxígeno (estabilizado por la histidina distal).", c: "Ambós se unen a residuos de valina terminales.", d: "Uno se une a una molécula de CO2 y otro al 2,3-BPG.", correct: "b", exp: "Trampa clásica desglosada en clase. El hierro se une directamente a la histidina proximal (His F8 o His 93). La histidina distal (His E7) NO toca el hierro, solo estabiliza al oxígeno que entra mediante puentes de hidrógeno." },
-            { q: "Para determinar la afinidad de estas proteínas por el oxígeno utilizamos la P50. Según los datos aportados, señale la afirmación CORRECTA:", a: "La P50 de la mioglobina es de 26 mm Hg y la de la hemoglobina es de 1-4 mm Hg.", b: "La hemoglobina tiene mayor afinidad por el oxígeno que la mioglobina.", c: "La P50 de la mioglobina es muy baja (1-4 mm Hg), lo que significa que tiene una altísima afinidad por el oxígeno para poder \"robárselo\" a la hemoglobina en los tejidos.", d: "A una presión de 4 mm Hg, la hemoglobina ya está saturada al 100%.", correct: "c", exp: "Audio. La mioglobina necesita ser súper afín al O2 para extraerlo de la sangre capilar (hemoglobina) e introducirlo en el músculo. Su P50 es de solo 1-4 mmHg, frente a los 26 mmHg de la Hb." },
-            { q: "Si representamos gráficamente el porcentaje de saturación frente a la presión parcial de oxígeno (pO2), ¿qué forma adoptan las curvas de la mioglobina y la hemoglobina, respectivamente?", a: "Ambas son curvas sigmoideas.", b: "Mioglobina: Sigmoidea / Hemoglobina: Hiperbólica.", c: "Ambas son líneas rectas (unión no cooperativa).", d: "Mioglobina: Hiperbólica / Hemoglobina: Sigmoidea.", correct: "d", exp: "Diapositivas y audios. Al ser monomérica, la mioglobina tiene una curva hiperbólica (se satura muy rápido). Al ser tetramérica y cooperativa, la hemoglobina tiene curva en forma de \"S\" o sigmoidea." },
-            { q: "A nivel molecular, ¿qué ocurre físicamente cuando la desoxihemoglobina (Estado Tenso) capta su primera molécula de oxígeno?", a: "El oxígeno se une a la histidina proximal y expulsa al hierro.", b: "El oxígeno \"tira\" del hierro y lo introduce en el mismo plano que el anillo de porfirina, provocando un cambio conformacional que hace pasar la molécula al Estado Relajado.", c: "Las subunidades α y β se separan completamente y viajan libres por el plasma.", d: "El hierro se oxida instantáneamente a Fe3+.", correct: "b", exp: "Audio y diapo. En el estado T, el hierro está desplazado 0,4-0,6 Å fuera del plano. Al entrar el O2, tira del hierro metiéndolo en el plano, lo que altera las interacciones intercatenarias (la pareja α1β1 gira 15º) pasando al estado R." },
-            { q: "La profesora explicó el concepto de \"cooperatividad\" (o alosterismo positivo) en la hemoglobina. ¿En qué consiste exactamente?", a: "En que las cuatro subunidades compiten entre sí para expulsar el oxígeno.", b: "En que la unión de la primera molécula de oxígeno dificulta la entrada de las siguientes.", c: "En que la captación del primer oxígeno cambia la conformación de la proteína (al estado R), haciendo mucho más fácil y afín la entrada de los siguientes oxígenos.", d: "En que la mioglobina le cede oxígeno a la hemoglobina en el pulmón.", correct: "c", exp: "Audio. \"Entra el primer ligando y el resto de la hemoglobina dice: voy a seguir captando oxígeno y lo voy a hacer fácil\". El cambio de interacciones aumenta drásticamente la afinidad de los sitios libres." },
-            { q: "La ecuación de Hill nos permite calcular teóricamente la cooperatividad. ¿Cuál es el coeficiente de Hill (nH) experimental de la hemoglobina y de la mioglobina?", a: "Hb: nH=1 / Mb: nH=4.", b: "Hb: nH=2,8−3 / Mb: nH=1.", c: "Ambos tienen nH=1.", d: "Hb: nH=0,5 / Mb: nH=10.", correct: "b", exp: "Diapo y audio. La mioglobina es monomérica y no coopera (nH=1). La hemoglobina tiene un máximo teórico de 4, pero experimentalmente su coeficiente de Hill está entre 2,8 y 3." },
-            { q: "¿Cuál es la composición de subunidades de la Hemoglobina Fetal (Hb F)?", a: "2α,2β.", b: "2α,2δ.", c: "2α,2γ.", d: "2ζ,2ϵ.", correct: "c", exp: "Diapo. La HbA1 (adulto) es 2α2β. La fetal es 2α2γ. (Nota visual: en las gráficas, la Hb fetal tiene una curva desplazada a la izquierda respecto a la de adulto, es decir, mayor afinidad por el O2)." },
-            { q: "Existen factores metabólicos que actúan como efectores alostéricos sobre la hemoglobina, facilitando que libere el oxígeno en los tejidos. Según el \"Efecto Bohr\", si el pH de la sangre DISMINUYE (más acidez), la curva de saturación de la hemoglobina:", a: "Se desplaza hacia la izquierda, aumentando su afinidad por el O2.", b: "Se vuelve hiperbólica.", c: "Se desplaza hacia la derecha, disminuyendo su afinidad por el O2 y facilitando su liberación.", d: "Permanece inalterada, ya que solo depende del 2,3-BPG.", correct: "c", exp: "Diapo. Un pH bajo (alta concentración de H+), característico de los tejidos metabólicamente activos, estabiliza el Estado T, reduciendo la afinidad por el O2 y provocando que la hemoglobina lo suelte (desplazamiento a la derecha)." },
-            { q: "El metabolito 2,3-bifosfoglicerato (2,3-BPG) es un regulador clave originado en la glucólisis eritrocitaria (vía de Rapoport-Luebering). ¿Cómo interacciona físicamente con la hemoglobina?", a: "Se une directamente al hierro, compitiendo con el oxígeno.", b: "Se une a los grupos sulfhidrilo de la superficie.", c: "Se acomoda en la cavidad central existente entre las cadenas β, estableciendo interacciones electrostáticas que estabilizan la forma \"desoxi\" (Estado T).", d: "Destruye el anillo de protoporfirina IX.", correct: "c", exp: "Diapo. El BPG tiene cargas negativas que interactúan con las cargas positivas de la cavidad central de la desoxihemoglobina. Al estabilizar este estado T, disminuye la afinidad general por el oxígeno." },
-            { q: "De los siguientes factores en el plasma sanguíneo, ¿cuál NO desplazaría la curva de disociación de la hemoglobina hacia la derecha?", a: "Un aumento de la presión parcial de CO2.", b: "Un aumento de la temperatura corporal.", c: "Un aumento de 2,3-BPG.", d: "Un aumento del pH (alcalosis).", correct: "d", exp: "Diapo. La tabla resumen indica que desplazan a la derecha (menor afinidad): pH bajo, pCO2 alta, Temperatura alta y 2,3-BPG alto. Un pH alto desplaza la curva a la izquierda." },
-            { q: "¿Cómo actúa exactamente el CO2 sobre la molécula de hemoglobina para disminuir su afinidad por el oxígeno?", a: "Formando monóxido de carbono tóxico en la sangre.", b: "Reaccionando con los grupos α-amino terminales de las cadenas de globina, formando carbamatos que estabilizan la forma T.", c: "Uniéndose al hierro ferroso e impidiendo su movimiento.", d: "Degradando la enzima anhidrasa carbónica.", correct: "b", exp: "Diapo. A diferencia del CO (que sí se une al hierro), el CO2 se une a los extremos N-terminales de la proteína formando enlaces carbamato, los cuales estabilizan estructuralmente el estado tenso (desoxigenado)." },
-            { q: "En la clínica se utiliza mucho la prueba de la Hemoglobina Glicosilada (HbA1c) para el control de los pacientes diabéticos. Bioquímicamente, ¿en qué consiste esta alteración?", a: "Es la unión reversible de glucógeno a la superficie externa de los eritrocitos.", b: "Es la unión enzimática irreversible de glucosa con el grupo amino de la valina terminal de la cadena β de la hemoglobina.", c: "Es la destrucción de las cadenas α por la hiperglucemia.", d: "Es la saturación completa de los cuatro grupos hemo por fructosa.", correct: "b", exp: "Diapo. La HbA1c se forma por la unión de la glucosa al extremo terminal (valina) de las cadenas beta. Como es irreversible, refleja exactamente la media de glucosa en sangre durante la vida media del hematíe (los últimos 2-3 meses)." },
-            { q: "Un paciente acude a urgencias por sospecha de hipoxia severa. El médico le coloca un pulsioxímetro en el dedo. Según los apuntes, señale la afirmación VERDADERA sobre esta técnica:", a: "Sustituye completamente a la gasometría arterial.", b: "Es capaz de medir con exactitud el pH, la pO2 y la pCO2.", c: "Es un método no invasivo que mide únicamente el porcentaje de saturación de oxígeno comparando la absorción de luz roja e infrarroja.", d: "Requiere extraer una muestra de sangre venosa.", correct: "c", exp: "Diapo. La pulsioximetría es una estimación no invasiva basada en espectrofotometría. \"No mide pO2, pCO2 ni pH\" y, por tanto, \"no sustituye a la gasometría\"." },
-            { q: "La Drepanocitosis (Anemia falciforme) es una enfermedad genética que afecta a la estructura de los eritrocitos. ¿Cuál es el defecto molecular primario que la causa?", a: "Una deleción completa del gen que codifica las cadenas α.", b: "Una mutación de un único nucleótido en el gen de la β-globina que provoca que la hemoglobina desoxigenada (HbS) precipite formando filamentos.", c: "La ausencia congénita del grupo hemo.", d: "Una intoxicación crónica por monóxido de carbono (CO).", correct: "b", exp: "Diapo. Es una hemoglobinopatía causada por la sustitución de un único aminoácido en la cadena beta. En estado desoxigenado, esta HbS mutante es poco soluble, precipita en fibras rígidas y deforma al glóbulo rojo dándole forma de hoz." },
-            { q: "A diferencia de la drepanocitosis, las Talasemias son un grupo de enfermedades hereditarias que se caracterizan por:", a: "La unión patológica de plomo al anillo de porfirina.", b: "Una alteración cuantitativa en la que uno o más genes son disfuncionales, produciéndose una cantidad insuficiente (o nula) de cadenas de globina α o β.", c: "Una excesiva afinidad de la hemoglobina por el oxígeno que impide soltarlo en los tejidos.", d: "La formación de metahemoglobina por oxidación del hierro.", correct: "b", exp: "Diapo. Mientras la HbS es un defecto cualitativo (la cadena existe pero es defectuosa), las talasemias son defectos cuantitativos: faltan o se fabrican muy pocas cadenas alfa (cromosoma 16) o beta (cromosoma 11)." },
-            { q: "Si realizamos una Gasometría Arterial a un paciente sano, extraída típicamente de la arteria radial, ¿qué valores de pO2 y pCO2 esperaríamos encontrar como normales?", a: "pO2: 1-4 mm Hg / pCO2: 100 mm Hg.", b: "pO2: 80-105 mm Hg / pCO2: 35-45 mm Hg.", c: "pO2: 35-45 mm Hg / pCO2: 80-105 mm Hg.", d: "pO2 y pCO2 siempre son exactamente iguales en sangre arterial.", correct: "b", exp: "Diapo \"Gasometría\". Los valores normales en sangre arterial son una pO2 alta (80-105 mmHg) al salir de los pulmones, y una pCO2 baja y controlada (35-45 mmHg)." },
-
-            // BLOQUE 2
-            { q: "Al inicio de la clase, la profesora introdujo el Síndrome de Gilbert. Si un paciente padece esta afectación genética benigna, ¿qué alteración observaremos en su analítica de sangre?", a: "Disminución de la bilirrubina total.", b: "Aumento de la bilirrubina directa, por exceso de conjugación.", c: "Aumento de la bilirrubina indirecta, debido a que el hígado es incapaz de conjugarla bien.", d: "Elevación de la protoporfirina IX libre.", correct: "c", exp: "La profesora explicó que el Síndrome de Gilbert es una afección genética donde el hígado conjuga mal la bilirrubina, lo que provoca la acumulación de la fracción no conjugada o bilirrubina indirecta." },
-            { q: "En relación con los nuevos fármacos para adelgazar, la profesora mencionó los análogos de GLP-1. Según su explicación, ¿cuál es el efecto fisiológico principal de estas incretinas?", a: "Destruyen masivamente el tejido adiposo pardo.", b: "Retrasan el vaciamiento del estómago, generando saciedad.", c: "Bloquean la absorción de hierro en el duodeno.", d: "Impeden la síntesis de bilirrubina directa.", correct: "b", exp: "Las incretinas secretadas de forma natural tras ingerir glucosa retrasan el vaciamiento del estómago, un efecto secundario que ahora se usa en fármacos para la pérdida de peso." },
-            { q: "¿Qué patología histórica asoció la profesora con el personaje real en el que se basó \"Drácula\" (Vlad el Empalador), que justificaría su afectación en la piel y posible locura?", a: "Síndrome de Gilbert severo.", b: "Una Porfiria.", c: "Talasemia major.", d: "Drepanocitosis.", correct: "b", exp: "Relató como curiosidad que se cree que Vlad el Empalador padecía una porfiria, enfermedad que cursa con fotosensibilidad (daño en la piel) y problemas neurológicos." },
-            { q: "¿Cómo se distribuyen los aminoácidos en la estructura terciaria de la mioglobina y hemoglobina?", a: "Los aminoácidos polares hacia el interior para proteger al grupo hemo.", b: "Los aminoácidos polares en la superficie exterior (alto grado de solubilidad) y los hidrofóbicos orientados hacia el interior formando un bolsillo.", c: "Todos los aminoácidos son polares para evitar que precipiten.", d: "Los aminoácidos se distribuyen linealmente.", correct: "b", exp: "Los residuos polares se sitúan en la superficie para dar solubilidad a la proteína, mientras que los hidrofóbicos van al interior estabilizando el plegamiento." },
-            { q: "¿Qué función protectora vital cumple el \"bolsillo hidrofóbico\" creado alrededor del grupo hemo?", a: "Impedir que el hierro se oxide de estado ferroso (Fe2+) a férrico (Fe3+).", b: "Evitar que el oxígeno entre a la molécula.", c: "Facilitar la unión covalente con la glucosa.", d: "Destruir las moléculas de monóxido de carbono (CO).", correct: "a", exp: "El entorno hidrófobo protegido permite la oxigenación, pero bloquea el paso de oxidación, evitando que el hierro pierda su capacidad de transportar oxígeno." },
-            { q: "Señale la afirmación CORRECTA respecto a los enlaces perpendiculares al anillo de porfirina:", a: "La histidina distal se une directamente al hierro.", b: "Ambas histidinas se unen directamente al hierro.", c: "La histidina proximal (His F8) se une directamente al átomo de hierro, mientras que la histidina distal (His E7) sólo estabiliza al oxígeno.", d: "El oxígeno ocupa los dos enlaces perpendiculares.", correct: "c", exp: "El nitrógeno imidazólico de la histidina proximal se une directamente al hierro, mientras que la distal estabiliza al oxígeno mediante puentes de hidrógeno." },
-            { q: "Cuando la hemoglobina se encuentra en su estado tenso, ¿cuál es la posición física del átomo de hierro?", a: "Alineado en el mismo plano.", b: "Situado a 0,4-0,6 Å fuera del plano de las porfirinas.", c: "Expulsado fuera del bolsillo.", d: "Unido covalentemente a la histidina distal.", correct: "b", exp: "En la forma desoxihemoglobina, la configuración electrónica del Fe2+ sin oxígeno hace que los átomos ferrosos estén fuera del plano." },
-            { q: "¿Qué desencadena el cambio de la conformación tensa (T) a la relajada (R) en la hemoglobina?", a: "La unión del BPG al hierro.", b: "El aumento brusco del pH.", c: "El oxígeno, al unirse al hierro, tira de él introduciéndolo en el plano de la porfirina.", d: "La separación física de las cuatro cadenas.", correct: "c", exp: "Al captar el O2, este tira del hierro para meterlo en el plano, lo que desencadena un cambio hacia una conformación relajada." },
-            { q: "Durante la oxigenación, ¿de cuántos grados es el giro de la pareja α1β1?", a: "90º.", b: "15º.", c: "180º.", d: "360º.", correct: "b", exp: "Durante la oxigenación, la pareja α1β1 gira 15 grados respecto a los otros dímeros, alterando las interacciones intercatenarias." },
-            { q: "El fenómeno de cooperativismo de la hemoglobina implica que:", a: "La unión de la primera molécula de oxígeno facilita que el resto de subunidades capten oxígeno.", b: "Las cuatro subunidades captan sus oxígenos simultáneamente.", c: "La mioglobina y la hemoglobina se unen.", d: "El primer oxígeno bloquea la entrada de los demás.", correct: "a", exp: "La unión cooperativa es un efecto alostérico positivo: la captación de un ligando facilita que las otras subunidades cambien al estado relajado." },
-            { q: "Señale los valores experimentales correctos del coeficiente de Hill (n):", a: "Mb: nH=4 / Hb: nH=1.", b: "Mb: nH=1 / Hb: nH=2,8−3.", c: "Mb: nH=0,5 / Hb: nH=4.", d: "Ambas idénticas a 1.", correct: "b", exp: "La mioglobina, al no cooperar, tiene nH=1. La hemoglobina experimentalmente tiene un coeficiente de Hill de 2,8−3." },
-            { q: "¿Qué forma presentan las curvas de la mioglobina y la hemoglobina?", a: "Ambas sigmoideas.", b: "Mioglobina: hiperbólica / Hemoglobina: sigmoidea.", c: "Mioglobina: sigmoidea / Hemoglobina: hiperbólica.", d: "Ambas hipérbolas.", correct: "b", exp: "La mioglobina presenta una curva hiperbólica, mientras que la hemoglobina presenta una curva sigmoidea indicativa de cooperatividad." },
-            { q: "¿Cuál es la P50 de la mioglobina frente a la de la hemoglobina?", a: "Mb es de 1-4 mm Hg y Hb es de 26 mm Hg.", b: "Mb es de 26 mm Hg y Hb es de 1-4 mm Hg.", c: "Ambas 40 mm Hg.", d: "Mb es de 100 mm Hg.", correct: "a", exp: "La mioglobina tiene una P50 muy baja (1-4 mmHg), lo que significa que tiene una altísima afinidad frente a los 26 mmHg de la Hb." },
-            { q: "¿Cuál es la composición de subunidades de la Hemoglobina Fetal (Hb F)?", a: "2α,2β.", b: "2α,2δ.", c: "2α,2γ.", d: "2ζ,2ϵ.", correct: "c", exp: "La hemoglobina fetal está constituida por dos subunidades alfa y dos subunidades gamma (2α,2γ)." },
-            { q: "¿Qué alteración provoca un descenso del pH sanguíneo sobre la curva de la hemoglobina (Efecto Bohr)?", a: "Desplaza la curva a la izquierda.", b: "Desplaza la curva hacia la derecha, disminuyendo su afinidad.", c: "Transforma la curva en hiperbólica.", d: "Inactiva al hierro.", correct: "b", exp: "El Efecto Bohr establece que a un pH bajo, la curva se desplaza a la derecha, forzando la liberación del O2." },
-            { q: "¿Cómo interactúa el 2,3-bifosfoglicerato (BPG) con la hemoglobina?", a: "Se une covalentemente al anillo.", b: "Compite con el oxígeno.", c: "Se acomoda en la cavidad entre las cadenas β, estabilizando el Estado T.", d: "Destruye la histidina.", correct: "c", exp: "El BPG se aloja en la cavidad central interaccionando con cargas positivas, estabilizando la estructura tensa." },
-            { q: "¿A qué parte de la molécula se une el CO2?", a: "A los átomos de hierro.", b: "A la histidina.", c: "A los grupos α-amino terminales formando carbamatos.", d: "A la membrana.", correct: "c", exp: "El CO2 reacciona con los grupos amino terminales de las cadenas de globina para formar enlaces carbamato." },
-            { q: "¿Cuál es el peligro bioquímico del monóxido de carbono (CO)?", a: "Se une de forma casi irreversible al hemo impidiendo la liberación de O2.", b: "Destruye el citoesqueleto.", c: "Transforma Hb en Mb.", d: "Desplaza curva a la derecha.", correct: "a", exp: "El CO compite por el mismo sitio que el oxígeno en el hierro, bloqueando la respiración celular." },
-            { q: "¿Cuáles son los rangos normales de presiones parciales en sangre arterial?", a: "pO2 1-4 / pCO2 100.", b: "pO2 35-45 / pCO2 80-105.", c: "pO2 80-105 mm Hg / pCO2 35-45 mm Hg.", d: "Ambas 50.", correct: "c", exp: "Los niveles normales en sangre arterial son una pO2 de 80-105 mm Hg y una pCO2 de 35-45 mm Hg." },
-            { q: "Señale la afirmación CORRECTA sobre la Pulsioximetría:", a: "Es un método invasivo.", b: "Mide pO2, pCO2 y pH.", c: "Mide únicamente la saturación de oxígeno comparando luz roja e infrarroja.", d: "Absorbe más luz roja que infrarroja.", correct: "c", exp: "La pulsioximetría es un método no invasivo que estima la saturación pero no mide presiones parciales ni pH." },
-            { q: "Bioquímicamente, la formación de HbA1c corresponde a:", a: "Unión reversible de fructosa.", b: "Unión irreversible de glucosa con la valina terminal de la cadena β.", c: "Destrucción de carbamatos.", d: "Bloqueo del bolsillo por glucógeno.", correct: "b", exp: "La HbA1c se produce por la unión irreversible de glucosa a la valina terminal en la cadena beta." },
-            { q: "¿Qué alteración molecular causa la Drepanocitosis?", a: "Mutación en la β-globina que hace que la HbS precipite.", b: "Ausencia de cadenas alfa.", c: "Oxidación del hierro.", d: "Sobreproducción de BPG.", correct: "a", exp: "Una mutación puntual en el gen beta crea una HbS que, al desoxigenarse, precipita en fibras rígidas." },
-            { q: "¿Cuál es la diferencia patogénica principal entre Anemia Falciforme y Talasemias?", a: "Falciforme es cuantitativo.", b: "Las talasemias son un defecto cuantitativo (falta de síntesis de cadenas).", c: "Talasemias solo afectan mioglobina.", d: "Falciforme afecta al hemo.", correct: "b", exp: "A diferencia de la mutación cualitativa de la HbS, las talasemias son la falta de síntesis total o parcial de una globina." },
-            { q: "¿En qué cromosomas residen los genes para las globinas alfa y beta?", a: "Alfa 11 / Beta 16.", b: "Alfa en el cromosoma 16 / Beta en el cromosoma 11.", c: "Cromosoma X.", d: "Alfa 21 / Beta 18.", correct: "b", exp: "La β-talasemia afecta al cromosoma 11 y la α-talasemia afecta al cromosoma 16." },
-            { q: "¿Cómo se articula el flujo de oxígeno desde la sangre al músculo?", a: "Hb entra a la célula.", b: "El O2 es captado por la mioglobina gracias a su superior afinidad y llevado a la mitocondria.", c: "Mb se traslada a capilares.", d: "BPG arrastra el O2.", correct: "b", exp: "El O2 se difunde desde la Hb hacia el sarcolema, donde es captado ávidamente por la mioglobina." },
-            { q: "Respecto a la estructura secundaria de estas proteínas:", a: "100% láminas β.", b: "Sin estructura definida.", c: "Casi el 75% es hélice alfa, con 8 segmentos helicoidales (A a H).", d: "15 segmentos levógiros.", correct: "c", exp: "Tanto Mb como Hb son proteínas globulares con un 75% de α-hélice plegada en 8 segmentos dextrógiros." },
-            { q: "En la ecuación de saturación, ¿qué representa el valor de θ (teta)?", a: "Presión barométrica.", b: "Hierro oxidado.", c: "Relación entre centros de fijación ocupados respecto al total.", d: "Número de hélices.", correct: "c", exp: "Teta define la saturación fraccional: es el grado de ocupación de la proteína (de 0 a 1)." },
-            { q: "¿Cómo obtenemos el valor de la Bilirrubina Directa?", a: "Multiplicando por dos.", b: "Es un artefacto.", c: "Restando la Indirecta a la Total.", d: "Biopsia hepática.", correct: "c", exp: "Truco clínico: La bilirrubina total es la suma de la directa y la indirecta. Se obtiene restando." },
-            { q: "¿Qué cadenas constituyen la Hb A2?", a: "2α, 2γ.", b: "2ζ, 2ϵ.", c: "Dos cadenas α y dos cadenas δ.", d: "Cuatro cadenas β.", correct: "c", exp: "La Hb A2 está conformada por la estructura de subunidades 2α2δ." },
-            { q: "¿Cuál escenario desplazaría la curva de la Hb MÁS hacia la DERECHA?", a: "pH alto, baja CO2.", b: "pH bajo (acidez), alta pCO2, temperatura alta y niveles elevados de 2,3-BPG.", c: "Temperatura nula.", d: "Disminución de P50.", correct: "b", exp: "Todos los factores de la opción B actúan sinérgicamente para estabilizar el estado T y liberar O2." }
+            { q: "Embriológicamente, ¿de qué estructura deriva la capa de musculatura lisa del tubo digestivo?", a: "Del ectodermo superficial.", b: "Del endodermo exclusivamente.", c: "De la hoja esplácnica del mesodermo (esplacnopleura).", d: "De la hoja somática del mesodermo.", correct: "c", exp: "Según los esquemas del desarrollo del peritoneo, la hoja esplácnica del mesodermo envuelve al intestino y da lugar tanto al peritoneo visceral como a su musculatura lisa." },
+            { q: "Durante la rotación embrionaria del estómago, los nervios vagos cambian de posición. ¿Cómo quedan situados anatómicamente en el estómago definitivo?", a: "El vago derecho en la cara anterior y el vago izquierdo en la cara posterior.", b: "El vago izquierdo en la cara anterior y el vago derecho en la cara posterior.", c: "Ambos nervios descienden únicamente por la curvatura mayor.", d: "Quedan aislados en el retroperitoneo sin contactar con el estómago.", correct: "b", exp: "El estómago rota sobre su eje longitudinal, arrastrando al vago izquierdo (que venía por la izquierda) hacia la cara anterior, y al derecho hacia la cara posterior." },
+            { q: "¿Qué cavidad o receso peritoneal importante se forma por detrás del estómago como consecuencia del desplazamiento del mesogastrio dorsal durante la rotación gástrica?", a: "El receso subfrénico.", b: "El espacio parietocólico derecho.", c: "La transcavidad de los epiplones (bolsa omental).", d: "El fondo de saco vesicouterino.", correct: "c", exp: "La transcavidad de los epiplones se genera tras el estómago al rotar este y tirar del mesogastrio dorsal." },
+            { q: "¿Qué estructura anatómica se forma a partir del mesogastrio dorsal, cuelga de la curvatura mayor del estómago y desciende cubriendo las asas intestinales?", a: "Epiplón u omento menor.", b: "Ligamento falciforme.", c: "Epiplón u omento mayor.", d: "Mesocolon transverso.", correct: "c", exp: "El epiplón mayor deriva del mesogastrio dorsal y cae en forma de \"delantal\" desde la curvatura mayor." },
+            { q: "El hígado posee en su cara posterior y superior una amplia zona que carece de peritoneo visceral y contacta directamente con el diafragma. Esta zona se denomina:", a: "Lóbulo caudado.", b: "Fosa de la vesícula biliar.", c: "Área desnuda (Pars affixa).", d: "Receso hepatorrenal.", correct: "c", exp: "El profesor insiste en la clase que el área desnuda está delimitada por las hojas superior e inferior del ligamento coronario, donde la cápsula de Glisson se pega a la fascia diafragmática." },
+            { q: "Tras el nacimiento, la vena umbilical se oblitera. ¿En qué estructura se convierte este vaso, alojado en el borde libre del ligamento falciforme?", a: "Conducto venoso de Arancio.", b: "Ligamento redondo del hígado.", c: "Uraco.", d: "Ligamento venoso.", correct: "b", exp: "Como indica el profesor, la arteria/vena umbilical pierde su función y se transforma en el cordón fibroso llamado ligamento redondo." },
+            { q: "El profesor destaca un espacio entre la cara visceral del hígado y el riñón derecho donde se acumula líquido en los pacientes tumbados (decúbito). Este espacio es el:", a: "Receso subfrénico.", b: "Fondo de saco de Douglas.", c: "Receso hepatorrenal o de Morison.", d: "Transcavidad de los epiplones.", correct: "c", exp: "En la transcripción, lo llama \"receso hepatorrenal o receso de Morris (Morison)\", señalando que es medible por ecografía y clave para acúmulos líquidos." },
+            { q: "En la segmentación del hígado, la cara visceral presenta el hilio hepático y varias fisuras que delimitan lóbulos. El lóbulo situado por detrás del hilio hepático, entre la vena cava inferior y el ligamento venoso, es el:", a: "Lóbulo cuadrado.", b: "Lóbulo derecho.", c: "Lóbulo caudado (de Spiegel).", d: "Lóbulo izquierdo.", correct: "c", exp: "El lóbulo caudado es posterior y craneal al hilio hepático. El lóbulo cuadrado es anterior (junto a la vesícula)." },
+            { q: "La irrigación del estómago está a cargo de un anillo arterial. ¿De qué arteria principal procede directamente la arteria gástrica izquierda?", a: "Arteria mesentérica superior.", b: "Arteria hepática propia.", c: "Tronco celíaco.", d: "Arteria esplénica.", correct: "c", exp: "La gástrica izquierda es una rama directa del tronco celíaco, junto con la esplénica y la hepática común." },
+            { q: "Siguiendo con la irrigación del estómago, la arteria gastroepiploica derecha discurre por la curvatura mayor. ¿De qué vaso nace?", a: "Arteria gastroduodenal.", b: "Arteria esplénica.", c: "Tronco celíaco.", d: "Arteria mesentérica inferior.", correct: "a", exp: "La gastroduodenal (rama de la hepática común) da lugar a la gastroepiploica derecha." },
+            { q: "Drenaje venoso: El material hace una advertencia explícita (\"¡No retorna a la cava!\"). ¿Hacia dónde drena toda la sangre procedente de las venas gástricas, esplénica y mesentéricas?", a: "Al sistema ácigos.", b: "A las venas hepáticas (suprahepáticas).", c: "Directamente a las venas renales.", d: "Al sistema de la vena Porta hepática.", correct: "d", exp: "Toda la sangre digestiva infradiafragmática converge en la vena Porta para ser filtrada por el hígado antes de ir a la cava." },
+            { q: "En la sexta semana del desarrollo embrionario, el intestino primitivo medio sufre un evento anatómico debido a su rápido alargamiento. ¿Cuál es?", a: "Herniación fisiológica hacia el interior del cordón umbilical.", b: "Atresia completa temporal.", c: "Ascenso hacia la cavidad torácica.", d: "Fusión con el estómago.", correct: "a", exp: "Crece tanto que no cabe en el abdomen y se hernia en forma de horquilla dentro del pedículo vitelino antes de regresar en la novena semana." },
+            { q: "Si el conducto onfalomesentérico (vitelino) no involuciona completamente, deja un remanente congénito en el íleon conocido como:", a: "Apéndice vermiforme.", b: "Divertículo de Meckel.", c: "Ciego ectópico.", d: "Fístula gastrocólica.", correct: "b", exp: "Es una anomalía congénita derivada de la persistencia del conducto vitelino." },
+            { q: "El páncreas y la mayor parte del duodeno se adhieren al retroperitoneo parietal perdiendo su meso original. ¿Cómo se denomina a los órganos que sufren este proceso?", a: "Primariamente retroperitoneales.", b: "Secundariamente retroperitoneales.", c: "Intraperitoneales móviles.", d: "Extraperitoneales pélvicos.", correct: "b", exp: "Al iniciar su desarrollo como intraperitoneales y luego fijarse mediante fascias de coalescencia, se les denomina secundariamente retroperitoneales." },
+            { q: "¿Cómo se llama la fascia de coalescencia que adhiere el colon ascendente y el colon descendente a la pared posterior del abdomen?", a: "Fascia retroduodenal de Treitz.", b: "Fascia de Gerota.", c: "Fascia de Toldt.", d: "Ligamento frenocólico.", correct: "c", exp: "Las fascias de Toldt derecha e izquierda fijan el colon ascendente y descendente, respectivamente." },
+            { q: "El límite entre la 4ª porción del duodeno y el yeyuno es el ángulo duodenoyeyunal. ¿Qué estructura lo suspende anclándolo al diafragma?", a: "La válvula de Houston.", b: "El ligamento falciforme.", c: "El músculo suspensorio del duodeno (Ligamento de Treitz).", d: "El mesocolon transverso.", correct: "c", exp: "El ligamento o músculo de Treitz marca el final del duodeno y el inicio del yeyuno móvil." },
+            { q: "Las secreciones biliares y pancreáticas desembocan en la segunda porción del duodeno (descendente). ¿Cómo se denomina el esfínter muscular que regula la apertura de la ampolla de Vater?", a: "Esfínter de Oddi (esfínter hepatopancreático).", b: "Esfínter pilórico.", c: "Válvula ileocecal.", d: "Músculo puborrectal.", correct: "a", exp: "El músculo esfínter de Oddi rodea la confluencia del colédoco y el conducto de Wirsung en la papila duodenal mayor." },
+            { q: "En la histología macroscópica, ¿qué estructuras destacan profusamente en la mucosa del yeyuno para aumentar la superficie de absorción, diferenciándolo del íleon?", a: "Placas de Peyer.", b: "Tenias intestinales.", c: "Microvellosidades y pliegues circulares (válvulas conniventes).", d: "Apéndices epiploicos.", correct: "c", exp: "El yeyuno posee abundantes y marcados pliegues circulares, mientras que el íleon destaca por el tejido linfoide (Placas de Peyer)." },
+            { q: "El Intestino Grueso (Colon) presenta características externas únicas. ¿Cuáles de las siguientes NO es una característica propia del colon?", a: "Tenias colónicas.", b: "Haustras.", c: "Válvulas conniventes gigantes.", d: "Apéndices omentales o epiploicos.", correct: "c", exp: "Las válvulas conniventes son exclusivas del intestino delgado. Las tenias, haustras y apéndices epiploicos son la marca morfológica del colon." },
+            { q: "La válvula ileocecal, que comunica el íleon con el ciego, presenta una morfología interna característica. Según las disecciones, se observa como:", a: "Un anillo esfinteriano cilíndrico.", b: "Una apertura con dos labios unidos por frenillos.", c: "Tres valvas en forma de nido de golondrina.", d: "Un pliegue espiral en forma de tirabuzón.", correct: "b", exp: "La diapositiva indica expresamente \"Válvula ileocecal: apertura y frenillos de los labios\"." },
+            { q: "Irrigación del intestino: ¿Qué arteria principal se encarga de vascularizar todos los derivados del intestino medio (yeyuno, íleon, ciego, colon ascendente y 2/3 derechos del colon transverso)?", a: "Tronco celíaco.", b: "Arteria mesentérica inferior.", c: "Arteria mesentérica superior.", d: "Arteria ilíaca interna.", correct: "c", exp: "La AMS es el eje arterial sobre el que se desarrolla y vasculariza todo el intestino primitivo medio." },
+            { q: "En el interior del recto, encontramos unos pliegues transversales formados por la mucosa y submucosa cuya función es soportar el peso de las heces. ¿Cuál es su nombre?", a: "Columnas de Morgagni.", b: "Válvulas rectales de Houston.", c: "Línea pectínea.", d: "Válvulas conniventes.", correct: "b", exp: "Las válvulas de Houston son las \"repisas\" transversales del interior del recto." },
+            { q: "La continencia fecal voluntaria depende críticamente de un músculo que forma una cincha alrededor de la unión anorrectal y tira de ella hacia adelante. ¿De qué músculo se trata?", a: "Músculo esfínter interno del ano.", b: "Músculo obturador interno.", c: "Músculo puborrectal (del elevador del ano).", d: "Músculo ilíaco.", correct: "c", exp: "El puborrectal, fascículo del elevador del ano, mantiene la angulación anorrectal, lo cual es vital para la continencia." },
+            { q: "Inervación de las vísceras pélvicas: El Nervio Vago no desciende hasta la pelvis. ¿De dónde procede el componente parasimpático que inerva el recto y órganos pélvicos?", a: "De los nervios esplácnicos torácicos menores.", b: "De la cadena simpática lumbar.", c: "De los nervios esplácnicos pélvicos ascendentes (segmentos S2 a S4).", d: "Del nervio pudendo.", correct: "c", exp: "El esquema de inervación pélvica muestra claramente a los \"Pelvic parasympathetics ascending\" derivando de los nervios esplácnicos pélvicos S2-S4." },
+            { q: "A los lados del canal anal, por debajo del músculo elevador del ano, se encuentran unos espacios ocupados por grasa que permiten la distensión del canal durante la defecación. Son las:", a: "Fosas isquioanales (isquiorrectales).", b: "Recesos subhepáticos.", c: "Fosas ilíacas.", d: "Transcavidades.", correct: "a", exp: "Estas fosas permiten la dilatación del canal anal y recto inferior." },
+            { q: "Topografía de los riñones: Debido a la masa del hígado, la posición de los riñones no es simétrica. ¿Cuál es su proyección costal clásica en una visión posterior?", a: "Ambos riñones se sitúan a nivel de la costilla X.", b: "El riñón izquierdo está a nivel de la costilla XI y el derecho a nivel de la XII.", c: "El riñón derecho es más craneal que el izquierdo.", d: "Ambos se sitúan en la pelvis verdadera (L5).", correct: "b", exp: "El riñón derecho es empujado hacia abajo por el hígado, proyectándose en la costilla 12, mientras el izquierdo es más alto (costilla 11)." },
+            { q: "Los riñones están envueltos por fascias y grasa. ¿Cómo se denomina la condensación fibrosa que engloba al riñón y a la glándula suprarrenal (compuesta por una lámina prerrenal y otra retrorrenal)?", a: "Cápsula fibrosa íntima.", b: "Fascia de Toldt.", c: "Fascia renal (Fascia de Gerota).", d: "Fascia de Treitz.", correct: "c", exp: "La fascia renal o de Gerota (hoja anterior) envuelve el conjunto renosuprarrenal." },
+            { q: "La Arteria Renal derecha tiene un trayecto anatómico característico para llegar al hilio debido a la posición de la aorta. ¿Cuál es su relación con la Vena Cava Inferior (VCI)?", a: "Pasa por delante de la VCI.", b: "Pasa por detrás (posterior) a la VCI.", c: "Atraviesa el interior de la VCI.", d: "Discurre superior a las venas suprahepáticas.", correct: "b", exp: "Como la aorta está a la izquierda, la arteria renal derecha debe cruzar todo el lado derecho, pasando por detrás de la cava inferior." },
+            { q: "Por el contrario, la Vena Renal Izquierda debe cruzar desde el riñón izquierdo hacia la cava (situada a la derecha). ¿Por debajo de qué importante arteria transcurre, formando una pinza vascular?", a: "Del tronco celíaco.", b: "De la arteria mesentérica inferior.", c: "De la arteria mesentérica superior.", d: "De la arteria ilíaca común.", correct: "c", exp: "La vena renal izquierda pasa por debajo de la Arteria Mesentérica Superior y por encima de la aorta (\"pinza aortomesentérica\")." },
+            { q: "Las venas gonadales (testicular/ovárica) presentan un drenaje asimétrico. ¿Dónde drena la vena gonadal IZQUIERDA?", a: "Directamente en la Vena Cava Inferior.", b: "En la Vena Renal Izquierda.", c: "En la Vena Mesentérica Superior.", d: "En la Vena Porta hepática.", correct: "b", exp: "Mientras la derecha va directa a la cava, la izquierda desemboca en la vena renal izquierda en ángulo recto." },
+            { q: "La glándula suprarrenal tiene un doble origen embrionario que determina su estructura. ¿De qué capa germinal deriva la MÉDULA suprarrenal (encargada de secretar adrenalina)?", a: "Del mesodermo somático.", b: "Del endodermo.", c: "Del ectodermo (crestas neurales).", d: "De la esplacnopleura.", correct: "c", exp: "La diapositiva especifica: Corteza (deriva del mesodermo) y Médula (deriva del ectodermo)." },
+            { q: "La vascularización arterial de las glándulas suprarrenales es muy rica y proviene de tres fuentes. ¿De dónde nace la Arteria Suprarrenal SUPERIOR?", a: "De la arteria renal.", b: "De la arteria frénica inferior.", c: "Directamente de la aorta abdominal.", d: "Del tronco celíaco.", correct: "b", exp: "Las superiores nacen de la frénica inferior, las medias de la aorta y las inferiores de la arteria renal." },
+            { q: "En la anatomía interna del riñón, las pirámides de Malpighi (médula) desembocan en una estructura en forma de copa. ¿Cuál es el orden correcto del flujo de orina desde la papila?", a: "Papila renal -> Cáliz mayor -> Cáliz menor -> Pelvis renal.", b: "Papila renal -> Cáliz menor -> Cáliz mayor -> Pelvis renal.", c: "Pelvis renal -> Cáliz menor -> Papila renal.", d: "Cáliz mayor -> Uréter -> Cáliz menor.", correct: "b", exp: "Las papilas vierten en los cálices menores, que confluyen en mayores y luego a la pelvis renal." },
+            { q: "Inervación renal y suprarrenal: El esquema y texto muestran que su inervación es casi exclusiva del:", a: "Sistema Parasimpático sacro.", b: "Nervio Vago derecho puramente.", c: "Sistema Simpático (Nervios Esplácnicos torácicos T6-T11 y T12).", d: "Sistema Nervioso Somático voluntario.", correct: "c", exp: "Está inervado predominantemente por el sistema simpático a través del plexo renal y celíaco." },
+            { q: "Las arterias segmentarias del riñón son arterias terminales. Esto significa clínicamente que:", a: "Se anastomosan libremente entre sí.", b: "Su oclusión no tiene consecuencias por la red colateral.", c: "Si una rama se ocluye, se producirá un infarto isquémico del segmento renal específico que irriga.", d: "Derivan directamente de la vena renal.", correct: "c", exp: "La presentación muestra cómo la oclusión de una rama segmentaria causa infarto en un segmento de color específico." },
+            { q: "En el hilio renal, la disposición de las estructuras (de anterior a posterior) generalmente es:", a: "Pelvis renal - Arteria renal - Vena renal.", b: "Vena renal - Arteria renal - Pelvis renal.", c: "Arteria renal - Pelvis renal - Vena renal.", d: "Uréter - Vena renal - Arteria renal.", correct: "b", exp: "La diapositiva indica claramente: \"Vena renal es anterior, Arteria renal es central, Pelvis renal es posterior\" (V-A-P)." },
+            { q: "El bazo presenta varias facetas. ¿Qué órgano se relaciona y moldea la faceta inferior del bazo (faceta cólica)?", a: "El ciego.", b: "El colon sigmoide.", c: "La flexura cólica izquierda (ángulo esplénico del colon).", d: "El ángulo hepático del colon.", correct: "c", exp: "El bazo descansa sobre la flexura cólica izquierda o ángulo esplénico." },
+            { q: "La papila duodenal mayor (donde desemboca el colédoco y conducto de Wirsung) se localiza en la:", a: "Primera porción del duodeno (bulbo).", b: "Segunda porción del duodeno (descendente).", c: "Tercera porción del duodeno (horizontal).", d: "Cuarta porción del duodeno (ascendente).", correct: "b", exp: "Las papilas mayor y menor (ampolla de Vater y Santorini) se hallan en la porción descendente del duodeno." },
+            { q: "¿Cuál de las siguientes venas NO es tributaria del sistema de la Vena Porta hepática?", a: "Vena mesentérica superior.", b: "Vena esplénica.", c: "Vena mesentérica inferior.", d: "Venas hepáticas (suprahepáticas).", correct: "d", exp: "Las venas hepáticas (suprahepáticas) salen del hígado y drenan en la Cava Inferior, no forman la Porta." },
+            { q: "El lóbulo renal, unidad anatómica del riñón, está formado por:", a: "Únicamente la papila renal.", b: "Una pirámide renal (médula) más las porciones corticales adyacentes correspondientes.", c: "La cápsula adiposa y la corteza.", d: "La nefrona y el túbulo colector puramente.", correct: "b", exp: "\"Cada pirámide renal + Porciones corticales adyacentes = Lóbulo Renal\"." }
         ];
 
         let currentQuestions = [];
-        let answersState = {}; // { indexInCurrent: { selected, correct, marked } }
+        let answersState = {}; // Guarda { answered: bool, correct: bool, selected: str, marked: bool }
 
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -273,7 +274,7 @@
             quizArea.innerHTML = '';
 
             currentQuestions.forEach((q, i) => {
-                // Crear Nav Dot
+                // Punto de navegación
                 const dot = document.createElement('div');
                 dot.className = 'nav-dot';
                 dot.id = `dot-${i}`;
@@ -281,72 +282,71 @@
                 dot.onclick = () => document.getElementById(`q-${i}`).scrollIntoView();
                 sidebar.appendChild(dot);
 
-                // Crear Card
+                // Carta de pregunta
                 const card = document.createElement('div');
                 card.className = 'question-card';
                 card.id = `q-${i}`;
 
-                // Aleatorizar opciones
-                const opts = [
-                    { key: 'a', text: q.a },
-                    { key: 'b', text: q.b },
-                    { key: 'c', text: q.c },
-                    { key: 'd', text: q.d }
+                // Aleatorizar opciones para esta carga
+                const options = [
+                    { k: 'a', t: q.a },
+                    { k: 'b', t: q.b },
+                    { k: 'c', t: q.c },
+                    { k: 'd', t: q.d }
                 ];
-                shuffle(opts);
+                shuffle(options);
 
                 card.innerHTML = `
                     <div class="question-header">
                         <strong>Pregunta ${i + 1}</strong>
-                        <label class="mark-container">
-                            <input type="checkbox" onchange="toggleMark(${i}, this.checked)"> Marcar
+                        <label class="mark-label">
+                            <input type="checkbox" onchange="toggleMark(${i}, this.checked)"> Marcar duda
                         </label>
                     </div>
-                    <p>${q.q}</p>
-                    <div class="options-container">
-                        ${opts.map(o => `
-                            <div class="option" data-key="${o.key}" onclick="checkAnswer(${i}, '${o.key}', this)">
-                                ${o.text}
+                    <p style="font-size: 1.1rem; margin-bottom: 20px;">${q.q}</p>
+                    <div class="options-list">
+                        ${options.map(opt => `
+                            <div class="option" data-key="${opt.k}" onclick="handleSelection(${i}, '${opt.k}', this)">
+                                ${opt.t}
                             </div>
                         `).join('')}
                     </div>
-                    <div class="explanation" id="exp-${i}">${q.exp}</div>
+                    <div class="explanation" id="exp-${i}">
+                        <strong>Respuesta correcta: ${q.correct.toUpperCase()}</strong><br><br>
+                        ${q.exp}
+                    </div>
                 `;
                 quizArea.appendChild(card);
             });
         }
 
-        function checkAnswer(qIdx, selectedKey, element) {
+        function handleSelection(qIdx, key, element) {
             if (answersState[qIdx]?.answered) return;
 
             const correctKey = currentQuestions[qIdx].correct;
-            const isCorrect = selectedKey === correctKey;
+            const isCorrect = key === correctKey;
 
-            answersState[qIdx] = { 
-                ...answersState[qIdx], 
-                answered: true, 
-                correct: isCorrect,
-                selected: selectedKey 
-            };
+            if (!answersState[qIdx]) answersState[qIdx] = {};
+            answersState[qIdx].answered = true;
+            answersState[qIdx].correct = isCorrect;
+            answersState[qIdx].selected = key;
 
-            // UI Feedback
-            const container = element.parentElement;
-            const options = container.querySelectorAll('.option');
-            
+            // Feedback visual
+            const options = element.parentElement.querySelectorAll('.option');
             options.forEach(opt => {
                 opt.classList.add('disabled');
                 if (opt.dataset.key === correctKey) opt.classList.add('correct');
-                if (opt.dataset.key === selectedKey && !isCorrect) opt.classList.add('wrong');
+                if (opt.dataset.key === key && !isCorrect) opt.classList.add('wrong');
             });
 
             document.getElementById(`exp-${qIdx}`).style.display = 'block';
             document.getElementById(`dot-${qIdx}`).classList.add('answered');
         }
 
-        function toggleMark(qIdx, isMarked) {
+        function toggleMark(qIdx, checked) {
             if (!answersState[qIdx]) answersState[qIdx] = {};
-            answersState[qIdx].marked = isMarked;
-            document.getElementById(`dot-${qIdx}`).classList.toggle('marked', isMarked);
+            answersState[qIdx].marked = checked;
+            document.getElementById(`dot-${qIdx}`).classList.toggle('marked', checked);
         }
 
         function finishQuiz() {
@@ -356,32 +356,32 @@
 
             const total = currentQuestions.length;
             const correctas = Object.values(answersState).filter(s => s.correct).length;
-            document.getElementById('score-text').innerText = `Has acertado ${correctas} de ${total} preguntas.`;
+            document.getElementById('score-text').innerText = `Resultado: ${correctas} aciertos de ${total} preguntas.`;
         }
 
-        function retry(type) {
-            let nextQuestions = [];
-
-            if (type === 'all') {
-                nextQuestions = rawData;
+        function retry(mode) {
+            let filtered = [];
+            
+            if (mode === 'all') {
+                filtered = rawData;
             } else {
-                nextQuestions = currentQuestions.filter((q, i) => {
+                filtered = currentQuestions.filter((q, i) => {
                     const state = answersState[i] || {};
                     const isFailed = state.answered && !state.correct;
                     const isMarked = state.marked;
 
-                    if (type === 'failed') return isFailed;
-                    if (type === 'marked') return isMarked;
-                    if (type === 'failed-marked') return isFailed || isMarked;
+                    if (mode === 'failed') return isFailed;
+                    if (mode === 'marked') return isMarked;
+                    if (mode === 'failed-marked') return isFailed || isMarked;
                 });
             }
 
-            if (nextQuestions.length === 0) {
-                alert("No hay preguntas que coincidan con ese criterio.");
+            if (filtered.length === 0) {
+                alert("No hay preguntas que cumplan ese criterio.");
                 return;
             }
 
-            currentQuestions = JSON.parse(JSON.stringify(nextQuestions));
+            currentQuestions = JSON.parse(JSON.stringify(filtered));
             const isRandom = document.getElementById('order-random').checked;
             if (isRandom) shuffle(currentQuestions);
             
