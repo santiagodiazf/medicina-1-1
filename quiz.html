@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz de Histología y Embriología — 191 preguntas</title>
+<style>
+  :root {
+    --bg: #f5f7fa;
+    --card: #ffffff;
+    --primary: #2563eb;
+    --primary-dark: #1e40af;
+    --correct: #16a34a;
+    --correct-bg: #dcfce7;
+    --wrong: #dc2626;
+    --wrong-bg: #fee2e2;
+    --text: #1f2937;
+    --text-muted: #6b7280;
+    --border: #e5e7eb;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .app { max-width: 900px; margin: 0 auto; padding: 20px; }
+  header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    padding: 28px 24px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-lg);
+  }
+  header h1 { margin: 0 0 6px 0; font-size: 26px; font-weight: 700; }
+  header p { margin: 0; opacity: 0.9; font-size: 14px; }
+
+  /* Start screen */
+  .start-screen {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+  }
+  .start-screen h2 { margin: 0 0 16px 0; font-size: 20px; }
+  .start-screen p { color: var(--text-muted); margin: 0 0 20px 0; }
+  .section-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .section-btn {
+    background: #f9fafb;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .section-btn:hover {
+    border-color: var(--primary);
+    background: #eff6ff;
+    transform: translateY(-1px);
+  }
+  .section-btn.active {
+    border-color: var(--primary);
+    background: #dbeafe;
+  }
+  .section-btn .name { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+  .section-btn .count { color: var(--text-muted); font-size: 13px; }
+
+  .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn-secondary { background: #e5e7eb; color: var(--text); }
+  .btn-secondary:hover { background: #d1d5db; }
+  .btn-ghost { background: transparent; color: var(--primary); }
+  .btn-ghost:hover { background: #eff6ff; transform: none; }
+
+  /* Quiz screen */
+  .quiz-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+  .progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+    transition: width 0.3s ease;
+    border-radius: 3px;
+  }
+  .quiz-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .quiz-meta .section-badge {
+    background: #eff6ff;
+    color: var(--primary);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+  .question-text {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 16px 0;
+  }
+  .question-image {
+    width: 100%;
+    max-width: 500px;
+    display: block;
+    margin: 0 auto 24px auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: #fafafa;
+  }
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .option {
+    background: #f9fafb;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    color: var(--text);
+    transition: all 0.15s;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--primary);
+    background: #eff6ff;
+  }
+  .option:disabled { cursor: default; }
+  .option .letter {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .option .text { flex: 1; padding-top: 3px; }
+  .option.correct {
+    border-color: var(--correct);
+    background: var(--correct-bg);
+  }
+  .option.correct .letter {
+    background: var(--correct);
+    color: white;
+    border-color: var(--correct);
+  }
+  .option.wrong {
+    border-color: var(--wrong);
+    background: var(--wrong-bg);
+  }
+  .option.wrong .letter {
+    background: var(--wrong);
+    color: white;
+    border-color: var(--wrong);
+  }
+  .option.selected {
+    border-color: var(--primary);
+    background: #dbeafe;
+  }
+  .option.selected .letter { background: var(--primary); color: white; border-color: var(--primary); }
+
+  .note {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #78350f;
+    margin-bottom: 16px;
+  }
+  .nav { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .nav .right { display: flex; gap: 10px; }
+
+  /* Results screen */
+  .results {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 40px 32px;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+  }
+  .score-circle {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: conic-gradient(var(--correct) calc(var(--score) * 1%), var(--border) 0);
+    margin: 0 auto 24px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .score-inner {
+    background: var(--card);
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .score-pct { font-size: 36px; font-weight: 800; color: var(--text); }
+  .score-label { font-size: 13px; color: var(--text-muted); }
+  .results h2 { margin: 0 0 8px 0; font-size: 28px; }
+  .results .breakdown {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin: 20px 0 28px 0;
+    flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat .num { font-size: 28px; font-weight: 700; }
+  .stat .lbl { font-size: 13px; color: var(--text-muted); }
+  .stat.correct .num { color: var(--correct); }
+  .stat.wrong .num { color: var(--wrong); }
+
+  /* Review wrong answers */
+  .review-item {
+    background: #f9fafb;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 12px;
+    text-align: left;
+  }
+  .review-item .q { font-weight: 600; margin-bottom: 8px; font-size: 14px; }
+  .review-item .ans { font-size: 13px; margin: 4px 0; }
+  .review-item .ans.your { color: var(--wrong); }
+  .review-item .ans.correct-ans { color: var(--correct); font-weight: 600; }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .app { padding: 12px; }
+    header { padding: 20px 16px; }
+    header h1 { font-size: 20px; }
+    .quiz-card, .start-screen, .results { padding: 18px; }
+    .question-text { font-size: 15px; }
+    .option { padding: 12px 14px; font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Quiz de Histología y Embriología</h1>
+    <p>191 preguntas tipo test · bateria de prácticas</p>
+  </header>
+  <div id="root"></div>
+</div>
+
+<script>
+const SECTIONS_ORDER = [
+  "Embriología (1ª a 4ª semana)",
+  "Placenta y Gemelos",
+  "Tejido Epitelial",
+  "Tejido Glandular",
+  "Tejido Conjuntivo",
+  "Tejido Adiposo",
+  "Tejido Cartilaginoso",
+  "Tejido Óseo",
+  "Tejido Muscular",
+  "Tejido Nervioso"
+];
+
+let allQuestions = [];
+let activeQuestions = [];
+let currentIdx = 0;
+let answers = []; // {selected, correct}
+let selectedSections = new Set(SECTIONS_ORDER);
+let shuffleEnabled = true;
+
+// Load questions
+fetch('questions.json')
+  .then(r => r.json())
+  .then(data => {
+    allQuestions = data;
+    renderStart();
+  })
+  .catch(err => {
+    document.getElementById('root').innerHTML =
+      '<div class="start-screen"><h2>Error al cargar las preguntas</h2>' +
+      '<p>Asegúrate de que el archivo questions.json esté en la misma carpeta que este HTML. ' +
+      'Si estás abriendo el archivo localmente, algunos navegadores bloquean el acceso a archivos vecinos ' +
+      'por razones de seguridad — prueba a servir la carpeta con un servidor local ' +
+      '(por ejemplo, <code>python3 -m http.server</code> en la carpeta del quiz).</p>' +
+      '<p style="color:var(--text-muted);font-size:13px">Detalle técnico: ' + (err.message || err) + '</p></div>';
+  });
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function renderStart() {
+  const counts = {};
+  SECTIONS_ORDER.forEach(s => counts[s] = 0);
+  allQuestions.forEach(q => counts[q.section] = (counts[q.section] || 0) + 1);
+
+  const root = document.getElementById('root');
+  root.innerHTML = `
+    <div class="start-screen">
+      <h2>Selecciona las secciones a practicar</h2>
+      <p>Todas las preguntas incluyen solo la imagen — el texto del PDF original ha sido reescrito.</p>
+      <div class="section-list" id="sec-list"></div>
+      <div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; align-items:center;">
+        <label style="display:flex; gap:8px; align-items:center; cursor:pointer; font-size:14px;">
+          <input type="checkbox" id="shuffle-toggle" ${shuffleEnabled ? 'checked' : ''}>
+          Mezclar preguntas aleatoriamente
+        </label>
+        <button class="btn btn-ghost" id="select-all">Todas</button>
+        <button class="btn btn-ghost" id="select-none">Ninguna</button>
+      </div>
+      <div class="actions">
+        <button class="btn" id="start-btn">Comenzar quiz</button>
+        <span style="align-self:center; color:var(--text-muted); font-size:14px;" id="count-label"></span>
+      </div>
+    </div>
+  `;
+
+  const secList = document.getElementById('sec-list');
+  SECTIONS_ORDER.forEach(sec => {
+    const btn = document.createElement('button');
+    btn.className = 'section-btn' + (selectedSections.has(sec) ? ' active' : '');
+    btn.innerHTML = `<div class="name">${sec}</div><div class="count">${counts[sec]} preguntas</div>`;
+    btn.onclick = () => {
+      if (selectedSections.has(sec)) selectedSections.delete(sec);
+      else selectedSections.add(sec);
+      btn.classList.toggle('active');
+      updateCountLabel();
+    };
+    secList.appendChild(btn);
+  });
+
+  document.getElementById('shuffle-toggle').onchange = (e) => { shuffleEnabled = e.target.checked; };
+  document.getElementById('select-all').onclick = () => {
+    selectedSections = new Set(SECTIONS_ORDER);
+    renderStart();
+  };
+  document.getElementById('select-none').onclick = () => {
+    selectedSections = new Set();
+    renderStart();
+  };
+  document.getElementById('start-btn').onclick = startQuiz;
+
+  updateCountLabel();
+  function updateCountLabel() {
+    const n = allQuestions.filter(q => selectedSections.has(q.section)).length;
+    document.getElementById('count-label').textContent = `${n} preguntas seleccionadas`;
+    document.getElementById('start-btn').disabled = n === 0;
+  }
+}
+
+function startQuiz() {
+  activeQuestions = allQuestions.filter(q => selectedSections.has(q.section));
+  if (shuffleEnabled) activeQuestions = shuffle(activeQuestions);
+  currentIdx = 0;
+  answers = new Array(activeQuestions.length).fill(null);
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = activeQuestions[currentIdx];
+  const answered = answers[currentIdx] !== null;
+  const progress = ((currentIdx + 1) / activeQuestions.length) * 100;
+
+  const root = document.getElementById('root');
+  root.innerHTML = `
+    <div class="quiz-card">
+      <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
+      <div class="quiz-meta">
+        <span class="section-badge">${q.section}</span>
+        <span>Pregunta ${currentIdx + 1} de ${activeQuestions.length}</span>
+      </div>
+      <h2 class="question-text">${escapeHtml(q.question)}</h2>
+      <img class="question-image" src="images/${q.image}" alt="Imagen de la pregunta" loading="lazy">
+      <div class="options" id="options"></div>
+      ${answered && q.note ? `<div class="note"><strong>Nota:</strong> ${escapeHtml(q.note)}</div>` : ''}
+      <div class="nav">
+        <button class="btn btn-secondary" id="prev-btn" ${currentIdx === 0 ? 'disabled' : ''}>← Anterior</button>
+        <div class="right">
+          <button class="btn btn-ghost" id="quit-btn">Salir</button>
+          ${currentIdx === activeQuestions.length - 1
+            ? `<button class="btn" id="finish-btn" ${!answered ? 'disabled' : ''}>Ver resultados</button>`
+            : `<button class="btn" id="next-btn" ${!answered ? 'disabled' : ''}>Siguiente →</button>`}
+        </div>
+      </div>
+    </div>
+  `;
+
+  const optsDiv = document.getElementById('options');
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    const letter = String.fromCharCode(97 + i);
+    btn.innerHTML = `<span class="letter">${letter.toUpperCase()}</span><span class="text">${escapeHtml(opt)}</span>`;
+
+    if (answered) {
+      btn.disabled = true;
+      if (i === q.correct) btn.classList.add('correct');
+      else if (i === answers[currentIdx]) btn.classList.add('wrong');
+    } else {
+      btn.onclick = () => {
+        answers[currentIdx] = i;
+        renderQuestion();
+      };
+    }
+    optsDiv.appendChild(btn);
+  });
+
+  const prev = document.getElementById('prev-btn');
+  if (prev) prev.onclick = () => { currentIdx--; renderQuestion(); };
+  const next = document.getElementById('next-btn');
+  if (next) next.onclick = () => { currentIdx++; renderQuestion(); };
+  const finish = document.getElementById('finish-btn');
+  if (finish) finish.onclick = renderResults;
+  document.getElementById('quit-btn').onclick = () => {
+    if (confirm('¿Seguro que quieres salir? Se perderá el progreso actual.')) renderStart();
+  };
+}
+
+function renderResults() {
+  const total = activeQuestions.length;
+  const answered = answers.filter(a => a !== null).length;
+  const correct = answers.filter((a, i) => a === activeQuestions[i].correct).length;
+  const wrong = answered - correct;
+  const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+
+  const wrongItems = [];
+  activeQuestions.forEach((q, i) => {
+    if (answers[i] !== null && answers[i] !== q.correct) {
+      wrongItems.push({ q, userAns: answers[i], idx: i });
+    }
+  });
+
+  const root = document.getElementById('root');
+  root.innerHTML = `
+    <div class="results">
+      <div class="score-circle" style="--score:${pct}">
+        <div class="score-inner">
+          <div class="score-pct">${pct}%</div>
+          <div class="score-label">Puntuación</div>
+        </div>
+      </div>
+      <h2>${pct >= 80 ? '¡Excelente!' : pct >= 60 ? '¡Buen trabajo!' : '¡Sigue practicando!'}</h2>
+      <div class="breakdown">
+        <div class="stat correct"><div class="num">${correct}</div><div class="lbl">Correctas</div></div>
+        <div class="stat wrong"><div class="num">${wrong}</div><div class="lbl">Incorrectas</div></div>
+        <div class="stat"><div class="num">${total - answered}</div><div class="lbl">Sin responder</div></div>
+      </div>
+      <div class="actions" style="justify-content:center;">
+        <button class="btn" id="restart-btn">Nuevo quiz</button>
+        <button class="btn btn-secondary" id="review-btn">${wrongItems.length > 0 ? 'Revisar errores (' + wrongItems.length + ')' : 'Revisar todas'}</button>
+      </div>
+      <div id="review-area" style="margin-top:28px;"></div>
+    </div>
+  `;
+
+  document.getElementById('restart-btn').onclick = renderStart;
+  document.getElementById('review-btn').onclick = () => {
+    const area = document.getElementById('review-area');
+    if (area.innerHTML) { area.innerHTML = ''; return; }
+
+    const items = wrongItems.length > 0 ? wrongItems : activeQuestions.map((q, i) => ({q, userAns: answers[i], idx: i}));
+    area.innerHTML = '<h3 style="text-align:left; margin-bottom:16px;">Revisión</h3>' + items.map(({q, userAns}) => {
+      const userAnsText = userAns !== null ? q.options[userAns] : '(sin responder)';
+      const correctText = q.options[q.correct];
+      const isCorrect = userAns === q.correct;
+      return `
+        <div class="review-item">
+          <div class="q">${escapeHtml(q.question)}</div>
+          <img src="images/${q.image}" style="max-width:280px; width:100%; border-radius:8px; margin:8px 0;" loading="lazy">
+          ${!isCorrect ? `<div class="ans your">Tu respuesta: ${escapeHtml(userAnsText)}</div>` : ''}
+          <div class="ans correct-ans">Respuesta correcta: ${escapeHtml(correctText)}</div>
+          ${q.note ? `<div class="note" style="margin-top:8px;">${escapeHtml(q.note)}</div>` : ''}
+        </div>
+      `;
+    }).join('');
+  };
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,2486 @@
+[
+  {
+    "page": 1,
+    "image": "img-000.png",
+    "question": "La estructura indicada con el número 4, corresponde a:",
+    "options": [
+      "Cavidad celomática extraembrionaria",
+      "Divertículo alantoideo",
+      "Quiste exocelómico",
+      "Membrana de Heuser"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 2,
+    "image": "img-001.png",
+    "question": "La estructura indicada con el número 1, corresponde a:",
+    "options": [
+      "Nódulo de Hensen",
+      "Línea primitiva",
+      "Epiblasto",
+      "Canal neural"
+    ],
+    "correct": 1,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 3,
+    "image": "img-002.png",
+    "question": "Indique lo correcto sobre la imagen:",
+    "options": [
+      "Corresponde a la primera mitad de la segunda semana del desarrollo.",
+      "Corresponde a la etapa final de la implantación.",
+      "Se observa formado el disco embrionario tridérmico.",
+      "Corresponde a la mitad de la primera semana del desarrollo"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 4,
+    "image": "img-003.png",
+    "question": "La estructura indicada con el número 4, corresponde a:",
+    "options": [
+      "Amnioblastos",
+      "Esplacnopleura extraembrionaria",
+      "Somatopleura extraembrionaria",
+      "Ectodermo"
+    ],
+    "correct": 2,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 5,
+    "image": "img-004.png",
+    "question": "Indique lo correcto en relación a la imagen:",
+    "options": [
+      "Esta estructura se localiza en la cavidad uterina",
+      "Corresponde al estadio de mórula",
+      "Corresponde a la etapa de segmentación",
+      "El número 1 corresponde al corion"
+    ],
+    "correct": 2,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 6,
+    "image": "img-005.png",
+    "question": "Sobre qué día aproximado se encuentra el producto de la fecundación:",
+    "options": [
+      "Día 14",
+      "Día 11",
+      "Día 7",
+      "Día 9"
+    ],
+    "correct": 0,
+    "note": "Corrección en el PDF: Día 28 (ciclo ovárico). Ninguna opción coincide; se mantiene la marcada originalmente.",
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 6,
+    "image": "img-006.png",
+    "question": "El esquema corresponde a un corte del embrión, señale la respuesta correcta:",
+    "options": [
+      "Transversal anterior al nódulo de Hensen",
+      "Paraaxial al eje longitudinal",
+      "Axial a la línea primitiva",
+      "Transversal posterior al nódulo de Hensen"
+    ],
+    "correct": 3,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 7,
+    "image": "img-007.png",
+    "question": "El número 9 corresponde a:",
+    "options": [
+      "Blastocele",
+      "Saco vitelino definitivo",
+      "Cavidad amniótica.",
+      "Saco vitelino primitivo"
+    ],
+    "correct": 3,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 7,
+    "image": "img-008.png",
+    "question": "El esquema corresponde a:",
+    "options": [
+      "Ovocito II rodeado por la zona pelúcida",
+      "Zigoto en el inicio de segmentación",
+      "Ovocito I en profase I",
+      "Ovocito II en Metafase II"
+    ],
+    "correct": 0,
+    "note": "Corrección en el PDF: la respuesta correcta es 'Ovocito II rodeado por la zona pelúcida'.",
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 8,
+    "image": "img-009.png",
+    "question": "Qué es falso con respecto a la estructura señalada con el número 2",
+    "options": [
+      "Se denomina yema embrionaria.",
+      "Dará lugar al disco embrionario.",
+      "Producirá Gonadotropina coriónica",
+      "Se denomina embrioblasto."
+    ],
+    "correct": 2,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 8,
+    "image": "img-010.png",
+    "question": "Indique lo que no corresponde en relación al esquema:",
+    "options": [
+      "Se observa la formación de lagunas en el sincitiotrofoblasto.",
+      "Se observa el disco embrionario tridérmico.",
+      "Se observa el celoma extraembrionario.",
+      "Corresponde al final de la segunda semana del desarrollo."
+    ],
+    "correct": 1,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 9,
+    "image": "img-011.png",
+    "question": "La estructura indicada con el número 7, corresponde a:",
+    "options": [
+      "Esplacnopleura extraembrionaria",
+      "Endodermo (hipoblasto)",
+      "Revestimiento cavidad amniótica",
+      "Somatopleura extraembrionaria"
+    ],
+    "correct": 1,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 9,
+    "image": "img-012.png",
+    "question": "Indique lo que NO corresponde:",
+    "options": [
+      "El número 9 corresponde a pedículo embrionario",
+      "El número 11 señala citotrofoblasto",
+      "El número 12 señala sincitiotrofoblasto",
+      "El número 5 corresponde a hipoblasto"
+    ],
+    "correct": 3,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 10,
+    "image": "img-013.png",
+    "question": "La estructura indicada con el número 5, corresponde a:",
+    "options": [
+      "Ectodermo",
+      "Neuroectodermo",
+      "Mesodermo paraaxial",
+      "Somatopleura embrionaria"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 11,
+    "image": "img-014.png",
+    "question": "La estructura indicada con el número 7, corresponde a:",
+    "options": [
+      "Mesodermo intermedio",
+      "Notocorda",
+      "Mesodermo lateral",
+      "Mesodermo paraaxial"
+    ],
+    "correct": 0,
+    "note": "Respuesta indicada al pie: Mesodermo intermedio",
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 12,
+    "image": "img-015.png",
+    "question": "Señale lo incorrecto en relación al número 5:",
+    "options": [
+      "Corresponde a sincitiotrofoblasto",
+      "Interviene en la anidación gracias a su actividad lítica sobre el endometrio",
+      "Originará el saco vitelino.",
+      "Deriva del trofoblasto"
+    ],
+    "correct": 2,
+    "note": "Corrección al pie: 'Origina el saco vitelino' (opción c).",
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 13,
+    "image": "img-016.png",
+    "question": "La estructura indicada con el número 6, corresponde a:",
+    "options": [
+      "Esplacnopleura extraembrionaria",
+      "Mesodermo",
+      "Revestimiento cavidad vitelina",
+      "Endodermo"
+    ],
+    "correct": 1,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 13,
+    "image": "img-017.png",
+    "question": "La estructura indicada con el número 3, corresponde a:",
+    "options": [
+      "Cavidad celomática extraembrionaria",
+      "Membrana de Heuser",
+      "Quiste exocelómico",
+      "Divertículo alantoideo"
+    ],
+    "correct": 2,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 14,
+    "image": "img-018.png",
+    "question": "En qué porción del aparato genital femenino ocurre normalmente lo que se observa en esta imagen:",
+    "options": [
+      "Istmo uterino",
+      "Cérvix uterino",
+      "Trompa uterina",
+      "Cuerpo uterino"
+    ],
+    "correct": 3,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 15,
+    "image": "img-019.png",
+    "question": "Qué afirmación no corresponde a la imagen:",
+    "options": [
+      "Presenta los primeros vasos sanguíneos en el mesénquima extraembrionario.",
+      "Se observa el quiste exocelómico.",
+      "Se observa el pedículo de fijación.",
+      "Se observa el divertículo alantoideo."
+    ],
+    "correct": 1,
+    "note": "Corrección al pie: 'Quiste exocelómico' (opción b).",
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 16,
+    "image": "img-020.png",
+    "question": "El número 3 corresponde a:",
+    "options": [
+      "Mesodermo paraxial",
+      "Notocorda",
+      "Tubo neural",
+      "Surco neural"
+    ],
+    "correct": 3,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 17,
+    "image": "img-021.png",
+    "question": "La vellosidad mostrada se corresponde con:",
+    "options": [
+      "Vellosidad secundaria",
+      "Vellosidad primaria",
+      "Vellosidad terciaria",
+      "Vellosidad a término"
+    ],
+    "correct": 3,
+    "section": "Placenta y Gemelos"
+  },
+  {
+    "page": 17,
+    "image": "img-022.png",
+    "question": "Indique lo que NO se corresponde con la imagen:",
+    "options": [
+      "Presenta citotrofoblasto",
+      "En la imagen se observa mesénquima extraembrionario.",
+      "Corresponde a segunda semana de desarrollo",
+      "Solo se observa sincitiotrofoblasto en algunas zonas"
+    ],
+    "correct": 3,
+    "section": "Placenta y Gemelos"
+  },
+  {
+    "page": 18,
+    "image": "img-023.png",
+    "question": "La vellosidad que muestra la imagen se corresponde con:",
+    "options": [
+      "Vellosidad secundaria",
+      "Vellosidad terciaria",
+      "Vellosidad primaria",
+      "Vellosidad a término"
+    ],
+    "correct": 2,
+    "section": "Placenta y Gemelos"
+  },
+  {
+    "page": 18,
+    "image": "img-024.png",
+    "question": "La estructura señalada con el número 4, corresponde a:",
+    "options": [
+      "Miometrio",
+      "Zona de Corion frondoso",
+      "Zona de Corion liso",
+      "Cámara intervellosa"
+    ],
+    "correct": 2,
+    "section": "Placenta y Gemelos"
+  },
+  {
+    "page": 19,
+    "image": "img-025.png",
+    "question": "En la presente placenta a término el nº 1 indica:",
+    "options": [
+      "Tronco vellositario de primer orden",
+      "Tronco vellositario de tercer orden",
+      "Tronco vellositario de segundo orden",
+      "Vellosidad libre"
+    ],
+    "correct": 0,
+    "section": "Placenta y Gemelos"
+  },
+  {
+    "page": 19,
+    "image": "img-026.png",
+    "question": "Señale lo que NO corresponde con la zona seleccionada:",
+    "options": [
+      "Corresponde a corion liso o calvo",
+      "Se observan vellosidades con mesénquima extraembrionario.",
+      "Se observa la cámara intervellosa",
+      "Corresponde a la zona de corion frondoso"
+    ],
+    "correct": 0,
+    "note": "Corrección al pie: 'Corion liso' (opción a).",
+    "section": "Placenta y Gemelos"
+  },
+  {
+    "page": 20,
+    "image": "img-027.png",
+    "question": "Indique lo correcto en relación a la imagen:",
+    "options": [
+      "Se observan vellosidades placentarias primarias",
+      "Se observa mucosa decidual",
+      "Se observan vellosidades placentaria a término",
+      "Corresponde a la cara fetal de la placenta"
+    ],
+    "correct": 1,
+    "section": "Placenta y Gemelos"
+  },
+  {
+    "page": 20,
+    "image": "img-028.png",
+    "question": "La vellosidad que muestra la imagen se corresponde con:",
+    "options": [
+      "Vellosidad a término",
+      "Vellosidad secundaria",
+      "Vellosidad primaria",
+      "Vellosidad terciaria"
+    ],
+    "correct": 1,
+    "section": "Placenta y Gemelos"
+  },
+  {
+    "page": 21,
+    "image": "img-029.png",
+    "question": "De la siguiente imagen indique lo que NO es correcto:",
+    "options": [
+      "La estructura se encuentra rodeada por el amnios.",
+      "Corresponde a cordón umbilical con la presencia de 2 arterias umbilicales.",
+      "Los vasos umbilicales están delimitados por el amnios.",
+      "Corresponde a un corte transversal de cordón umbilical"
+    ],
+    "correct": 2,
+    "section": "Placenta y Gemelos"
+  },
+  {
+    "page": 21,
+    "image": "img-030.png",
+    "question": "El asterisco se encuentra situado sobre:",
+    "options": [
+      "Pared arteria umbilical",
+      "Gelatina de Wharton",
+      "Revestimiento amniótico",
+      "Pared vena umbilical"
+    ],
+    "correct": 1,
+    "section": "Placenta y Gemelos"
+  },
+  {
+    "page": 22,
+    "image": "img-031.png",
+    "question": "La vellosidad que muestra la imagen se corresponde con:",
+    "options": [
+      "Vellosidad primaria",
+      "Vellosidad terciaria",
+      "Vellosidad a término",
+      "Vellosidad secundaria"
+    ],
+    "correct": 2,
+    "section": "Placenta y Gemelos"
+  },
+  {
+    "page": 22,
+    "image": "img-032.png",
+    "question": "Qué es verdadero sobre la estructura que se observa en la imagen:",
+    "options": [
+      "Corresponde a una vellosidad placentaria en la que ha desaparecido el citotrofoblasto.",
+      "Corresponde a una vellosidad placentaria que presenta un eje central de mesénquima extraembrionario.",
+      "Corresponde a una vellosidad placentaria a término.",
+      "Corresponde a una vellosidad placentaria primaria"
+    ],
+    "correct": 1,
+    "section": "Placenta y Gemelos"
+  },
+  {
+    "page": 23,
+    "image": "img-033.png",
+    "question": "La estructura central de la imagen corresponde a:",
+    "options": [
+      "Vellosidad placentaria primaria",
+      "Vellosidad placentaria secundaria",
+      "Vellosidad placentaria terciaria",
+      "Vellosidad placentaria a término"
+    ],
+    "correct": 2,
+    "section": "Placenta y Gemelos"
+  },
+  {
+    "page": 23,
+    "image": "img-034.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Tejido conjuntivo denso orientado",
+      "Tejido conjuntivo denso",
+      "Tejido conjuntivo laxo",
+      "Tejido conjuntivo mucoso (gelatina de Wharton)"
+    ],
+    "correct": 3,
+    "section": "Placenta y Gemelos"
+  },
+  {
+    "page": 24,
+    "image": "img-035.png",
+    "question": "En la presente placenta a término el asterisco indica:",
+    "options": [
+      "Tronco vellositario de tercer orden",
+      "Cámara intervellosa",
+      "Cavidad celomática extraembrionaria",
+      "Vellosidad libre"
+    ],
+    "correct": 1,
+    "section": "Placenta y Gemelos"
+  },
+  {
+    "page": 25,
+    "image": "img-036.png",
+    "question": "El epitelio de la imagen:",
+    "options": [
+      "Lo encontramos en la piel",
+      "Reviste conductos glandulares",
+      "Recubre el aparato respiratorio",
+      "Reviste la vejiga urinaria"
+    ],
+    "correct": 3,
+    "note": "Respuesta indicada al pie: 'Vejiga urinaria'.",
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 26,
+    "image": "img-037.png",
+    "question": "¿Qué tipo de epitelio reviste este conducto?",
+    "options": [
+      "Estratificado cilíndrico",
+      "Transicional",
+      "No se corresponde con los epitelios señalados",
+      "Estratificado cúbico"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 26,
+    "image": "img-038.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Epitelio cilíndrico simple con células caliciformes",
+      "Epitelio estratificado cúbico",
+      "Epitelio transicional",
+      "Epitelio pseudoestratificado con estereocilios"
+    ],
+    "correct": 0,
+    "note": "Sin marca en el PDF. Respuesta más probable según imagen (vellosidades con células caliciformes): opción a.",
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 27,
+    "image": "img-039.png",
+    "question": "Señalamos con la flecha:",
+    "options": [
+      "Ribete en cepillo de un epitelio cilíndrico",
+      "Lámina basal de un epitelio de revestimiento cúbico",
+      "Queratina, en un epitelio cúbico",
+      "Queratina, en un epitelio pavimentoso queratinizado"
+    ],
+    "correct": 1,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 27,
+    "image": "img-040.png",
+    "question": "Indique el tipo de epitelio:",
+    "options": [
+      "Pavimentoso estratificado queratinizado",
+      "Cúbico simple",
+      "Pavimentoso estratificado con microvellosidades",
+      "Pavimentoso estratificado"
+    ],
+    "correct": 3,
+    "note": "Respuesta indicada al pie: 'D'.",
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 28,
+    "image": "img-041.png",
+    "question": "Indique la respuesta correcta para la imagen:",
+    "options": [
+      "Epitelio pavimentoso estratificado, frotis",
+      "Epitelio pavimentoso estratificado corte histológico teñido con PAS",
+      "Epitelio simple queratinizado",
+      "Epitelio cúbico estratificado"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 28,
+    "image": "img-042.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Epitelio pavimentoso estratificado",
+      "Epitelio transicional",
+      "Epitelio pavimentoso estratificado queratinizado",
+      "Epitelio pseudoestratificado"
+    ],
+    "correct": 2,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 29,
+    "image": "img-043.png",
+    "question": "Indique el tipo de epitelio:",
+    "options": [
+      "Epitelio cilíndrico simple, con ribete en cepillo",
+      "Epitelio plano simple",
+      "Epitelio pavimentoso estratificado queratinizado",
+      "Epitelio de transición"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 29,
+    "image": "img-044.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Epitelio respiratorio",
+      "Epitelio cilíndrico simple",
+      "Epitelio transicional",
+      "Epitelio simple cúbico"
+    ],
+    "correct": 1,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 30,
+    "image": "img-045.png",
+    "question": "Indique el tipo de epitelio:",
+    "options": [
+      "Epitelio transicional",
+      "Epitelio cilíndrico pseudoestratificado",
+      "Epitelio cúbico estratificado",
+      "Epitelio plano simple"
+    ],
+    "correct": 1,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 30,
+    "image": "img-046.png",
+    "question": "Las flechas señalan:",
+    "options": [
+      "Células epiteliales pavimentosas en un epitelio pavimentoso estratificado",
+      "Células epiteliales pavimentosas en un epitelio simple",
+      "Queratina, en un epitelio pavimentoso estratificado queratinizado",
+      "Queratina, en un epitelio simple queratinizado"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 31,
+    "image": "img-047.png",
+    "question": "La imagen representa:",
+    "options": [
+      "Epitelio pseudoestratificado ciliado",
+      "Epitelio prismático simple",
+      "Epitelio plano simple",
+      "Epitelio cúbico simple"
+    ],
+    "correct": 2,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 31,
+    "image": "img-048.png",
+    "question": "La flecha indica un epitelio, señale la respuesta correcta:",
+    "options": [
+      "Epitelio estratificado cúbico",
+      "Epitelio pavimentoso estratificado",
+      "Epitelio simple cúbico",
+      "Epitelio simple pavimentoso"
+    ],
+    "correct": 3,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 32,
+    "image": "img-049.png",
+    "question": "Indique el tipo de epitelio:",
+    "options": [
+      "Simple cilíndrico con cilios",
+      "Pseudoestratificado con estereocilios",
+      "Todas las respuestas son correctas",
+      "Pseudoestratificado con microvellosidades"
+    ],
+    "correct": 0,
+    "note": "Corrección al pie: 'Simple cilíndrico con cilios' (opción a). Opción b marcada con ✗.",
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 32,
+    "image": "img-050.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Epitelio transicional",
+      "Epitelio estratificado cúbico",
+      "Epitelio estratificado pavimentoso",
+      "Epitelio pseudoestratificado con estereocilios"
+    ],
+    "correct": 1,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 33,
+    "image": "img-051.png",
+    "question": "Señale la respuesta correcta para el epitelio de la imagen:",
+    "options": [
+      "Epitelio prismático ciliado con células caliciformes. H-E",
+      "Epitelio prismático simple con borde estriado. H-E",
+      "Epitelio prismático ciliado con células caliciformes. PAS",
+      "Epitelio cilíndrico simple con células caliciformes. PAS"
+    ],
+    "correct": 3,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 33,
+    "image": "img-052.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Epitelio estratificado cúbico",
+      "Epitelio transicional",
+      "Epitelio cilíndrico con microvellosidades",
+      "Epitelio pseudoestratificado ciliado"
+    ],
+    "correct": 3,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 34,
+    "image": "img-053.png",
+    "question": "Diga qué tipo de epitelio muestra la imagen:",
+    "options": [
+      "Biestratificado pavimentoso",
+      "Estratificado simple",
+      "Simple cúbico",
+      "Biestratificado cúbico"
+    ],
+    "correct": 3,
+    "section": "Tejido Glandular"
+  },
+  {
+    "page": 34,
+    "image": "img-054.png",
+    "question": "Identifique la glándula:",
+    "options": [
+      "Glándula trabecular",
+      "Glándula vesicular",
+      "Glándula acinosa",
+      "Glándula alveolar"
+    ],
+    "correct": 3,
+    "section": "Tejido Glandular"
+  },
+  {
+    "page": 35,
+    "image": "img-055.png",
+    "question": "Identifique la glándula:",
+    "options": [
+      "Glándula acinar compuesta",
+      "Glándula holocrina serosa",
+      "Glándula merocrina serosa",
+      "Glándula seromucosa tubular"
+    ],
+    "correct": 0,
+    "note": "Corrección al pie: 'A) glándula acinar compuesta'. Opción b marcada con ✗.",
+    "section": "Tejido Glandular"
+  },
+  {
+    "page": 35,
+    "image": "img-056.png",
+    "question": "La imagen nos muestra un tejido conjuntivo rico en fibras colágenas.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "note": "Pregunta Verdadero/Falso (solo 2 opciones).",
+    "section": "Tejido Glandular"
+  },
+  {
+    "page": 36,
+    "image": "img-057.png",
+    "question": "La imagen muestra:",
+    "options": [
+      "Una glándula alveolar serosa",
+      "Células caliciformes",
+      "Una glándula tubular mucosa",
+      "Una glándula acinar seromucosa"
+    ],
+    "correct": 3,
+    "section": "Tejido Glandular"
+  },
+  {
+    "page": 36,
+    "image": "img-058.png",
+    "question": "Identifique la estructura histológica:",
+    "options": [
+      "Epitelio secretor de polo mucoso cerrado teñido con H-E",
+      "Epitelio secretor de polo mucoso cerrado teñido con PAS",
+      "Epitelio prismático simple con células caliciformes teñido con H-E",
+      "Epitelio prismático simple con células caliciformes teñido con PAS"
+    ],
+    "correct": 1,
+    "section": "Tejido Glandular"
+  },
+  {
+    "page": 37,
+    "image": "img-059.png",
+    "question": "Identifique la glándula:",
+    "options": [
+      "Glándula exocrina alveolar",
+      "Glándula endocrina folicular",
+      "Glándula amficrina",
+      "Glándula endocrina trabecular"
+    ],
+    "correct": 1,
+    "section": "Tejido Glandular"
+  },
+  {
+    "page": 38,
+    "image": "img-060.png",
+    "question": "La imagen representa:",
+    "options": [
+      "Epitelio secretor de polo mucoso cerrado teñido con hematoxilina eosina",
+      "Epitelio secretor de polo mucoso cerrado teñido con PAS",
+      "Epitelio con células caliciformes",
+      "Glándula endocrina"
+    ],
+    "correct": 1,
+    "section": "Tejido Glandular"
+  },
+  {
+    "page": 38,
+    "image": "img-061.png",
+    "question": "La flecha señala:",
+    "options": [
+      "Un alveolo seroso",
+      "Un capilar",
+      "Un conducto excretor",
+      "Un acino mucoso"
+    ],
+    "correct": 3,
+    "section": "Tejido Glandular"
+  },
+  {
+    "page": 39,
+    "image": "img-062.png",
+    "question": "La imagen representa:",
+    "options": [
+      "Una glándula exocrina acinar",
+      "Unos conductos excretores tapizados por epitelio plano simple",
+      "Una glándula endocrina",
+      "Una glándula alveolar"
+    ],
+    "correct": 2,
+    "section": "Tejido Glandular"
+  },
+  {
+    "page": 39,
+    "image": "img-063.png",
+    "question": "La zona señalada corresponde a:",
+    "options": [
+      "Acino oxíntico",
+      "Acino seroso",
+      "Acino mucoso",
+      "Acino seromucoso"
+    ],
+    "correct": 1,
+    "section": "Tejido Glandular"
+  },
+  {
+    "page": 40,
+    "image": "img-064.png",
+    "question": "La imagen corresponde a:",
+    "options": [
+      "El conducto excretor de una glándula endocrina",
+      "Una gran célula caliciforme",
+      "Un conducto excretor de una glándula exocrina revestido por epitelio cúbico",
+      "Un epitelio secretor"
+    ],
+    "correct": 2,
+    "section": "Tejido Glandular"
+  },
+  {
+    "page": 40,
+    "image": "img-065.png",
+    "question": "Identifique la glándula:",
+    "options": [
+      "Glándula acinosa",
+      "Glándula tubular",
+      "Glándula acinosa compuesta",
+      "Glándula alveolar"
+    ],
+    "correct": 3,
+    "section": "Tejido Glandular"
+  },
+  {
+    "page": 41,
+    "image": "img-066.png",
+    "question": "Identifique la glándula:",
+    "options": [
+      "Glándula endocrina de patrón trabecular",
+      "Glándula endocrina de patrón acinoso",
+      "Glándula amficrina de patrón trabecular",
+      "Glándula endocrina de patrón vesicular"
+    ],
+    "correct": 0,
+    "section": "Tejido Glandular"
+  },
+  {
+    "page": 41,
+    "image": "img-067.png",
+    "question": "Identifique la glándula:",
+    "options": [
+      "Glándula túbulo alveolar compuesta",
+      "Glándula tubular compuesta",
+      "Glándula túbulo acinosa simple",
+      "Glándula túbulo acinosa compuesta"
+    ],
+    "correct": 1,
+    "section": "Tejido Glandular"
+  },
+  {
+    "page": 42,
+    "image": "img-068.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Tejido conjuntivo denso no orientado",
+      "Tejido conjuntivo laxo orientado",
+      "Tejido conjuntivo denso elástico",
+      "Tejido conjuntivo denso orientado"
+    ],
+    "correct": 3,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 42,
+    "image": "img-069.png",
+    "question": "Indique qué células están señaladas con flechas y cuál es su función principal:",
+    "options": [
+      "Célula plasmática. Producción de anticuerpos",
+      "Fibroblasto. Función producción de matriz conjuntiva.",
+      "Célula mastocitaria. Función secreción de aminas biógenas",
+      "Célula macrofágica. Función defensiva fagocítica"
+    ],
+    "correct": 1,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 43,
+    "image": "img-070.png",
+    "question": "La imagen nos muestra un tejido conjuntivo rico en fibras colágenas.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 1,
+    "note": "V/F",
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 43,
+    "image": "img-071.png",
+    "question": "La imagen nos muestra un tejido conjuntivo denso no orientado y en el centro del campo un mastocito.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 1,
+    "note": "V/F",
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 44,
+    "image": "img-072.png",
+    "question": "La célula señalada se corresponde con:",
+    "options": [
+      "Célula plasmática",
+      "Mastocito",
+      "Fibroblasto",
+      "Macrófago"
+    ],
+    "correct": 1,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 44,
+    "image": "img-073.png",
+    "question": "Indique qué célula es la señalada y cuál es su función principal:",
+    "options": [
+      "Célula mastocitaria. Función secreción de aminas biógenas",
+      "Célula plasmática. Producción de anticuerpos",
+      "Célula macrofágica. Función defensiva fagocítica",
+      "Miofibroblasto. Función contráctil y formadora de matriz conjuntiva"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 45,
+    "image": "img-074.png",
+    "question": "La imagen nos muestra un tejido conjuntivo laxo teñido con tricrómico de Masson.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 1,
+    "note": "V/F",
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 45,
+    "image": "img-075.png",
+    "question": "La imagen nos muestra un tejido conjuntivo mucoso.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 1,
+    "note": "V/F",
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 46,
+    "image": "img-076.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Tejido conjuntivo laxo teñido con tricrómico de Masson",
+      "Tejido conjuntivo mucoso teñido con tricrómico de Masson",
+      "Tejido conjuntivo denso orientado teñido con tricrómico de Van Gieson",
+      "Tejido conjuntivo laxo teñido con tricrómico de Van Gieson"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 46,
+    "image": "img-077.png",
+    "question": "Indique la respuesta incorrecta:",
+    "options": [
+      "Tejido que se encuentra en órganos hematopoyéticos y linfoides",
+      "Fibras de reticulina teñidas con la tinción de Gomori.",
+      "Tejido reticular teñido con impregnación argéntica",
+      "Fibras elásticas integradas por colágeno tipo I"
+    ],
+    "correct": 3,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 47,
+    "image": "img-078.png",
+    "question": "La preparación tiene realizada una tinción de tricrómico de Masson que nos pone de relieve las fibras elásticas del tejido conjuntivo.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 1,
+    "note": "V/F",
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 47,
+    "image": "img-079.png",
+    "question": "Las células señaladas con flechas se corresponden con:",
+    "options": [
+      "Célula mesenquimal progenitora",
+      "Fibroblasto",
+      "Célula plasmática",
+      "Monocito"
+    ],
+    "correct": 1,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 48,
+    "image": "img-080.png",
+    "question": "Las células señaladas con flechas se corresponden con:",
+    "options": [
+      "Linfocito",
+      "Macrófago",
+      "Mastocito",
+      "Célula plasmática"
+    ],
+    "correct": 3,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 48,
+    "image": "img-081.png",
+    "question": "La imagen nos muestra un tejido conjuntivo elástico teñido con tricrómico de Masson.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 1,
+    "note": "V/F",
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 49,
+    "image": "img-082.png",
+    "question": "Indique qué célula es la señalada y cuál es su función principal:",
+    "options": [
+      "Miofibroblasto. Función contráctil y formadora de matriz conjuntiva",
+      "Célula plasmática. Producción de anticuerpos",
+      "Célula mastocitaria. Función secreción de aminas biógenas",
+      "Célula macrofágica. Función defensiva fagocítica"
+    ],
+    "correct": 3,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 49,
+    "image": "img-083.png",
+    "question": "Indique la respuesta correcta:",
+    "options": [
+      "Fibras de reticulina teñidas con una variante de la técnica de plata de Gomori",
+      "Fibras colágenas teñidas con técnica de impregnación argéntica",
+      "Fibras elásticas teñidas con la técnica de orceína",
+      "Fibras elásticas teñidas con el tricrómico de Van Gieson para fibras elásticas (Verhoeff)"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 50,
+    "image": "img-084.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Tejido conjuntivo denso orientado",
+      "Tejido conjuntivo denso no orientado",
+      "Tejido conjuntivo laxo",
+      "Tejido conjuntivo embrionario"
+    ],
+    "correct": 2,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 50,
+    "image": "img-085.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Tejido conjuntivo elástico. Fibras elásticas teñidas con orceína.",
+      "Tejido conjuntivo reticular. Fibras de colágena teñidas con Gomori",
+      "Tejido conjuntivo reticular, tinción de plata de Gomori.",
+      "Tejido conjuntivo elástico. Fibras elásticas teñidas con Gomori"
+    ],
+    "correct": 2,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 51,
+    "image": "img-086.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Tejido conjuntivo embrionario teñido con tricrómico de Masson, tinción específica de esta variedad de tejido.",
+      "Tejido conjuntivo laxo. Fibras de reticulina teñidas con H-E",
+      "Tejido conjuntivo laxo y denso. Fibras de colágena teñidas con tricrómico de Masson",
+      "Tejido conjuntivo elástico. Fibras elásticas teñidas con tricrómico"
+    ],
+    "correct": 2,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 51,
+    "image": "img-087.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Tejido conjuntivo denso elástico",
+      "Tejido conjuntivo denso orientado",
+      "Tejido conjuntivo denso no orientado",
+      "Tejido conjuntivo mucoso"
+    ],
+    "correct": 2,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 52,
+    "image": "img-088.png",
+    "question": "Las flechas nos indican células emigradas del tejido conjuntivo.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 1,
+    "note": "V/F",
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 52,
+    "image": "img-089.png",
+    "question": "Indique qué células están señaladas con flechas y cuál es su función principal:",
+    "options": [
+      "Miofibroblasto. Función contráctil y formadora de matriz conjuntiva",
+      "Célula macrofágica. Función defensiva fagocítica",
+      "Célula plasmática. Producción de anticuerpos",
+      "Célula mastocitaria. Función secreción de aminas biógenas"
+    ],
+    "correct": 2,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 53,
+    "image": "img-090.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Microscopía electrónica de barrido de un fibroblasto",
+      "Célula conjuntiva, pericito.",
+      "Microscopía electrónica de transmisión de un fibroblasto",
+      "Microscopía electrónica de un macrófago"
+    ],
+    "correct": 2,
+    "section": "Tejido Adiposo"
+  },
+  {
+    "page": 53,
+    "image": "img-091.png",
+    "question": "La imagen nos muestra adipocitos uniloculares.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "note": "V/F",
+    "section": "Tejido Adiposo"
+  },
+  {
+    "page": 54,
+    "image": "img-092.png",
+    "question": "En la imagen aparece tejido adiposo multilocular con abundantes capilares sanguíneos.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "note": "V/F",
+    "section": "Tejido Adiposo"
+  },
+  {
+    "page": 54,
+    "image": "img-093.png",
+    "question": "Este tejido es muy abundante en el hombre adulto.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 1,
+    "note": "V/F",
+    "section": "Tejido Adiposo"
+  },
+  {
+    "page": 55,
+    "image": "img-094.png",
+    "question": "La imagen muestra:",
+    "options": [
+      "Células adiposas uniloculares teñidas con hematoxilina eosina",
+      "Adipocitos de grasa parda teñidos con hematoxilina eosina",
+      "Tejido conjuntivo adiposo con células multiloculares",
+      "Tejido conjuntivo laxo en el que observamos adipocitos uniloculares"
+    ],
+    "correct": 0,
+    "section": "Tejido Adiposo"
+  },
+  {
+    "page": 55,
+    "image": "img-095.png",
+    "question": "Indique la respuesta correcta:",
+    "options": [
+      "Tejido graso multilocular procesado por congelación y teñido con Sudán III.",
+      "Tejido de grasa parda procesado por congelación teñido con H-E",
+      "Tejido graso multilocular procesado por inclusión en parafina y teñido con Sudán III",
+      "Tejido de grasa parda procesado por inclusión en parafina y teñido con H-E."
+    ],
+    "correct": 3,
+    "note": "Sin marca en el PDF. Respuesta más probable según la imagen (H-E, parafina): opción d.",
+    "section": "Tejido Adiposo"
+  },
+  {
+    "page": 56,
+    "image": "img-096.png",
+    "question": "En la imagen se observa:",
+    "options": [
+      "Tejido adiposo de grasa blanca con adipocitos uniloculares",
+      "Tejido adiposo de grasa blanca multilocular",
+      "Tejido conjuntivo adiposo de grasa parda unilocular",
+      "Adipocitos de grasa parda unilocular"
+    ],
+    "correct": 0,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 56,
+    "image": "img-097.png",
+    "question": "En la imagen se observa:",
+    "options": [
+      "Cartílago hialino con la característica matriz basófila",
+      "Cartílago de crecimiento",
+      "Cartílago hialino con la característica matriz acidófila",
+      "Cartílago fibroso con la característica matriz acidófila"
+    ],
+    "correct": 0,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 57,
+    "image": "img-098.png",
+    "question": "Indique qué afirmación NO es cierta sobre el tipo de cartílago que aparece en la imagen:",
+    "options": [
+      "Se localiza en la sínfisis púbica",
+      "Contiene fibras colágenas tipo I",
+      "Forma los tendones y ligamentos",
+      "Rodea al núcleo pulposo"
+    ],
+    "correct": 2,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 57,
+    "image": "img-099.png",
+    "question": "Indique qué afirmación es cierta sobre el tipo de cartílago que aparece en la imagen:",
+    "options": [
+      "No presenta pericondrio",
+      "Forma el cartílago articular",
+      "Se localiza en la epiglotis",
+      "Se localiza en el disco intervertebral"
+    ],
+    "correct": 2,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 58,
+    "image": "img-100.png",
+    "question": "La zona señalada con la flecha roja y letra 'A', corresponde a:",
+    "options": [
+      "Cartílago metafisario",
+      "Cartílago articular",
+      "Zona osificada compacta",
+      "Foco de osificación membranosa"
+    ],
+    "correct": 0,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 58,
+    "image": "img-101.png",
+    "question": "Indique en qué localización podemos encontrar este tipo de cartílago:",
+    "options": [
+      "En pabellón auditivo",
+      "Recubriendo superficies articulares óseas",
+      "En los cartílagos costales",
+      "En el disco intervertebral"
+    ],
+    "correct": 0,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 59,
+    "image": "img-102.png",
+    "question": "El tejido que aparece en la imagen corresponde a:",
+    "options": [
+      "Cartílago hialino",
+      "Cartílago fibroso",
+      "Cartílago articular",
+      "Cartílago elástico"
+    ],
+    "correct": 1,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 59,
+    "image": "img-103.png",
+    "question": "La zona señalada con la flecha verde y letra 'C', corresponde a:",
+    "options": [
+      "Zona de cartílago seriado de cartílago de conjunción",
+      "Zona de cartílago hipertrófico de cartílago de conjunción",
+      "Zona radial de cartílago articular",
+      "Zona de cartílago calcificado de cartílago de conjunción"
+    ],
+    "correct": 0,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 60,
+    "image": "img-104.png",
+    "question": "Los asteriscos nos indican:",
+    "options": [
+      "Matriz territorial de cartílago hialino teñida con Azul de Toluidina",
+      "Matriz territorial de cartílago hialino teñida con Hematoxilina Eosina",
+      "Matriz interterritorial de cartílago hialino teñida con Hematoxilina Eosina",
+      "Matriz interterritorial de cartílago hialino teñida con Azul de Toluidina"
+    ],
+    "correct": 2,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 60,
+    "image": "img-105.png",
+    "question": "La zona señalada con la flecha amarilla y letra 'D', corresponde a:",
+    "options": [
+      "Zona de cartílago hipertrófico de cartílago de conjunción",
+      "Zona hipertrófica de cartílago articular",
+      "Zona de cartílago calcificado de cartílago de conjunción",
+      "Zona de cartílago seriado de cartílago de conjunción"
+    ],
+    "correct": 0,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 61,
+    "image": "img-106.png",
+    "question": "Indique qué afirmación es cierta sobre el tipo de cartílago que aparece en la imagen:",
+    "options": [
+      "Forma el cartílago articular",
+      "Se localiza en el esqueleto de la laringe",
+      "No presenta pericondrio",
+      "Contiene abundantes fibras elásticas"
+    ],
+    "correct": 2,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 62,
+    "image": "img-107.png",
+    "question": "Señale las células que están indicando las flechas:",
+    "options": [
+      "Condrocitos de cartílago articular",
+      "Condrocitos de cartílago hialino",
+      "Condrocitos de cartílago fibroso",
+      "Condrocitos de cartílago elástico"
+    ],
+    "correct": 3,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 62,
+    "image": "img-108.png",
+    "question": "Señale qué es incorrecto sobre las células que están indicando las flechas:",
+    "options": [
+      "Son células encargadas del mantenimiento de la matriz cartilaginosa",
+      "Son condrocitos de cartílago elástico",
+      "Son células con una gran actividad mitótica",
+      "Se localizan en las lagunas de la matriz"
+    ],
+    "correct": 2,
+    "note": "Sin marca en el PDF. Respuesta más probable (afirmación incorrecta sobre condrocitos maduros): opción c.",
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 63,
+    "image": "img-109.png",
+    "question": "En la imagen se observa:",
+    "options": [
+      "Cartílago elástico",
+      "Cartílago fibroso",
+      "Cartílago hialino",
+      "Cartílago de crecimiento"
+    ],
+    "correct": 2,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 63,
+    "image": "img-110.png",
+    "question": "Señale la respuesta correcta en relación a la imagen:",
+    "options": [
+      "Se observa cartílago hialino metafisario",
+      "Se observa cartílago articular de tipo hialino",
+      "Cartílago fibroso de disco interarticular",
+      "Se observa cartílago fibroso articular"
+    ],
+    "correct": 1,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 64,
+    "image": "img-111.png",
+    "question": "Indique qué afirmación es cierta sobre el tipo de cartílago que aparece en la imagen:",
+    "options": [
+      "Se trata de tejido cartilaginoso visto a M.E.",
+      "Se trata de cartílago elástico teñido con orceína",
+      "Se trata de cartílago fibroso teñido con sales de plata",
+      "Se trata de cartílago hialino teñido con tricrómico"
+    ],
+    "correct": 1,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 64,
+    "image": "img-112.png",
+    "question": "La zona señalada con la flecha azul y letra 'B', corresponde a:",
+    "options": [
+      "Zona profunda de cartílago articular",
+      "Zona superficial o tangencial de cartílago articular",
+      "Zona en reposo de cartílago de conjunción",
+      "Zona de osificación de cartílago de conjunción"
+    ],
+    "correct": 2,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 65,
+    "image": "img-113.png",
+    "question": "Seleccione la respuesta correcta:",
+    "options": [
+      "La imagen muestra tejido cartilaginoso localizado en el extremo ventral de costilla",
+      "La imagen corresponde a cartílago de la sínfisis púbica",
+      "La imagen muestra cartílago epiglótico",
+      "Se muestra cartílago articular"
+    ],
+    "correct": 1,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 65,
+    "image": "img-114.png",
+    "question": "La flecha amarilla, señalada con C, corresponde a:",
+    "options": [
+      "Pericondrio condrógeno de cartílago hialino",
+      "Pericondrio fibroso de cartílago hialino",
+      "Pericondrio de fibrocartílago",
+      "Pericondrio condrógeno de cartílago elástico"
+    ],
+    "correct": 1,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 66,
+    "image": "img-115.png",
+    "question": "La estructura señalada en rojo, corresponde a:",
+    "options": [
+      "Grupo isogénico axial",
+      "Grupo isogénico irregular",
+      "Grupo isogénico coronario",
+      "Grupo isogénico lateral"
+    ],
+    "correct": 0,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 67,
+    "image": "img-116.png",
+    "question": "La imagen corresponde a:",
+    "options": [
+      "Cartílago hialino del pabellón de la oreja",
+      "Cartílago hialino costal",
+      "Cartílago hialino epiglótico",
+      "Cartílago hialino de disco intervertebral"
+    ],
+    "correct": 1,
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 68,
+    "image": "img-117.png",
+    "question": "La imagen corresponde a una cápsula articular, las flechas señalan:",
+    "options": [
+      "Fibroblastos profundos",
+      "Células capsulares",
+      "Cartílago articular",
+      "Células sinoviales"
+    ],
+    "correct": 3,
+    "note": "Opción c marcada con ✗. Respuesta correcta inferida por consistencia con página 69: Células sinoviales.",
+    "section": "Tejido Cartilaginoso"
+  },
+  {
+    "page": 69,
+    "image": "img-118.png",
+    "question": "La célula multinucleada que aparece en la imagen es:",
+    "options": [
+      "Un osteoclasto encargado de producir matriz ósea",
+      "Un osteoclasto encargado del mantenimiento de la matriz ósea",
+      "Un osteoclasto encargado de la reabsorción ósea",
+      "Un osteoclasto precursor de osteocitos"
+    ],
+    "correct": 2,
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 69,
+    "image": "img-119.png",
+    "question": "La imagen corresponde a una cápsula articular, las flechas señalan:",
+    "options": [
+      "Fibroblastos profundos",
+      "Células sinoviales",
+      "Células capsulares",
+      "Cartílago articular"
+    ],
+    "correct": 1,
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 70,
+    "image": "img-120.png",
+    "question": "Cómo se denominan las células que se encuentran dentro de los círculos:",
+    "options": [
+      "Osteoblastos",
+      "Osteoclastos",
+      "Osteocitos",
+      "Células limitantes"
+    ],
+    "correct": 2,
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 70,
+    "image": "img-121.png",
+    "question": "En la imagen se observa una zona de osificación endocondral.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 1,
+    "note": "V/F",
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 71,
+    "image": "img-122.png",
+    "question": "La imagen que se observa corresponde a:",
+    "options": [
+      "Centro de osificación membranoso",
+      "Centro de osificación endocondral",
+      "Tejido óseo compacto y médula ósea",
+      "Tejido óseo esponjoso y médula ósea"
+    ],
+    "correct": 3,
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 71,
+    "image": "img-123.png",
+    "question": "¿Qué afirmación es cierta en relación a la imagen?",
+    "options": [
+      "Se observan osteonas en cuyo centro se localiza un canal de Volkmann",
+      "Se observan trabéculas óseas que delimitan médula ósea",
+      "Se observan osteonas y condrocitos con sus prolongaciones",
+      "Se observan osteonas en cuyo centro se localiza un canal de Havers"
+    ],
+    "correct": 3,
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 72,
+    "image": "img-124.png",
+    "question": "Señale la respuesta correcta en relación a la célula señalada:",
+    "options": [
+      "Es un osteoclasto",
+      "Es un osteoblasto",
+      "Es un osteocito",
+      "Es un condrocito"
+    ],
+    "correct": 0,
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 72,
+    "image": "img-125.png",
+    "question": "El número 1 señala:",
+    "options": [
+      "Un condroblasto",
+      "Un osteoclasto",
+      "Un osteoblasto",
+      "Un osteocito"
+    ],
+    "correct": 2,
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 73,
+    "image": "img-126.png",
+    "question": "¿Qué tipo celular se está señalando?",
+    "options": [
+      "Osteocito",
+      "Célula limitante",
+      "Fibroblasto",
+      "Osteoblasto"
+    ],
+    "correct": 3,
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 73,
+    "image": "img-127.png",
+    "question": "El tejido óseo mostrado se ha formado por:",
+    "options": [
+      "Una osificación membranosa",
+      "Una osificación perióstica",
+      "Una osificación endocondral",
+      "Una osificación cartilaginosa"
+    ],
+    "correct": 0,
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 74,
+    "image": "img-128.png",
+    "question": "La imagen corresponde a una cápsula articular, la zona delimitada corresponde a:",
+    "options": [
+      "Zona fibrosa",
+      "Ninguna de las respuestas es correcta",
+      "Zona periférica",
+      "Zona profunda o membrana sinovial"
+    ],
+    "correct": 3,
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 74,
+    "image": "img-129.png",
+    "question": "¿Qué tipo celular se está señalando?",
+    "options": [
+      "Células de Howship",
+      "Células limitantes",
+      "Osteoblasto",
+      "Osteoclastos"
+    ],
+    "correct": 3,
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 75,
+    "image": "img-130.png",
+    "question": "Cómo se denominan las células que se encuentran dentro de los círculos:",
+    "options": [
+      "Células limitantes",
+      "Osteoclastos",
+      "Osteoblastos",
+      "Osteocitos"
+    ],
+    "correct": 3,
+    "note": "Sin marca en el PDF. Respuesta inferida por consistencia con página 70: Osteocitos.",
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 76,
+    "image": "img-131.png",
+    "question": "Cómo se denominan las células señaladas con flechas:",
+    "options": [
+      "Osteocitos",
+      "Osteoclastos",
+      "Célula limitante",
+      "Osteoblastos"
+    ],
+    "correct": 3,
+    "note": "Corrección al pie: 'Osteoblasto' (opción d). Originalmente marcada con ✗.",
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 76,
+    "image": "img-132.png",
+    "question": "La imagen corresponde a un proceso de osificación membranosa.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "note": "V/F",
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 77,
+    "image": "img-133.png",
+    "question": "Qué es falso sobre la imagen:",
+    "options": [
+      "Se observan conductos de Havers.",
+      "Se observan focos de osificación endocondral.",
+      "Es una imagen de M.O. de tejido óseo compacto.",
+      "Se observan osteocitos."
+    ],
+    "correct": 1,
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 77,
+    "image": "img-134.png",
+    "question": "En la imagen se observa tejido óseo compacto.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "note": "V/F",
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 78,
+    "image": "img-135.png",
+    "question": "Indique la afirmación falsa:",
+    "options": [
+      "En la imagen se observa una trabécula de tejido óseo.",
+      "En la imagen se observan osteocitos.",
+      "En la imagen se observa una zona de osificación endocondral",
+      "En la imagen se observa una zona de osificación membranosa"
+    ],
+    "correct": 2,
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 78,
+    "image": "img-136.png",
+    "question": "Indique la respuesta correcta:",
+    "options": [
+      "Hueso esponjoso trabecular",
+      "Hueso cortical trabecular",
+      "Sistema de Havers",
+      "Hueso compacto trabecular"
+    ],
+    "correct": 0,
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 79,
+    "image": "img-137.png",
+    "question": "Qué es falso en relación a la imagen:",
+    "options": [
+      "Se observa tejido óseo esponjoso y médula ósea",
+      "Se observan trabéculas óseas",
+      "Se observa periostio",
+      "Se observan los núcleos de osteocitos"
+    ],
+    "correct": 2,
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 79,
+    "image": "img-138.png",
+    "question": "La imagen corresponde a una zona donde se desarrolla un proceso de osificación endocondral.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "note": "V/F",
+    "section": "Tejido Óseo"
+  },
+  {
+    "page": 80,
+    "image": "img-139.png",
+    "question": "Las flechas azules señalan:",
+    "options": [
+      "Discos claros o discos I",
+      "Discos oscuros o A",
+      "Discos claros o A",
+      "Discos oscuros o I"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 80,
+    "image": "img-140.png",
+    "question": "Las flechas señalan:",
+    "options": [
+      "Los núcleos de una célula muscular cardíaca",
+      "Los núcleos de una célula muscular esquelética",
+      "Los núcleos de una célula intrahusal",
+      "Los núcleos de varias células musculares lisas"
+    ],
+    "correct": 1,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 81,
+    "image": "img-141.png",
+    "question": "Las flechas negras pequeñas están señalando:",
+    "options": [
+      "Línea Z",
+      "Disco I",
+      "Banda H",
+      "Línea M"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 81,
+    "image": "img-142.png",
+    "question": "En la imagen se observa tejido muscular estriado con técnica de hematoxilina-eosina.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 1,
+    "note": "V/F",
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 82,
+    "image": "img-143.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Célula cardionectora",
+      "Célula muscular lisa",
+      "Célula mioendocrina",
+      "Célula muscular estriada esquelética"
+    ],
+    "correct": 3,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 82,
+    "image": "img-144.png",
+    "question": "Las células limitadas se corresponden con:",
+    "options": [
+      "Células ganglionares nerviosas",
+      "Células miocárdicas cortadas transversalmente",
+      "Células macrofágicas",
+      "Células musculares lisas cortadas transversalmente"
+    ],
+    "correct": 3,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 83,
+    "image": "img-145.png",
+    "question": "Las flechas azules nos indican:",
+    "options": [
+      "Perimisio",
+      "Cápsula externa de Huso neuromuscular",
+      "Endomisio",
+      "Vaina interna de Huso neuromuscular"
+    ],
+    "correct": 1,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 83,
+    "image": "img-146.png",
+    "question": "La zona delimitada nos indica:",
+    "options": [
+      "Células miocárdicas ventriculares comunes",
+      "Células miocárdicas auriculares comunes",
+      "Células miocárdicas endocrinas",
+      "Células cardionectoras"
+    ],
+    "correct": 3,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 84,
+    "image": "img-147.png",
+    "question": "Indique de qué tejido se trata:",
+    "options": [
+      "Tejido muscular estriado cardíaco",
+      "Tejido muscular liso",
+      "Tejido conjuntivo denso orientado",
+      "Tejido muscular estriado esquelético"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 85,
+    "image": "img-148.png",
+    "question": "En la imagen se muestra una zona de unión miotendinosa.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "note": "V/F",
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 86,
+    "image": "img-149.png",
+    "question": "La flecha marrón nos indica:",
+    "options": [
+      "Disco oscuro",
+      "Disco claro",
+      "Disco A",
+      "Banda H"
+    ],
+    "correct": 1,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 87,
+    "image": "img-150.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Unidad motora",
+      "Husos neuromusculares",
+      "Inervación motora del músculo esquelético",
+      "Órganos neurotendinosos de Golgi"
+    ],
+    "correct": 1,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 87,
+    "image": "img-151.png",
+    "question": "Las zonas limitadas de color rojo se corresponden con:",
+    "options": [
+      "Fascículos de células musculares lisas cortadas transversalmente",
+      "Fascículos de células musculares lisas cortadas longitudinalmente",
+      "Fascículo secundario de músculo liso",
+      "Fascículo primario de músculo liso"
+    ],
+    "correct": 1,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 88,
+    "image": "img-152.png",
+    "question": "Los asteriscos nos están señalando:",
+    "options": [
+      "Tejido de conducción del impulso cardíaco",
+      "Tejido vascular que rodea a las fibras musculares (epimisio)",
+      "Tejido conjuntivo laxo rico en capilares sanguíneos (endomisio)",
+      "Tejido cardionector"
+    ],
+    "correct": 2,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 88,
+    "image": "img-153.png",
+    "question": "Las zonas limitadas de color verde se corresponden con:",
+    "options": [
+      "Fascículo secundario de músculo liso",
+      "Fascículos de células musculares lisas cortadas longitudinalmente",
+      "Fascículos de células musculares lisas cortadas transversalmente",
+      "Fascículo primario de músculo liso"
+    ],
+    "correct": 2,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 89,
+    "image": "img-154.png",
+    "question": "La flecha azul nos indica:",
+    "options": [
+      "Disco A",
+      "Disco Isótropo",
+      "Sarcómero",
+      "Miofibrilla"
+    ],
+    "correct": 2,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 89,
+    "image": "img-155.png",
+    "question": "En la imagen podemos observar:",
+    "options": [
+      "El cuerpo de una neurona motora",
+      "Astrocitos y oligodendrocitos",
+      "Nervio periférico cortado longitudinalmente",
+      "Nervio periférico cortado transversalmente"
+    ],
+    "correct": 3,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 90,
+    "image": "img-156.png",
+    "question": "La imagen de microscopía electrónica corresponde a:",
+    "options": [
+      "Corte transversal de la miofibrilla",
+      "Corte longitudinal de la miofibrilla",
+      "Corte longitudinal de célula muscular lisa",
+      "Núcleo periférico de una célula muscular"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 90,
+    "image": "img-157.png",
+    "question": "Las flechas rojas señalan:",
+    "options": [
+      "Células musculares estriadas esqueléticas",
+      "Miofibrillas",
+      "Fascículo muscular",
+      "Campo de Cohnheim"
+    ],
+    "correct": 1,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 91,
+    "image": "img-158.png",
+    "question": "Las flechas rojas nos indican:",
+    "options": [
+      "Sarcoplasma con lipofucsina en músculo cardíaco",
+      "Sarcoplasma yuxtanuclear con lipofucsina en músculo liso",
+      "Sarcoplasma con lipofucsina en músculo esquelético",
+      "Disco intercalar en músculo esquelético"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 91,
+    "image": "img-159.png",
+    "question": "Indique de qué tejido se trata:",
+    "options": [
+      "Tejido nervioso",
+      "Tejido muscular liso",
+      "Tejido muscular estriado cardíaco",
+      "Tejido muscular estriado esquelético"
+    ],
+    "correct": 2,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 92,
+    "image": "img-160.png",
+    "question": "En la imagen se observa:",
+    "options": [
+      "Tejido muscular liso cardíaco",
+      "Tejido muscular liso y algunas células estriadas.",
+      "Tejido muscular liso",
+      "Tejido muscular esquelético"
+    ],
+    "correct": 2,
+    "note": "Corrección al pie: 'Músculo liso' (opción c). Opción d marcada con ✗.",
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 92,
+    "image": "img-161.png",
+    "question": "En la imagen podemos apreciar:",
+    "options": [
+      "Tejido muscular liso con lipofucsina y abundantes capilares.",
+      "Abundante capilares y células musculares cardíacas con melanina.",
+      "Células musculares con lipofucsina y gran riqueza de capilares correspondientes a miocardio.",
+      "Células musculares esqueléticas con lipofucsina y abundantes capilares."
+    ],
+    "correct": 2,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 93,
+    "image": "img-162.png",
+    "question": "Las células de la imagen se corresponden con:",
+    "options": [
+      "Miofibroblasto",
+      "Fibroblasto",
+      "Células de Schwann",
+      "Células musculares lisas"
+    ],
+    "correct": 3,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 93,
+    "image": "img-163.png",
+    "question": "La flecha amarilla nos indica:",
+    "options": [
+      "Sarcómero",
+      "Disco Isótropo",
+      "Disco A",
+      "Disco claro"
+    ],
+    "correct": 2,
+    "note": "Sin marca en el PDF. Respuesta más probable según la banda oscura señalada: opción c (Disco A).",
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 94,
+    "image": "img-164.png",
+    "question": "En la imagen se observa:",
+    "options": [
+      "Tejido muscular cardíaco cortado longitudinalmente.",
+      "Tejido muscular esquelético cortado longitudinalmente.",
+      "Tejido muscular cardíaco cortado transversalmente.",
+      "Tejido muscular esquelético cortado transversalmente."
+    ],
+    "correct": 3,
+    "note": "Anotación al pie: 'esquelético transversal' (opción d).",
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 94,
+    "image": "img-165.png",
+    "question": "Los asteriscos blancos nos indican:",
+    "options": [
+      "Banda H",
+      "Disco I",
+      "Línea M",
+      "Disco A"
+    ],
+    "correct": 1,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 95,
+    "image": "img-166.png",
+    "question": "¿A qué nivel del sarcómero se ha realizado el corte?",
+    "options": [
+      "Disco I",
+      "Disco A",
+      "Banda H",
+      "Línea M"
+    ],
+    "correct": 1,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 95,
+    "image": "img-167.png",
+    "question": "Las flechas rojas de la imagen indican:",
+    "options": [
+      "Líneas Z",
+      "Ninguna de las respuestas es correcta",
+      "Cuerpos densos",
+      "Tubos T"
+    ],
+    "correct": 2,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 96,
+    "image": "img-168.png",
+    "question": "Los asteriscos negros nos indican:",
+    "options": [
+      "Disco I",
+      "Línea M",
+      "Banda H",
+      "Disco A"
+    ],
+    "correct": 3,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 97,
+    "image": "img-169.png",
+    "question": "Las flechas rojas indican:",
+    "options": [
+      "Astrocitos",
+      "Glía epitelial, ependimocitos",
+      "Epitelio simple cúbico",
+      "Conducto glandular"
+    ],
+    "correct": 1,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 97,
+    "image": "img-170.png",
+    "question": "La imagen se corresponde con:",
+    "options": [
+      "Haz central de fibras nerviosas",
+      "Ganglio simpático periférico",
+      "Nervio periférico",
+      "Corpúsculo sensitivo"
+    ],
+    "correct": 2,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 98,
+    "image": "img-171.png",
+    "question": "La imagen corresponde a neuronas de ganglio simpático, qué está señalando el número 4:",
+    "options": [
+      "Núcleo",
+      "Grumos de Nissl",
+      "Melanina",
+      "Gránulos de lipofucsina"
+    ],
+    "correct": 3,
+    "note": "Corrección al pie: 'D) Grumos de lipofucxina' (opción d). Opción b marcada con ✗.",
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 99,
+    "image": "img-172.png",
+    "question": "La imagen corresponde a una motoneurona, las flechas verdes indican:",
+    "options": [
+      "Citoplasma",
+      "Grumos de Nissl",
+      "Núcleo",
+      "Citoplasma"
+    ],
+    "correct": 2,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 99,
+    "image": "img-173.png",
+    "question": "Señale la respuesta correcta respecto a la zona indicada con el asterisco negro:",
+    "options": [
+      "Sustancia gris de corteza",
+      "Sustancia blanca cerebelosa",
+      "Sustancia gris médula espinal",
+      "Sustancia blanca médula espinal"
+    ],
+    "correct": 2,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 100,
+    "image": "img-174.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Capa granular del cerebelo",
+      "Sustancia blanca",
+      "Sustancia gris",
+      "Asta anterior de la médula"
+    ],
+    "correct": 1,
+    "note": "Corrección al pie: 'La b) Sustancia blanca' (opción b). Opción c marcada con ✗.",
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 101,
+    "image": "img-175.png",
+    "question": "El número 2 nos está señalando:",
+    "options": [
+      "Fibra nerviosa amielínica central",
+      "Fibra nerviosa amielínica periférica",
+      "Fibra nerviosa mielínica central",
+      "Fibra nerviosa mielínica periférica"
+    ],
+    "correct": 1,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 101,
+    "image": "img-176.png",
+    "question": "En la imagen podemos observar:",
+    "options": [
+      "Células ependimarias",
+      "Cuerpos neuronales de neuronas piramidales",
+      "Numerosas fibras mielínicas",
+      "Cuerpos neuronales de células de Purkinje"
+    ],
+    "correct": 3,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 102,
+    "image": "img-177.png",
+    "question": "En la imagen se observa:",
+    "options": [
+      "Cuerpos neuronales que presentan lipofucsina",
+      "Cuerpos neuronales de células de Purkinje",
+      "Células ependimarias",
+      "Cuerpos neuronales de neuronas piramidales"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 102,
+    "image": "img-178.png",
+    "question": "El número 1 nos está señalando:",
+    "options": [
+      "Fibra nerviosa mielínica periférica",
+      "Fibra nerviosa mielínica central",
+      "Fibra nerviosa amielínica central",
+      "Fibra nerviosa amielínica periférica"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 103,
+    "image": "img-179.png",
+    "question": "La imagen corresponde a una motoneurona, la flecha negra corresponde a:",
+    "options": [
+      "Citoplasma",
+      "Nucléolo",
+      "Núcleo",
+      "Grumos de Nissl"
+    ],
+    "correct": 1,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 103,
+    "image": "img-180.png",
+    "question": "La imagen corresponde a:",
+    "options": [
+      "Corteza cerebral donde se observa una neurona piramidal.",
+      "Corteza cerebelosa con sus tres capas.",
+      "Sustancia blanca del cerebelo.",
+      "Asta anterior de la médula espinal."
+    ],
+    "correct": 1,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 104,
+    "image": "img-181.png",
+    "question": "La imagen corresponde a:",
+    "options": [
+      "Médula espinal",
+      "Corteza cerebelosa",
+      "Ganglio nervioso",
+      "Cerebro con ventrículo cerebral"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 105,
+    "image": "img-182.png",
+    "question": "La zona limitada de color rojo se corresponde con:",
+    "options": [
+      "Epéndimo",
+      "Sustancia blanca con ependimocitos",
+      "Conducto glandular",
+      "Ventrículo cerebral"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 105,
+    "image": "img-183.png",
+    "question": "La imagen corresponde a:",
+    "options": [
+      "Neuronas",
+      "Nervio periférico",
+      "Sustancia gris",
+      "Sustancia blanca"
+    ],
+    "correct": 1,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 106,
+    "image": "img-184.png",
+    "question": "Los elementos voluminosos que aparecen en el interior de la zona delimitada corresponden a:",
+    "options": [
+      "Neuronas multipolares",
+      "Neuronas pseudomonopolares",
+      "Neuronas piriformes",
+      "Neuronas bipolares"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 106,
+    "image": "img-185.png",
+    "question": "Las masas basófilas que se observan en el cuerpo de la neurona corresponden a REG.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "note": "V/F",
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 107,
+    "image": "img-186.png",
+    "question": "Las flechas negras se corresponden con:",
+    "options": [
+      "Astrocitos",
+      "Neuronas",
+      "Microglía",
+      "Oligodendrocitos"
+    ],
+    "correct": 3,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 107,
+    "image": "img-187.png",
+    "question": "La imagen corresponde a neuronas de ganglio simpático, qué está señalando el número 3:",
+    "options": [
+      "Nucleolo",
+      "Citoplasma",
+      "Núcleo",
+      "Grumos de Nissl"
+    ],
+    "correct": 1,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 108,
+    "image": "img-188.png",
+    "question": "En la célula de Purkinje se observa el inicio de la prolongación axónica.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 1,
+    "note": "V/F. Corrección al pie: 'Falso'. Opción a marcada con ✗.",
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 108,
+    "image": "img-189.png",
+    "question": "La imagen corresponde a una motoneurona, las flechas rojas corresponden a:",
+    "options": [
+      "Núcleo",
+      "Nucleolo",
+      "Grumos de Nissl",
+      "Citoplasma"
+    ],
+    "correct": 2,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 109,
+    "image": "img-190.png",
+    "question": "La imagen microscópica corresponde a una zona de sustancia blanca.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 1,
+    "note": "V/F",
+    "section": "Tejido Nervioso"
+  }
+]
