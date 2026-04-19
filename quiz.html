@@ -99,6 +99,36 @@
   .btn-ghost { background: transparent; color: var(--primary); }
   .btn-ghost:hover { background: #eff6ff; transform: none; }
 
+  /* Login name input */
+  .name-input {
+    flex: 1;
+    min-width: 150px;
+    padding: 10px 14px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font: inherit;
+    font-size: 15px;
+    outline: none;
+    color: var(--text);
+    transition: border-color .15s;
+    background: #f9fafb;
+  }
+  .name-input:focus { border-color: var(--primary); }
+
+  /* Stats banner */
+  .stats-banner {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: #1e40af;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
   /* Quiz screen */
   .quiz-card {
     background: var(--card);
@@ -265,7 +295,7 @@
   .stat.correct .num { color: var(--correct); }
   .stat.wrong .num { color: var(--wrong); }
 
-  /* Review wrong answers */
+  /* Review */
   .review-item {
     background: #f9fafb;
     border-radius: 10px;
@@ -278,7 +308,6 @@
   .review-item .ans.your { color: var(--wrong); }
   .review-item .ans.correct-ans { color: var(--correct); font-weight: 600; }
 
-  /* Mobile */
   @media (max-width: 600px) {
     .app { padding: 12px; }
     header { padding: 20px 16px; }
@@ -293,10 +322,20 @@
 <div class="app">
   <header>
     <h1>Quiz de Histología y Embriología</h1>
-    <p>191 preguntas tipo test · bateria de prácticas</p>
+    <p id="header-sub">191 preguntas tipo test · batería de prácticas</p>
   </header>
   <div id="root"></div>
 </div>
+
+<!-- Firebase tracking module -->
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getDatabase,ref,set,get,child}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+const app=initializeApp({apiKey:"AIzaSyCg86OLSle_1InlGjQYWbAPephJSoWH3DU",authDomain:"quiz-fisio.firebaseapp.com",databaseURL:"https://quiz-fisio-default-rtdb.europe-west1.firebasedatabase.app",projectId:"quiz-fisio",storageBucket:"quiz-fisio.firebasestorage.app",messagingSenderId:"260077805780",appId:"1:260077805780:web:91c23126b9b65eb34fdb41"});
+const db=getDatabase(app);
+window._hSave=async(u,d)=>{try{await set(ref(db,'histo/'+u),d)}catch(e){console.warn('histo save',e)}};
+window._hLoad=async u=>{try{const s=await get(child(ref(db),'histo/'+u));return s.exists()?s.val():null}catch(e){return null}};
+</script>
 
 <script>
 const SECTIONS_ORDER = [
@@ -315,25 +354,25 @@ const SECTIONS_ORDER = [
 let allQuestions = [];
 let activeQuestions = [];
 let currentIdx = 0;
-let answers = []; // {selected, correct}
+let answers = [];
 let selectedSections = new Set(SECTIONS_ORDER);
 let shuffleEnabled = true;
+let userUid = '';
+window._userStats = null;
 
-// Load questions
+// Cargar preguntas → login
 fetch('questions.json')
   .then(r => r.json())
   .then(data => {
     allQuestions = data;
-    renderStart();
+    renderLogin();
   })
   .catch(err => {
     document.getElementById('root').innerHTML =
       '<div class="start-screen"><h2>Error al cargar las preguntas</h2>' +
-      '<p>Asegúrate de que el archivo questions.json esté en la misma carpeta que este HTML. ' +
-      'Si estás abriendo el archivo localmente, algunos navegadores bloquean el acceso a archivos vecinos ' +
-      'por razones de seguridad — prueba a servir la carpeta con un servidor local ' +
-      '(por ejemplo, <code>python3 -m http.server</code> en la carpeta del quiz).</p>' +
-      '<p style="color:var(--text-muted);font-size:13px">Detalle técnico: ' + (err.message || err) + '</p></div>';
+      '<p>Asegúrate de que el archivo questions.json esté en la misma carpeta. ' +
+      'Si abres el archivo localmente usa un servidor local (ej: <code>python3 -m http.server</code>).</p>' +
+      '<p style="color:var(--text-muted);font-size:13px">Detalle: ' + (err.message || err) + '</p></div>';
   });
 
 function shuffle(arr) {
@@ -345,16 +384,65 @@ function shuffle(arr) {
   return a;
 }
 
+// ── LOGIN ──────────────────────────────────────────────────────────────────
+function renderLogin() {
+  document.getElementById('root').innerHTML = `
+    <div class="start-screen">
+      <h2>¡Bienvenido/a!</h2>
+      <p>Introduce tu nombre para guardar tu progreso y ver tus estadísticas personales.</p>
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+        <input type="text" id="nameInput" class="name-input" placeholder="Tu nombre..." autocomplete="off">
+        <button class="btn" id="loginBtn" onclick="doLogin()">Entrar →</button>
+      </div>
+      <p style="font-size:12px;color:var(--text-muted);">191 preguntas · Histología y Embriología · Progreso guardado en la nube</p>
+    </div>
+  `;
+  const inp = document.getElementById('nameInput');
+  if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+}
+
+window.doLogin = async function() {
+  const inp = document.getElementById('nameInput');
+  const name = inp ? inp.value.trim() : '';
+  if (!name) {
+    if (inp) { inp.style.borderColor = '#dc2626'; inp.focus(); }
+    return;
+  }
+  const btn = document.getElementById('loginBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Cargando...'; }
+
+  userUid = name.toLowerCase().replace(/[^a-z0-9áéíóúñü]/g, '_');
+
+  const sub = document.getElementById('header-sub');
+  if (sub) sub.textContent = '191 preguntas · Hola, ' + name + ' 👋';
+
+  if (window._hLoad) {
+    const data = await window._hLoad(userUid);
+    if (data && data.ag) window._userStats = data.ag;
+  }
+  renderStart();
+};
+
+// ── PANTALLA DE SELECCIÓN ─────────────────────────────────────────────────
 function renderStart() {
   const counts = {};
   SECTIONS_ORDER.forEach(s => counts[s] = 0);
   allQuestions.forEach(q => counts[q.section] = (counts[q.section] || 0) + 1);
 
-  const root = document.getElementById('root');
-  root.innerHTML = `
+  const us = window._userStats;
+  const prevStatsHtml = us && us.sessions > 0
+    ? `<div class="stats-banner">
+        <span>📊 Sesiones: <b>${us.sessions}</b></span>
+        <span>🏆 Mejor marca: <b>${us.best}%</b></span>
+        <span>📝 Total respondidas: <b>${(us.total || 0).toLocaleString()}</b></span>
+        <span>✅ Total correctas: <b>${(us.correct || 0).toLocaleString()}</b></span>
+       </div>`
+    : '';
+
+  document.getElementById('root').innerHTML = `
     <div class="start-screen">
       <h2>Selecciona las secciones a practicar</h2>
-      <p>Todas las preguntas incluyen solo la imagen — el texto del PDF original ha sido reescrito.</p>
+      ${prevStatsHtml}
       <div class="section-list" id="sec-list"></div>
       <div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; align-items:center;">
         <label style="display:flex; gap:8px; align-items:center; cursor:pointer; font-size:14px;">
@@ -386,14 +474,8 @@ function renderStart() {
   });
 
   document.getElementById('shuffle-toggle').onchange = (e) => { shuffleEnabled = e.target.checked; };
-  document.getElementById('select-all').onclick = () => {
-    selectedSections = new Set(SECTIONS_ORDER);
-    renderStart();
-  };
-  document.getElementById('select-none').onclick = () => {
-    selectedSections = new Set();
-    renderStart();
-  };
+  document.getElementById('select-all').onclick = () => { selectedSections = new Set(SECTIONS_ORDER); renderStart(); };
+  document.getElementById('select-none').onclick = () => { selectedSections = new Set(); renderStart(); };
   document.getElementById('start-btn').onclick = startQuiz;
 
   updateCountLabel();
@@ -404,6 +486,7 @@ function renderStart() {
   }
 }
 
+// ── QUIZ ──────────────────────────────────────────────────────────────────
 function startQuiz() {
   activeQuestions = allQuestions.filter(q => selectedSections.has(q.section));
   if (shuffleEnabled) activeQuestions = shuffle(activeQuestions);
@@ -417,8 +500,7 @@ function renderQuestion() {
   const answered = answers[currentIdx] !== null;
   const progress = ((currentIdx + 1) / activeQuestions.length) * 100;
 
-  const root = document.getElementById('root');
-  root.innerHTML = `
+  document.getElementById('root').innerHTML = `
     <div class="quiz-card">
       <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
       <div class="quiz-meta">
@@ -447,16 +529,12 @@ function renderQuestion() {
     btn.className = 'option';
     const letter = String.fromCharCode(97 + i);
     btn.innerHTML = `<span class="letter">${letter.toUpperCase()}</span><span class="text">${escapeHtml(opt)}</span>`;
-
     if (answered) {
       btn.disabled = true;
       if (i === q.correct) btn.classList.add('correct');
       else if (i === answers[currentIdx]) btn.classList.add('wrong');
     } else {
-      btn.onclick = () => {
-        answers[currentIdx] = i;
-        renderQuestion();
-      };
+      btn.onclick = () => { answers[currentIdx] = i; renderQuestion(); };
     }
     optsDiv.appendChild(btn);
   });
@@ -472,12 +550,26 @@ function renderQuestion() {
   };
 }
 
+// ── RESULTADOS ────────────────────────────────────────────────────────────
 function renderResults() {
   const total = activeQuestions.length;
   const answered = answers.filter(a => a !== null).length;
   const correct = answers.filter((a, i) => a === activeQuestions[i].correct).length;
   const wrong = answered - correct;
   const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+
+  // Guardar en Firebase
+  if (userUid && window._hSave) {
+    const prev = window._userStats || { total: 0, correct: 0, sessions: 0, best: 0 };
+    const newAg = {
+      total: (prev.total || 0) + total,
+      correct: (prev.correct || 0) + correct,
+      sessions: (prev.sessions || 0) + 1,
+      best: Math.max(prev.best || 0, pct)
+    };
+    window._userStats = newAg;
+    window._hSave(userUid, { ag: newAg, la: Date.now() }).catch(console.warn);
+  }
 
   const wrongItems = [];
   activeQuestions.forEach((q, i) => {
@@ -486,8 +578,7 @@ function renderResults() {
     }
   });
 
-  const root = document.getElementById('root');
-  root.innerHTML = `
+  document.getElementById('root').innerHTML = `
     <div class="results">
       <div class="score-circle" style="--score:${pct}">
         <div class="score-inner">
@@ -513,9 +604,8 @@ function renderResults() {
   document.getElementById('review-btn').onclick = () => {
     const area = document.getElementById('review-area');
     if (area.innerHTML) { area.innerHTML = ''; return; }
-
-    const items = wrongItems.length > 0 ? wrongItems : activeQuestions.map((q, i) => ({q, userAns: answers[i], idx: i}));
-    area.innerHTML = '<h3 style="text-align:left; margin-bottom:16px;">Revisión</h3>' + items.map(({q, userAns}) => {
+    const items = wrongItems.length > 0 ? wrongItems : activeQuestions.map((q, i) => ({ q, userAns: answers[i], idx: i }));
+    area.innerHTML = '<h3 style="text-align:left; margin-bottom:16px;">Revisión</h3>' + items.map(({ q, userAns }) => {
       const userAnsText = userAns !== null ? q.options[userAns] : '(sin responder)';
       const correctText = q.options[q.correct];
       const isCorrect = userAns === q.correct;
@@ -534,7 +624,7 @@ function renderResults() {
 
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
 }
 </script>
