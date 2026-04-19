@@ -23,7 +23,7 @@
             --color-anato: #3498db;
             --color-bioq: #e74c3c;
             --color-fisio: #f39c12;
-            --color-histo: #2ecc71; /* Nuevo color para Histología */
+            --color-histo: #2ecc71;
         }
 
         body {
@@ -140,11 +140,22 @@
             font-size: 0.9rem;
         }
 
+        .admin-link {
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 0.7rem;
+            color: #bdc3c7;
+            text-decoration: none;
+            opacity: 0.5;
+            transition: opacity .2s;
+        }
+        .admin-link:hover { opacity: 1; color: #7f8c8d; }
+
         .icon-quiz::before { content: "📝"; }
         .icon-bioq::before { content: "🧪"; }
         .icon-fisio::before { content: "⚡"; }
         .icon-atlas::before { content: "📖"; }
-        .icon-histo::before { content: "🔬"; } /* Nuevo icono */
+        .icon-histo::before { content: "🔬"; }
 
     </style>
 </head>
@@ -199,7 +210,7 @@
                     </li>
                     <li class="file-item">
                         <a href="bioquimica%20medica%20final.html" class="file-link bioq-link">
-                            Batería Extendida <span class="badge">>215 PREGS</span>
+                            Batería Extendida <span class="badge">&gt;215 PREGS</span>
                         </a>
                     </li>
                     <li class="file-item">
@@ -235,7 +246,7 @@
                 <h2><span class="icon-histo"></span> Histología y Embriología</h2>
                 <ul class="file-list">
                     <li class="file-item">
-                        <a href="quiz_standalone.html" target="_blank" rel="noopener noreferrer" class="file-link histo-link" style="border-left: 3px solid var(--color-histo); background: #f5fff8;">
+                        <a href="quiz.html" target="_blank" rel="noopener noreferrer" class="file-link histo-link" style="border-left: 3px solid var(--color-histo); background: #f5fff8;">
                             Quiz: Histología y Embriología <span class="badge" style="background:var(--color-histo); color:white;">191 PREGS</span>
                         </a>
                     </li>
@@ -246,6 +257,8 @@
 
         <footer>
             &copy; 2026 Médico Pirata · Acceso Restringido para Estudiantes de Medicina
+            <br>
+            <a href="admin-dashboard.html" class="admin-link">⚙ Admin</a>
         </footer>
     </div>
 
