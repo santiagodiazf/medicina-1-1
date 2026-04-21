@@ -195,9 +195,14 @@
 
 <!-- ======== HOME SCREEN ======== -->
 <div id="home-screen">
-  <div class="home-header">
+  <div class="home-header" style="position:relative">
     <h1>🫀 Fisiología</h1>
-    <p>Plataforma de Estudio Inteligente · <span id="total-q-count"></span> preguntas · <span id="fb-status" style="font-size:0.78rem;opacity:0.7">☁…</span></p>
+    <p>Plataforma de Estudio Inteligente &middot; <span id="total-q-count"></span> preguntas</p>
+  </div>
+  <div style="position:absolute;top:20px;right:24px;display:flex;align-items:center;gap:10px">
+    <span id="fb-status" style="font-size:0.75rem;opacity:0.8"></span>
+    <span id="fb-login-area"></span>
+  </div>
   </div>
 
   <div class="stats-row">
@@ -1077,7 +1082,7 @@ const App = {
 
 
 // =====================================================================
-// FIREBASE — Realtime Database (sincronización en la nube)
+// FIREBASE — Realtime Database + Email/Password
 // =====================================================================
 const FB_CONFIG = {
   apiKey: "AIzaSyAKughV5w2XAKRm3rWuUmhVldwU2bjj0zY",
@@ -1089,17 +1094,19 @@ const FB_CONFIG = {
   appId: "1:536326985694:web:ee2428d39421653be26f4f"
 };
 
-let _fbDB = null, _fbUser = null, _fbTimer = null;
+let _fbDB = null, _fbUser = null, _fbTimer = null, _fbAuth = null;
 
 (function initFirebase() {
   try {
     const _app = firebase.initializeApp(FB_CONFIG, STORAGE_KEY);
-    const _auth = firebase.auth(_app);
-    _fbDB = firebase.database(_app);
-    setFbStatus('☁ Conectando…', '#94a3b8');
-    _auth.signInAnonymously()
-      .then(cred => { _fbUser = cred.user; fbLoad(); })
-      .catch(e => { console.warn('FB auth:', e); setFbStatus('⚠ Sin cuenta', '#f59e0b'); });
+    _fbAuth = firebase.auth(_app);
+    _fbDB   = firebase.database(_app);
+    _fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+    _fbAuth.onAuthStateChanged(function(user) {
+      _fbUser = user;
+      renderAuthArea();
+      if (user) fbLoad();
+    });
   } catch(e) { console.warn('Firebase init:', e); }
 })();
 
@@ -1114,15 +1121,15 @@ function fbSave() {
   clearTimeout(_fbTimer);
   _fbTimer = setTimeout(function() {
     ref.set(State.data)
-      .then(function() { setFbStatus('☁ Guardado', '#22c55e'); })
-      .catch(function(e) { console.warn('FB save:', e); setFbStatus('⚠ Error al guardar', '#ef4444'); });
+      .then(function() { setFbStatus('Guardado', '#22c55e'); })
+      .catch(function(e) { console.warn('FB save:', e); setFbStatus('Error guardando', '#ef4444'); });
   }, 1500);
 }
 
 function fbLoad() {
   const ref = fbRef();
   if (!ref) return;
-  setFbStatus('☁ Cargando…', '#94a3b8');
+  setFbStatus('Sincronizando...', '#94a3b8');
   ref.once('value').then(function(snap) {
     const d = snap.val();
     if (d && d.qs && Object.keys(d.qs).length > 0) {
@@ -1131,16 +1138,65 @@ function fbLoad() {
       App.updateHomeStats();
       App.renderTopicsGrid();
     }
-    setFbStatus('☁ Sincronizado', '#22c55e');
+    setFbStatus('Sincronizado', '#22c55e');
   }).catch(function(e) {
     console.warn('FB load:', e);
-    setFbStatus('⚠ Sin conexión', '#f59e0b');
+    setFbStatus('Sin conexion', '#f59e0b');
   });
 }
 
 function setFbStatus(msg, color) {
   const el = document.getElementById('fb-status');
   if (el) { el.textContent = msg; el.style.color = color; }
+}
+
+function openFbModal()  { document.getElementById('fb-modal').style.display = 'flex'; }
+function closeFbModal() { document.getElementById('fb-modal').style.display = 'none'; }
+
+function renderAuthArea() {
+  const el = document.getElementById('fb-login-area');
+  if (!el) return;
+  if (_fbUser) {
+    el.innerHTML = '<span style="font-size:0.75rem;color:#94a3b8">' + (_fbUser.email || '') + '</span>'
+      + ' <button onclick="fbLogout()" style="margin-left:8px;font-size:0.72rem;padding:3px 10px;background:transparent;border:1px solid #2d3f55;color:#94a3b8;border-radius:5px;cursor:pointer">Salir</button>';
+  } else {
+    el.innerHTML = '<button onclick="openFbModal()" style="font-size:0.8rem;padding:6px 14px;background:#2563eb;color:white;border:none;border-radius:7px;cursor:pointer">Iniciar sesion</button>';
+  }
+}
+
+function fbLogin() {
+  const email = document.getElementById('fb-email').value.trim();
+  const pass  = document.getElementById('fb-pass').value;
+  const err   = document.getElementById('fb-err');
+  if (!email || !pass) { err.textContent = 'Introduce email y contrasena.'; return; }
+  err.textContent = 'Entrando...';
+  _fbAuth.signInWithEmailAndPassword(email, pass)
+    .then(function() { closeFbModal(); })
+    .catch(function(e) {
+      if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') {
+        err.textContent = 'Usuario no encontrado. Usa Registrarse para crear la cuenta.';
+      } else if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-login-credentials') {
+        err.textContent = 'Contrasena incorrecta.';
+      } else {
+        err.textContent = e.code || e.message;
+      }
+    });
+}
+
+function fbRegister() {
+  const email = document.getElementById('fb-email').value.trim();
+  const pass  = document.getElementById('fb-pass').value;
+  const err   = document.getElementById('fb-err');
+  if (!email || !pass) { err.textContent = 'Introduce email y contrasena.'; return; }
+  if (pass.length < 6) { err.textContent = 'La contrasena debe tener al menos 6 caracteres.'; return; }
+  err.textContent = 'Creando cuenta...';
+  _fbAuth.createUserWithEmailAndPassword(email, pass)
+    .then(function() { closeFbModal(); })
+    .catch(function(e) { err.textContent = e.code || e.message; });
+}
+
+function fbLogout() {
+  if (_fbAuth) _fbAuth.signOut();
 }
 
 // Arrancar
@@ -1165,5 +1221,23 @@ document.addEventListener('keydown', e => {
   }
 });
 </script>
+
+<!-- LOGIN FIREBASE -->
+<div id="fb-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:900;align-items:center;justify-content:center">
+  <div style="background:#1a2535;border:1px solid #2d3f55;border-radius:14px;padding:32px;width:340px;max-width:95%">
+    <h3 style="margin-bottom:20px;color:#e2e8f0;font-size:1.1rem">Acceder a la nube</h3>
+    <input id="fb-email" type="email" placeholder="Email" autocomplete="email"
+      style="width:100%;padding:10px 12px;background:#0f1923;border:1px solid #2d3f55;border-radius:7px;color:#e2e8f0;font-size:0.9rem;margin-bottom:10px;box-sizing:border-box">
+    <input id="fb-pass" type="password" placeholder="Contrasena" autocomplete="current-password"
+      onkeydown="if(event.key==='Enter')fbLogin()"
+      style="width:100%;padding:10px 12px;background:#0f1923;border:1px solid #2d3f55;border-radius:7px;color:#e2e8f0;font-size:0.9rem;margin-bottom:14px;box-sizing:border-box">
+    <p id="fb-err" style="font-size:0.78rem;color:#f59e0b;min-height:18px;margin-bottom:14px"></p>
+    <div style="display:flex;gap:10px">
+      <button onclick="fbLogin()" style="flex:1;padding:10px;background:#2563eb;color:white;border:none;border-radius:7px;cursor:pointer;font-size:0.9rem;font-weight:600">Entrar</button>
+      <button onclick="fbRegister()" style="flex:1;padding:10px;background:transparent;color:#94a3b8;border:1px solid #2d3f55;border-radius:7px;cursor:pointer;font-size:0.85rem">Registrarse</button>
+    </div>
+    <button onclick="closeFbModal()" style="margin-top:16px;width:100%;padding:8px;background:transparent;color:#64748b;border:none;cursor:pointer;font-size:0.8rem">Cancelar (solo local)</button>
+  </div>
+</div>
 </body>
 </html>
