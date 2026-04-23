@@ -2482,5 +2482,3343 @@
     "correct": 1,
     "note": "V/F",
     "section": "Tejido Nervioso"
+  },
+  {
+    "page": 192,
+    "image": "img-192.png",
+    "question": "La imagen nos muestra un gran número de adipocitos uniloculares:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 1,
+    "section": "Tejido Adiposo"
+  },
+  {
+    "page": 193,
+    "image": "img-193.png",
+    "question": "¿Qué tejido se encuentra en la parte izquierda de la imagen y que nombre específico reciben sus células?",
+    "options": [
+      "Tejido conjuntivo denso elástico. Elastocitos",
+      "Tejido conjuntivo denso no orientado. Fibroblastos",
+      "Tejido conjuntivo reticular. Reticulocitos",
+      "Tejido conjuntivo denso orientado. Tenocitos"
+    ],
+    "correct": 3,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 194,
+    "image": "img-194.png",
+    "question": "La imagen muestra:",
+    "options": [
+      "Adipocitos de grasa parda teñidos con hematoxilina eosina",
+      "Tejido conjuntivo adiposo con células multiloculares",
+      "Tejido conjuntivo laxo en el que se observan adipocitos uniloculares",
+      "Células adiposas uniloculares teñidas con hematoxilina eosina"
+    ],
+    "correct": 3,
+    "section": "Tejido Adiposo"
+  },
+  {
+    "page": 195,
+    "image": "img-195.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Tejido epitelial que descansa sobre un tejido conjuntivo laxo",
+      "Tejido conjuntivo laxo reticular",
+      "Tejido conjuntivo denso elástico",
+      "Tejido conjuntivo denso orientado"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 196,
+    "image": "img-196.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Tejido conjuntivo mucoso teñido con tricrómico de Masson",
+      "Tejido conjuntivo denso orientado teñido con tricrómico de Masson",
+      "Tejido conjuntivo laxo teñido con tricrómico de Van Gieson",
+      "Tejido conjuntivo denso no orientado teñido con tricrómico de Masson"
+    ],
+    "correct": 3,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 197,
+    "image": "img-197.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Tejido conjuntivo especializado en el almacén energético",
+      "Tejido conjuntivo donde predominan las fibras colágena",
+      "Tejido conjuntivo donde la sustancia amorfa predomina",
+      "Tejido conjuntivo en el que predominan las células"
+    ],
+    "correct": 2,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 198,
+    "image": "img-198.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Tejido conjuntivo laxo y elástico. Fibras elásticas teñidas con tricrómico",
+      "Tejido conjuntivo embrionario teñido con tricrómico de Masson, tinción específica de esta variedad de tejido",
+      "Tejido conjuntivo laxo. Fibras de reticulina teñidas con H-E",
+      "Tejido conjuntivo laxo y denso. Fibras de colágena teñidas con tricrómico de Masson"
+    ],
+    "correct": 3,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 199,
+    "image": "img-199.png",
+    "question": "Indique la respuesta correcta:",
+    "options": [
+      "Tejido conjuntivo laxo de lámina propia",
+      "Tejido conjuntivo embrionario en alveolo dentario",
+      "Tejido conjuntivo reticular de órgano hematopoyético",
+      "Tejido conjuntivo mucoso"
+    ],
+    "correct": 3,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 200,
+    "image": "img-200.png",
+    "question": "Indique la respuesta correcta:",
+    "options": [
+      "Tejido conjuntivo mucoso en el que predomina la sustancia fundamental amorfa (gelatina de Wharton)",
+      "Tejido conjuntivo en el que, como se observa en la imagen, predominan las fibras de colágena",
+      "Tejido conjuntivo en el que sus componentes, células, fibras y sustancia fundamental se encuentran de forma equivalente",
+      "Tejido conjuntivo en el que predominan las células"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 201,
+    "image": "img-201.png",
+    "question": "Indique la respuesta correcta:",
+    "options": [
+      "Tejido graso multilocular procesado por congelación y teñido con Sudan III",
+      "Tejido de grasa parda procesado por inclusión en parafina y teñido con H-E",
+      "Tejido de grasa parda procesado por congelación teñido con Orceina",
+      "Tejido graso multilocular procesado por inclusión en parafina y teñido con Sudan III"
+    ],
+    "correct": 1,
+    "section": "Tejido Adiposo"
+  },
+  {
+    "page": 202,
+    "image": "img-202.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Tejido conjuntivo denso no orientado",
+      "Tejido conjuntivo laxo orientado",
+      "Tejido conjuntivo denso orientado",
+      "Tejido conjuntivo denso elástico"
+    ],
+    "correct": 2,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 203,
+    "image": "img-203.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Fibras elásticas teñidas con Van Gieson variante de Verhoef",
+      "Fibras de colágena teñidas con Van Gieson variante de Verhoef",
+      "Fibras elásticas teñidas con orceina",
+      "Fibras de reticulina teñidas con Van Gieson variante de Verhoef"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 204,
+    "image": "img-204.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Tejido conjuntivo denso no orientado",
+      "Tejido conjuntivo laxo",
+      "Tejido conjuntivo mucoso",
+      "Tejido conjuntivo denso orientado"
+    ],
+    "correct": 3,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 205,
+    "image": "img-205.png",
+    "question": "Señale la respuesta correcta:",
+    "options": [
+      "Tejido conjuntivo mucoso de cordón umbilical teñido con tricrómico de Masson",
+      "Tejido conjuntivo laxo teñido con tricrómico de Van Gieson",
+      "Tejido conjuntivo de zona cutánea teñido con tricrómico de Masson",
+      "Tejido conjuntivo de piel teñido con tricrómico de Van Gieson"
+    ],
+    "correct": 2,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 206,
+    "image": "img-206.png",
+    "question": "La imagen nos muestra adipocitos uniloculares:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Adiposo"
+  },
+  {
+    "page": 207,
+    "image": "img-207.png",
+    "question": "La imagen muestra primera semana de desarrollo:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 208,
+    "image": "img-207.png",
+    "question": "La imagen corresponde a: 2: Folículo de Graaf",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 209,
+    "image": "img-207.png",
+    "question": "Característica visible en la imagen: 3: Trompa de Falopio",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 210,
+    "image": "img-210.png",
+    "question": "La imagen muestra blastocisto:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 211,
+    "image": "img-210.png",
+    "question": "La imagen corresponde a: Final de la primera semana",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 212,
+    "image": "img-210.png",
+    "question": "Característica visible en la imagen: 1: Trofoblasto o masa celular externa",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 213,
+    "image": "img-213.png",
+    "question": "La imagen muestra 1: citotrofoblasto:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 214,
+    "image": "img-213.png",
+    "question": "La imagen corresponde a: 2: Embrioblasto",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 215,
+    "image": "img-213.png",
+    "question": "Característica visible en la imagen: 3: Blastocele",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 216,
+    "image": "img-216.png",
+    "question": "La imagen muestra corresponde a la etapa de segmentación:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 217,
+    "image": "img-216.png",
+    "question": "La imagen corresponde a: 1: Membrana vitelina",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 218,
+    "image": "img-216.png",
+    "question": "Característica visible en la imagen: 2: Blastómeros",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 219,
+    "image": "img-219.png",
+    "question": "La imagen muestra ovocito ii rodeado por la zona pelúcida:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 220,
+    "image": "img-219.png",
+    "question": "La imagen muestra ovocito ii rodeado por la zona pelúcida",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 221,
+    "image": "img-221.png",
+    "question": "La imagen muestra 9: saco vitelino primitivo:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 222,
+    "image": "img-221.png",
+    "question": "La imagen muestra 9: saco vitelino primitivo",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 223,
+    "image": "img-223.png",
+    "question": "La imagen muestra corresponde a un esquema gráfico de la tercera:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 224,
+    "image": "img-223.png",
+    "question": "La imagen corresponde a: Se observa la notocorda, el divertículo alantoideo",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 225,
+    "image": "img-223.png",
+    "question": "Característica visible en la imagen: y el pedículo de fijación",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 226,
+    "image": "img-226.png",
+    "question": "La imagen muestra vellosidad primaria:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 227,
+    "image": "img-226.png",
+    "question": "La imagen muestra vellosidad primaria",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 228,
+    "image": "img-228.png",
+    "question": "La imagen muestra elemento sincitial con microvellosidades y gran:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 229,
+    "image": "img-228.png",
+    "question": "La estructura mostrada se caracteriza por: acúmulo de núcleos",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 230,
+    "image": "img-230.png",
+    "question": "La imagen muestra es una vellosidad secundaria:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 231,
+    "image": "img-230.png",
+    "question": "La imagen corresponde a: Segunda semana de desarrollo",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 232,
+    "image": "img-230.png",
+    "question": "Característica visible en la imagen: Asterisco: Mesénquima extraembrionario",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 233,
+    "image": "img-233.png",
+    "question": "La imagen muestra vellosidad placentaria secundaria:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 234,
+    "image": "img-233.png",
+    "question": "La imagen corresponde a: que presenta",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 235,
+    "image": "img-233.png",
+    "question": "Característica visible en la imagen: un eje central de mesénquima extraembrionario",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 236,
+    "image": "img-236.png",
+    "question": "La imagen muestra vellosidad terciaria:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 237,
+    "image": "img-236.png",
+    "question": "La imagen corresponde a: Asterisco rojo: mesénquima extraembrionario",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 238,
+    "image": "img-236.png",
+    "question": "Característica visible en la imagen: Flechas verdes: Sincitiotrofoblasto",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 239,
+    "image": "img-239.png",
+    "question": "La imagen muestra 1: corion frondoso:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 240,
+    "image": "img-239.png",
+    "question": "La imagen corresponde a: 3: Mesénquima extraembrionario",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 241,
+    "image": "img-239.png",
+    "question": "Característica visible en la imagen: 4: Zona de corion liso",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 242,
+    "image": "img-242.png",
+    "question": "La imagen muestra corte transversal del cordón umbilical:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 243,
+    "image": "img-242.png",
+    "question": "La imagen corresponde a: Presenta 2 arterias umbilicales",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 244,
+    "image": "img-242.png",
+    "question": "Característica visible en la imagen: Rodeada por amnios",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 245,
+    "image": "img-245.png",
+    "question": "La imagen muestra vena umbilical:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 246,
+    "image": "img-245.png",
+    "question": "La imagen corresponde a: Asterisco: Gelatina de Wharton",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 247,
+    "image": "img-247.png",
+    "question": "¿Qué tipo de tejido conjuntivo se muestra en la imagen?",
+    "options": [
+      "Tejido conjuntivo denso orientado",
+      "Tejido conjuntivo elástico",
+      "Tejido conjuntivo mucoso (gelatina de Wharton)",
+      "Tejido conjuntivo laxo"
+    ],
+    "correct": 2,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 248,
+    "image": "img-247.png",
+    "question": "La imagen muestra tejido conjuntivo mucoso (gelatina de wharton)",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Embriología (1ª a 4ª semana)"
+  },
+  {
+    "page": 249,
+    "image": "img-249.png",
+    "question": "¿Qué tipo de epitelio se muestra en la imagen?",
+    "options": [
+      "Epitelio pavimentoso estratificado no queratinizado",
+      "Epitelio pavimentoso estratificado queratinizado",
+      "Epitelio pavimentoso estratificado no",
+      "Epitelio pseudoestratificado cilíndrico"
+    ],
+    "correct": 2,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 250,
+    "image": "img-249.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Van Gieson",
+      "Impregnación argéntica",
+      "Orceína",
+      "H-E"
+    ],
+    "correct": 3,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 251,
+    "image": "img-249.png",
+    "question": "La imagen corresponde a: queratinizado",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 252,
+    "image": "img-252.png",
+    "question": "¿Qué tipo de epitelio se muestra en la imagen?",
+    "options": [
+      "Epitelio pavimentoso estratificado queratinizado",
+      "Epitelio transicional",
+      "Epitelio pseudoestratificado cilíndrico",
+      "Epitelio pavimentoso estratificado no queratinizado"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 253,
+    "image": "img-252.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Sudan III",
+      "H-E",
+      "Tricrómico de Masson",
+      "Van Gieson variante de Verhoef"
+    ],
+    "correct": 1,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 254,
+    "image": "img-252.png",
+    "question": "La imagen corresponde a: Piel, planta del pie",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 255,
+    "image": "img-255.png",
+    "question": "¿Qué tipo de epitelio se muestra en la imagen?",
+    "options": [
+      "Epitelio cúbico simple",
+      "Epitelio pavimentoso estratificado no queratinizado",
+      "Epitelio cilíndrico simple",
+      "Epitelio pavimentoso estratificado queratinizado"
+    ],
+    "correct": 3,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 256,
+    "image": "img-255.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "PAS",
+      "Técnica de plata de Gomori",
+      "Técnica de Weigert",
+      "H-E"
+    ],
+    "correct": 3,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 257,
+    "image": "img-255.png",
+    "question": "La imagen corresponde a: Piel, planta del pie",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 258,
+    "image": "img-258.png",
+    "question": "¿Qué tipo de epitelio se muestra en la imagen?",
+    "options": [
+      "Epitelio cúbico simple",
+      "Epitelio pseudoestratificado cilíndrico",
+      "Epitelio pavimentoso estratificado queratinizado",
+      "Células pavimentosas de contorno poligonal"
+    ],
+    "correct": 3,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 259,
+    "image": "img-258.png",
+    "question": "La imagen corresponde a: procedentes de frotis de mucosa oral",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 260,
+    "image": "img-258.png",
+    "question": "Característica visible en la imagen: Papanicolau",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 261,
+    "image": "img-261.png",
+    "question": "¿Qué tipo de epitelio se muestra en la imagen?",
+    "options": [
+      "Epitelio cilíndrico simple",
+      "Epitelio cúbico/aplanado simple",
+      "Epitelio pseudoestratificado cilíndrico",
+      "Epitelio transicional"
+    ],
+    "correct": 1,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 262,
+    "image": "img-261.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Tricrómico de Masson",
+      "Orceína",
+      "PAS",
+      "H-E"
+    ],
+    "correct": 3,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 263,
+    "image": "img-261.png",
+    "question": "La imagen corresponde a: Reviste la superficie ovárica (epitelio germinal)",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 264,
+    "image": "img-264.png",
+    "question": "¿Qué tipo de epitelio se muestra en la imagen?",
+    "options": [
+      "Epitelio transicional",
+      "Epitelio cúbico simple",
+      "Epitelio simple cúbico/pavimentoso (mesotelio)",
+      "Epitelio cilíndrico simple"
+    ],
+    "correct": 2,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 265,
+    "image": "img-264.png",
+    "question": "La imagen corresponde a: Corte longitudinal de un capilar",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 266,
+    "image": "img-266.png",
+    "question": "¿Qué tipo de epitelio se muestra en la imagen?",
+    "options": [
+      "Epitelio cilíndrico simple",
+      "Epitelio transicional",
+      "Epitelio pavimentoso estratificado no queratinizado",
+      "Epitelio transicional o urotelio"
+    ],
+    "correct": 3,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 267,
+    "image": "img-266.png",
+    "question": "La imagen corresponde a: Vías urinarias",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 268,
+    "image": "img-266.png",
+    "question": "Característica visible en la imagen: Capa más superficial: células en sombrilla o de",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 269,
+    "image": "img-269.png",
+    "question": "¿Qué tipo de epitelio se muestra en la imagen?",
+    "options": [
+      "Epitelio transicional o urotelio",
+      "Epitelio pavimentoso estratificado no queratinizado",
+      "Epitelio pseudoestratificado cilíndrico",
+      "Epitelio transicional"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 270,
+    "image": "img-269.png",
+    "question": "La imagen corresponde a: Vías urinarias",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 271,
+    "image": "img-269.png",
+    "question": "Característica visible en la imagen: Capa más superficial: células en sombrilla o de",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 272,
+    "image": "img-272.png",
+    "question": "¿Qué tipo de epitelio se muestra en la imagen?",
+    "options": [
+      "Epitelio transicional",
+      "Epitelio pavimentoso estratificado no queratinizado",
+      "Epitelio transicional o urotelio",
+      "Epitelio pseudoestratificado cilíndrico"
+    ],
+    "correct": 2,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 273,
+    "image": "img-272.png",
+    "question": "La imagen corresponde a: Reviste la vejiga",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 274,
+    "image": "img-274.png",
+    "question": "¿Qué tipo de epitelio se muestra en la imagen?",
+    "options": [
+      "Epitelio pavimentoso estratificado queratinizado",
+      "Epitelio cúbico simple",
+      "Epitelio transicional o urotelio",
+      "Epitelio cilíndrico simple"
+    ],
+    "correct": 2,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 275,
+    "image": "img-274.png",
+    "question": "La imagen corresponde a: Reviste la vejiga",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 276,
+    "image": "img-276.png",
+    "question": "¿Qué tipo de epitelio se muestra en la imagen?",
+    "options": [
+      "Epitelio biestratificado cúbico",
+      "Epitelio cilíndrico simple",
+      "Epitelio pseudoestratificado cilíndrico",
+      "Epitelio pavimentoso estratificado no queratinizado"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 277,
+    "image": "img-276.png",
+    "question": "La imagen muestra epitelio biestratificado cúbico",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 278,
+    "image": "img-278.png",
+    "question": "¿Qué tipo de epitelio se muestra en la imagen?",
+    "options": [
+      "Epitelio pavimentoso estratificado",
+      "Epitelio transicional",
+      "Epitelio cilíndrico simple",
+      "Epitelio pavimentoso estratificado no queratinizado"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 279,
+    "image": "img-278.png",
+    "question": "La imagen muestra epitelio pavimentoso estratificado",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 280,
+    "image": "img-280.png",
+    "question": "¿Qué tipo de epitelio se muestra en la imagen?",
+    "options": [
+      "Epitelio pseudoestratificado cilíndrico",
+      "Epitelio pavimentoso estratificado, frotis",
+      "Epitelio transicional",
+      "Epitelio cúbico simple"
+    ],
+    "correct": 1,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 281,
+    "image": "img-280.png",
+    "question": "La imagen muestra epitelio pavimentoso estratificado, frotis",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 282,
+    "image": "img-282.png",
+    "question": "¿Qué tipo de epitelio se muestra en la imagen?",
+    "options": [
+      "Epitelio pavimentoso estratificado no queratinizado",
+      "Epitelio pseudoestratificado cilíndrico",
+      "Epitelio cúbico simple",
+      "Epitelio secretor de polo mucoso cerrado"
+    ],
+    "correct": 3,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 283,
+    "image": "img-282.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Sudan III",
+      "Técnica de Weigert",
+      "Van Gieson",
+      "PAS"
+    ],
+    "correct": 3,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 284,
+    "image": "img-284.png",
+    "question": "La imagen muestra glándula tubular compuesta:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 285,
+    "image": "img-284.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Técnica de Weigert",
+      "PAS",
+      "Azul de toluidina",
+      "H-E"
+    ],
+    "correct": 3,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 286,
+    "image": "img-286.png",
+    "question": "La imagen muestra glándula acinosa compuesta:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 287,
+    "image": "img-286.png",
+    "question": "La imagen corresponde a: Se observa un lobulillo glandular y conductos",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 288,
+    "image": "img-286.png",
+    "question": "Característica visible en la imagen: glandulares intra e interlobulillares",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 289,
+    "image": "img-289.png",
+    "question": "La imagen muestra glándula acinosa compuesta:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 290,
+    "image": "img-289.png",
+    "question": "La imagen corresponde a: Se observan acinos serosos y seromucosos y",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 291,
+    "image": "img-289.png",
+    "question": "Característica visible en la imagen: conductos glandulares intralobulillares",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 292,
+    "image": "img-292.png",
+    "question": "La imagen muestra glándula amficrina (parte endocrina y parte:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 293,
+    "image": "img-292.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Técnica de plata de Gomori",
+      "PAS",
+      "Impregnación argéntica",
+      "H-E"
+    ],
+    "correct": 3,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 294,
+    "image": "img-292.png",
+    "question": "La imagen corresponde a: exocrina) con islotes de Langerhans",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 295,
+    "image": "img-295.png",
+    "question": "La imagen muestra células secretoras mucosas:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 296,
+    "image": "img-295.png",
+    "question": "La imagen corresponde a: Microscopía de transmisión",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 297,
+    "image": "img-297.png",
+    "question": "La imagen muestra células secretoras mucosas:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 298,
+    "image": "img-297.png",
+    "question": "La imagen corresponde a: Microscopía de barrido",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 299,
+    "image": "img-299.png",
+    "question": "La imagen muestra células secretoras mucosas:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 300,
+    "image": "img-299.png",
+    "question": "La imagen muestra células secretoras mucosas",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 301,
+    "image": "img-301.png",
+    "question": "La imagen muestra microscopía de transmisión:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 302,
+    "image": "img-301.png",
+    "question": "La imagen corresponde a: Alveolo mamario",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Epitelial"
+  },
+  {
+    "page": 303,
+    "image": "img-303.png",
+    "question": "¿Qué célula se muestra en la imagen?",
+    "options": [
+      "Mastocito",
+      "Fibroblastos",
+      "Fibroblasto",
+      "Célula plasmática"
+    ],
+    "correct": 1,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 304,
+    "image": "img-303.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Van Gieson",
+      "PAS",
+      "H-E",
+      "Impregnación argéntica"
+    ],
+    "correct": 2,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 305,
+    "image": "img-303.png",
+    "question": "La estructura mostrada se caracteriza por: Morfología fusiforme, núcleo central y",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 306,
+    "image": "img-306.png",
+    "question": "¿Qué célula se muestra en la imagen?",
+    "options": [
+      "Pericito",
+      "Melanocito",
+      "Mastocito",
+      "Macrófago"
+    ],
+    "correct": 3,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 307,
+    "image": "img-306.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Van Gieson",
+      "H-E",
+      "Azul de toluidina",
+      "Tricrómico de Masson"
+    ],
+    "correct": 1,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 308,
+    "image": "img-306.png",
+    "question": "La estructura mostrada se caracteriza por: Citoplasma abundante y vacuolado",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 309,
+    "image": "img-309.png",
+    "question": "¿Qué tipo de tejido conjuntivo se muestra en la imagen?",
+    "options": [
+      "Tejido conjuntivo denso orientado",
+      "Tejido conjuntivo laxo",
+      "Tejido conjuntivo reticular",
+      "Tejido conjuntivo vascular subepidérmico"
+    ],
+    "correct": 3,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 310,
+    "image": "img-309.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "H-E",
+      "Van Gieson variante de Verhoef",
+      "Impregnación argéntica",
+      "Van Gieson"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 311,
+    "image": "img-309.png",
+    "question": "La imagen corresponde a: Se observan fibroblastos, linfocitos y células",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 312,
+    "image": "img-312.png",
+    "question": "¿Qué célula se muestra en la imagen?",
+    "options": [
+      "Pericito",
+      "Macrófago",
+      "Célula plasmática",
+      "Mastocito"
+    ],
+    "correct": 2,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 313,
+    "image": "img-312.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "H-E",
+      "PAS",
+      "Sudan III",
+      "Técnica de plata de Gomori"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 314,
+    "image": "img-312.png",
+    "question": "La estructura mostrada se caracteriza por: Núcleo desplazado, cromatina en grumos gruesos",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 315,
+    "image": "img-315.png",
+    "question": "¿Qué tipo de tejido conjuntivo se muestra en la imagen?",
+    "options": [
+      "Tejido adiposo multilocular",
+      "Tejido adiposo unilocular",
+      "Tejido conjuntivo denso orientado",
+      "Tejido conjuntivo laxo denso no orientado"
+    ],
+    "correct": 3,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 316,
+    "image": "img-315.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Orceína",
+      "Impregnación argéntica",
+      "H-E",
+      "Técnica de Weigert"
+    ],
+    "correct": 2,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 317,
+    "image": "img-315.png",
+    "question": "La imagen corresponde a: Dermis papilar",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 318,
+    "image": "img-318.png",
+    "question": "¿Qué tipo de tejido conjuntivo se muestra en la imagen?",
+    "options": [
+      "Tejido conjuntivo denso orientado",
+      "Tejido adiposo multilocular",
+      "Tejido conjuntivo laxo",
+      "Tejido adiposo unilocular"
+    ],
+    "correct": 2,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 319,
+    "image": "img-318.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "H-E",
+      "Técnica de plata de Gomori",
+      "Orceína",
+      "Van Gieson"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 320,
+    "image": "img-318.png",
+    "question": "La imagen corresponde a: Dermis papilar",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 321,
+    "image": "img-321.png",
+    "question": "¿Qué tipo de tejido conjuntivo se muestra en la imagen?",
+    "options": [
+      "Tejido conjuntivo reticular",
+      "Tejido conjuntivo mucoso",
+      "Tejido conjuntivo mucoso (gelatina de Wharton)",
+      "Tejido conjuntivo denso orientado"
+    ],
+    "correct": 2,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 322,
+    "image": "img-321.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Van Gieson",
+      "Sudan III",
+      "Orceína",
+      "H-E"
+    ],
+    "correct": 3,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 323,
+    "image": "img-321.png",
+    "question": "La imagen corresponde a: Cordón umbilical",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 324,
+    "image": "img-324.png",
+    "question": "¿Qué tipo de tejido conjuntivo se muestra en la imagen?",
+    "options": [
+      "Tejido conjuntivo mucoso",
+      "Tejido conjuntivo denso orientado",
+      "Tejido conjuntivo reticular",
+      "Tejido adiposo unilocular"
+    ],
+    "correct": 1,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 325,
+    "image": "img-324.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Van Gieson",
+      "Sudan III",
+      "H-E",
+      "Tricrómico de Masson"
+    ],
+    "correct": 2,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 326,
+    "image": "img-326.png",
+    "question": "La imagen muestra gomori o tinción de plata:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 327,
+    "image": "img-326.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Técnica de Weigert",
+      "Técnica de plata de Gomori",
+      "Azul de toluidina",
+      "Van Gieson variante de Verhoef"
+    ],
+    "correct": 1,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 328,
+    "image": "img-328.png",
+    "question": "La imagen muestra gomori o tinción de plata:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 329,
+    "image": "img-328.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Azul de toluidina",
+      "Van Gieson variante de Verhoef",
+      "Orceína",
+      "Técnica de plata de Gomori"
+    ],
+    "correct": 3,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 330,
+    "image": "img-330.png",
+    "question": "La imagen muestra múltiples vacuolas:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 331,
+    "image": "img-330.png",
+    "question": "La imagen muestra múltiples vacuolas",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 332,
+    "image": "img-332.png",
+    "question": "La imagen muestra tejido de grasa parda procesado por inclusión en:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 333,
+    "image": "img-332.png",
+    "question": "La imagen corresponde a: parafina y teñido con HE",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 334,
+    "image": "img-334.png",
+    "question": "¿Qué tipo de tejido conjuntivo se muestra en la imagen?",
+    "options": [
+      "Tejido conjuntivo laxo",
+      "Tejido conjuntivo elástico",
+      "Tejido conjuntivo reticular",
+      "Tejido adiposo de grasa blanca procesado por"
+    ],
+    "correct": 3,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 335,
+    "image": "img-334.png",
+    "question": "La imagen corresponde a: inclusión en parafina y teñido con HE (Adipocitos",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 336,
+    "image": "img-334.png",
+    "question": "Característica visible en la imagen: uniloculares)",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 337,
+    "image": "img-337.png",
+    "question": "¿Qué célula se muestra en la imagen?",
+    "options": [
+      "Linfocito",
+      "Macrófago",
+      "Mastocito",
+      "Adipocito"
+    ],
+    "correct": 2,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 338,
+    "image": "img-337.png",
+    "question": "La imagen corresponde a: Célula mastocitaria, función secreción de aminas",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 339,
+    "image": "img-339.png",
+    "question": "¿Qué célula se muestra en la imagen?",
+    "options": [
+      "Célula plasmática",
+      "Macrófago",
+      "Fibroblasto",
+      "Macrófago o célula macrofágica"
+    ],
+    "correct": 3,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 340,
+    "image": "img-339.png",
+    "question": "La imagen corresponde a: Emigrada al tejido conjuntivo",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 341,
+    "image": "img-339.png",
+    "question": "Característica visible en la imagen: Función defensiva fagocítica",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 342,
+    "image": "img-342.png",
+    "question": "¿Qué célula se muestra en la imagen?",
+    "options": [
+      "Melanocito",
+      "Mastocito",
+      "Macrófago o célula macrofágica",
+      "Célula plasmática"
+    ],
+    "correct": 2,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 343,
+    "image": "img-342.png",
+    "question": "La imagen corresponde a: Emigrada al tejido conjuntivo",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 344,
+    "image": "img-342.png",
+    "question": "Característica visible en la imagen: Función defensiva fagocítica",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 345,
+    "image": "img-345.png",
+    "question": "¿Qué tipo de tejido conjuntivo se muestra en la imagen?",
+    "options": [
+      "Tejido conjuntivo laxo",
+      "Tejido conjuntivo mucoso",
+      "Tejido conjuntivo denso no orientado",
+      "Tejido conjuntivo denso orientado"
+    ],
+    "correct": 3,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 346,
+    "image": "img-345.png",
+    "question": "La imagen muestra tejido conjuntivo denso orientado",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 347,
+    "image": "img-347.png",
+    "question": "¿Qué tipo de tejido conjuntivo se muestra en la imagen?",
+    "options": [
+      "Tejido conjuntivo laxo",
+      "Tejido elástico",
+      "Tejido adiposo multilocular",
+      "Tejido conjuntivo reticular"
+    ],
+    "correct": 1,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 348,
+    "image": "img-347.png",
+    "question": "La imagen muestra tejido elástico",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 349,
+    "image": "img-349.png",
+    "question": "¿Qué tipo de tejido conjuntivo se muestra en la imagen?",
+    "options": [
+      "Tejido adiposo multilocular",
+      "Tejido conjuntivo elástico",
+      "Tejido conjuntivo denso no orientado",
+      "Tejido conjuntivo laxo"
+    ],
+    "correct": 2,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 350,
+    "image": "img-349.png",
+    "question": "La estructura mostrada se caracteriza por: Rico en fibras colágenas",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 351,
+    "image": "img-351.png",
+    "question": "¿Qué tipo de tejido conjuntivo se muestra en la imagen?",
+    "options": [
+      "Tejido conjuntivo laxo",
+      "Izquierda: Tejido conjuntivo denso orientado.",
+      "Tejido adiposo multilocular",
+      "Tejido conjuntivo mucoso"
+    ],
+    "correct": 1,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 352,
+    "image": "img-351.png",
+    "question": "La imagen muestra izquierda: tejido conjuntivo denso orientado.",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Conjuntivo"
+  },
+  {
+    "page": 353,
+    "image": "img-353.png",
+    "question": "¿Qué tipo de cartílago se muestra en la imagen?",
+    "options": [
+      "Cartílago fibroso (variante)",
+      "Cartílago hialino",
+      "Cartílago elástico",
+      "Cartílago fibroso"
+    ],
+    "correct": 1,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 354,
+    "image": "img-353.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Orceína",
+      "Técnica de plata de Gomori",
+      "H-E",
+      "PAS"
+    ],
+    "correct": 2,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 355,
+    "image": "img-353.png",
+    "question": "La imagen corresponde a: Posee pericondrio",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 356,
+    "image": "img-356.png",
+    "question": "¿Qué tipo de cartílago se muestra en la imagen?",
+    "options": [
+      "Cartílago elástico",
+      "Cartílago fibroso",
+      "Cartílago elástico (variante)",
+      "Cartílago hialino"
+    ],
+    "correct": 3,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 357,
+    "image": "img-356.png",
+    "question": "La imagen corresponde a: A: Pericondrio",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 358,
+    "image": "img-356.png",
+    "question": "Característica visible en la imagen: B: Pericondrio condrogénico",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 359,
+    "image": "img-359.png",
+    "question": "La imagen muestra rojo: grupo isogénico axial:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 360,
+    "image": "img-359.png",
+    "question": "La imagen corresponde a: Azul: Grupo isogénico coronario",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 361,
+    "image": "img-361.png",
+    "question": "¿Qué tipo de cartílago se muestra en la imagen?",
+    "options": [
+      "Cartílago Hialino con la característica matriz",
+      "Cartílago elástico",
+      "Cartílago hialino",
+      "Cartílago fibroso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 362,
+    "image": "img-361.png",
+    "question": "La imagen corresponde a: cartilaginosa basófila",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 363,
+    "image": "img-361.png",
+    "question": "Característica visible en la imagen: Se observan grupos isogénicos coronarios de",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 364,
+    "image": "img-364.png",
+    "question": "¿Qué tipo de cartílago se muestra en la imagen?",
+    "options": [
+      "Cartílago hialino costal",
+      "Cartílago elástico",
+      "Cartílago fibroso",
+      "Cartílago hialino"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 365,
+    "image": "img-364.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "PAS",
+      "Van Gieson variante de Verhoef",
+      "Azul de toluidina",
+      "H-E"
+    ],
+    "correct": 3,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 366,
+    "image": "img-364.png",
+    "question": "La imagen corresponde a: Asteriscos: Matriz interterritorial de cartílago",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 367,
+    "image": "img-367.png",
+    "question": "La imagen muestra orceína:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 368,
+    "image": "img-367.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Tricrómico de Masson",
+      "Van Gieson",
+      "PAS",
+      "Orceína"
+    ],
+    "correct": 3,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 369,
+    "image": "img-369.png",
+    "question": "La imagen muestra orceína:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 370,
+    "image": "img-369.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Van Gieson variante de Verhoef",
+      "PAS",
+      "Orceína",
+      "Técnica de Weigert"
+    ],
+    "correct": 2,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 371,
+    "image": "img-371.png",
+    "question": "¿Qué célula se muestra en la imagen?",
+    "options": [
+      "Célula de revestimiento óseo",
+      "Condrocito",
+      "Osteocito",
+      "Grupo isogénico formado por condrocitos"
+    ],
+    "correct": 3,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 372,
+    "image": "img-371.png",
+    "question": "La imagen corresponde a: Microscopía electrónica de transmisión",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 373,
+    "image": "img-373.png",
+    "question": "¿Qué célula se muestra en la imagen?",
+    "options": [
+      "Célula de revestimiento óseo",
+      "Osteocito",
+      "Condrocito",
+      "Osteoblasto"
+    ],
+    "correct": 2,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 374,
+    "image": "img-373.png",
+    "question": "La imagen corresponde a: Microscopía electrónica de transmisión",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 375,
+    "image": "img-375.png",
+    "question": "¿Qué célula se muestra en la imagen?",
+    "options": [
+      "Osteoclasto",
+      "Célula de revestimiento óseo",
+      "Condrocito",
+      "Osteocitos"
+    ],
+    "correct": 3,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 376,
+    "image": "img-375.png",
+    "question": "La imagen muestra osteocitos",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 377,
+    "image": "img-377.png",
+    "question": "¿Qué célula se muestra en la imagen?",
+    "options": [
+      "Célula mesenquimal",
+      "Osteocitos",
+      "Osteoblasto",
+      "Osteoclasto"
+    ],
+    "correct": 1,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 378,
+    "image": "img-377.png",
+    "question": "La imagen muestra osteocitos",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 379,
+    "image": "img-379.png",
+    "question": "La imagen muestra célula cúbica con núcleo esférico:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 380,
+    "image": "img-379.png",
+    "question": "La imagen muestra célula cúbica con núcleo esférico",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 381,
+    "image": "img-381.png",
+    "question": "La imagen muestra célula gigante, multinucleada, móvil:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 382,
+    "image": "img-381.png",
+    "question": "La imagen corresponde a: (derivan de los monocitos/macrófagos)",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 383,
+    "image": "img-383.png",
+    "question": "La imagen muestra esponjoso:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 384,
+    "image": "img-383.png",
+    "question": "La imagen muestra esponjoso",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 385,
+    "image": "img-385.png",
+    "question": "¿Qué célula se muestra en la imagen?",
+    "options": [
+      "Osteoblasto",
+      "Tejido óseo laminar compacto",
+      "Célula de revestimiento óseo",
+      "Osteoclasto"
+    ],
+    "correct": 1,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 386,
+    "image": "img-385.png",
+    "question": "La estructura mostrada se caracteriza por: Integrado por láminas alrededor de un conducto",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 387,
+    "image": "img-385.png",
+    "question": "Característica visible en la imagen: de Havers (osteonas), o entre estas (sistemas",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 388,
+    "image": "img-388.png",
+    "question": "¿Qué célula se muestra en la imagen?",
+    "options": [
+      "Condrocito",
+      "Osteoclasto",
+      "Osteocito",
+      "Tejido óseo laminar compacto"
+    ],
+    "correct": 3,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 389,
+    "image": "img-388.png",
+    "question": "La imagen corresponde a: Se observan osteonas en cuyo centro se localiza",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 390,
+    "image": "img-388.png",
+    "question": "Característica visible en la imagen: un canal de Havers",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 391,
+    "image": "img-391.png",
+    "question": "¿Qué célula se muestra en la imagen?",
+    "options": [
+      "Osteoclasto",
+      "Célula mesenquimal",
+      "Tejido óseo laminar compacto",
+      "Condrocito"
+    ],
+    "correct": 2,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 392,
+    "image": "img-391.png",
+    "question": "La imagen corresponde a: Médula ósea",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 393,
+    "image": "img-391.png",
+    "question": "Característica visible en la imagen: Se observan osteocitos y conductos de Havers",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 394,
+    "image": "img-394.png",
+    "question": "¿Qué célula se muestra en la imagen?",
+    "options": [
+      "Osteoblasto",
+      "Tejido óseo laminar compacto",
+      "Osteoclasto",
+      "Osteocito"
+    ],
+    "correct": 1,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 395,
+    "image": "img-394.png",
+    "question": "La imagen muestra tejido óseo laminar compacto",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 396,
+    "image": "img-396.png",
+    "question": "La imagen muestra isleta de conectivo vascular:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 397,
+    "image": "img-396.png",
+    "question": "La imagen muestra isleta de conectivo vascular",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 398,
+    "image": "img-398.png",
+    "question": "La imagen muestra punto de calcificación epifisaria:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 399,
+    "image": "img-398.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Van Gieson variante de Verhoef",
+      "PAS",
+      "H-E",
+      "Van Gieson"
+    ],
+    "correct": 2,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 400,
+    "image": "img-400.png",
+    "question": "La imagen muestra proceso de osificación endocondral:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 401,
+    "image": "img-400.png",
+    "question": "La imagen muestra proceso de osificación endocondral",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 402,
+    "image": "img-402.png",
+    "question": "¿Qué tipo de cartílago se muestra en la imagen?",
+    "options": [
+      "Cartílago elástico",
+      "Cartílago hialino de crecimiento",
+      "Cartílago hialino",
+      "Cartílago fibroso"
+    ],
+    "correct": 1,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 403,
+    "image": "img-402.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "H-E",
+      "Tricrómico de Masson",
+      "Orceína",
+      "Técnica de Weigert"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 404,
+    "image": "img-402.png",
+    "question": "La imagen corresponde a: Se encarga del crecimiento de los huesos largos",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Esqueletógeno"
+  },
+  {
+    "page": 405,
+    "image": "img-405.png",
+    "question": "¿Qué tipo de tejido muscular se muestra en la imagen?",
+    "options": [
+      "Tejido muscular liso",
+      "Tejido muscular estriado esquelético",
+      "Tejido muscular cardiaco (variante)",
+      "Tejido muscular cardiaco"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 406,
+    "image": "img-405.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Técnica de plata de Gomori",
+      "Tricrómico de Masson",
+      "Impregnación argéntica",
+      "H-E"
+    ],
+    "correct": 3,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 407,
+    "image": "img-405.png",
+    "question": "La imagen corresponde a: Células cortadas longitudinalmente",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 408,
+    "image": "img-408.png",
+    "question": "¿Qué tipo de tejido muscular se muestra en la imagen?",
+    "options": [
+      "Tejido muscular estriado esquelético (variante)",
+      "Tejido muscular cardiaco",
+      "Tejido muscular estriado esquelético",
+      "Tejido muscular liso"
+    ],
+    "correct": 3,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 409,
+    "image": "img-408.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Técnica de Weigert",
+      "Sudan III",
+      "Técnica de plata de Gomori",
+      "H-E"
+    ],
+    "correct": 3,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 410,
+    "image": "img-408.png",
+    "question": "La imagen corresponde a: Células cortadas transversalmente",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 411,
+    "image": "img-411.png",
+    "question": "¿Qué tipo de tejido muscular se muestra en la imagen?",
+    "options": [
+      "Tejido muscular cardiaco",
+      "Tejido muscular estriado esquelético",
+      "Tejido muscular liso",
+      "Tejido muscular estriado esquelético (variante)"
+    ],
+    "correct": 2,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 412,
+    "image": "img-411.png",
+    "question": "La imagen corresponde a: Verde: Fascículos de células musculares lisas",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 413,
+    "image": "img-411.png",
+    "question": "Característica visible en la imagen: cortadas transversalmente",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 414,
+    "image": "img-414.png",
+    "question": "¿Qué tipo de tejido muscular se muestra en la imagen?",
+    "options": [
+      "Células musculares lisas cortadas",
+      "Tejido muscular estriado esquelético",
+      "Tejido muscular liso",
+      "Tejido muscular cardiaco"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 415,
+    "image": "img-414.png",
+    "question": "La imagen corresponde a: transversalmente",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 416,
+    "image": "img-416.png",
+    "question": "La imagen muestra rabdomiocitos:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 417,
+    "image": "img-416.png",
+    "question": "La imagen muestra rabdomiocitos",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 418,
+    "image": "img-418.png",
+    "question": "La imagen muestra teñido con h-e:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 419,
+    "image": "img-418.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "H-E",
+      "PAS",
+      "Van Gieson",
+      "Impregnación argéntica"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 420,
+    "image": "img-418.png",
+    "question": "La imagen corresponde a: Asteriscos negros: Disco A",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 421,
+    "image": "img-421.png",
+    "question": "¿Qué tipo de tejido muscular se muestra en la imagen?",
+    "options": [
+      "Célula muscular estriada esquelética",
+      "Tejido muscular estriado esquelético",
+      "Tejido muscular liso",
+      "Tejido muscular cardiaco"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 422,
+    "image": "img-421.png",
+    "question": "La imagen corresponde a: Microscopía electrónica de transmisión",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 423,
+    "image": "img-423.png",
+    "question": "La imagen muestra microscopía electrónica de transmisión:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 424,
+    "image": "img-423.png",
+    "question": "La imagen corresponde a: Azul: Sarcómero",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 425,
+    "image": "img-423.png",
+    "question": "Característica visible en la imagen: Marrón: Disco claro",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 426,
+    "image": "img-426.png",
+    "question": "La imagen muestra corte transversal de la miofibrilla, a nivel del:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 427,
+    "image": "img-426.png",
+    "question": "La imagen corresponde a: sarcómero A",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 428,
+    "image": "img-426.png",
+    "question": "Característica visible en la imagen: Microscopía electrónica de transmisión",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 429,
+    "image": "img-429.png",
+    "question": "¿Qué tipo de tejido muscular se muestra en la imagen?",
+    "options": [
+      "Tejido muscular cardiaco",
+      "Husos neuromusculares",
+      "Tejido muscular liso",
+      "Tejido muscular estriado esquelético"
+    ],
+    "correct": 1,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 430,
+    "image": "img-429.png",
+    "question": "La imagen corresponde a: Flecha azul: Cápsula externa de huso",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 431,
+    "image": "img-429.png",
+    "question": "Característica visible en la imagen: neuromuscular",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 432,
+    "image": "img-432.png",
+    "question": "La imagen muestra teñido con tricrómico:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 433,
+    "image": "img-432.png",
+    "question": "La imagen corresponde a: Rojo: Músculo",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 434,
+    "image": "img-432.png",
+    "question": "Característica visible en la imagen: Azul: Tejido conjuntivo cartilaginoso",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 435,
+    "image": "img-435.png",
+    "question": "¿Qué tipo de tejido conjuntivo se muestra en la imagen?",
+    "options": [
+      "Fibras musculares se unen al tejido conjuntivo",
+      "Tejido conjuntivo reticular",
+      "Tejido conjuntivo denso no orientado",
+      "Tejido conjuntivo denso orientado"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 436,
+    "image": "img-435.png",
+    "question": "La imagen corresponde a: que forma el tendón",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 437,
+    "image": "img-435.png",
+    "question": "Característica visible en la imagen: Teñido con tricrómico",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 438,
+    "image": "img-438.png",
+    "question": "¿Qué tipo de tejido muscular se muestra en la imagen?",
+    "options": [
+      "Unión entre células musculares y tendón",
+      "Tejido muscular liso",
+      "Tejido muscular cardiaco",
+      "Tejido muscular estriado esquelético"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 439,
+    "image": "img-438.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Van Gieson variante de Verhoef",
+      "PAS",
+      "H-E",
+      "Van Gieson"
+    ],
+    "correct": 2,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 440,
+    "image": "img-440.png",
+    "question": "¿Qué tipo de tejido muscular se muestra en la imagen?",
+    "options": [
+      "Tejido muscular liso",
+      "Tejido muscular estriado esquelético",
+      "Cortes transversales de células musculares",
+      "Tejido muscular cardiaco"
+    ],
+    "correct": 2,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 441,
+    "image": "img-440.png",
+    "question": "La imagen corresponde a: Teñidas con tricrómico",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 442,
+    "image": "img-442.png",
+    "question": "¿Qué tipo de tejido muscular se muestra en la imagen?",
+    "options": [
+      "Tejido muscular estriado esquelético",
+      "Tejido muscular cardiaco",
+      "Tejido muscular liso",
+      "Célula muscular cardiaca"
+    ],
+    "correct": 3,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 443,
+    "image": "img-442.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Orceína",
+      "H-E",
+      "Técnica de Weigert",
+      "Sudan III"
+    ],
+    "correct": 1,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 444,
+    "image": "img-444.png",
+    "question": "¿Qué tipo de tejido muscular se muestra en la imagen?",
+    "options": [
+      "Tejido muscular liso",
+      "Tejido muscular cardiaco",
+      "Corte transversal de células musculares cardiacas",
+      "Tejido muscular estriado esquelético"
+    ],
+    "correct": 2,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 445,
+    "image": "img-444.png",
+    "question": "La imagen muestra corte transversal de células musculares cardiacas",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Muscular"
+  },
+  {
+    "page": 446,
+    "image": "img-446.png",
+    "question": "La imagen muestra médula espinal:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 447,
+    "image": "img-446.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Azul de toluidina",
+      "Tricrómico de Masson",
+      "H-E",
+      "Impregnación argéntica"
+    ],
+    "correct": 2,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 448,
+    "image": "img-446.png",
+    "question": "La imagen corresponde a: Se observa sustancia blanca (sin cuerpos",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 449,
+    "image": "img-449.png",
+    "question": "¿Qué tipo celular se muestra en la imagen?",
+    "options": [
+      "Motoneurona",
+      "Célula de Purkinje",
+      "Astrocito",
+      "Microglia"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 450,
+    "image": "img-449.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "H-E",
+      "Azul de toluidina",
+      "Impregnación argéntica",
+      "Van Gieson variante de Verhoef"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 451,
+    "image": "img-449.png",
+    "question": "La estructura mostrada se caracteriza por: Verde: Núcleo",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 452,
+    "image": "img-452.png",
+    "question": "La imagen muestra médula espinal:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 453,
+    "image": "img-452.png",
+    "question": "La imagen muestra médula espinal",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 454,
+    "image": "img-454.png",
+    "question": "La imagen muestra asterisco rojo: sustancia gris de médula espinal:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 455,
+    "image": "img-454.png",
+    "question": "La imagen muestra asterisco rojo: sustancia gris de médula espinal",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 456,
+    "image": "img-456.png",
+    "question": "¿Qué tipo celular se muestra en la imagen?",
+    "options": [
+      "Célula ependimaria",
+      "conducto ependimario",
+      "Astrocito",
+      "Oligodendrocito"
+    ],
+    "correct": 1,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 457,
+    "image": "img-456.png",
+    "question": "La imagen muestra conducto ependimario",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 458,
+    "image": "img-458.png",
+    "question": "La imagen muestra cae siempre!!:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 459,
+    "image": "img-458.png",
+    "question": "La imagen muestra cae siempre!!",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 460,
+    "image": "img-460.png",
+    "question": "¿Qué tipo celular se muestra en la imagen?",
+    "options": [
+      "Neurona multipolar",
+      "Oligodendrocito",
+      "Neurona",
+      "Microglia"
+    ],
+    "correct": 2,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 461,
+    "image": "img-460.png",
+    "question": "La imagen muestra neurona",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 462,
+    "image": "img-462.png",
+    "question": "¿Qué tipo celular se muestra en la imagen?",
+    "options": [
+      "Oligodendrocito",
+      "Célula ependimaria",
+      "Célula de Purkinje",
+      "Neuronas o cuerpos neuronales de ganglio"
+    ],
+    "correct": 3,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 463,
+    "image": "img-462.png",
+    "question": "La imagen corresponde a: simpático o vegetativo",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 464,
+    "image": "img-462.png",
+    "question": "Característica visible en la imagen: 1: Nucleolo",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 465,
+    "image": "img-465.png",
+    "question": "¿Qué tipo celular se muestra en la imagen?",
+    "options": [
+      "Microglia",
+      "Célula ependimaria",
+      "Ganglio espinal con cuerpos neuronales",
+      "Astrocito"
+    ],
+    "correct": 2,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 466,
+    "image": "img-465.png",
+    "question": "¿Con qué técnica fue procesada esta preparación?",
+    "options": [
+      "Sudan III",
+      "Técnica de plata de Gomori",
+      "H-E",
+      "Azul de toluidina"
+    ],
+    "correct": 2,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 467,
+    "image": "img-465.png",
+    "question": "La imagen corresponde a: Neuronas pseudomonopolares",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 468,
+    "image": "img-468.png",
+    "question": "¿Qué tipo celular se muestra en la imagen?",
+    "options": [
+      "Célula de Schwann",
+      "Célula ependimaria",
+      "Microglia",
+      "Cuerpo neuronal de ganglio vegetativo"
+    ],
+    "correct": 3,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 469,
+    "image": "img-468.png",
+    "question": "La estructura mostrada se caracteriza por: Alrededor: Núcleos de células de sostén",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 470,
+    "image": "img-470.png",
+    "question": "¿Qué tipo celular se muestra en la imagen?",
+    "options": [
+      "Elementos voluminosos del interior: Neuronas",
+      "Oligodendrocito",
+      "Microglia",
+      "Neurona multipolar"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 471,
+    "image": "img-470.png",
+    "question": "La imagen corresponde a: multipolares",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 472,
+    "image": "img-472.png",
+    "question": "La imagen muestra las masas basófilas que se observan en el cuerpo:",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 473,
+    "image": "img-472.png",
+    "question": "La imagen corresponde a: de la neurona corresponden a REG",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 474,
+    "image": "img-474.png",
+    "question": "¿Qué tipo celular se muestra en la imagen?",
+    "options": [
+      "Célula de Schwann",
+      "Neurona",
+      "Célula ependimaria",
+      "Célula de Purkinje"
+    ],
+    "correct": 1,
+    "section": "Tejido Nervioso"
+  },
+  {
+    "page": 475,
+    "image": "img-474.png",
+    "question": "La imagen muestra neurona",
+    "options": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correct": 0,
+    "section": "Tejido Nervioso"
   }
 ]
